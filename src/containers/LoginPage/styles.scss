@@ -1,0 +1,15 @@
+main.loginPage {
+  background-color: #fafaf8;
+  min-height: 100%;
+  padding: 16px 0 0 0;
+
+  .column {
+    max-width: 650px;
+
+    .ui.segment {
+      background-color: transparent; 
+      border: none; 
+      box-shadow: none;
+    }
+  }
+}

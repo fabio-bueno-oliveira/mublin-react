@@ -12,10 +12,10 @@ function LandingPage () {
                     <h1>mublin</h1>
                     <div className="action">
                         <Link to={{ pathname: "/login", state: { fromLandingPage: true } }}>
-                            <Button inverted color='white' size='small' className="mr-2">Entrar</Button>
+                            <Button inverted color='white' size='medium' className="mr-2">Entrar</Button>
                         </Link>
                         <Link to={{ pathname: "/soon", state: { fromLandingPage: true } }}>
-                            <Button inverted color='blue' size='small'>Cadastre-se grátis</Button>
+                            <Button inverted color='blue' size='medium'>Cadastre-se grátis</Button>
                         </Link>
                     </div>
                 </header>

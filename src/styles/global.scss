@@ -33,6 +33,17 @@ body, html {
   height: 100%;
 }
 
+.appLoadingIcon {
+  position: fixed;
+  z-index: 9;
+  align-items: center;
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.9);
+}
+
 /* Fonts */
 
 @font-face {

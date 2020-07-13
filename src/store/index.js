@@ -1,9 +1,3 @@
-// import { createStore } from 'redux'
-// import { Reducers } from './reducers'
-
-// export const Store = createStore(Reducers);
-
-
 import { createStore, applyMiddleware } from 'redux';
 import thunkMiddleware from 'redux-thunk';
 import { createLogger } from 'redux-logger';

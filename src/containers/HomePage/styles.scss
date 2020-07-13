@@ -1,0 +1,38 @@
+/* carousel */
+.projects-carousel .carousel-cell,
+.portfolio-carousel .carousel-cell,
+.newproject-carousel .carousel-cell{
+  width: 28%;
+  height: 165px;
+  padding: 0px 3px;
+  margin-right: 3px;
+  counter-increment: gallery-cell;
+  text-align: center;
+}
+
+@media screen and (min-width: 601px) {
+  .carousel-cell {
+    width: 113px!important;
+    height: 172px!important;
+    margin-right: 0px!important;
+    padding: 0px 9px!important;
+  }
+}
+.carousel-cell h5 {
+	white-space: nowrap;
+ 	overflow: hidden;
+ 	text-overflow: ellipsis;
+}
+
+h2 {
+  font-size: 1.5rem!important;
+}
+
+h2.ui.header .sub.header {
+  font-size: 1rem!important;
+}
+
+.ui.card {
+  border-radius: 13px;
+  box-shadow: 0 7px 15px 0 rgba(0,0,0,.1);
+}

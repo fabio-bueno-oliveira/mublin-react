@@ -44,6 +44,51 @@ body, html {
   background-color: rgba(0, 0, 0, 0.9);
 }
 
+.ui.search {
+  .results {
+    .price {
+      font-size: 8px;
+    }
+  }
+}
+
+#menu-desktop {
+  .ui.icon.input {
+    input {
+      background-color: transparent;
+      border-radius: 0;
+      outline: none;
+      color: white;
+
+      &:hover {
+        // border: none;
+        color: white;
+      }
+      &:focus {
+        border-color: transparent;
+      }
+    }
+    i {
+      color: white;
+    }
+  }
+}
+
+.carousel.flickity-enabled {
+  overflow: hidden;
+  &:focus {
+    outline: 0;
+    border: 0;
+  }
+}
+
+.flickity-viewport {
+  &:focus {
+    outline: 0;
+    border: 0;
+  }
+}
+
 /* Fonts */
 
 @font-face {

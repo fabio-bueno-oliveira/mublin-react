@@ -1,6 +1,5 @@
 import { userTypes } from '../types/users';
 import { userService } from '../../api/users';
-// import { alertActions } from './alert';
 import { createBrowserHistory } from 'history';
 
 export const history = createBrowserHistory();

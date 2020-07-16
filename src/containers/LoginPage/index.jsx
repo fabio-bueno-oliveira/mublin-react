@@ -63,18 +63,18 @@ function LoginPage (props) {
                 }
                 <p>{error}</p>
                 <Header as='h2'>
-                    <div class="content">
+                    <div className="content">
                         <Link to={{ pathname: "/", state: { fromLogin: true } }}>
                             <img src={logo} alt="Mublin" className="ui mini image mt-0" />    
                         </Link>
                     </div>
                 </Header>
                 <Header as='h2' className='mt-0'>Iniciar Sessão</Header>
-                <div class="ui segment">
+                <div className="ui segment">
                     <Formik
                         initialValues={{ email: '', password: '' }}
-                        isInitialValid={true}
                         validate={validate}
+                        validateOnMount={true}
                         validateOnBlur={true}
                         onSubmit={(values, { setSubmitting }) => {
                         setLoading(true);
@@ -97,9 +97,9 @@ function LoginPage (props) {
                                 }
                             }}
                         >
-                            <div class="ui two column very relaxed stackable grid">
-                                <div class="column">
-                                    <div class="ui form">
+                            <div className="ui two column very relaxed stackable grid">
+                                <div className="column">
+                                    <div className="ui form">
                                         <Form.Field
                                             icon='user' 
                                             iconPosition='left'
@@ -155,7 +155,7 @@ function LoginPage (props) {
                                         </Link>
                                     </div>
                                 </div>
-                                <div class="middle aligned column">
+                                <div className="middle aligned column">
                                     <Link to={{ pathname: "/soon", state: { fromLogin: true } }}>
                                         <Button size="big" primary>Inscrever-se grátis</Button>
                                     </Link>
@@ -164,7 +164,7 @@ function LoginPage (props) {
                         </form>
                     )}
                     </Formik>
-                    <div class="ui vertical divider d-none d-lg-block">
+                    <div className="ui vertical divider d-none d-lg-block">
                         ou
                     </div>
                 </div>

@@ -49,14 +49,12 @@ function ProfilePage () {
             <Grid columns={3} className="container mb-3 mt-0 mt-md-4 pt-5">
                 <Grid.Row>
                 <Grid.Column>
-                    <Link className="item" to={{ pathname: "/project" }}>
+                    <Link className="item" to={{ pathname: "/profile" }}>
                         <Image src='https://react.semantic-ui.com/images/wireframe/media-paragraph.png' />
                     </Link>
                 </Grid.Column>
                 <Grid.Column>
-                    <Link className="item" to={{ pathname: "/home" }}>
-                        <Image src='https://react.semantic-ui.com/images/wireframe/media-paragraph.png' />
-                    </Link>
+                    <Image src='https://react.semantic-ui.com/images/wireframe/media-paragraph.png' />
                 </Grid.Column>
                 <Grid.Column>
                     <Image src='https://react.semantic-ui.com/images/wireframe/media-paragraph.png' />

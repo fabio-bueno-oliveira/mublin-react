@@ -34,7 +34,6 @@ function login(email, password) {
         .then(user => {
             // store user details and jwt token in local storage to keep user logged in between page refreshes
             localStorage.setItem('user', JSON.stringify(user));
-            localStorage.setItem('token', JSON.stringify(user.token));
 
             return user;
         });
@@ -60,7 +59,6 @@ function validate(token) {
 function logout() {
     // remove user from local storage to log user out
     localStorage.removeItem('user');
-    localStorage.removeItem('token');
 }
 
 function getAll() {
@@ -118,6 +116,8 @@ function handleResponse(response) {
             if (response.status === 401) {
                 // auto logout if 401 response returned from api
                 logout();
+                // history.push('/login');
+                // window.location.href = window.location.href;
                 // location.reload(true);
                 // window.reload(true)
                 // window.location.href = window.location.href;

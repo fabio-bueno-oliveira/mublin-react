@@ -1,10 +1,11 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { Link } from 'react-router-dom';
 import HeaderDesktop from '../../components/layout/headerDesktop';
 import { projectsInfos } from '../../store/actions/projects';
 import { eventsInfos } from '../../store/actions/events';
 import { Header, Tab, Card, Grid, List, Image, Icon, Menu, Button, Label } from 'semantic-ui-react';
-import Slider from '../../components/slider';
+import Flickity from 'react-flickity-component'
 import moment from 'moment';
 import './styles.scss';
 
@@ -53,54 +54,72 @@ function HomePage () {
                         {
                         menuItem: 'Principais ('+mainProjects.length+')',
                         render: () => 
-                            <Tab.Pane loading={projects.requesting} attached={false} as='false'>
-                                <Slider options={sliderOptions}>
-                                    {mainProjects.map((projeto, key) =>
-                                        <div class="carousel-cell" key={projeto.id}>
-                                            <a href="/music/<?=$row_user_projects_selector['username']?>">
-                                                {projeto.picture ? (
-                                                    <Image src={'https://mublin.com/img/projects/'+projeto.projectid+'/'+projeto.picture} height='85' rounded />
-                                                ) : (
-                                                    <Image src={'https://mublin.com/img/projects/avatar-undefined.jpg'} height='85' rounded />
-                                                )}
-                                                <h5 class="ui header mt-2 mb-0">
-                                                    {projeto.name}
-                                                    <div class="sub header mt-1">{projeto.ptname}</div>
-                                                </h5>
-                                                <div class="mt-2" style={{fontWeight: '400',fontSize: '11px', color: 'black', opacity: '0.8'}}>
-                                                    <Icon name={projeto.workIcon} /> {projeto.workTitle}
-                                                </div>
-                                            </a>
+                            <Tab.Pane loading={projects.requesting} attached={false} as="div">
+                                <Flickity
+                                    className={'carousel'} // default ''
+                                    elementType={'div'} // default 'div'
+                                    options={sliderOptions} // takes flickity options {}
+                                    disableImagesLoaded={false} // default false
+                                    reloadOnUpdate // default false
+                                >
+                                    { !projects.requesting ? (
+                                        mainProjects.map((projeto, key) =>
+                                            <div className="carousel-cell" key={projeto.id}>
+                                                <a href="/music/projectusername">
+                                                    {projeto.picture ? (
+                                                        <Image src={'https://mublin.com/img/projects/'+projeto.projectid+'/'+projeto.picture} height='85' rounded />
+                                                    ) : (
+                                                        <Image src={'https://mublin.com/img/projects/avatar-undefined.jpg'} height='85' rounded />
+                                                    )}
+                                                    <h5 className="ui header mt-2 mb-0">
+                                                        {projeto.name}
+                                                        <div className="sub header mt-1">{projeto.ptname}</div>
+                                                    </h5>
+                                                    <div className="mt-2" style={{fontWeight: '400',fontSize: '11px', color: 'black', opacity: '0.8'}}>
+                                                        <Icon name={projeto.workIcon} /> {projeto.workTitle}
+                                                    </div>
+                                                </a>
+                                            </div>
+                                        )
+                                    ) : (
+                                        <div style={{textAlign: 'center', width: '100%'}}>
+                                            <Icon loading name='spinner' size='big' />
                                         </div>
                                     )}
-                                </Slider>
+                                </Flickity>
                             </Tab.Pane>,
                         },
                         {
                         menuItem: 'Portfolio ('+portfolioProjects.length+')',
                         render: () => 
-                            <Tab.Pane loading={projects.requesting} attached={false} as='false'>
-                                <Slider options={sliderOptions}>
+                            <Tab.Pane loading={projects.requesting} attached={false} as="div">
+                                <Flickity
+                                    className={'carousel'} // default ''
+                                    elementType={'div'} // default 'div'
+                                    options={sliderOptions} // takes flickity options {}
+                                    disableImagesLoaded={false} // default false
+                                    reloadOnUpdate // default false
+                                >
                                     {portfolioProjects.map((projeto, key) =>
-                                        <div class="carousel-cell" key={projeto.id}>
-                                            <a href="/music/<?=$row_user_projects_selector['username']?>">
-                                                <div class="floating ui mini black label" style={{top: '0', left: '76%'}}>{projeto.joined_in}</div>
+                                        <div className="carousel-cell" key={projeto.id}>
+                                            <a href="/music/projectusername">
+                                                <div className="floating ui mini black label" style={{top: '0', left: '76%'}}>{projeto.joined_in}</div>
                                                 {projeto.picture ? (
                                                     <Image src={'https://mublin.com/img/projects/'+projeto.projectid+'/'+projeto.picture} height='85' rounded />
                                                 ) : (
                                                     <Image src={'https://mublin.com/img/projects/avatar-undefined.jpg'} height='85' rounded />
                                                 )}
-                                                <h5 class="ui header mt-2 mb-0">
+                                                <h5 className="ui header mt-2 mb-0">
                                                     {projeto.name}
-                                                    <div class="sub header mt-1">{projeto.ptname}</div>
+                                                    <div className="sub header mt-1">{projeto.ptname}</div>
                                                 </h5>
-                                                <div class="mt-2" style={{fontWeight: '400',fontSize: '11px', color: 'black', opacity: '0.8'}}>
+                                                <div className="mt-2" style={{fontWeight: '400',fontSize: '11px', color: 'black', opacity: '0.8'}}>
                                                     <Icon name={projeto.workIcon} /> {projeto.workTitle}
                                                 </div>
                                             </a>
                                         </div>
                                     )}
-                                </Slider>
+                                </Flickity>
                             </Tab.Pane>,
                         },
                         {
@@ -110,64 +129,70 @@ function HomePage () {
                             </Menu.Item>
                             ),
                         render: () => 
-                            <Tab.Pane attached={false} as='false'>
-                                <Slider options={sliderOptions}>
-                                    <div class="carousel-cell pt-2" style={{textAlign: 'center'}}>
-                                        <a href="/project/new/" class="circular ui icon massive button">
-                                            <i class="fas fa-plus fa-fw"></i>
+                            <Tab.Pane attached={false} as="div">
+                                <Flickity
+                                    className={'carousel'} // default ''
+                                    elementType={'div'} // default 'div'
+                                    options={sliderOptions} // takes flickity options {}
+                                    disableImagesLoaded={false} // default false
+                                    reloadOnUpdate // default false
+                                >
+                                    <div className="carousel-cell pt-2" style={{textAlign: 'center'}}>
+                                        <a href="/project/new/" className="circular ui icon massive button">
+                                            <i className="fas fa-plus fa-fw"></i>
                                         </a>
                                         <a href="/project/new/">
-                                            <h5 class="ui header mt-2 mb-1">
+                                            <h5 className="ui header mt-2 mb-1">
                                                 Novo
                                             </h5>
                                             <h6 className="mt-0" style={{fontWeight: '400',fontSize: '11px', color: 'black', opacity: '0.8'}}>Criar projeto do zero</h6>
                                         </a>
                                     </div>
-                                    <div class="carousel-cell pt-2" style={{textAlign: 'center'}}>
-                                        <a href="/project/new/?type=idea" class="circular ui icon massive button">
-                                            <i class="far fa-lightbulb fa-fw"></i>
+                                    <div className="carousel-cell pt-2" style={{textAlign: 'center'}}>
+                                        <a href="/project/new/?type=idea" className="circular ui icon massive button">
+                                            <i className="far fa-lightbulb fa-fw"></i>
                                         </a>
                                         <a href="/project/new/?type=idea">
-                                            <h5 class="ui header mt-2 mb-1">
+                                            <h5 className="ui header mt-2 mb-1">
                                                 Ideia
                                             </h5>
                                             <h6 className="mt-0" style={{fontWeight: '400',fontSize: '11px', color: 'black', opacity: '0.8'}}>Criar uma proposta para atrair outros músicos</h6>
                                         </a>
                                     </div>
-                                    <div class="carousel-cell pt-2" style={{textAlign: 'center'}}>
-                                        <a href="/project/new/?type=join" class="circular ui icon massive button">
-                                            <i class="fas fa-user-plus fa-fw"></i>
+                                    <div className="carousel-cell pt-2" style={{textAlign: 'center'}}>
+                                        <a href="/project/new/?type=join" className="circular ui icon massive button">
+                                            <i className="fas fa-user-plus fa-fw"></i>
                                         </a>
                                         <a href="/project/new/?type=join">
-                                            <h5 class="ui header mt-2 mb-1">
+                                            <h5 className="ui header mt-2 mb-1">
                                                 Ingressar
                                             </h5>
                                             <h6 className="mt-0" style={{fontWeight: '400',fontSize: '11px', color: 'black', opacity: '0.8'}}>Entrar em um projeto já cadastrado</h6>
                                         </a>
                                     </div>
-                                    <div class="carousel-cell pt-2" style={{textAlign: 'center'}}>
-                                        <a href="/invite" class="circular ui icon massive button">
-                                            <i class="fas fa-envelope-open-text fa-fw"></i>
+                                    <div className="carousel-cell pt-2" style={{textAlign: 'center'}}>
+                                        <a href="/invite" className="circular ui icon massive button">
+                                            <i className="fas fa-envelope-open-text fa-fw"></i>
                                         </a>
                                         <a href="/invite">
-                                            <h5 class="ui header mt-2 mb-1">
+                                            <h5 className="ui header mt-2 mb-1">
                                                 Convidar
                                             </h5>
                                             <h6 className="mt-0" style={{fontWeight: '400',fontSize: '11px', color: 'black', opacity: '0.8'}}>Convidar alguém para um projeto que você faz parte</h6>
                                         </a>
                                     </div>
-                                    <div class="carousel-cell pt-2" style={{textAlign: 'center'}}>
-                                        <a href="/search?type=projects&status=hiring" class="circular ui icon massive button">
-                                            <i class="fas fa-crosshairs fa-fw"></i>
+                                    <div className="carousel-cell pt-2" style={{textAlign: 'center'}}>
+                                        <a href="/search?type=projects&status=hiring" className="circular ui icon massive button">
+                                            <i className="fas fa-crosshairs fa-fw"></i>
                                         </a>
                                         <a href="/search?type=projects&status=hiring">
-                                            <h5 class="ui header mt-2 mb-1">
+                                            <h5 className="ui header mt-2 mb-1">
                                                 Buscar
                                             </h5>
                                             <h6 className="mt-0" style={{fontWeight: '400',fontSize: '11px', color: 'black', opacity: '0.8'}}>Encontrar projetos à procura de músicos</h6>
                                         </a>
                                     </div>
-                                </Slider>
+                                </Flickity>
                             </Tab.Pane>,
                         },
                     ]
@@ -191,18 +216,18 @@ function HomePage () {
                                         </Header>
                                     ) : (
                                         <>
-                                        <h4 class="ui sub header mt-1 mb-3">Próximos</h4>
+                                        <h4 className="ui sub header mt-1 mb-3">Próximos</h4>
                                         <List relaxed>
                                         {rehearsalEvents.map((evento, key) =>
-                                            <List.Item>
-                                                <Label as='a' ribbon='left' size='mini'>
+                                            <List.Item key={key}>
+                                                <Label as='a' size='mini'>
                                                     Criado por {evento.uname}
                                                 </Label>
                                                 <div className={'item mb-1 '+evento.eid}>
-                                                    <div class="content py-1">
+                                                    <div className="content py-1">
                                                         <a href={'/events/?id='+evento.eid}>
                                                             <Image className="left floated mr-2" src={'https://mublin.com/img/projects/'+evento.pid+'/'+evento.picture} width='35' height='35' rounded  />
-                                                            <Header as='h6'>com {evento.pname}</Header>
+                                                            <Header as='h6'>{evento.title_ptbr} com {evento.pname}</Header>
                                                             <div className="meta mb-2 pt-1 pt-md-0" style={{fontSize: '0.875rem', color: 'grey'}}>
                                                                 <span className='mr-2'>{moment(evento.date_opening, 'YYYY-MM-DD').format('DD/MM/YYYY')} às {moment(evento.hour_opening, 'HH:mm:ss').format('HH:mm')}</span> 
                                                                 {evento.method === 1 ? (
@@ -229,11 +254,11 @@ function HomePage () {
                                                             1:
                                                             <><Label as='a' basic color='green' size='tiny'>
                                                                 Você confirmou participação
-                                                            </Label> <a style={{fontSize: 'smaller'}}>Desfazer</a></>,
+                                                            </Label> <span style={{fontSize: 'smaller'}}>Desfazer</span></>,
                                                             0:
                                                                 <><Label as='a' basic color='red' size='tiny'>
                                                                     Você informou que não poderá participar
-                                                                </Label> <a style={{fontSize: 'smaller'}}>Desfazer</a></>
+                                                                </Label> <span style={{fontSize: 'smaller'}}>Desfazer</span></>
                                                         }[evento.presence_confirmed]}
                                                     </div>
                                                 </div>
@@ -245,12 +270,12 @@ function HomePage () {
                                 </Card.Description>
                             </Card.Content>
                             <Card.Content extra style={{fontSize: 'smaller'}}>
-                                <a>
+                                <Link to={{ pathname: '/tbd' }}>
                                     <Icon name='bars' /> Ver todos os meus ensaios
-                                </a>
-                                <a className="ml-3">
+                                </Link>
+                                <Link className="ml-3" to={{ pathname: '/tbd' }}>
                                     <Icon name='plus' /> Novo ensaio
-                                </a>
+                                </Link>
                             </Card.Content>
                         </Card>
                     </Grid.Column>
@@ -268,18 +293,18 @@ function HomePage () {
                                         </Header>
                                     ) : (
                                         <>
-                                        <h4 class="ui sub header mt-1 mb-3">Próximos</h4>
+                                        <h4 className="ui sub header mt-1 mb-3">Próximos</h4>
                                         <List relaxed>
                                         {showsEvents.map((evento, key) =>
-                                            <List.Item>
-                                                <Label as='a' ribbon='left' size='mini'>
+                                            <List.Item key={key}>
+                                                <Label as='a' size='mini'>
                                                     Criado por {evento.uname}
                                                 </Label>
                                                 <div className={'item mb-1 '+evento.eid}>
-                                                    <div class="content py-1">
+                                                    <div className="content py-1">
                                                         <a href={'/events/?id='+evento.eid}>
                                                             <Image className="left floated mr-2" src={'https://mublin.com/img/projects/'+evento.pid+'/'+evento.picture} width='35' height='35' rounded  />
-                                                            <Header as='h6'>com {evento.pname}</Header>
+                                                            <Header as='h6'>{evento.title_ptbr} com {evento.pname}</Header>
                                                             <div className="meta mb-2 pt-1 pt-md-0" style={{fontSize: '0.875rem', color: 'grey'}}>
                                                                 <span className='mr-2'>{moment(evento.date_opening, 'YYYY-MM-DD').format('DD/MM/YYYY')} às {moment(evento.hour_opening, 'HH:mm:ss').format('HH:mm')}</span> 
                                                                 {evento.method === 1 ? (
@@ -322,12 +347,12 @@ function HomePage () {
                                 </Card.Description>
                             </Card.Content>
                             <Card.Content extra style={{fontSize: 'smaller'}}>
-                                <a>
+                                <Link to={{ pathname: '/tbd' }}>
                                     <Icon name='bars' /> Ver todos os meus eventos
-                                </a>
-                                <a className="ml-3">
+                                </Link>
+                                <Link className="ml-3" to={{ pathname: '/tbd' }}>
                                     <Icon name='plus' /> Novo evento
-                                </a>
+                                </Link>
                             </Card.Content>
                         </Card>
                     </Grid.Column>
@@ -345,18 +370,18 @@ function HomePage () {
                                         </Header>
                                     ) : (
                                         <>
-                                        <h4 class="ui sub header mt-1 mb-3">Próximos</h4>
+                                        <h4 className="ui sub header mt-1 mb-3">Próximos</h4>
                                         <List relaxed>
                                         {recordingEvents.map((evento, key) =>
-                                            <List.Item>
-                                                <Label as='a' ribbon='left' size='mini'>
+                                            <List.Item key={key}>
+                                                <Label as='a' size='mini'>
                                                     Criado por {evento.uname}
                                                 </Label>
                                                 <div className={'item mb-1 '+evento.eid}>
-                                                    <div class="content py-1">
-                                                        <a href={'/events/?id='+evento.eid}>
+                                                    <div className="content py-1">
+                                                        <Link to={{ pathname: '/events/?id='+evento.eid }}>
                                                             <Image className="left floated mr-2" src={'https://mublin.com/img/projects/'+evento.pid+'/'+evento.picture} width='35' height='35' rounded  />
-                                                            <Header as='h6'>com {evento.pname}</Header>
+                                                            <Header as='h6'>{evento.title_ptbr} com {evento.pname}</Header>
                                                             <div className="meta mb-2 pt-1 pt-md-0" style={{fontSize: '0.875rem', color: 'grey'}}>
                                                                 <span className='mr-2'>{moment(evento.date_opening, 'YYYY-MM-DD').format('DD/MM/YYYY')} às {moment(evento.hour_opening, 'HH:mm:ss').format('HH:mm')}</span> 
                                                                 {evento.method === 1 ? (
@@ -366,7 +391,7 @@ function HomePage () {
                                                                 )}
                                                             </div>
                                                             <h5 className="header pt-1">{evento.title}</h5>
-                                                        </a>
+                                                        </Link>
                                                         <div className="description mb-1" style={{fontSize: 'smaller'}}>
                                                             {evento.description}
                                                         </div>
@@ -383,11 +408,11 @@ function HomePage () {
                                                             1:
                                                             <><Label as='a' basic color='green' size='tiny'>
                                                                 Você confirmou participação
-                                                            </Label> <a style={{fontSize: 'smaller'}}>Desfazer</a></>,
+                                                            </Label> <span style={{fontSize: 'smaller'}}>Desfazer</span></>,
                                                             0:
                                                                 <><Label as='a' basic color='red' size='tiny'>
                                                                     Você informou que não poderá participar
-                                                                </Label> <a style={{fontSize: 'smaller'}}>Desfazer</a></>
+                                                                </Label> <span style={{fontSize: 'smaller'}}>Desfazer</span></>
                                                         }[evento.presence_confirmed]}
                                                     </div>
                                                 </div>
@@ -399,18 +424,17 @@ function HomePage () {
                                 </Card.Description>
                             </Card.Content>
                             <Card.Content extra style={{fontSize: 'smaller'}}>
-                                <a>
+                                <Link to={{ pathname: "/tbd" }}>
                                     <Icon name='bars' /> Ver todas as gravações
-                                </a>
-                                <a className="ml-3">
+                                </Link>
+                                <Link className="ml-3" to={{ pathname: "/tbd" }}>
                                     <Icon name='microphone' /> Nova gravação
-                                </a>
+                                </Link>
                             </Card.Content>
                         </Card>
                     </Grid.Column>
                 </Grid.Row>
             </Grid>
-
         </main>
         </>
     );

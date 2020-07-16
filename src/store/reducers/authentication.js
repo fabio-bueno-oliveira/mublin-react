@@ -20,7 +20,7 @@ export function authentication(state = initialState, action) {
       return {
         ...state,
         loggingIn: false,
-        error: "O login falhou"
+        error: 'O login falhou'
       };
     case authenticationTypes.LOGOUT:
       return {};

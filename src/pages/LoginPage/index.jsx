@@ -4,9 +4,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { userActions } from '../../store/actions/authentication';
 import { Formik } from 'formik';
 import ValidateUtils from '../../utils/ValidateUtils';
-import { Button, Input, Header, Form, Checkbox } from 'semantic-ui-react';
+import { Button, Input, Header, Form, Message } from 'semantic-ui-react';
 import logo from '../../assets/img/logos/logo-mublin-circle-black.png';
-import Alert from '../../components/alert';
 import Loader from 'react-loader-spinner';
 import "react-loader-spinner/dist/loader/css/react-spinner-loader.css";
 
@@ -41,27 +40,18 @@ function LoginPage (props) {
 
     return (
         <>
-        { loading && 
+        { (loading && !error) && 
             <Loader
                 className="appLoadingIcon"
                 type="Audio"
                 color="#ff0032"
                 height={100}
                 width={100}
-                // timeout={300} //3 secs
+                timeout={10000} //10 secs
             />
         }
         <main className="loginPage ui middle aligned center aligned grid m-0">
             <div className="column">
-                {props.cantLogin && 
-                    <Alert 
-                        className="alertWrapper"
-                        type="error"
-                        title="Ops, email ou senha incorretos"
-                        text="Verifique os dados e tente novamente."
-                    />
-                }
-                <p>{error}</p>
                 <Header as='h2'>
                     <div className="content">
                         <Link to={{ pathname: "/", state: { fromLogin: true } }}>
@@ -70,6 +60,12 @@ function LoginPage (props) {
                     </div>
                 </Header>
                 <Header as='h2' className='mt-0'>Iniciar Sessão</Header>
+                {error && 
+                    <Message negative>
+                        <Message.Header>{error}</Message.Header>
+                        <p>Verifique os dados e tente novamente</p>
+                    </Message>
+                }
                 <div className="ui segment">
                     <Formik
                         initialValues={{ email: '', password: '' }}
@@ -108,6 +104,7 @@ function LoginPage (props) {
                                             name="email" 
                                             control={Input}
                                             label='Email'
+                                            autofocus='autofocus'
                                             onChange={e => {
                                                 handleChange(e);
                                             }}

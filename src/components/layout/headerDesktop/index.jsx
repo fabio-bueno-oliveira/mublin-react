@@ -51,10 +51,10 @@ const HeaderDesktop = () => {
         <HeaderWrapper>
             <div id="menu-desktop" className="ui fixed inverted menu">
                 <div className="ui container">
-                    <Link className="header item pl-0" to={{ pathname: "/profile" }}>
+                    <Link className="header item pl-0" to={{ pathname: "/home" }}>
                         <img className="logo" src={MublinLogo} alt="Mublin Logo" />
                     </Link>
-                    <Link className="active item" to={{ pathname: "/home" }}>
+                    <Link className={window.location.pathname === "/home" ? "active item" : 'item'} to={{ pathname: "/home" }}>
                         <i className="fas fa-home mr-2"></i> Início
                     </Link>
                     <Link className="item" to={{ pathname: "/feed" }}>
@@ -128,7 +128,7 @@ const HeaderDesktop = () => {
                                 <i className="far fa-envelope"></i> <span className="ui red circular mini label">2</span>
                             </Link>
                 <div className="ui simple dropdown item">
-                  <img className="ui avatar image mr-2" src={'img/'+userInfo.id+'/'+userInfo.picture} /> {userInfo.name}
+                  <img className="ui avatar image mr-2" src={'/img/'+userInfo.id+'/'+userInfo.picture} /> {userInfo.name}
                   {userInfo.payment_plan === 2 && <div className="ui mini blue label">PRO</div> } <i className="dropdown icon"></i>
                   <div className="menu">
                     <a className="item" href="/<?=$row_user_info['username']?>">Meu perfil</a>

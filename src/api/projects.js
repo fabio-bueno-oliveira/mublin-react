@@ -17,18 +17,37 @@ export function authHeader() {
 
 export const projectService = {
     getProjectInfo,
+    getProjectMembers,
+    getProjectOpportunities,
     getUserMainProjects,
     getUserPortfolioProjects,
     logout
 };
 
-function getProjectInfo(id) {
+function getProjectInfo(username) {
     const requestOptions = {
         method: 'GET',
         headers: authHeader()
     };
-    return fetch(`${BASE_URL}/secure/projects/${id}`, requestOptions).then(handleResponse);
+    return fetch(`${BASE_URL}/project/${username}`, requestOptions).then(handleResponse);
 }
+
+function getProjectMembers(username) {
+    const requestOptions = {
+        method: 'GET',
+        headers: authHeader()
+    };
+    return fetch(`${BASE_URL}/project/${username}/members`, requestOptions).then(handleResponse);
+}
+
+function getProjectOpportunities(username) {
+    const requestOptions = {
+        method: 'GET',
+        headers: authHeader()
+    };
+    return fetch(`${BASE_URL}/project/${username}/opportunities`, requestOptions).then(handleResponse);
+}
+
 
 function getUserMainProjects(id) {
     const requestOptions = {

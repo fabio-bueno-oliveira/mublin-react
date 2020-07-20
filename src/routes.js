@@ -2,11 +2,11 @@ import React from 'react';
 import { BrowserRouter, Switch, Route, Redirect } from 'react-router-dom'
 import { history } from './utils/history';
 import { useSelector } from 'react-redux';
-import LandingPage from './containers/LandingPage';
-import LoginPage from './containers/LoginPage';
-import HomePage from './containers/HomePage';
-import ProfilePage from './containers/ProfilePage';
-import ProjectPage from './containers/ProjectPage';
+import LandingPage from './pages/LandingPage';
+import LoginPage from './pages/LoginPage';
+import HomePage from './pages/HomePage';
+import ProfilePage from './pages/ProfilePage';
+import ProjectPage from './pages/ProjectPage';
 
 function Routes () {
 
@@ -30,7 +30,7 @@ function Routes () {
                 <Route path="/login" component={LoginPage} />
                 <PrivateRoute authed={loggedIn} path="/home" component={HomePage} />
                 <PrivateRoute authed={loggedIn} path="/profile" component={ProfilePage} />
-                <PrivateRoute authed={loggedIn} path="/project" component={ProjectPage} />
+                <PrivateRoute authed={loggedIn} path="/project/:username" component={ProjectPage} />
             </Switch>
         </BrowserRouter>
     );

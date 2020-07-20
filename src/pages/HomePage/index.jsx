@@ -65,7 +65,7 @@ function HomePage () {
                                     { !projects.requesting ? (
                                         mainProjects.map((projeto, key) =>
                                             <div className="carousel-cell" key={projeto.id}>
-                                                <a href="/music/projectusername">
+                                                <Link to={{ pathname: '/project/'+projeto.username }}>
                                                     {projeto.picture ? (
                                                         <Image src={'https://mublin.com/img/projects/'+projeto.projectid+'/'+projeto.picture} height='85' rounded />
                                                     ) : (
@@ -78,7 +78,7 @@ function HomePage () {
                                                     <div className="mt-2" style={{fontWeight: '400',fontSize: '11px', color: 'black', opacity: '0.8'}}>
                                                         <Icon name={projeto.workIcon} /> {projeto.workTitle}
                                                     </div>
-                                                </a>
+                                                </Link>
                                             </div>
                                         )
                                     ) : (

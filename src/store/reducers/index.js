@@ -4,6 +4,7 @@ import { search } from './search'
 import { user } from './users';
 import { project } from './project'
 import { projects } from './projects'
+import { profile } from './profile'
 import { events } from './events'
 
 const rootReducer = combineReducers({
@@ -12,6 +13,7 @@ const rootReducer = combineReducers({
   user,
   project,
   projects,
+  profile,
   events
 });
 

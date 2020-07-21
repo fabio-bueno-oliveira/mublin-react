@@ -31,6 +31,7 @@ function Routes () {
                 <PrivateRoute authed={loggedIn} path="/home" component={HomePage} />
                 <PrivateRoute authed={loggedIn} path="/profile" component={ProfilePage} />
                 <PrivateRoute authed={loggedIn} path="/project/:username" component={ProjectPage} />
+                <PrivateRoute authed={loggedIn} path="/:username" component={ProfilePage} />
             </Switch>
         </BrowserRouter>
     );

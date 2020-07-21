@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import HeaderDesktop from '../../components/layout/headerDesktop';
 import { projectsInfos } from '../../store/actions/projects';
 import { eventsInfos } from '../../store/actions/events';
-import { Header, Tab, Card, Grid, List, Image, Icon, Menu, Button, Label } from 'semantic-ui-react';
+import { Header, Tab, Card, Grid, List, Image, Icon, Menu, Button, Label, Popup } from 'semantic-ui-react';
 import Flickity from 'react-flickity-component'
 import moment from 'moment';
 import './styles.scss';
@@ -220,7 +220,7 @@ function HomePage () {
                                         <List relaxed>
                                         {rehearsalEvents.map((evento, key) =>
                                             <List.Item key={key}>
-                                                <Label as='a' size='mini'>
+                                                <Label as='a' size='mini' ribbon>
                                                     Criado por {evento.uname}
                                                 </Label>
                                                 <div className={'item mb-1 '+evento.eid}>
@@ -236,11 +236,8 @@ function HomePage () {
                                                                     <><Icon name='computer' /> <span>Online</span></>
                                                                 )}
                                                             </div>
-                                                            <h5 className="header pt-1">{evento.title}</h5>
+                                                            <Popup inverted content={evento.description} trigger={<h5 className="header pt-1">{evento.title}</h5>} />
                                                         </a>
-                                                        <div className="description mb-1" style={{fontSize: 'smaller'}}>
-                                                            {evento.description}
-                                                        </div>
                                                         <div className="description mb-2 mt-1 mt-md-0" style={{fontSize: 'smaller'}}>
                                                             Será em {evento.city} {evento.plname && '('+evento.plname+')'}
                                                         </div>
@@ -297,7 +294,7 @@ function HomePage () {
                                         <List relaxed>
                                         {showsEvents.map((evento, key) =>
                                             <List.Item key={key}>
-                                                <Label as='a' size='mini'>
+                                                <Label as='a' size='mini' ribbon>
                                                     Criado por {evento.uname}
                                                 </Label>
                                                 <div className={'item mb-1 '+evento.eid}>
@@ -313,11 +310,8 @@ function HomePage () {
                                                                     <><Icon name='computer' /> <span>Online</span></>
                                                                 )}
                                                             </div>
-                                                            <h5 className="header pt-1">{evento.title}</h5>
+                                                            <Popup inverted content={evento.description} trigger={<h5 className="header pt-1">{evento.title}</h5>} />
                                                         </a>
-                                                        <div className="description mb-1" style={{fontSize: 'smaller'}}>
-                                                            {evento.description}
-                                                        </div>
                                                         <div className="description mb-2 mt-1 mt-md-0" style={{fontSize: 'smaller'}}>
                                                             Será em {evento.city} {evento.plname && '('+evento.plname+')'}
                                                         </div>
@@ -374,7 +368,7 @@ function HomePage () {
                                         <List relaxed>
                                         {recordingEvents.map((evento, key) =>
                                             <List.Item key={key}>
-                                                <Label as='a' size='mini'>
+                                                <Label as='a' size='mini' ribbon>
                                                     Criado por {evento.uname}
                                                 </Label>
                                                 <div className={'item mb-1 '+evento.eid}>
@@ -390,11 +384,8 @@ function HomePage () {
                                                                     <><Icon name='computer' /> <span>Online</span></>
                                                                 )}
                                                             </div>
-                                                            <h5 className="header pt-1">{evento.title}</h5>
+                                                            <Popup inverted content={evento.description} trigger={<h5 className="header pt-1">{evento.title}</h5>} />
                                                         </Link>
-                                                        <div className="description mb-1" style={{fontSize: 'smaller'}}>
-                                                            {evento.description}
-                                                        </div>
                                                         <div className="description mb-2 mt-1 mt-md-0" style={{fontSize: 'smaller'}}>
                                                             Será em {evento.city} {evento.plname && '('+evento.plname+')'}
                                                         </div>

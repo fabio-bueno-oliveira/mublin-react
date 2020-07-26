@@ -5,14 +5,14 @@ import { useDispatch, useSelector } from 'react-redux';
 import { userInfos } from '../../../store/actions/users';
 import { searchInfos } from '../../../store/actions/search';
 import { userActions } from '../../../store/actions/authentication';
+import {IKImage
+} from "imagekitio-react";
 import MublinLogo from '../../../assets/img/logos/mublin-logo-text-white.png';
 import HeaderWrapper from './styles';
 
 const HeaderDesktop = () => {
 
     let history = useHistory();
-
-    // const user = useSelector(state => state.authentication.user);
 
     const dispatch = useDispatch();
 
@@ -127,23 +127,27 @@ const HeaderDesktop = () => {
                             <Link className="item" to={{ pathname: "/messages" }}>
                                 <i className="far fa-envelope"></i> <span className="ui red circular mini label">2</span>
                             </Link>
-                <div className="ui simple dropdown item">
-                  <img className="ui avatar image mr-2" src={'/img/'+userInfo.id+'/'+userInfo.picture} /> {userInfo.name}
-                  {userInfo.payment_plan === 2 && <div className="ui mini blue label">PRO</div> } <i className="dropdown icon"></i>
-                  <div className="menu">
-                    <a className="item" href="/<?=$row_user_info['username']?>">Meu perfil</a>
-                    <a className="item settings" href="/settings">Configurações</a>
-                    {/* <!-- Projects Menu goes here (header-global-scripts.php) --> */}
-                    <div className="divider"></div>
-                    <Link className="item" onClick={logout}>
-                        Sair
-                    </Link>
-                  </div>
+                            <div className="ui simple dropdown item">
+                                {/* <img className="ui avatar image mr-2" src={'/img/'+userInfo.id+'/'+userInfo.picture} /> {userInfo.name} */}
+                                <IKImage 
+                                    path={'/users/avatars/'+userInfo.id+'/'+userInfo.picture}
+                                    transformation={[{ "height": "200", "width": "200"}]} 
+                                />
+                                {userInfo.payment_plan === 2 && <div className="ui mini blue label">PRO</div> } <i className="dropdown icon"></i>
+                                <div className="menu">
+                                    <a className="item" href="/<?=$row_user_info['username']?>">Meu perfil</a>
+                                    <a className="item settings" href="/settings">Configurações</a>
+                                    {/* <!-- Projects Menu goes here (header-global-scripts.php) --> */}
+                                    <div className="divider"></div>
+                                    <Link className="item" onClick={logout}>
+                                        Sair
+                                    </Link>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-              </div>
-            </div>
-          </div>
-        </HeaderWrapper>
+            </HeaderWrapper>
         </>
     );
 };

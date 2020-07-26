@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
-import HeaderDesktop from '../../components/layout/headerDesktop';
-import { profileInfos } from '../../store/actions/profile';
+import HeaderDesktop from '../../../components/layout/headerDesktop';
+import { profileInfos } from '../../../store/actions/profile';
 import { Header, Tab, Card, Grid, List, Image, Icon, Menu, Button, Label, Dimmer, Loader as UiLoader } from 'semantic-ui-react';
 import Flickity from 'react-flickity-component';
 import {IKImage,IKUpload} from "imagekitio-react";

@@ -103,7 +103,7 @@ function ProjectPage (props) {
 
             <Grid id="members" className="container mt-3">
                 <Grid.Column width={16}>
-                    <Header as='h3'>Integrantes</Header>
+                    <Header as="h3" className="mb-2">Integrantes</Header>
                     <Flickity
                         className={'carousel px-1 py-3'} // default ''
                         elementType={'div'} // default 'div'
@@ -111,7 +111,7 @@ function ProjectPage (props) {
                         disableImagesLoaded={false} // default false
                         reloadOnUpdate // default false
                     >
-                        {(opportunities.length > 0 && !project.requesting) && 
+                        {(opportunities[0].rolename && !project.requesting) && 
                             <Card className="my-0 ml-1 mr-3 member-card candidate" href='/' style={{ justifyContent: 'center' }}>
                                 <Card.Content extra className="center aligned" style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
                                     <div class="center aligned ui small header mb-1">

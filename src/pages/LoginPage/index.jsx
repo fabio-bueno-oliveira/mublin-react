@@ -76,7 +76,6 @@ function LoginPage (props) {
                         setLoading(true);
                         setTimeout(() => {
                             setSubmitting(false);
-                            setLoading(true);
                             dispatch(userActions.login(values.email, values.password));
                         }, 400);
                         }}
@@ -147,13 +146,13 @@ function LoginPage (props) {
                                         >
                                             Entrar
                                         </Button>
-                                        <Link to={{ pathname: "/soon", state: { fromLogin: true } }}>
+                                        <Link to={{ pathname: "/soon" }}>
                                             Esqueci minha senha
                                         </Link>
                                     </div>
                                 </div>
                                 <div className="middle aligned column">
-                                    <Link to={{ pathname: "/soon", state: { fromLogin: true } }}>
+                                    <Link to={{ pathname: "/signup" }}>
                                         <Button size="big" primary>Inscrever-se grátis</Button>
                                     </Link>
                                 </div>

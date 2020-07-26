@@ -14,7 +14,7 @@ function LandingPage () {
                         <Link to={{ pathname: "/login", state: { fromLandingPage: true } }}>
                             <Button inverted color='white' size='medium' className="mr-2">Entrar</Button>
                         </Link>
-                        <Link to={{ pathname: "/soon", state: { fromLandingPage: true } }}>
+                        <Link to={{ pathname: "/signup", state: { fromLandingPage: true } }}>
                             <Button inverted color='blue' size='medium'>Cadastre-se grátis</Button>
                         </Link>
                     </div>

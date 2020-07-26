@@ -17,8 +17,8 @@ function HomePage () {
 
     useEffect(() => {
         dispatch(projectsInfos.getUserMainProjects(user.id));
-        dispatch(projectsInfos.getUserPortfolioProjects(user.id))
-        dispatch(eventsInfos.getUserEvents(user.id))
+        dispatch(projectsInfos.getUserPortfolioProjects(user.id));
+        dispatch(eventsInfos.getUserEvents(user.id));
     }, []);
 
     const projects = useSelector(state => state.projects);
@@ -200,7 +200,7 @@ function HomePage () {
                 />
             </section>
 
-            <Grid id="cards" divided='vertically' className='ui container mt-1 mt-md-2 mb-5 mb-md-0 pb-5 pb-md-0'>
+            <Grid id="events" divided='vertically' className='ui container mt-1 mt-md-2 mb-5 mb-md-0 pb-5 pb-md-0'>
                 <Grid.Row columns={3}>
                     <Grid.Column>
                         <Card style={{width: '100%'}}>
@@ -220,7 +220,7 @@ function HomePage () {
                                         <List relaxed>
                                         {rehearsalEvents.map((evento, key) =>
                                             <List.Item key={key}>
-                                                <Label as='a' size='mini' ribbon>
+                                                <Label as='span' size='mini' ribbon className="mb-1">
                                                     Criado por {evento.uname}
                                                 </Label>
                                                 <div className={'item mb-1 '+evento.eid}>
@@ -231,7 +231,7 @@ function HomePage () {
                                                             <div className="meta mb-2 pt-1 pt-md-0" style={{fontSize: '0.875rem', color: 'grey'}}>
                                                                 <span className='mr-2'>{moment(evento.date_opening, 'YYYY-MM-DD').format('DD/MM/YYYY')} às {moment(evento.hour_opening, 'HH:mm:ss').format('HH:mm')}</span> 
                                                                 {evento.method === 1 ? (
-                                                                    <><Icon name='street view' className='mr-0 ml-2' /> <span>Presencial</span></>
+                                                                    <><Icon name='street view' /> <span>Presencial</span></>
                                                                 ) : (
                                                                     <><Icon name='computer' /> <span>Online</span></>
                                                                 )}
@@ -294,7 +294,7 @@ function HomePage () {
                                         <List relaxed>
                                         {showsEvents.map((evento, key) =>
                                             <List.Item key={key}>
-                                                <Label as='a' size='mini' ribbon>
+                                                <Label as="span" size="mini" ribbon className="mb-1">
                                                     Criado por {evento.uname}
                                                 </Label>
                                                 <div className={'item mb-1 '+evento.eid}>
@@ -325,7 +325,7 @@ function HomePage () {
                                                             1:
                                                             <><Label as='a' basic color='green' size='tiny'>
                                                                 Você confirmou participação
-                                                            </Label> <a style={{fontSize: 'smaller'}}>Desfazer</a></>,
+                                                            </Label> <Label size="tiny">Desfazer</Label></>,
                                                             0:
                                                                 <><Label as='a' basic color='red' size='tiny'>
                                                                     Você informou que não poderá participar
@@ -368,7 +368,7 @@ function HomePage () {
                                         <List relaxed>
                                         {recordingEvents.map((evento, key) =>
                                             <List.Item key={key}>
-                                                <Label as='a' size='mini' ribbon>
+                                                <Label as='span' size='mini' ribbon className="mb-1">
                                                     Criado por {evento.uname}
                                                 </Label>
                                                 <div className={'item mb-1 '+evento.eid}>

@@ -1,0 +1,44 @@
+main.signupPage {
+  background-image: url('https://ik.imagekit.io/mublin/hero/male-singer_wDoBBq5LZ.jpg');
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
+  min-height: 100%;
+  padding: 16px 0 0 0;
+  display: flex;
+  align-items: center;
+
+  header {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+
+    h1 {
+      color: #FFF;
+      font-family: 'Baloo';
+      font-size: 32px;
+    }
+
+    .action {
+      padding: 8px 0 0 0;
+
+    }
+  }
+
+  section#cta {
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin: 240px 0 0 0;
+    width: 100%;
+
+    h2 {
+      color: #FFF;
+      font-family: 'Poppins', sans-serif;
+      font-size: 22px;
+      font-weight: 400;
+      margin: 0 0 26px 0;
+    }
+  }
+}

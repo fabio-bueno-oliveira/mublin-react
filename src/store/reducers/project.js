@@ -129,7 +129,16 @@ export function project(state = initialState, action) {
       return {
         ...state,
         requesting: false,
-        error: "A solicitação falhou"
+        opportunities: [
+          {
+            created: '',
+            rolename: '',
+            info: '',
+            experienceLevel: '',
+            experienceName: ''
+          }
+        ],
+        //error: "A solicitação falhou"
       };
     default:
       return state

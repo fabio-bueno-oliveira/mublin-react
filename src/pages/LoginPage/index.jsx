@@ -13,6 +13,9 @@ import './styles.scss';
 
 function LoginPage (props) {
 
+    const query = new URLSearchParams(props.location.search);
+    const urlInfo = query.get('info')
+
     const [loading, setLoading] = useState(false);
     const error = useSelector(state => state.authentication.error);
     const dispatch = useDispatch();
@@ -52,6 +55,19 @@ function LoginPage (props) {
         }
         <main className="loginPage ui middle aligned center aligned grid m-0">
             <div className="column">
+                { urlInfo === "firstAccess" &&
+                    <Message
+                        success
+                        header='Cadastro efetuado com sucesso!'
+                        content='Para acessar, digite abaixo os dados de login'
+                    />
+                }
+                {error && 
+                    <Message negative>
+                        <Message.Header>{error}</Message.Header>
+                        <p>Verifique os dados e tente novamente</p>
+                    </Message>
+                }
                 <Header as='h2'>
                     <div className="content">
                         <Link to={{ pathname: "/", state: { fromLogin: true } }}>
@@ -60,12 +76,6 @@ function LoginPage (props) {
                     </div>
                 </Header>
                 <Header as='h2' className='mt-0'>Iniciar Sessão</Header>
-                {error && 
-                    <Message negative>
-                        <Message.Header>{error}</Message.Header>
-                        <p>Verifique os dados e tente novamente</p>
-                    </Message>
-                }
                 <div className="ui segment">
                     <Formik
                         initialValues={{ email: '', password: '' }}

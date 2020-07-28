@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useHistory, Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { usernameCheckInfos } from '../../store/actions/usernameCheck';
 import { emailCheckInfos } from '../../store/actions/emailCheck';
@@ -9,6 +10,8 @@ import Loader from 'react-loader-spinner';
 import './styles.scss'
 
 function LandingPage () {
+
+    let history = useHistory();
 
     const dispatch = useDispatch();
 
@@ -25,22 +28,21 @@ function LandingPage () {
 
     const [isLoading, setIsLoading] = useState(false);
 
-    // const checkUsername = (username) => {
-    //     fetch("https://mublin.herokuapp.com/check/username/"+username)
-    //     .then(res => res.json())
-    //     .then(
-    //         (result) => {
-    //             if (result.message === "Username "+username+" is available.") {
-    //                 setUsernameIsAvailable(true)
-    //             } else {
-    //                 setUsernameIsAvailable(false)
-    //             }
-    //         },
-    //         (error) => {
-    //             console.log("error checking username")
-    //         }
-    //     )
-    // }
+    const submitForm = (values) => {
+        fetch('https://mublin.herokuapp.com/user/create/', {
+            method: 'post',
+            headers: {
+                'Accept': 'application/json, text/plain, */*',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({name: values.name, lastname: values.lastname, email: values.email, username: values.username, password: values.password})
+        })
+        .then(res => res.json())
+        // .then(res => localStorage.setItem('user', JSON.stringify(res)))
+        .then(
+            history.push("/login?info=firstAccess")
+        )
+    }
 
     const validate = values => {
         const errors = {};
@@ -94,7 +96,7 @@ function LandingPage () {
             <div className="ui container" style={{ height: '100%' }}>
                 <Grid centered columns={2} verticalAlign='middle'>
                     <Grid.Column>
-                        <Segment>
+                        <Segment attached='top'>
                             <Header as='h2' className="mb-4">
                                 <Image
                                     src='https://mublin.com/img/logo-mublin-circle-black.png'
@@ -113,8 +115,8 @@ function LandingPage () {
                                     lastname: '',
                                     email: '', 
                                     username: '',
-                                    password: '',
-                                    rePassword: ''
+                                    password: ''
+                                    //rePassword: ''
                                 }}
                                 validate={validate}
                                 validateOnMount={true}
@@ -124,6 +126,7 @@ function LandingPage () {
                                 setTimeout(() => {
                                     setSubmitting(false);
                                     //dispatch(userActions.login(values.email, values.password));
+                                    submitForm(values)
                                 }, 400);
                                 }}
                             >
@@ -278,6 +281,11 @@ function LandingPage () {
                                 </Form>
                             )}
                             </Formik>
+                        </Segment>
+                        <Segment attached='bottom' textAlign='center'>
+                            <Link to={{ pathname: "/login" }}>
+                                Já tem uma conta? Clique aqui para entrar
+                            </Link>
                         </Segment>
                     </Grid.Column>
                 </Grid>

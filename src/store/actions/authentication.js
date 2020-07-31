@@ -21,8 +21,30 @@ function login(email, password) {
             .then(
                 user => { 
                     dispatch(success(user));
-                    history.push('/home');
-                    window.location.href = window.location.href;
+                    switch (user.firstAccess) {
+                        case 0:
+                            history.push('/home');
+                            window.location.href = window.location.href;
+                            break;
+                        case 1:
+                            history.push('/start/intro/');
+                            window.location.href = window.location.href;
+                            break;
+                        case 2:
+                            history.push('/start/step2/');
+                            window.location.href = window.location.href;
+                            break;
+                        case 3:
+                            history.push('/start/step3/');
+                            window.location.href = window.location.href;
+                            break;
+                        case 4:
+                            history.push('/start/step4/');
+                            window.location.href = window.location.href;
+                            break;
+                        default:
+                            console.log(`Ocorreu um erro ao identificar o primeiro acesso do usuário`);
+                    }
                 },
                 error => {
                     dispatch(failure(error.toString()));

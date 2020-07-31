@@ -151,7 +151,7 @@ function ProfilePage (props) {
                                     // customCoordinates={"10,10,10,10"}
                                     isPrivateFile={false}
                                     useUniqueFileName={false}
-                                    folder={"/users/avatars/"+user.id+"/"}
+                                    folder={"/users/avatars/1/"}
                                     onError={onError}
                                     onSuccess={onSuccess}
                                     onChange={() => SetIsLoading(true)}
@@ -163,7 +163,7 @@ function ProfilePage (props) {
                                     "fo-face": true
                                 }]} />
 
-                                <IKImage path={"/users/avatars/"+user.id+"/"+user.picture} transformation={[{
+                                <IKImage path={"/users/avatars/1/"+user.picture} transformation={[{
                                     "height": "300",
                                     "width": "300",
                                     "effectUSM": 1,

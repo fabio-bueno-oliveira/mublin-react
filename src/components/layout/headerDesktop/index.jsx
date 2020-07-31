@@ -16,7 +16,6 @@ const HeaderDesktop = () => {
 
     const dispatch = useDispatch();
 
-    // reset login status
     useEffect(() => { 
         dispatch(userInfos.getInfo());
     }, []);

@@ -50,7 +50,7 @@ function LoginPage (props) {
                 color="#ff0032"
                 height={100}
                 width={100}
-                timeout={10000} //10 secs
+                timeout={30000} //30 secs
             />
         }
         <main className="loginPage ui middle aligned center aligned grid m-0">
@@ -113,7 +113,7 @@ function LoginPage (props) {
                                             name="email" 
                                             control={Input}
                                             label='Email'
-                                            autofocus='autofocus'
+                                            autoFocus='autofocus'
                                             onChange={e => {
                                                 handleChange(e);
                                             }}

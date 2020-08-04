@@ -15,49 +15,26 @@ export function authHeader() {
     }
 }
 
-export const userService = {
-    getInfo,
-    getInfoById,
-    getUserGenreInfoById,
-    update,
+export const miscService = {
+    getAllMusicGenres,
+    getAllRoles,
     logout
 };
 
-function getInfo() {
-  const requestOptions = {
-      method: 'GET',
-      headers: authHeader()
-  };
-
-  return fetch(`${BASE_URL}/userinfo`, requestOptions).then(handleResponse);
-}
-
-function getInfoById(id) {
+function getAllMusicGenres() {
     const requestOptions = {
         method: 'GET',
         headers: authHeader()
     };
-
-    return fetch(`${BASE_URL}/user/${id}`, requestOptions).then(handleResponse);
+    return fetch(`${BASE_URL}/music/genres`, requestOptions).then(handleResponse);
 }
 
-function getUserGenreInfoById(id) {
+function getAllRoles() {
     const requestOptions = {
         method: 'GET',
         headers: authHeader()
     };
-
-    return fetch(`${BASE_URL}/userInfo/${id}/genres`, requestOptions).then(handleResponse);
-}
-
-function update(user) {
-    const requestOptions = {
-        method: 'PUT',
-        headers: { ...authHeader(), 'Content-Type': 'application/json' },
-        body: JSON.stringify(user)
-    };
-
-    return fetch(`${BASE_URL}/users/${user.id}`, requestOptions).then(handleResponse);;
+    return fetch(`${BASE_URL}/music/roles`, requestOptions).then(handleResponse);
 }
 
 function logout() {
@@ -73,9 +50,6 @@ function handleResponse(response) {
             if (response.status === 401) {
                 // auto logout if 401 response returned from api
                 logout();
-                // location.reload(true);
-                // window.reload(true)
-                // window.location.href = window.location.href;
                 history.push('/');
                 window.location.href = window.location.href;
             }

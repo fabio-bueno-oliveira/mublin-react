@@ -2,8 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { userInfos } from '../../../store/actions/users';
 import { useHistory, Link } from 'react-router-dom';
-import { Progress, Button, Header, Grid, Image, Segment, Form,  Dropdown, Select, Label } from 'semantic-ui-react';
-import Loader from 'react-loader-spinner';
+import { Progress, Button, Header, Grid, Image, Segment, Form,  Dropdown, Select, Label, Dimmer, Loader } from 'semantic-ui-react';
 import '../styles.scss'
 
 function StartStep2Page () {
@@ -11,12 +10,6 @@ function StartStep2Page () {
     let history = useHistory();
 
     document.title = "Passo 2 de 4";
-
-    const genderOptions = [
-        { key: 'm', text: 'Homem', value: 'm' },
-        { key: 'f', text: 'Mulher', value: 'f' },
-        { key: 'o', text: 'Não informar', value: 'n' }
-    ]
     
     const countryOptions = [
         { key: 'br', text: 'Brasil', value: '27' },
@@ -62,18 +55,25 @@ function StartStep2Page () {
 
     const userInfo = useSelector(state => state.user);
 
-    const [isLoading, setIsLoading] = useState(false)
-
+    const [maxLengthReached, setMaxLengthReached] = useState(false)
     const [items, setItems] = useState([]);
 
     // form fields
-    const [gender, setGender] = useState('')
-    const [bio, setBio] = useState('')
+    const [gender, setGender] = useState(userInfo.gender)
+    const [bio, setBio] = useState(userInfo.bio)
     const [id_country_fk, setId_country_fk] = useState('')
     const [id_region_fk, setId_region_fk] = useState('')
     const [id_city_fk, setId_city_fk] = useState('')
 
     const [isValid, setIsValid] = useState(false)
+
+    const checkLength = (value, maxLength) => {
+        if (value.length === maxLength) {
+            setMaxLengthReached(true)
+        } else {
+            setMaxLengthReached(false)
+        }
+    } 
 
     const checkValid = () => {
         if (
@@ -88,8 +88,7 @@ function StartStep2Page () {
         }
     }
 
-    const submitForm = (values) => {
-        setIsLoading(true)
+    const submitForm = () => {
         fetch('https://mublin.herokuapp.com/user/step2', {
             method: 'PUT',
             headers: {
@@ -100,7 +99,7 @@ function StartStep2Page () {
             body: JSON.stringify({userId: userInfo.id, gender: gender, bio: bio, id_country_fk: id_country_fk, id_region_fk: id_region_fk, id_city_fk: id_city_fk})
         })
         .then(res => res.json())
-        .then(() => history.push("/start/step1"))
+        .then(() => history.push("/start/step3"))
     }
 
     const searchCity = (keyword) => {
@@ -120,100 +119,114 @@ function StartStep2Page () {
 
     return (
         <>
-        {isLoading && 
-            <Loader
-                className="appLoadingIcon"
-                type="Audio"
-                color="#ff0032"
-                height={100}
-                width={100}
-                //timeout={10000} //10 secs
-            />
-        }
         <main className="startPage">
             <div className="ui container">
                 <Grid centered columns={1} verticalAlign='middle'>
                     <Grid.Column mobile={16} computer={8}>
-                        <Form>
-                            <Segment basic textAlign='center' attached="top" style={{ border: 'none' }}>
-                                <Image src='https://mublin.com/img/logo-mublin-circle-black.png' size='mini' centered />
-                                <Header as='h1' className="pb-3">
-                                    Passo 2 de 4
-                                    <Header.Subheader>
-                                        Conte um pouco sobre você
-                                    </Header.Subheader>
-                                </Header>
-                                <Progress percent={50} color='green'/>
-                                <Form.Field
-                                    id="gender"
-                                    name="gender"
-                                    control={Select}
-                                    label="Eu sou..."
-                                    options={genderOptions}
-                                    placeholder="Eu sou..."
-                                    onChange={(e, { value }) => setGender(value)}
-                                    onBlur={checkValid}
-                                    value={gender}
-                                />
-                                <Form.TextArea 
-                                    label='Bio' 
-                                    placeholder='Fale resumidamente sobre você (opcional)' 
-                                    maxLength='200'
-                                    id='bio'
-                                    name='bio'
-                                    value={bio}
-                                    onChange={(e, { value }) => setBio(value)}
-                                    // onChange={e => {setBio(e)}}
-                                    onBlur={checkValid}
-                                />
-                                { bio.length === 200 &&
-                                    <Label size="mini" className="mb-3">Tamanho máximo atingido</Label>
-                                }
-                                <Form.Group widths='equal'>
-                                    <Form.Field
-                                        id="id_country_fk"
-                                        name="id_country_fk"
-                                        control={Select}
-                                        label="País"
-                                        options={countryOptions}
-                                        placeholder="País"
-                                        onChange={(e, { value }) => setId_country_fk(value)}
+                        { userInfo.requesting ? ( 
+                            <Dimmer active inverted>
+                                <Loader inverted content='Carregando...' />
+                            </Dimmer>
+                        ) : (
+                            <Form>
+                                <Segment basic textAlign='center' attached="top" style={{ border: 'none' }}>
+                                    <Image src='https://mublin.com/img/logo-mublin-circle-black.png' size='mini' centered />
+                                    <Header as='h1' className="pb-3">
+                                        Passo 2 de 4
+                                        <Header.Subheader>
+                                            Conte um pouco sobre você
+                                        </Header.Subheader>
+                                    </Header>
+                                    <Progress percent={50} color='green'/>
+                                    <Form.Group inline>
+                                        <label>Sou</label>
+                                        <Form.Radio
+                                            name="gender"
+                                            label='Homem'
+                                            value='m'
+                                            checked={gender === 'm'}
+                                            onChange={(e, { value }) => setGender(value)}
+                                        />
+                                        <Form.Radio
+                                            name="gender"
+                                            label='Mulher'
+                                            value='f'
+                                            checked={gender === 'f'}
+                                            onChange={(e, { value }) => setGender(value)}
+                                        />
+                                        <Form.Radio
+                                            name="gender"
+                                            label='Não informar'
+                                            value='n'
+                                            checked={gender === 'n'}
+                                            onChange={(e, { value }) => setGender(value)}
+                                        />
+                                    </Form.Group>
+                                    <Form.TextArea 
+                                        id='bio'
+                                        name='bio'
+                                        label='Bio' 
+                                        placeholder='Fale resumidamente sobre você (opcional)' 
+                                        maxLength='200'
+                                        value={bio}
+                                        onChange={(e, { value }) => {
+                                            setBio(value)
+                                            checkLength(value, 200)
+                                        }}
+                                        // onChange={(e, { value }) => setBio(value)}
+                                        // onChange={e => {setBio(e)}}
                                         onBlur={checkValid}
-                                        value={id_country_fk}
                                     />
-                                    <Form.Field
-                                        id="id_region_fk"
-                                        name="id_region_fk"
-                                        control={Select}
-                                        label="Estado"
-                                        options={regionOptions}
-                                        placeholder="Estado"
-                                        onChange={(e, { value }) => setId_region_fk(value)}
+                                    { maxLengthReached &&
+                                        <Label size="mini" className="mb-3">Tamanho máximo atingido</Label>
+                                    }
+                                    <Form.Group widths='equal'>
+                                        <Form.Field
+                                            id="id_country_fk"
+                                            name="id_country_fk"
+                                            control={Select}
+                                            label="País"
+                                            options={countryOptions}
+                                            placeholder="País"
+                                            onChange={(e, { value }) => setId_country_fk(value)}
+                                            onBlur={checkValid}
+                                            value={id_country_fk}
+                                            search
+                                        />
+                                        <Form.Field
+                                            id="id_region_fk"
+                                            name="id_region_fk"
+                                            control={Select}
+                                            label="Estado"
+                                            defaultValue={id_region_fk}
+                                            options={regionOptions}
+                                            placeholder="Estado"
+                                            onChange={(e, { value }) => setId_region_fk(value)}
+                                            onBlur={checkValid}
+                                            value={id_region_fk}
+                                            search
+                                        />
+                                    </Form.Group>             
+                                    <Dropdown
+                                        id='id_city_fk'
+                                        name='id_city_fk'
+                                        placeholder='Digite e escolha sua cidade'
+                                        fluid
+                                        search
+                                        selection
+                                        options={items}
+                                        onChange={(e, { value }) => setId_city_fk(value)}
+                                        onSearchChange={e => {
+                                            searchCity(e.target.value);
+                                        }}
                                         onBlur={checkValid}
-                                        value={id_region_fk}
+                                        noResultsMessage="Nenhum resultado"
                                     />
-                                </Form.Group>                     
-                                <Dropdown
-                                    id='id_city_fk'
-                                    name='id_city_fk'
-                                    placeholder='Digite e escolha sua cidade'
-                                    fluid
-                                    search
-                                    selection
-                                    options={items}
-                                    onChange={(e, { value }) => setId_city_fk(value)}
-                                    onSearchChange={e => {
-                                        searchCity(e.target.value);
-                                    }}
-                                    onBlur={checkValid}
-                                    noResultsMessage="Nenhum resultado"
-                                />
-                            </Segment>
-                            <Segment basic textAlign='center' attached="bottom" style={{ border: 'none' }}>
-                                <Link to={{ pathname: "/start/step1" }} className="mr-2">
-                                    <Button size="large">Voltar</Button>
-                                </Link>
-                                <Link to={{ pathname: "/start/step2" }}>
+                                </Segment>
+                                <Segment basic textAlign='center' attached="bottom" style={{ border: 'none' }}>
+                                    <Link to={{ pathname: "/start/step1" }} className="mr-2">
+                                        <Button size="large">Voltar</Button>
+                                    </Link>
                                     <Button 
                                         color="black" 
                                         size="large"
@@ -223,9 +236,9 @@ function StartStep2Page () {
                                     >
                                         Avançar
                                     </Button>
-                                </Link>
-                            </Segment>
-                        </Form>
+                                </Segment>
+                            </Form>
+                        )}
                     </Grid.Column>
                 </Grid>
             </div>

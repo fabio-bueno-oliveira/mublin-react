@@ -6,7 +6,8 @@ export const history = createBrowserHistory();
 
 export const userInfos = {
     getInfo: getInfo,
-    getInfoById: getInfoById
+    getInfoById: getInfoById,
+    getUserGenreInfoById: getUserGenreInfoById
     // delete: _delete
 };
 
@@ -40,6 +41,22 @@ function getInfoById(id) {
   function request(id) { return { type: userTypes.GET_USERID_INFO_REQUEST, id } }
   function success(id) { return { type: userTypes.GET_USERID_INFO_SUCCESS, id } }
   function failure(id, error) { return { type: userTypes.GET_USERID_INFO_FAILURE, id, error } }
+}
+
+function getUserGenreInfoById(id) {
+    return dispatch => {
+        dispatch(request(id));
+  
+        userService.getUserGenreInfoById(id)
+            .then(
+                list => dispatch(success(list)),
+                error => dispatch(failure(id, error.toString()))
+            );
+    };
+
+    function request(id) { return { type: userTypes.GET_USER_GENRE_INFO_REQUEST, id } }
+    function success(list) { return { type: userTypes.GET_USER_GENRE_INFO_SUCCESS, list } }
+    function failure(id, error) { return { type: userTypes.GET_USER_GENRE_INFO_FAILURE, id, error } }
 }
 
 // prefixed function name with underscore because delete is a reserved word in javascript

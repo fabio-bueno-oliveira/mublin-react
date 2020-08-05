@@ -9,6 +9,7 @@ import StartIntroPage from './pages/StartPages/Intro';
 import StartStep1Page from './pages/StartPages/Step1';
 import StartStep2Page from './pages/StartPages/Step2';
 import StartStep3Page from './pages/StartPages/Step3';
+import StartStep4Page from './pages/StartPages/Step4';
 import HomePage from './pages/HomePage';
 import ProfilePage from './pages/ProfilePage';
 import ProjectPage from './pages/ProjectPage';
@@ -38,6 +39,7 @@ function Routes () {
                 <PrivateRoute authed={loggedIn} path="/start/step1" component={StartStep1Page} />
                 <PrivateRoute authed={loggedIn} path="/start/step2" component={StartStep2Page} />
                 <PrivateRoute authed={loggedIn} path="/start/step3" component={StartStep3Page} />
+                <PrivateRoute authed={loggedIn} path="/start/step4" component={StartStep4Page} />
                 <PrivateRoute authed={loggedIn} path="/home" component={HomePage} />
                 <PrivateRoute authed={loggedIn} path="/profile" component={ProfilePage} />
                 <PrivateRoute authed={loggedIn} path="/project/:username" component={ProjectPage} />

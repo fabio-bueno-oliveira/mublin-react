@@ -22,7 +22,8 @@ function StartStep3Page () {
 
     useEffect(() => { 
         dispatch(userInfos.getInfo());
-        dispatch(userInfos.getUserGenreInfoById(user.id));
+        dispatch(userInfos.getUserGenresInfoById(user.id));
+        dispatch(userInfos.getUserRolesInfoById(user.id));
         dispatch(miscInfos.getMusicGenres());
         dispatch(miscInfos.getRoles());
     }, []);
@@ -32,7 +33,7 @@ function StartStep3Page () {
     const roles = useSelector(state => state.roles);
 
     const userGenres = userInfo.genres.map((genre, key) =>
-        <Label color="blue" key={genre.idGenre} style={{ fontWeight: 'normal' }}>
+        <Label key={genre.idGenre} style={{ fontWeight: 'normal' }}>
             {genre.name}
             <Icon name='delete' onClick={() => deleteGenre(genre.id)} />
         </Label>
@@ -40,17 +41,26 @@ function StartStep3Page () {
 
     const userSelectedGenres = userInfo.genres.map(item => item.idGenre)
 
+    const userRoles = userInfo.roles.map((role, key) =>
+        <Label key={role.idRole} style={{ fontWeight: 'normal' }}>
+            {role.name}
+            <Icon name='delete' onClick={() => deleteRole(role.id)} />
+        </Label>
+    );
+
+    const userSelectedRoles = userInfo.roles.map(item => item.idRole)
+
     const musicGenresList = musicGenres.list.filter(e => !userSelectedGenres.includes(e.id)).map(genre => ({ 
         text: genre.name,
         value: genre.id,
         key: genre.id
     }));
 
-    const rolesList = useSelector(state => state.roles.list.map(role => ({ 
+    const rolesList = roles.list.filter(e => !userSelectedRoles.includes(e.id)).map(role => ({ 
         text: role.name,
         value: role.id,
         key: role.id
-    })));
+    }));
 
     const addGenre = (musicGenreId) => {
         setIsLoading(true)
@@ -67,7 +77,7 @@ function StartStep3Page () {
                 body: JSON.stringify({userId: user.id, musicGenreId: musicGenreId, musicGenreMain: setMainGenre})
             }).then((response) => {
                 //console.log(response);
-                dispatch(userInfos.getUserGenreInfoById(user.id))
+                dispatch(userInfos.getUserGenresInfoById(user.id))
                 setIsLoading(false)
             }).catch(err => {
                 console.error(err)
@@ -88,7 +98,7 @@ function StartStep3Page () {
             body: JSON.stringify({userId: user.id, userGenreId: userGenreId})
         }).then((response) => {
             //console.log(response);
-            dispatch(userInfos.getUserGenreInfoById(user.id))
+            dispatch(userInfos.getUserGenresInfoById(user.id))
             setIsLoading(false)
         }).catch(err => {
             console.error(err)
@@ -96,22 +106,52 @@ function StartStep3Page () {
         })
     }
 
-    const addRole = (idUser, idRole) => {
-        
+    const addRole = (roleId) => {
+        setIsLoading(true)
+        let setMainRole
+        if (!userInfo.roles[0].idRole) { setMainRole = 1 } else { setMainRole = 0 }
+        setTimeout(() => {
+            fetch('https://mublin.herokuapp.com/user/add/role', {
+                method: 'post',
+                headers: {
+                    'Accept': 'application/json, text/plain, */*',
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + user.token
+                },
+                body: JSON.stringify({userId: user.id, roleId: roleId, roleMain: setMainRole})
+            }).then((response) => {
+                //console.log(response);
+                dispatch(userInfos.getUserRolesInfoById(user.id))
+                setIsLoading(false)
+            }).catch(err => {
+                console.error(err)
+                alert("Ocorreu um erro ao adicionar a atividade")
+            })
+        }, 400);
     }
 
-    const deleteRole = (idUser, idRole) => {
-        
+    const deleteRole = (userRoleId) => {
+        setIsLoading(true)
+        fetch('https://mublin.herokuapp.com/user/delete/role', {
+            method: 'delete',
+            headers: {
+                'Accept': 'application/json, text/plain, */*',
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + user.token
+            },
+            body: JSON.stringify({userId: user.id, userRoleId: userRoleId})
+        }).then((response) => {
+            console.log(response);
+            dispatch(userInfos.getUserRolesInfoById(user.id))
+            setIsLoading(false)
+        }).catch(err => {
+            console.error(err)
+            alert("Ocorreu um erro ao remover o gênero")
+        })
     }
 
-    const checkValid = () => {
-        if (
-            userInfo.genres.length > 0
-        ) {
-            setIsValid(true)
-        } else {
-            setIsValid(false)
-        }
+    const handleSubmit = () => {
+        history.push('/start/step4');
     }
 
     return (
@@ -150,7 +190,6 @@ function StartStep3Page () {
                                     options={musicGenresList}
                                     placeholder="Selecione ou digite"
                                     onChange={(e, { value }) => addGenre(value)}
-                                    onBlur={checkValid}
                                     search
                                 />
                                 {userInfo.genres[0].idGenre && userGenres}
@@ -172,30 +211,29 @@ function StartStep3Page () {
                             </Segment>
                             <Segment basic textAlign='center' className="mt-3">
                                 <Form.Field
-                                    id="genre"
-                                    name="genre"
+                                    id="role"
+                                    name="role"
                                     control={Select}
-                                    label="Quais suas principais atividades na música?"
+                                    label="Quais suas principais atividades/atuações na música?"
                                     options={rolesList}
                                     placeholder="Selecione ou digite"
-                                    // onChange={(e, { value }) => setGenre(value)}
-                                    onBlur={checkValid}
+                                    onChange={(e, { value }) => addRole(value)}
                                     search
                                 />
+                                {userInfo.roles[0].idRole && userRoles}
                             </Segment>
                             <Segment basic textAlign='center' >
                                 <Link to={{ pathname: "/start/step2" }} className="mr-2">
                                     <Button size="large">Voltar</Button>
                                 </Link>
-                                <Link to={{ pathname: "/start/step4" }}>
-                                    <Button 
-                                        color="black" 
-                                        size="large"
-                                        disabled={isValid ? false : true}
-                                    >
-                                        Avançar
-                                    </Button>
-                                </Link>
+                                <Button 
+                                    color="black" 
+                                    size="large"
+                                    disabled={(userInfo.roles[0].idRole && userInfo.genres[0].idGenre) ? false : true}
+                                    onClick={handleSubmit}
+                                >
+                                    Avançar
+                                </Button>
                             </Segment>
                         </Form>
                     </Grid.Column>

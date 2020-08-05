@@ -7,7 +7,8 @@ export const history = createBrowserHistory();
 export const userInfos = {
     getInfo: getInfo,
     getInfoById: getInfoById,
-    getUserGenreInfoById: getUserGenreInfoById
+    getUserGenresInfoById: getUserGenresInfoById,
+    getUserRolesInfoById: getUserRolesInfoById
     // delete: _delete
 };
 
@@ -43,20 +44,36 @@ function getInfoById(id) {
   function failure(id, error) { return { type: userTypes.GET_USERID_INFO_FAILURE, id, error } }
 }
 
-function getUserGenreInfoById(id) {
+function getUserGenresInfoById(id) {
     return dispatch => {
         dispatch(request(id));
   
-        userService.getUserGenreInfoById(id)
+        userService.getUserGenresInfoById(id)
             .then(
                 list => dispatch(success(list)),
                 error => dispatch(failure(id, error.toString()))
             );
     };
 
-    function request(id) { return { type: userTypes.GET_USER_GENRE_INFO_REQUEST, id } }
-    function success(list) { return { type: userTypes.GET_USER_GENRE_INFO_SUCCESS, list } }
-    function failure(id, error) { return { type: userTypes.GET_USER_GENRE_INFO_FAILURE, id, error } }
+    function request(id) { return { type: userTypes.GET_USER_GENRES_INFO_REQUEST, id } }
+    function success(list) { return { type: userTypes.GET_USER_GENRES_INFO_SUCCESS, list } }
+    function failure(id, error) { return { type: userTypes.GET_USER_GENRES_INFO_FAILURE, id, error } }
+}
+
+function getUserRolesInfoById(id) {
+    return dispatch => {
+        dispatch(request(id));
+  
+        userService.getUserRolesInfoById(id)
+            .then(
+                list => dispatch(success(list)),
+                error => dispatch(failure(id, error.toString()))
+            );
+    };
+
+    function request(id) { return { type: userTypes.GET_USER_ROLES_INFO_REQUEST, id } }
+    function success(list) { return { type: userTypes.GET_USER_ROLES_INFO_SUCCESS, list } }
+    function failure(id, error) { return { type: userTypes.GET_USER_ROLES_INFO_FAILURE, id, error } }
 }
 
 // prefixed function name with underscore because delete is a reserved word in javascript

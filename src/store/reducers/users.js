@@ -14,7 +14,7 @@ const initialState = {
   picture: '',
   payment_plan: '',
   roles: [
-    { id: '', name: '', description: '', instrumentalist: '' }
+    { id: '', idRole: '', name: '', description: '', mainActivity: '' }
   ],
   genres: [
     { id: '', idGenre:'', name: '', mainGenre: '' }
@@ -51,25 +51,42 @@ export function user(state = initialState, action) {
         requesting: false,
         error: "A solicitação falhou"
       };
-
-    case userTypes.GET_USER_GENRE_INFO_REQUEST:
+    // get user´s preferred music genres
+    case userTypes.GET_USER_GENRES_INFO_REQUEST:
       return {
         ...state,
         requesting: true
       };
-    case userTypes.GET_USER_GENRE_INFO_SUCCESS:
+    case userTypes.GET_USER_GENRES_INFO_SUCCESS:
       return {
         ...state,
         requesting: false,
         genres: action.list
       };
-    case userTypes.GET_USER_GENRE_INFO_FAILURE:
+    case userTypes.GET_USER_GENRES_INFO_FAILURE:
       return {
         ...state,
         requesting: false,
         error: "A solicitação falhou"
       };
-
+    // get user´s roles musicwise
+    case userTypes.GET_USER_ROLES_INFO_REQUEST:
+      return {
+        ...state,
+        requesting: true
+      };
+    case userTypes.GET_USER_ROLES_INFO_SUCCESS:
+      return {
+        ...state,
+        requesting: false,
+        roles: action.list
+      };
+    case userTypes.GET_USER_ROLES_INFO_FAILURE:
+      return {
+        ...state,
+        requesting: false,
+        error: "A solicitação falhou"
+      };
     default:
       return state
   }

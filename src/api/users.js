@@ -18,7 +18,8 @@ export function authHeader() {
 export const userService = {
     getInfo,
     getInfoById,
-    getUserGenreInfoById,
+    getUserGenresInfoById,
+    getUserRolesInfoById,
     update,
     logout
 };
@@ -41,13 +42,22 @@ function getInfoById(id) {
     return fetch(`${BASE_URL}/user/${id}`, requestOptions).then(handleResponse);
 }
 
-function getUserGenreInfoById(id) {
+function getUserGenresInfoById(id) {
     const requestOptions = {
         method: 'GET',
         headers: authHeader()
     };
 
     return fetch(`${BASE_URL}/userInfo/${id}/genres`, requestOptions).then(handleResponse);
+}
+
+function getUserRolesInfoById(id) {
+    const requestOptions = {
+        method: 'GET',
+        headers: authHeader()
+    };
+
+    return fetch(`${BASE_URL}/userInfo/${id}/roles`, requestOptions).then(handleResponse);
 }
 
 function update(user) {

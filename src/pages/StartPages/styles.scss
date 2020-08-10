@@ -12,4 +12,18 @@ main.startPage {
   .customFileUpload {
     text-align: center;
   }
+
+  .results {
+    .result {
+      .price {
+        display:none;
+      }
+    }
+  }
+
+  .ui.large.fluid.search {
+    .input {
+      width:70%;
+    }
+  }
 }

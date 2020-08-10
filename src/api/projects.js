@@ -21,6 +21,7 @@ export const projectService = {
     getProjectOpportunities,
     getUserMainProjects,
     getUserPortfolioProjects,
+    getUserProjects,
     logout
 };
 
@@ -63,6 +64,14 @@ function getUserPortfolioProjects(id) {
         headers: authHeader()
     };
     return fetch(`${BASE_URL}/secure/projects/user/${id}/portfolio`, requestOptions).then(handleResponse);
+}
+
+function getUserProjects(id) {
+    const requestOptions = {
+        method: 'GET',
+        headers: authHeader()
+    };
+    return fetch(`${BASE_URL}/projects/user/${id}`, requestOptions).then(handleResponse);
 }
 
 function logout() {

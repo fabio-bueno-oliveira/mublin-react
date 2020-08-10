@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { userInfos } from '../../../store/actions/users';
+import { userInfos } from '../../../store/actions/user';
 import { useHistory, Link } from 'react-router-dom';
 import { Progress, Button, Header, Grid, Image, Segment, Form,  Dropdown, Select, Label, Dimmer, Loader } from 'semantic-ui-react';
 import '../styles.scss'
@@ -29,7 +29,7 @@ function StartStep2Page () {
         { key: 'MT', text: 'Mato Grosso', value: '418' },
         { key: 'MS', text: 'Mato Grosso do Sul', value: '399' },
         { key: 'MG', text: 'Minas Gerais', value: '404' },
-        { key: 'PA', text: 'Pará', value: 'Pará' },
+        { key: 'PA', text: 'Pará', value: '408' },
         { key: 'PB', text: 'Paraíba', value: '405' },
         { key: 'PR', text: 'Paraná', value: '413' },
         { key: 'PE', text: 'Pernambuco', value: '417' },
@@ -56,16 +56,23 @@ function StartStep2Page () {
     const userInfo = useSelector(state => state.user);
 
     const [maxLengthReached, setMaxLengthReached] = useState(false)
-    const [items, setItems] = useState([]);
+    const [queryCities, setQueryCities] = useState([]);
 
     // form fields
     const [gender, setGender] = useState(userInfo.gender)
     const [bio, setBio] = useState(userInfo.bio)
-    const [id_country_fk, setId_country_fk] = useState('')
-    const [id_region_fk, setId_region_fk] = useState('')
+    const [id_country_fk, setId_country_fk] = useState(userInfo.country)
+    const [id_region_fk, setId_region_fk] = useState(userInfo.region)
     const [id_city_fk, setId_city_fk] = useState('')
+    // const [isValid, setIsValid] = useState(false)
 
-    const [isValid, setIsValid] = useState(false)
+    const countries = countryOptions.map((country, key) =>
+        <option key={key} value={country.value} selected={userInfo.country == country.value ? "selected" : ""} onChange={() => setId_country_fk(country.value)}>{country.text}</option>
+    );
+
+    const regions = regionOptions.map((region, key) =>
+        <option key={key} value={region.value} selected={userInfo.region == region.value ? "selected" : ""}>{region.text}</option>
+    );
 
     const checkLength = (value, maxLength) => {
         if (value.length === maxLength) {
@@ -75,18 +82,18 @@ function StartStep2Page () {
         }
     } 
 
-    const checkValid = () => {
-        if (
-            gender &&
-            id_country_fk &&
-            id_region_fk &&
-            id_city_fk
-        ) {
-            setIsValid(true)
-        } else {
-            setIsValid(false)
-        }
-    }
+    // const checkValid = () => {
+    //     if (
+    //         gender &&
+    //         id_country_fk &&
+    //         id_region_fk &&
+    //         id_city_fk
+    //     ) {
+    //         setIsValid(true)
+    //     } else {
+    //         setIsValid(false)
+    //     }
+    // }
 
     const submitForm = () => {
         fetch('https://mublin.herokuapp.com/user/step2', {
@@ -103,18 +110,19 @@ function StartStep2Page () {
     }
 
     const searchCity = (keyword) => {
-        fetch('https://mublin.herokuapp.com/search/cities/'+keyword, {
-            method: 'GET'
-        })
-            .then(res => res.json())
-            .then(
-            (result) => {
-                console.log(97, result);
-                setItems(result);
-            },
-            (error) => {
-                //
+        if (keyword.length > 1) {
+            fetch('https://mublin.herokuapp.com/search/cities/'+keyword, {
+                method: 'GET'
             })
+                .then(res => res.json())
+                .then(
+                (result) => {
+                    setQueryCities(result);
+                },
+                (error) => {
+                    //
+                })
+        }
     };
 
     return (
@@ -173,15 +181,12 @@ function StartStep2Page () {
                                             setBio(value)
                                             checkLength(value, 200)
                                         }}
-                                        // onChange={(e, { value }) => setBio(value)}
-                                        // onChange={e => {setBio(e)}}
-                                        onBlur={checkValid}
                                     />
                                     { maxLengthReached &&
                                         <Label size="mini" className="mb-3">Tamanho máximo atingido</Label>
                                     }
                                     <Form.Group widths='equal'>
-                                        <Form.Field
+                                        {/* <Form.Field
                                             id="id_country_fk"
                                             name="id_country_fk"
                                             control={Select}
@@ -192,8 +197,19 @@ function StartStep2Page () {
                                             onBlur={checkValid}
                                             value={id_country_fk}
                                             search
-                                        />
-                                        <Form.Field
+                                        /> */}
+                                        { !userInfo.requesting && 
+                                            <Form.Field
+                                                control='select'
+                                                id="id_country_fk"
+                                                name="id_country_fk"
+                                                label='País' 
+                                                onChange={e => setId_country_fk(e.target.options[e.target.selectedIndex].value)}
+                                            >
+                                                {countries}
+                                            </Form.Field>
+                                        }
+                                        {/* <Form.Field
                                             id="id_region_fk"
                                             name="id_region_fk"
                                             control={Select}
@@ -204,8 +220,20 @@ function StartStep2Page () {
                                             onChange={(e, { value }) => setId_region_fk(value)}
                                             onBlur={checkValid}
                                             value={id_region_fk}
+                                            defaultValue={id_region_fk}
                                             search
-                                        />
+                                        /> */}
+                                        { !userInfo.requesting && 
+                                            <Form.Field
+                                                control='select'
+                                                id="id_region_fk"
+                                                name="id_region_fk"
+                                                label='Estado' 
+                                                onChange={e => setId_region_fk(e.target.options[e.target.selectedIndex].value)}
+                                            >
+                                                {regions}
+                                            </Form.Field>
+                                        }
                                     </Form.Group>             
                                     <Dropdown
                                         id='id_city_fk'
@@ -214,12 +242,11 @@ function StartStep2Page () {
                                         fluid
                                         search
                                         selection
-                                        options={items}
+                                        options={queryCities}
                                         onChange={(e, { value }) => setId_city_fk(value)}
                                         onSearchChange={e => {
                                             searchCity(e.target.value);
                                         }}
-                                        onBlur={checkValid}
                                         noResultsMessage="Nenhum resultado"
                                     />
                                 </Segment>
@@ -231,7 +258,7 @@ function StartStep2Page () {
                                         color="black" 
                                         size="large"
                                         type="submit" 
-                                        disabled={isValid ? false : true}
+                                        disabled={(gender && id_country_fk && id_region_fk && id_city_fk) ? false : true}
                                         onClick={submitForm}
                                     >
                                         Avançar

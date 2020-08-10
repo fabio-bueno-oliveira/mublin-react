@@ -8,7 +8,8 @@ export const userInfos = {
     getInfo: getInfo,
     getInfoById: getInfoById,
     getUserGenresInfoById: getUserGenresInfoById,
-    getUserRolesInfoById: getUserRolesInfoById
+    getUserRolesInfoById: getUserRolesInfoById,
+    getUserProjects: getUserProjects
     // delete: _delete
 };
 
@@ -74,6 +75,22 @@ function getUserRolesInfoById(id) {
     function request(id) { return { type: userTypes.GET_USER_ROLES_INFO_REQUEST, id } }
     function success(list) { return { type: userTypes.GET_USER_ROLES_INFO_SUCCESS, list } }
     function failure(id, error) { return { type: userTypes.GET_USER_ROLES_INFO_FAILURE, id, error } }
+}
+
+function getUserProjects(id) {
+    return dispatch => {
+        dispatch(request(id));
+
+        userService.getUserProjects(id)
+            .then(
+                list => dispatch(success(list)),
+                error => dispatch(failure(id, error.toString()))
+            );
+    };
+
+    function request(id) { return { type: userTypes.GET_USER_PROJECTS_REQUEST, id } }
+    function success(list) { return { type: userTypes.GET_USER_PROJECTS_SUCCESS, list } }
+    function failure(id, error) { return { type: userTypes.GET_USER_PROJECTS_FAILURE, id, error } }
 }
 
 // prefixed function name with underscore because delete is a reserved word in javascript

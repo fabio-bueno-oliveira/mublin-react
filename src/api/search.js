@@ -17,6 +17,7 @@ export function authHeader() {
 
 export const searchService = {
     getSearchResults,
+    getSearchProjectResults,
     logout
 };
 
@@ -26,6 +27,14 @@ function getSearchResults(query) {
         headers: authHeader()
     };
     return fetch(`${BASE_URL}/search/${query}`, requestOptions).then(handleResponse);
+}
+
+function getSearchProjectResults(query) {
+    const requestOptions = {
+        method: 'GET',
+        headers: authHeader()
+    };
+    return fetch(`${BASE_URL}/search/project/${query}`, requestOptions).then(handleResponse);
 }
 
 function logout() {

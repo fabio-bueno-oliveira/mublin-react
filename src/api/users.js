@@ -20,6 +20,7 @@ export const userService = {
     getInfoById,
     getUserGenresInfoById,
     getUserRolesInfoById,
+    getUserProjects,
     update,
     logout
 };
@@ -58,6 +59,15 @@ function getUserRolesInfoById(id) {
     };
 
     return fetch(`${BASE_URL}/userInfo/${id}/roles`, requestOptions).then(handleResponse);
+}
+
+function getUserProjects(id) {
+    const requestOptions = {
+        method: 'GET',
+        headers: authHeader()
+    };
+
+    return fetch(`${BASE_URL}/projects/user/${id}`, requestOptions).then(handleResponse);
 }
 
 function update(user) {

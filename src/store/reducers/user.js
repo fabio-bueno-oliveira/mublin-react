@@ -18,6 +18,32 @@ const initialState = {
   ],
   genres: [
     { id: '', idGenre:'', name: '', mainGenre: '' }
+  ],
+  projects: [
+    {
+      id: '',
+      id_user_fk: '',
+      id_project_fk: '',
+      confirmed: '',
+      status: '',
+      joined_in: '',
+      main_role_fk: '',
+      portfolio: '',
+      created: '',
+      projectid: '',
+      name: '',
+      username:'',
+      type: '',
+      picture: '',
+      ptid: '',
+      ptname: '',
+      pticon: '',
+      workTitle: '',
+      workIcon: '',
+      role1: '',
+      role2: '',
+      role3: '',
+    }
   ]
 }
 
@@ -85,6 +111,50 @@ export function user(state = initialState, action) {
       return {
         ...state,
         requesting: false,
+        error: "A solicitação falhou"
+      };
+    // get user´s projects
+    case userTypes.GET_USER_PROJECTS_REQUEST:
+      return {
+        ...state,
+        requesting: true
+      };
+    case userTypes.GET_USER_PROJECTS_SUCCESS:
+      return {
+        ...state,
+        requesting: false,
+        projects: action.list
+      };
+    case userTypes.GET_USER_PROJECTS_FAILURE:
+      return {
+        ...state,
+        requesting: false,
+        projects: [
+          {
+            id: '',
+            id_user_fk: '',
+            id_project_fk: '',
+            confirmed: '',
+            status: '',
+            joined_in: '',
+            main_role_fk: '',
+            portfolio: '',
+            created: '',
+            projectid: '',
+            name: '',
+            username:'',
+            type: '',
+            picture: '',
+            ptid: '',
+            ptname: '',
+            pticon: '',
+            workTitle: '',
+            workIcon: '',
+            role1: '',
+            role2: '',
+            role3: '',
+          }
+        ],
         error: "A solicitação falhou"
       };
     default:

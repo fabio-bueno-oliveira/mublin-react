@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { userInfos } from '../../../store/actions/users';
+import { userInfos } from '../../../store/actions/user';
 import { miscInfos } from '../../../store/actions/misc';
 import { useHistory, Link } from 'react-router-dom';
 import { Progress, Button, Header, Grid, Image, Segment, Form,  Dropdown, Select, Label, Icon } from 'semantic-ui-react';
@@ -17,7 +17,7 @@ function StartStep3Page () {
 
     let user = JSON.parse(localStorage.getItem('user'));
 
-    const [isValid, setIsValid] = useState(false);
+    // const [isValid, setIsValid] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
 
     useEffect(() => { 
@@ -33,7 +33,7 @@ function StartStep3Page () {
     const roles = useSelector(state => state.roles);
 
     const userGenres = userInfo.genres.map((genre, key) =>
-        <Label key={genre.idGenre} style={{ fontWeight: 'normal' }}>
+        <Label basic color="blue" key={genre.idGenre} style={{ fontWeight: 'normal' }}>
             {genre.name}
             <Icon name='delete' onClick={() => deleteGenre(genre.id)} />
         </Label>
@@ -42,7 +42,7 @@ function StartStep3Page () {
     const userSelectedGenres = userInfo.genres.map(item => item.idGenre)
 
     const userRoles = userInfo.roles.map((role, key) =>
-        <Label key={role.idRole} style={{ fontWeight: 'normal' }}>
+        <Label basic color="blue" key={role.idRole} style={{ fontWeight: 'normal' }}>
             {role.name}
             <Icon name='delete' onClick={() => deleteRole(role.id)} />
         </Label>

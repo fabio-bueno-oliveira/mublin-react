@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Search } from 'semantic-ui-react';
 import { useHistory, Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { userInfos } from '../../../store/actions/users';
+import { userInfos } from '../../../store/actions/user';
 import { searchInfos } from '../../../store/actions/search';
 import { userActions } from '../../../store/actions/authentication';
 import {IKImage

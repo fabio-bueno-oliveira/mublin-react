@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { userInfos } from '../../../store/actions/users';
+import { userInfos } from '../../../store/actions/user';
 import { Link } from 'react-router-dom';
 import { Progress, Button, Header, Grid, Image, Segment } from 'semantic-ui-react';
 import {IKImage,IKUpload} from "imagekitio-react";

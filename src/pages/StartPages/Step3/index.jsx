@@ -33,7 +33,7 @@ function StartStep3Page () {
     const roles = useSelector(state => state.roles);
 
     const userGenres = userInfo.genres.map((genre, key) =>
-        <Label basic color="blue" key={genre.idGenre} style={{ fontWeight: 'normal' }}>
+        <Label color="blue" key={genre.idGenre} style={{ fontWeight: 'normal' }}>
             {genre.name}
             <Icon name='delete' onClick={() => deleteGenre(genre.id)} />
         </Label>
@@ -42,7 +42,7 @@ function StartStep3Page () {
     const userSelectedGenres = userInfo.genres.map(item => item.idGenre)
 
     const userRoles = userInfo.roles.map((role, key) =>
-        <Label basic color="blue" key={role.idRole} style={{ fontWeight: 'normal' }}>
+        <Label color="blue" key={role.idRole} style={{ fontWeight: 'normal' }}>
             {role.name}
             <Icon name='delete' onClick={() => deleteRole(role.id)} />
         </Label>

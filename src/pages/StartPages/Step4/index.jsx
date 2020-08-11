@@ -28,8 +28,8 @@ function StartStep3Page () {
     const searchProject = useSelector(state => state.searchProject);
     const roles = useSelector(state => state.roles);
 
-    const rolesList = roles.list.filter((role) => { return role.id !== 30 && role.id !== 31 }).map(role => ({ 
-        text: role.name,
+    const rolesList = roles.list.filter((role) => { return role.id !== 29 && role.id !== 30 && role.id !== 31 }).map(role => ({ 
+        text: role.description,
         value: role.id,
         key: role.id
     }));
@@ -51,20 +51,23 @@ function StartStep3Page () {
     const [modalProjectFoundationYear, setModalFoundationYear] = useState('')
     const [modalProjectEndYear, setModalEndYear] = useState('')
 
-    // campos do form para relacionar usuário ao projeto
+    // campos do form para relacionar usuário a um projeto
     const [projectId, setProjectId] = useState('')
     const [active, setActive] = useState('1')
     const [checkbox, setCheckbox] = useState(true)
     const [status, setStatus] = useState('1')
     const [main_role_fk, setMain_role_fk] = useState('')
     const [joined_in, setJoined_in] = useState('')
-    const [left_in, setLeft_in] = useState('')
-    const [leader, setLeader] = useState('0')
-    const [confirmed, setConfirmed] = useState('2')
+    const [left_in, setLeft_in] = useState(null)
 
     const handleCheckbox = (x) => {
         setCheckbox(value => !value);
-        setLeft_in("")
+        setLeft_in('')
+        if (x) {
+            setActive('0')
+        } else {
+            setActive('1')
+        }
     }
 
     const handleSearchChange = (e) => {
@@ -78,8 +81,10 @@ function StartStep3Page () {
     }
 
     const handleResultSelect = (e, { result }) => {
+        setProjectId(result.price)
         setModalProjectTitle(result.title)
         setModalFoundationYear(result.foundation_year)
+        setJoined_in(result.foundation_year)
         setModalEndYear(result.end_year)
         setModalOpen(true)
     }
@@ -105,7 +110,25 @@ function StartStep3Page () {
     }
 
     const handleSubmitParticipation = () => {
-        
+        setIsLoading(true)
+        fetch('https://mublin.herokuapp.com/user/add/project', {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json, text/plain, */*',
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + user.token
+            },
+            body: JSON.stringify({ userId: user.id, projectId: projectId, active: active, status: status, main_role_fk: main_role_fk, joined_in: joined_in, left_in: left_in, leader: '0', confirmed: '2' })
+        }).then((response) => {
+            console.log(124, response)
+            dispatch(userInfos.getUserProjects(user.id))
+            setIsLoading(false)
+            setModalOpen(false)
+        }).catch(err => {
+            console.error(err)
+            alert("Ocorreu um erro ao ingressar no projeto. Tente novamente em alguns minutos.")
+            setModalOpen(false)
+        })
     }
 
     const handleSubmitNewProject = () => {
@@ -205,7 +228,7 @@ function StartStep3Page () {
                                                     <Form.Input name="left_in" type="number" fluid label='Deixei o projeto em' onChange={e => setLeft_in(e.target.value)} error={(left_in > 0 && left_in > currentYear) && {content: 'Ano superior ao atual'}} min={modalProjectFoundationYear} max={currentYear} disabled={checkbox ? true : false} />
                                                 )}
                                             </Form.Group>
-                                            <Form.Checkbox name="active" checked={checkbox} label='Estou ativo atualmente neste projeto / estive ativo até o final do projeto' onChange={() => handleCheckbox()} />
+                                            <Form.Checkbox name="active" checked={checkbox} label={modalProjectEndYear ? 'Estive ativo até o final do projeto' : 'Estou ativo atualmente neste projeto'} onChange={() => handleCheckbox(checkbox)} />
                                         </Form>
                                         <Message size='tiny' warning>
                                             <p>*sua participação ficará pendente até que o(s) líder(es) deste projeto aprovem sua solicitação</p>
@@ -215,7 +238,11 @@ function StartStep3Page () {
                                     <Button onClick={() => setModalOpen(false)}>
                                         Fechar
                                     </Button>
-                                    <Button positive onClick={() => setModalOpen(false)}>
+                                    <Button 
+                                        positive 
+                                        onClick={handleSubmitParticipation}
+                                        disabled={main_role_fk ? false : true }
+                                    >
                                         Confirmar
                                     </Button>
                                     </Modal.Actions>

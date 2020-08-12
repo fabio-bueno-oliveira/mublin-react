@@ -179,7 +179,7 @@ function StartStep3Page () {
                                         Sua ligação com a música
                                     </Header.Subheader>
                                 </Header>
-                                <Progress percent={50} color='green'/>
+                                <Progress percent={75} color='green' size='small'/>
                             </Segment>
                             <Segment basic textAlign='center'>
                                 <Form.Field

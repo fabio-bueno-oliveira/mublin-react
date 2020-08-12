@@ -46,7 +46,9 @@ function StartStep3Page () {
     const [query, setQuery] = useState('')
     const [lastQuery, setLastQuery] = useState('')
 
+    // modal participação
     const [modalOpen, setModalOpen] = useState(false)
+    const [modalProjectInfo, setModalProjectInfo] = useState('')
     const [modalProjectTitle, setModalProjectTitle] = useState('')
     const [modalProjectFoundationYear, setModalFoundationYear] = useState('')
     const [modalProjectEndYear, setModalEndYear] = useState('')
@@ -61,12 +63,39 @@ function StartStep3Page () {
     const [left_in, setLeft_in] = useState(null)
 
     const handleCheckbox = (x) => {
-        setCheckbox(value => !value);
+        setCheckbox(value => !value)
         setLeft_in('')
         if (x) {
             setActive('0')
         } else {
             setActive('1')
+        }
+    }
+
+    // modal de novo projeto
+    const [modalNewProjectOpen, setModalNewProjectOpen] = useState(false)
+
+    // campos do form de cadastro de projeto
+    const [projectName, setProjectName] = useState('')
+    const [projectUserName, setProjectUserName] = useState('')
+    const [foundation_year, setFoundationYear] = useState(currentYear)
+    const [checkboxProjectActive, setCheckboxProjectActive] = useState(true)
+    const [end_year, setEndYear] = useState(null)
+    const [bio, setBio] = useState('')
+    const [type, setType] = useState('2')
+    const [publicProject, setPublicProject] = useState('1')
+
+    const handleChangeProjectUserName = (value) => {
+        setProjectUserName(value.replace(/[^A-Z0-9]/ig, "").toLowerCase())
+    }
+
+    const handleCheckboxProjectActive = (x) => {
+        setCheckboxProjectActive(value => !value)
+        // setEndYear(foundation_year)
+        if (x) {
+            setEndYear(foundation_year)
+        } else {
+            setEndYear('')
         }
     }
 
@@ -82,6 +111,7 @@ function StartStep3Page () {
 
     const handleResultSelect = (e, { result }) => {
         setProjectId(result.price)
+        setModalProjectInfo(result.description)
         setModalProjectTitle(result.title)
         setModalFoundationYear(result.foundation_year)
         setJoined_in(result.foundation_year)
@@ -160,11 +190,11 @@ function StartStep3Page () {
                                         Seus projetos musicais
                                     </Header.Subheader>
                                 </Header>
-                                <Progress percent={50} color='green'/>
+                                <Progress percent={100} color='green' size='small' />
                             </Segment>
                             <Segment basic textAlign='center'>
-                                <label style={{fontWeight: '500'}} className="mb-3">De quais projetos ou bandas você participa ou já participou?</label>
-                                <p style={{fontWeight: '300'}} className="mb-3">Pesquise abaixo ou <a>cadastre um novo</a></p>
+                                <label style={{fontWeight: '500'}}>De quais projetos ou bandas você participa ou já participou?</label>
+                                <p style={{fontWeight: '300'}} className="my-3">Pesquise abaixo ou  <Button basic size="mini" onClick={() => setModalNewProjectOpen(true)}>cadastre um novo projeto</Button></p>
                                 <Search
                                     fluid
                                     size='large'
@@ -180,6 +210,7 @@ function StartStep3Page () {
                                     className="mt-4"
                                 />
                                 <Modal
+                                    id="participation"
                                     size='mini'
                                     onClose={() => setModalOpen(false)}
                                     onOpen={() => setModalOpen(true)}
@@ -187,7 +218,10 @@ function StartStep3Page () {
                                 >
                                     <Modal.Header>Ingressar em {modalProjectTitle}?</Modal.Header>
                                     <Modal.Content>
-                                        <Form className="mt-2">
+                                        <Image centered rounded src={'https://ik.imagekit.io/mublin/tr:h-200,w-200/projects/11/segredo-da-vida_q5H1GJdr6.jpg'} size='tiny' className="mb-2" />
+                                        <p style={{fontSize: '11px', textAlign: 'center'}}>{modalProjectInfo}</p>
+                                        <p style={{fontSize: '11px', textAlign: 'center'}}>{'Formada em: '+modalProjectFoundationYear}{modalProjectEndYear && ' ・ Encerrada em '+modalProjectEndYear}</p>
+                                        <Form className="mt-4">
                                             <label style={{fontWeight: '600', fontSize: '.92857143em'}}>Qual é/foi sua ligação com este projeto?</label>
                                             <Form.Field>
                                                 <Radio
@@ -239,11 +273,90 @@ function StartStep3Page () {
                                         Fechar
                                     </Button>
                                     <Button 
-                                        positive 
+                                        color="black" 
                                         onClick={handleSubmitParticipation}
                                         disabled={main_role_fk ? false : true }
                                     >
                                         Confirmar
+                                    </Button>
+                                    </Modal.Actions>
+                                </Modal>
+                                <Modal
+                                    id="newProject"
+                                    size='mini'
+                                    onClose={() => setModalNewProjectOpen(false)}
+                                    onOpen={() => setModalNewProjectOpen(true)}
+                                    open={modalNewProjectOpen}
+                                >
+                                    <Modal.Header>Cadastrar projeto ou banda</Modal.Header>
+                                    <Modal.Content>
+                                        <Form>
+                                            <Form.Field>
+                                                <Form.Input size='small' name="projectName" fluid label="Nome do projeto ou banda" placeholder="Nome do projeto ou banda" onChange={(e, { value }) => setProjectName(value)} />
+                                            </Form.Field>
+                                            <Form.Field>
+                                                <label>Username</label>
+                                                <Input size='small' label='@' onChange={(e, { value }) => handleChangeProjectUserName(value)} value={projectUserName} />
+                                                <Label size="tiny" pointing style={{fontWeight: 'normal', textAlign: 'center'}}>mublin.com/project/{projectUserName}</Label>
+                                            </Form.Field>
+                                            <Form.Group widths='equal'>
+                                                <Form.Input size='small' name="foundation_year" type="number" fluid label="Ano de formação" error={foundation_year > currentYear && {content: 'O ano deve ser inferior ao atual' }} min="1900" max={currentYear} onChange={(e, { value }) => setFoundationYear(value)} value={foundation_year} />
+                                                <Form.Input size='small' name="end_year" type="number" fluid label="Ano encerramento" error={end_year > currentYear && {content: 'O ano deve ser inferior ao atual' }} min={foundation_year} max={currentYear} onChange={(e, { value }) => setEndYear(value)} value={end_year} disabled={checkboxProjectActive} />
+                                            </Form.Group>
+                                            <Form.Checkbox checked={checkboxProjectActive} label="Em atividade" onChange={() => handleCheckboxProjectActive(checkboxProjectActive)} />
+                                            <Form.TextArea 
+                                                size='small' 
+                                                label='Bio' 
+                                                placeholder='Conte um pouco sobre o projeto (opcional)' 
+                                                onChange={(e, { value }) => setBio(value)}
+                                                value={bio}
+                                                maxLength="200"
+                                                rows="2"
+                                                error={bio.length == "200" && {content: 'A bio atingiu o limite de 200 caracteres' }}
+                                            />
+                                            <Form.Field 
+                                                label='Tipo de projeto' 
+                                                control='select'
+                                                onChange={e => setType(e.target.options[e.target.selectedIndex].value)}
+                                                value={type}
+                                            >
+                                                <option value='2'>Banda</option>
+                                                <option value='3'>Projeto</option>
+                                                <option value='1'>Artista Solo</option>
+                                                <option value='8'>DJ</option>
+                                                <option value='7'>Ideia ainda no papel</option>
+                                                <option value='4'>Duo</option>
+                                                <option value='5'>Trio</option>
+                                            </Form.Field>
+                                            <Form.Group inline className="mb-0">
+                                                <label>Visibilidade</label>
+                                                <Form.Field
+                                                    control={Radio}
+                                                    label='Público'
+                                                    value='1'
+                                                    checked={publicProject === '1'}
+                                                    onChange={() => setPublicProject('1')}
+                                                />
+                                                <Form.Field
+                                                    control={Radio}
+                                                    label='Privado'
+                                                    value='0'
+                                                    checked={publicProject === '0'}
+                                                    onChange={() => setPublicProject('0')}
+                                                />
+                                            </Form.Group>
+                                        </Form>
+                                    </Modal.Content>
+                                    <Modal.Actions>
+                                    <Button onClick={() => setModalNewProjectOpen(false)}>
+                                        Fechar
+                                    </Button>
+                                    <Button 
+                                        color="black" 
+                                        onClick={handleSubmitParticipation}
+                                        disabled={(projectName && projectUserName && foundation_year && type && publicProject) ? false : true }
+                                    >
+                                        Cadastrar
                                     </Button>
                                     </Modal.Actions>
                                 </Modal>

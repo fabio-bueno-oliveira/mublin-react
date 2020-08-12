@@ -145,7 +145,7 @@ function StartStep2Page () {
                                             Conte um pouco sobre você
                                         </Header.Subheader>
                                     </Header>
-                                    <Progress percent={50} color='green'/>
+                                    <Progress percent={50} color='green' size='small' />
                                     <Form.Group inline>
                                         <label>Sou</label>
                                         <Form.Radio

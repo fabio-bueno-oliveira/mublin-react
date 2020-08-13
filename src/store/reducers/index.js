@@ -1,6 +1,7 @@
 import { combineReducers } from 'redux';
 import { authentication } from './authentication';
 import { usernameCheck } from './usernameCheck';
+import { projectUsernameCheck } from './projectUsernameCheck';
 import { emailCheck } from './emailCheck';
 import { search } from './search';
 import { searchProject } from './searchProject';
@@ -15,6 +16,7 @@ import { roles } from './roles'
 const rootReducer = combineReducers({
   authentication,
   usernameCheck,
+  projectUsernameCheck,
   emailCheck,
   search,
   searchProject,

@@ -57,7 +57,7 @@ function StartStep3Page () {
     }));
 
     const rolesList = roles.list.filter(e => !userSelectedRoles.includes(e.id)).map(role => ({ 
-        text: role.name,
+        text: role.description,
         value: role.id,
         key: role.id
     }));

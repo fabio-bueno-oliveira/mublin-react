@@ -84,7 +84,7 @@ function StartStep1Page () {
                             </Header>
                             <Progress percent={25} color='green' size='small' />
                             { !userInfo.picture ? (
-                                <Image centered src='https://ik.imagekit.io/mublin/tr:h-200,w-200,fo-face-true,r-max/sample-folder/avatar-undefined_Kblh5CBKPp.jpg' size='small' className="mb-4" />
+                                <Image centered src='https://ik.imagekit.io/mublin/tr:h-200,w-200,r-max/sample-folder/avatar-undefined_Kblh5CBKPp.jpg' size='small' className="mb-4" />
                             ) : (
                                 <Image circular centered src={'https://ik.imagekit.io/mublin/tr:h-200,w-200,c-maintain_ratio/users/avatars/'+userInfo.id+'/'+userInfo.picture} size='small' className="mb-4" />
                             )}

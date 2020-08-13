@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import {IKImage,IKUpload} from "imagekitio-react";
 import { userInfos } from '../../../store/actions/user';
 import { miscInfos } from '../../../store/actions/misc';
 import { searchInfos } from '../../../store/actions/search';
 import { useHistory, Link } from 'react-router-dom';
 import { Dimmer, Loader as UiLoader, Search, Modal, Progress, Button, Header, Grid, Image, Segment, Form, Message, Radio, Dropdown, Select, Label, Icon, Input } from 'semantic-ui-react';
 import Loader from 'react-loader-spinner';
-import '../styles.scss'
+import '../styles.scss';
 
 function StartStep3Page () {
 
@@ -83,15 +84,26 @@ function StartStep3Page () {
     const [end_year, setEndYear] = useState(null)
     const [bio, setBio] = useState('')
     const [type, setType] = useState('2')
+    const [npMain_role_fk, setNpMain_role_fk] = useState('')
     const [publicProject, setPublicProject] = useState('1')
+    const [userStatus, setUserStatus] = useState('1')
+    const [idNewProject, setIdNewProject] = useState('')
 
     const handleChangeProjectUserName = (value) => {
         setProjectUserName(value.replace(/[^A-Z0-9]/ig, "").toLowerCase())
     }
 
+    const handleTypeChange = (value) => {
+        setType(value)
+        if (value == 7) {
+            setUserStatus('3')
+        } else {
+            setUserStatus('1')
+        }
+    }
+
     const handleCheckboxProjectActive = (x) => {
         setCheckboxProjectActive(value => !value)
-        // setEndYear(foundation_year)
         if (x) {
             setEndYear(foundation_year)
         } else {
@@ -99,6 +111,11 @@ function StartStep3Page () {
         }
     }
 
+    // Modal para cadastro de imagem do projeto cadastrado
+    const [modalNewProjectPictureOpen, setModalNewProjectPictureOpen] = useState(false)
+    const [pictureIsLoading, SetPictureIsLoading] = useState(false)
+    const [newProjectPicture, setNewProjectPicture] = useState('')
+ 
     const handleSearchChange = (e) => {
         setQuery(e)
         if (e.length > 1 && query !== lastQuery) {
@@ -150,24 +167,104 @@ function StartStep3Page () {
             },
             body: JSON.stringify({ userId: user.id, projectId: projectId, active: active, status: status, main_role_fk: main_role_fk, joined_in: joined_in, left_in: left_in, leader: '0', confirmed: '2' })
         }).then((response) => {
-            console.log(124, response)
+            //console.log(153, response)
             dispatch(userInfos.getUserProjects(user.id))
             setIsLoading(false)
             setModalOpen(false)
         }).catch(err => {
             console.error(err)
-            alert("Ocorreu um erro ao ingressar no projeto. Tente novamente em alguns minutos.")
+            alert("Ocorreu um erro ao criar o projeto. Tente novamente em alguns minutos.")
             setModalOpen(false)
         })
     }
 
     const handleSubmitNewProject = () => {
-        
+        // setIsLoading(true)
+        fetch('https://mublin.herokuapp.com/project/create', {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json, text/plain, */*',
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + user.token
+            },
+            body: JSON.stringify({ id_user_creator_fk: user.id, projectName: projectName, projectUserName: projectUserName, foundation_year: foundation_year, end_year: end_year, bio: bio, type: type, public: publicProject })
+        })
+        .then(response => {
+            return response.json();
+        }).then(jsonResponse => {
+            // console.log(191, jsonResponse)
+            setIdNewProject(jsonResponse.id)
+            handleSubmitParticipationToNewProject(user.id, jsonResponse.id, userStatus, npMain_role_fk)
+        }).catch (error => {
+            console.error(error)
+            alert("Ocorreu um erro ao ingressar no projeto. Tente novamente em alguns minutos.")
+            setModalNewProjectOpen(false)
+        })
     }
+
+    const handleSubmitParticipationToNewProject = (newProjectUserId, newProjectProjectId, newProjectUserStatus, newProjectMain_role_fk) => {
+        setIsLoading(true)
+        fetch('https://mublin.herokuapp.com/user/add/project', {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json, text/plain, */*',
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + user.token
+            },
+            body: JSON.stringify({ userId: newProjectUserId, projectId: newProjectProjectId, active: '1', status: newProjectUserStatus, main_role_fk: newProjectMain_role_fk, joined_in: currentYear, left_in: null, leader: '1', confirmed: '1' })
+        }).then((response) => {
+            // console.log(214, response)
+            dispatch(userInfos.getUserProjects(user.id))
+            setIsLoading(false)
+            setModalNewProjectOpen(false)
+            setModalNewProjectPictureOpen(true)
+        }).catch(err => {
+            console.error(err)
+            alert("Ocorreu um erro ao te relacionar ao projeto criado. Use a busca para ingressar no projeto criado.")
+            setModalNewProjectOpen(false)
+        })
+    }
+
+    // Update project avatar picture filename in bd
+    const updatePicture = (projectId, userId, value) => {
+        SetPictureIsLoading(true)
+        let user = JSON.parse(localStorage.getItem('user'));
+        fetch('https://mublin.herokuapp.com/project/'+projectId+'/picture', {
+            method: 'PUT',
+            headers: {
+                'Accept': 'application/json, text/plain, */*',
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + user.token
+            },
+            body: JSON.stringify({userId: userId, picture: value})
+        }).then((response) => {
+            response.json().then((response) => {
+                // console.log(response)
+                SetPictureIsLoading(false)
+                setNewProjectPicture(response.picture)
+            })
+          }).catch(err => {
+            SetPictureIsLoading(false)
+            console.error(err)
+        })
+    };
+
+    // Image Upload to ImageKit.io
+    const userAvatarPath = "/projects/"+idNewProject+"/"
+
+    const onUploadError = err => {
+        alert("Ocorreu um erro ao enviar a imagem. Tente novamente em alguns minutos.");
+    };
+
+    const onUploadSuccess = res => {
+        let n = res.filePath.lastIndexOf('/');
+        let fileName = res.filePath.substring(n + 1);
+        updatePicture(idNewProject,user.id,fileName)
+    };
 
     return (
         <>
-        {searchProject.requesting && 
+        {(searchProject.requesting || isLoading) && 
             <Loader
                 className="appLoadingIcon"
                 type="Audio"
@@ -292,11 +389,11 @@ function StartStep3Page () {
                                     <Modal.Content>
                                         <Form>
                                             <Form.Field>
-                                                <Form.Input size='small' name="projectName" fluid label="Nome do projeto ou banda" placeholder="Nome do projeto ou banda" onChange={(e, { value }) => setProjectName(value)} />
+                                                <Form.Input size='small' name="projectName" fluid placeholder="Nome do projeto ou banda" onChange={(e, { value }) => setProjectName(value)} />
                                             </Form.Field>
                                             <Form.Field>
-                                                <label>Username</label>
-                                                <Input size='small' label='@' onChange={(e, { value }) => handleChangeProjectUserName(value)} value={projectUserName} />
+                                                {/* <label>Username</label> */}
+                                                <Input size='small' placeholder='Username' label='@' onChange={(e, { value }) => handleChangeProjectUserName(value)} value={projectUserName} />
                                                 <Label size="tiny" pointing style={{fontWeight: 'normal', textAlign: 'center'}}>mublin.com/project/{projectUserName}</Label>
                                             </Form.Field>
                                             <Form.Group widths='equal'>
@@ -314,10 +411,19 @@ function StartStep3Page () {
                                                 rows="2"
                                                 error={bio.length == "200" && {content: 'A bio atingiu o limite de 200 caracteres' }}
                                             />
+                                            <label style={{fontWeight: '600', fontSize: '.92857143em'}}>Sua principal função no projeto</label>
+                                            <Form.Field
+                                                className="mt-2"
+                                                control={Select}
+                                                options={rolesList}
+                                                placeholder="Selecione ou digite"
+                                                onChange={(e, { value }) => setNpMain_role_fk(value)}
+                                                search
+                                            />
                                             <Form.Field 
                                                 label='Tipo de projeto' 
                                                 control='select'
-                                                onChange={e => setType(e.target.options[e.target.selectedIndex].value)}
+                                                onChange={(e) => handleTypeChange(e.target.options[e.target.selectedIndex].value)}
                                                 value={type}
                                             >
                                                 <option value='2'>Banda</option>
@@ -353,10 +459,51 @@ function StartStep3Page () {
                                     </Button>
                                     <Button 
                                         color="black" 
-                                        onClick={handleSubmitParticipation}
-                                        disabled={(projectName && projectUserName && foundation_year && type && publicProject) ? false : true }
+                                        onClick={handleSubmitNewProject}
+                                        disabled={(projectName && projectUserName && foundation_year && type && publicProject && npMain_role_fk) ? false : true }
                                     >
                                         Cadastrar
+                                    </Button>
+                                    </Modal.Actions>
+                                </Modal>
+                                <Modal
+                                    id="newProjectPicture"
+                                    size='mini'
+                                    onClose={() => setModalNewProjectPictureOpen(false)}
+                                    onOpen={() => setModalNewProjectPictureOpen(true)}
+                                    open={modalNewProjectPictureOpen}
+                                >
+                                    <Modal.Header>Definir foto para {projectName}</Modal.Header>
+                                    <Modal.Content>
+                                        { !newProjectPicture ? (
+                                            <>
+                                                {/* <Image centered rounded src='https://ik.imagekit.io/mublin/tr:h-200,w-200/sample-folder/avatar-undefined_-dv9U6dcv3.jpg' size='small' className="mb-3" /> */}
+                                                <p style={{fontSize: '11px', textAlign: 'center'}} className="mb-3">Você poderá definir a foto depois, se preferir</p>
+                                            </>
+                                        ) : (
+                                            <Image centered rounded src={'https://ik.imagekit.io/mublin/tr:h-200,w-200,c-maintain_ratio/projects/'+idNewProject+'/'+newProjectPicture} size='small' className="mb-4" />
+                                        )}
+                                        <div className="customFileUpload">
+                                            <IKUpload 
+                                                fileName="avatar.jpg"
+                                                folder={userAvatarPath}
+                                                tags={["avatar"]}
+                                                useUniqueFileName={true}
+                                                isPrivateFile= {false}
+                                                onError={onUploadError}
+                                                onSuccess={onUploadSuccess}
+                                            />
+                                        </div>
+                                        { pictureIsLoading &&
+                                            <UiLoader active inline='centered' />
+                                        }
+                                    </Modal.Content>
+                                    <Modal.Actions>
+                                    <Button 
+                                        color="black" 
+                                        onClick={() => setModalNewProjectPictureOpen(false)}
+                                    >
+                                        Concluir
                                     </Button>
                                     </Modal.Actions>
                                 </Modal>

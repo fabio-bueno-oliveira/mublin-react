@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import {IKImage,IKUpload} from "imagekitio-react";
+import { useDebouncedCallback } from 'use-debounce';
+import {IKUpload} from "imagekitio-react";
+import { usernameCheckInfos } from '../../../store/actions/usernameCheck';
 import { userInfos } from '../../../store/actions/user';
 import { miscInfos } from '../../../store/actions/misc';
 import { searchInfos } from '../../../store/actions/search';
 import { useHistory, Link } from 'react-router-dom';
-import { Dimmer, Loader as UiLoader, Search, Modal, Progress, Button, Header, Grid, Image, Segment, Form, Message, Radio, Dropdown, Select, Label, Icon, Input } from 'semantic-ui-react';
+import { Dimmer, Loader as UiLoader, Search, Modal, Progress, Button, Header, Grid, Image, Segment, Form, Message, Radio, Select, Label, Icon, Input } from 'semantic-ui-react';
 import Loader from 'react-loader-spinner';
 import '../styles.scss';
 
@@ -23,6 +25,13 @@ function StartStep3Page () {
         dispatch(userInfos.getUserProjects(user.id));
         dispatch(miscInfos.getRoles());
     }, []);
+
+    const [checkUsername] = useDebouncedCallback((string) => {
+            dispatch(usernameCheckInfos.checkProjectUsernameByString(string))
+        },1000
+    );
+
+    const projectUsernameAvailability = useSelector(state => state.projectUsernameCheck);
 
     const currentYear = new Date().getFullYear()
     const userInfo = useSelector(state => state.user);
@@ -249,8 +258,16 @@ function StartStep3Page () {
         })
     };
 
+    let color
+    if (projectUserName && projectUsernameAvailability.available === false) {
+        color="red"
+    } else if (projectUserName && projectUsernameAvailability.available === true) {
+        color="green"
+    }
+
     // Image Upload to ImageKit.io
     const userAvatarPath = "/projects/"+idNewProject+"/"
+    const [pictureFilename, setPictureFilename] = useState('')
 
     const onUploadError = err => {
         alert("Ocorreu um erro ao enviar a imagem. Tente novamente em alguns minutos.");
@@ -260,7 +277,30 @@ function StartStep3Page () {
         let n = res.filePath.lastIndexOf('/');
         let fileName = res.filePath.substring(n + 1);
         updatePicture(idNewProject,user.id,fileName)
+        setPictureFilename(fileName)
     };
+
+    const handleFormSubmit = () => {
+        setIsLoading(true)
+        let user = JSON.parse(localStorage.getItem('user'));
+        fetch('https://mublin.herokuapp.com/user/'+userInfo.id+'/firstAccess', {
+            method: 'PUT',
+            headers: {
+                'Accept': 'application/json, text/plain, */*',
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + user.token
+            },
+            body: JSON.stringify({step: 0})
+        }).then((response) => {
+            response.json().then((response) => {
+              setIsLoading(false)
+              history.push("/home")
+            })
+          }).catch(err => {
+            setIsLoading(false)
+            console.error(err)
+        })
+    }
 
     return (
         <>
@@ -291,12 +331,12 @@ function StartStep3Page () {
                             </Segment>
                             <Segment basic textAlign='center'>
                                 <label style={{fontWeight: '500'}}>De quais projetos ou bandas você participa ou já participou?</label>
-                                <p style={{fontWeight: '300'}} className="my-3">Pesquise abaixo ou  <Button basic size="mini" onClick={() => setModalNewProjectOpen(true)}>cadastre um novo projeto</Button></p>
+                                <p style={{fontWeight: '300'}} className="my-3">Pesquise abaixo ou  <Button basic size="mini" onClick={() => setModalNewProjectOpen(true)} className="ml-1">cadastre um novo projeto</Button></p>
                                 <Search
                                     fluid
                                     size='large'
-                                    icon="search"
-                                    placeholder="Digite o nome do projeto ou banda..."
+                                    icon='search'
+                                    placeholder='Digite o nome do projeto ou banda...'
                                     noResultsMessage="Nenhum resultado"
                                     loading={searchProject.requesting}
                                     results={searchProject.results}
@@ -304,10 +344,10 @@ function StartStep3Page () {
                                     onSearchChange={e => handleSearchChange(e.target.value)}
                                     onResultSelect={handleResultSelect}
                                     loading={searchProject.requesting}
-                                    className="mt-4"
+                                    className='mt-4'
                                 />
                                 <Modal
-                                    id="participation"
+                                    id='participation'
                                     size='mini'
                                     onClose={() => setModalOpen(false)}
                                     onOpen={() => setModalOpen(true)}
@@ -393,8 +433,28 @@ function StartStep3Page () {
                                             </Form.Field>
                                             <Form.Field>
                                                 {/* <label>Username</label> */}
-                                                <Input size='small' placeholder='Username' label='@' onChange={(e, { value }) => handleChangeProjectUserName(value)} value={projectUserName} />
-                                                <Label size="tiny" pointing style={{fontWeight: 'normal', textAlign: 'center'}}>mublin.com/project/{projectUserName}</Label>
+                                                <Input 
+                                                    size='small' 
+                                                    placeholder='Username' 
+                                                    label='@' 
+                                                    onChange={(e, { value }) => handleChangeProjectUserName(value)} 
+                                                    onKeyUp={e => {
+                                                        checkUsername(e.target.value)
+                                                    }}
+                                                    value={projectUserName} 
+                                                    loading={projectUsernameAvailability.requesting} 
+                                                />
+                                                <Label 
+                                                    size="tiny" 
+                                                    pointing 
+                                                    color={color}
+                                                    style={{fontWeight: 'normal', textAlign: 'center'}} 
+                                                >
+                                                    { projectUsernameAvailability.available &&
+                                                        <Icon name="check" /> 
+                                                    }
+                                                    mublin.com/project/{projectUserName}
+                                                </Label>
                                             </Form.Field>
                                             <Form.Group widths='equal'>
                                                 <Form.Input size='small' name="foundation_year" type="number" fluid label="Ano de formação" error={foundation_year > currentYear && {content: 'O ano deve ser inferior ao atual' }} min="1900" max={currentYear} onChange={(e, { value }) => setFoundationYear(value)} value={foundation_year} />
@@ -460,7 +520,7 @@ function StartStep3Page () {
                                     <Button 
                                         color="black" 
                                         onClick={handleSubmitNewProject}
-                                        disabled={(projectName && projectUserName && foundation_year && type && publicProject && npMain_role_fk) ? false : true }
+                                        disabled={(projectName && projectUserName && foundation_year && type && publicProject && npMain_role_fk && projectUsernameAvailability.available) ? false : true }
                                     >
                                         Cadastrar
                                     </Button>
@@ -478,7 +538,6 @@ function StartStep3Page () {
                                         { !newProjectPicture ? (
                                             <>
                                                 {/* <Image centered rounded src='https://ik.imagekit.io/mublin/tr:h-200,w-200/sample-folder/avatar-undefined_-dv9U6dcv3.jpg' size='small' className="mb-3" /> */}
-                                                <p style={{fontSize: '11px', textAlign: 'center'}} className="mb-3">Você poderá definir a foto depois, se preferir</p>
                                             </>
                                         ) : (
                                             <Image centered rounded src={'https://ik.imagekit.io/mublin/tr:h-200,w-200,c-maintain_ratio/projects/'+idNewProject+'/'+newProjectPicture} size='small' className="mb-4" />
@@ -499,8 +558,16 @@ function StartStep3Page () {
                                         }
                                     </Modal.Content>
                                     <Modal.Actions>
+                                    { !pictureFilename && 
+                                        <Button 
+                                            onClick={() => setModalNewProjectPictureOpen(false)}
+                                        >
+                                            Enviar depois
+                                        </Button>
+                                    }
                                     <Button 
                                         color="black" 
+                                        disabled={!pictureFilename}
                                         onClick={() => setModalNewProjectPictureOpen(false)}
                                     >
                                         Concluir
@@ -521,9 +588,13 @@ function StartStep3Page () {
                                 <Link to={{ pathname: "/start/step3" }} className="mr-2">
                                     <Button size="large">Voltar</Button>
                                 </Link>
-                                <Link to={{ pathname: "/start/step3" }} className="mr-2">
-                                    <Button color="black" size="large">Concluir</Button>
-                                </Link>
+                                <Button 
+                                    color="black" 
+                                    size="large"
+                                    onClick={handleFormSubmit}
+                                >
+                                    Concluir
+                                </Button>
                                 <p style={{fontWeight: '300'}} className="mt-3">Você poderá ingressar ou criar projetos mais tarde se preferir</p>
                             </Segment>
                         </Form>

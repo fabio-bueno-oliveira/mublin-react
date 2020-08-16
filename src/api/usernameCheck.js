@@ -18,6 +18,7 @@ export function authHeader() {
 export const usernameCheckService = {
   checkUsernameByString,
   checkEmailByString,
+  checkProjectUsernameByString,
   logout
 };
 
@@ -39,6 +40,14 @@ function checkEmailByString(string) {
     return fetch(`${BASE_URL}/check/email/${string}`, requestOptions).then(handleResponse);
 }
 
+function checkProjectUsernameByString(string) {
+    const requestOptions = {
+        method: 'GET',
+        headers: authHeader()
+    };
+
+    return fetch(`${BASE_URL}/check/project/username/${string}`, requestOptions).then(handleResponse);
+}
 
 function logout() {
     // remove user from local storage to log user out

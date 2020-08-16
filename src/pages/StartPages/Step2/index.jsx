@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { useDebouncedCallback } from 'use-debounce';
 import { userInfos } from '../../../store/actions/user';
 import { useHistory, Link } from 'react-router-dom';
-import { Progress, Button, Header, Grid, Image, Segment, Form,  Dropdown, Select, Label, Dimmer, Loader } from 'semantic-ui-react';
+import { Progress, Button, Header, Grid, Image, Segment, Form,  Dropdown, Label, Dimmer, Loader } from 'semantic-ui-react';
 import '../styles.scss'
 
 function StartStep2Page () {
@@ -57,6 +58,7 @@ function StartStep2Page () {
 
     const [maxLengthReached, setMaxLengthReached] = useState(false)
     const [queryCities, setQueryCities] = useState([]);
+    const [citySearchIsLoading, setCitySearchIsLoading] = useState(false)
 
     // form fields
     const [gender, setGender] = useState(userInfo.gender)
@@ -64,7 +66,6 @@ function StartStep2Page () {
     const [id_country_fk, setId_country_fk] = useState(userInfo.country)
     const [id_region_fk, setId_region_fk] = useState(userInfo.region)
     const [id_city_fk, setId_city_fk] = useState('')
-    // const [isValid, setIsValid] = useState(false)
 
     const countries = countryOptions.map((country, key) =>
         <option key={key} value={country.value} selected={userInfo.country == country.value ? "selected" : ""} onChange={() => setId_country_fk(country.value)}>{country.text}</option>
@@ -82,19 +83,6 @@ function StartStep2Page () {
         }
     } 
 
-    // const checkValid = () => {
-    //     if (
-    //         gender &&
-    //         id_country_fk &&
-    //         id_region_fk &&
-    //         id_city_fk
-    //     ) {
-    //         setIsValid(true)
-    //     } else {
-    //         setIsValid(false)
-    //     }
-    // }
-
     const submitForm = () => {
         fetch('https://mublin.herokuapp.com/user/step2', {
             method: 'PUT',
@@ -109,21 +97,27 @@ function StartStep2Page () {
         .then(() => history.push("/start/step3"))
     }
 
-    const searchCity = (keyword) => {
-        if (keyword.length > 1) {
-            fetch('https://mublin.herokuapp.com/search/cities/'+keyword, {
-                method: 'GET'
-            })
-                .then(res => res.json())
-                .then(
-                (result) => {
-                    setQueryCities(result);
-                },
-                (error) => {
-                    //
+    const [searchCity] = useDebouncedCallback((keyword) => {
+            if (keyword.length > 1) {
+                setCitySearchIsLoading(true)
+                fetch('https://mublin.herokuapp.com/search/cities/'+keyword, {
+                    method: 'GET'
                 })
-        }
-    };
+                    .then(res => res.json())
+                    .then(
+                        (result) => {
+                            if (result.length) {
+                                setQueryCities(result);
+                            }
+                            setCitySearchIsLoading(false)
+                        },
+                        (error) => {
+                            setCitySearchIsLoading(false)
+                            alert("Ocorreu um erro ao tentar pesquisar a cidade")
+                    })
+            }
+        },800
+    );
 
     return (
         <>
@@ -248,6 +242,7 @@ function StartStep2Page () {
                                             searchCity(e.target.value);
                                         }}
                                         noResultsMessage="Nenhum resultado"
+                                        loading={citySearchIsLoading}
                                     />
                                 </Segment>
                                 <Segment basic textAlign='center' attached="bottom" style={{ border: 'none' }}>

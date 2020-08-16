@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import { useHistory, Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
+import { useDebouncedCallback } from 'use-debounce';
 import { usernameCheckInfos } from '../../store/actions/usernameCheck';
 import { emailCheckInfos } from '../../store/actions/emailCheck';
-import { Form, Button, Header, Grid, Image, Segment, Label } from 'semantic-ui-react';
+import { Form, Button, Header, Grid, Image, Segment, Label, Icon } from 'semantic-ui-react';
 import { Formik } from 'formik';
 import ValidateUtils from '../../utils/ValidateUtils';
 import Loader from 'react-loader-spinner';
@@ -15,13 +16,15 @@ function LandingPage () {
 
     const dispatch = useDispatch();
 
-    const checkUsername = (string) => {
-        dispatch(usernameCheckInfos.checkUsernameByString(string));
-    }
+    const [checkUsername] = useDebouncedCallback((string) => {
+            dispatch(usernameCheckInfos.checkUsernameByString(string));
+        },900
+    )
 
-    const checkEmail = (string) => {
+    const [checkEmail] = useDebouncedCallback((string) => {
         dispatch(emailCheckInfos.checkEmailByString(string));
-    }
+        },900
+    )
 
     const usernameAvailability = useSelector(state => state.usernameCheck);
     const emailAvailability = useSelector(state => state.emailCheck);
@@ -201,7 +204,15 @@ function LandingPage () {
                                         }) : null } 
                                     />
                                     {emailAvailability.available === false &&
-                                        <Label size="mini" color="red" pointing className="mt-0 mb-2">Email já registrado</Label>
+                                        <Label 
+                                            className="mt-0 mb-2"
+                                            size="mini" 
+                                            pointing 
+                                            color="red"
+                                            style={{fontWeight: 'normal', textAlign: 'center'}} 
+                                        >
+                                            <Icon name="times" /> Email já registrado
+                                        </Label>
                                     }
                                     <Form.Input 
                                         className={usernameAvailability.available === false && "error"}
@@ -230,7 +241,16 @@ function LandingPage () {
                                         iconPosition={usernameAvailability.requesting || usernameAvailability.available ? "left" : ""} 
                                     />
                                     {usernameAvailability.available === false &&
-                                        <Label size="mini" color="red" pointing className="mt-0 mb-2">Username não disponível</Label>
+                                        <Label 
+                                            className="mt-0 mb-2"
+                                            size="mini" 
+                                            pointing 
+                                            color="red"
+                                            style={{fontWeight: 'normal', textAlign: 'center'}} 
+                                        >
+                                            <Icon name="times" /> 
+                                            Username não disponível
+                                        </Label>
                                     }
                                     <Form.Group widths='equal'>
                                         <Form.Input 

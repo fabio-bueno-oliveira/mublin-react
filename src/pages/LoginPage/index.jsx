@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { userActions } from '../../store/actions/authentication';
@@ -20,10 +20,10 @@ function LoginPage (props) {
     const error = useSelector(state => state.authentication.error);
     const dispatch = useDispatch();
 
-    // // reset login status
-    // useEffect(() => { 
-    //     dispatch(userActions.logout()); 
-    // }, []);
+    // reset login status
+    useEffect(() => { 
+        dispatch(userActions.logout()); 
+    }, []);
 
     const validate = values => {
         const errors = {};

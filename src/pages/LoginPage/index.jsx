@@ -23,7 +23,7 @@ function LoginPage (props) {
     // reset login status
     useEffect(() => { 
         dispatch(userActions.logout()); 
-    }, []);
+    }, [dispatch]);
 
     const validate = values => {
         const errors = {};

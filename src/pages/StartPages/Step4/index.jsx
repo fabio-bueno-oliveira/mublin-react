@@ -24,7 +24,7 @@ function StartStep3Page () {
     useEffect(() => { 
         dispatch(userInfos.getUserProjects(user.id));
         dispatch(miscInfos.getRoles());
-    }, []);
+    }, [user.id, dispatch]);
 
     const [checkUsername] = useDebouncedCallback((string) => {
             dispatch(usernameCheckInfos.checkProjectUsernameByString(string))
@@ -104,7 +104,7 @@ function StartStep3Page () {
 
     const handleTypeChange = (value) => {
         setType(value)
-        if (value == 7) {
+        if (value === 7) {
             setUserStatus('3')
         } else {
             setUserStatus('1')
@@ -343,7 +343,6 @@ function StartStep3Page () {
                                     value={query}
                                     onSearchChange={e => handleSearchChange(e.target.value)}
                                     onResultSelect={handleResultSelect}
-                                    loading={searchProject.requesting}
                                     className='mt-4'
                                 />
                                 <Modal

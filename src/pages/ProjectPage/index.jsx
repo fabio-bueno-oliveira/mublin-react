@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Link } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import { projectInfos } from '../../store/actions/project';
 import HeaderDesktop from '../../components/layout/headerDesktop';
 import { Header, Placeholder, Grid, Card, Image, Icon, Button, Label } from 'semantic-ui-react';
@@ -8,6 +8,8 @@ import Flickity from 'react-flickity-component';
 import './styles.scss';
 
 function ProjectPage (props) {
+
+    let history = useHistory();
 
     let dispatch = useDispatch();
 
@@ -61,7 +63,7 @@ function ProjectPage (props) {
                         ) : (
                             <section id="title">
                                 <h1 className="ui large header d-flex pt-3 pt-md-0">
-                                    <Image src={'https://mublin.com/img/projects/'+project.id+'/'+project.picture} className="ui rounded image" style={{ width: '110px', height: '110px' }} />
+                                    <Image src={'https://ik.imagekit.io/mublin/projects/tr:h-200,w-200,c-maintain_ratio/'+project.id+'/'+project.picture} className="ui rounded image" style={{ width: '110px', height: '110px' }} />
                                     <div className="content pt-1" style={{ alignItems: 'flex-start', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
                                         {project.name}
                                         <div className="sub header mt-1" style={{ fontSize: '14px' }}><strong>{project.typeName}</strong> {project.genre1 && ' de '+project.genre1} {project.genre2 && ' · '+project.genre2} {project.genre3 && ' · '+project.genre3}</div>
@@ -82,7 +84,7 @@ function ProjectPage (props) {
                     </Grid.Column>
                     <Grid.Column>
                         <section id="options" style={{ textAlign: 'right' }}>
-                            <Button primary><Icon name='cog' /> Gerenciar</Button>
+                            <Button primary onClick={() => history.push(props.match.params.username+'/admin/')}><Icon name='cog' /> Gerenciar</Button>
                         </section>
                     </Grid.Column>
                 </Grid.Row>
@@ -130,7 +132,7 @@ function ProjectPage (props) {
                             members.map((member, key) =>
                             <Card className="my-0 ml-1 mr-3 member-card" href={'/'+member.username}>
                                 <Card.Content extra className="center aligned">
-                                    <Image src={'https://mublin.com/img/users/avatars/'+member.id+'/'+member.picture} width="25" height="25" circular alt={'Foto de '+member.name} /> {'@'+member.username}
+                                    <Image src={'https://ik.imagekit.io/mublin/users/avatars/tr:h-200,w-200,c-maintain_ratio/'+member.id+'/'+member.picture} width="25" height="25" circular alt={'Foto de '+member.name} /> {'@'+member.username}
                                 </Card.Content>
                                 <Card.Content>
                                     <div class="center aligned ui small header mb-1">

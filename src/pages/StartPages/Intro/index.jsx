@@ -11,7 +11,7 @@ function StartIntroPage () {
 
     useEffect(() => { 
         dispatch(userInfos.getInfo());
-    }, []);
+    }, [dispatch]);
 
     const userInfo = useSelector(state => state.user);
 

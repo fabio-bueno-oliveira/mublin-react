@@ -19,11 +19,25 @@ function HomePage () {
         dispatch(projectsInfos.getUserMainProjects(user.id));
         dispatch(projectsInfos.getUserPortfolioProjects(user.id));
         dispatch(eventsInfos.getUserEvents(user.id));
-    }, []);
+    }, [user.id, dispatch]);
 
     const projects = useSelector(state => state.projects);
     const mainProjects = projects.mainProjects;
     const portfolioProjects = projects.portfolioProjects;
+
+    let mainProjectsTotal
+    if (!mainProjects[0].id) {
+        mainProjectsTotal = 0
+    } else {
+        mainProjectsTotal = mainProjects.length
+    }
+
+    let portfolioProjectsTotal
+    if (!portfolioProjects[0].id) {
+        portfolioProjectsTotal = 0
+    } else {
+        portfolioProjectsTotal = portfolioProjects.length
+    }
 
     const events = useSelector(state => state.events)
     const allEvents = events.events
@@ -52,7 +66,7 @@ function HomePage () {
                 <Tab menu={{ secondary: true }} panes={
                     [
                         {
-                        menuItem: 'Principais ('+mainProjects.length+')',
+                        menuItem: 'Principais ('+mainProjectsTotal+')',
                         render: () => 
                             <Tab.Pane loading={projects.requesting} attached={false} as="div">
                                 <Flickity
@@ -67,9 +81,9 @@ function HomePage () {
                                             <div className="carousel-cell" key={projeto.id}>
                                                 <Link to={{ pathname: '/project/'+projeto.username }}>
                                                     {projeto.picture ? (
-                                                        <Image src={'https://mublin.com/img/projects/'+projeto.projectid+'/'+projeto.picture} height='85' rounded />
+                                                        <Image src={'https://ik.imagekit.io/mublin/projects/tr:h-85,w-95,c-maintain_ratio/'+projeto.projectid+'/'+projeto.picture} rounded />
                                                     ) : (
-                                                        <Image src={'https://mublin.com/img/projects/avatar-undefined.jpg'} height='85' rounded />
+                                                        <Image src={'https://ik.imagekit.io/mublin/sample-folder/avatar-undefined_-dv9U6dcv3.jpg'} height='85' width='85' rounded />
                                                     )}
                                                     <h5 className="ui header mt-2 mb-0">
                                                         {projeto.name}
@@ -88,9 +102,9 @@ function HomePage () {
                                     )}
                                 </Flickity>
                             </Tab.Pane>,
-                        },
+                        }, 
                         {
-                        menuItem: 'Portfolio ('+portfolioProjects.length+')',
+                        menuItem: 'Portfolio ('+portfolioProjectsTotal+')',
                         render: () => 
                             <Tab.Pane loading={projects.requesting} attached={false} as="div">
                                 <Flickity
@@ -105,9 +119,9 @@ function HomePage () {
                                             <a href="/music/projectusername">
                                                 <div className="floating ui mini black label" style={{top: '0', left: '76%'}}>{projeto.joined_in}</div>
                                                 {projeto.picture ? (
-                                                    <Image src={'https://mublin.com/img/projects/'+projeto.projectid+'/'+projeto.picture} height='85' rounded />
+                                                    <Image src={'https://ik.imagekit.io/mublin/projects/tr:h-200,w-200,c-maintain_ratio/'+projeto.projectid+'/'+projeto.picture} height='85' width='85' rounded />
                                                 ) : (
-                                                    <Image src={'https://mublin.com/img/projects/avatar-undefined.jpg'} height='85' rounded />
+                                                    <Image src={'https://ik.imagekit.io/mublin/sample-folder/avatar-undefined_-dv9U6dcv3.jpg'} height='85' width='85' rounded />
                                                 )}
                                                 <h5 className="ui header mt-2 mb-0">
                                                     {projeto.name}
@@ -205,7 +219,82 @@ function HomePage () {
                     <Grid.Column>
                         <Card style={{width: '100%'}}>
                             <Card.Content>
-                                <Card.Header className="ui left floated">Ensaios</Card.Header>
+                                <Image src='https://ik.imagekit.io/mublin/tr:r-8,w-300,h-80,c-maintain_ratio/misc/music/public-speaking-3926344_640_trR-oN-Fap.jpg' fluid className="mb-3" />
+                                <Card.Header className="ui mt-0 mb-1">Apresentações e Eventos</Card.Header>
+                                <Card.Meta className="mb-3">
+                                    <span className='date'>{showsEvents.length} agendados</span>
+                                </Card.Meta>
+                                <Card.Description>
+                                    {events.requesting ? (
+                                        <Header textAlign='center'>
+                                            <Icon loading name='spinner' size='large' />
+                                        </Header>
+                                    ) : (
+                                        <>
+                                        <List relaxed>
+                                        {showsEvents.map((evento, key) =>
+                                            <List.Item key={key}>
+                                                <Label as="span" size="mini" ribbon className="mb-1">
+                                                    Criado por {evento.uname}
+                                                </Label>
+                                                <div className={'item mb-1 '+evento.eid}>
+                                                    <div className="content py-1">
+                                                        <a href={'/events/?id='+evento.eid}>
+                                                            <Image className="left floated mr-2" src={'https://mublin.com/img/projects/'+evento.pid+'/'+evento.picture} width='35' height='35' rounded  />
+                                                            <Header as='h6'>{evento.title_ptbr} com {evento.pname}</Header>
+                                                            <div className="meta mb-2 pt-1 pt-md-0" style={{fontSize: '0.875rem', color: 'grey'}}>
+                                                                <span className='mr-2'>{moment(evento.date_opening, 'YYYY-MM-DD').format('DD/MM/YYYY')} às {moment(evento.hour_opening, 'HH:mm:ss').format('HH:mm')}</span> 
+                                                                {evento.method === 1 ? (
+                                                                    <><Icon name='street view' className='mr-0 ml-2' /> <span>Presencial</span></>
+                                                                ) : (
+                                                                    <><Icon name='computer' /> <span>Online</span></>
+                                                                )}
+                                                            </div>
+                                                            <Popup inverted content={evento.description} trigger={<h5 className="header pt-1">{evento.title}</h5>} />
+                                                        </a>
+                                                        <div className="description mb-2 mt-1 mt-md-0" style={{fontSize: 'smaller'}}>
+                                                            Será em {evento.city} {evento.plname && '('+evento.plname+')'}
+                                                        </div>
+                                                        {{  
+                                                            2:
+                                                                <Button.Group size='mini'>
+                                                                    <Button positive>Confirmar</Button>
+                                                                    <Button.Or text='ou' />
+                                                                    <Button negative>Não poderei participar</Button>
+                                                                </Button.Group>,
+                                                            1:
+                                                            <><Label basic color='green' size='tiny'>
+                                                                Você confirmou participação
+                                                            </Label> <Icon name='history' color='grey' title='desfazer' link /></>,
+                                                            0:
+                                                                <><Label as='a' basic color='red' size='tiny'>
+                                                                    Você informou que não poderá participar
+                                                                </Label> <Button basic size='tiny' color='blue' content='Desfazer' /></>
+                                                        }[evento.presence_confirmed]}
+                                                    </div>
+                                                </div>
+                                            </List.Item>
+                                        )}
+                                        </List>
+                                        </>
+                                    )}
+                                </Card.Description>
+                            </Card.Content>
+                            <Card.Content extra style={{fontSize: 'smaller'}}>
+                                <Link to={{ pathname: '/tbd' }}>
+                                    <Icon name='bars' /> Ver todos os meus eventos
+                                </Link>
+                                <Link className="ml-3" to={{ pathname: '/tbd' }}>
+                                    <Icon name='plus' /> Novo evento
+                                </Link>
+                            </Card.Content>
+                        </Card>
+                    </Grid.Column>
+                    <Grid.Column>
+                        <Card style={{width: '100%'}}>
+                            <Card.Content>
+                                <Image src='https://ik.imagekit.io/mublin/tr:r-8,w-300,h-80,c-maintain_ratio/misc/music/microphone-1003559_640_o0CDJQ05zi.jpg' fluid className="mb-3" />
+                                <Card.Header className="ui left floated">Ensaios, Reuniões e Gravações</Card.Header>
                                 <Card.Meta className="ui right floated">
                                     <span className='date'>{rehearsalEvents.length} agendados</span>
                                 </Card.Meta>
@@ -272,80 +361,6 @@ function HomePage () {
                                 </Link>
                                 <Link className="ml-3" to={{ pathname: '/tbd' }}>
                                     <Icon name='plus' /> Novo ensaio
-                                </Link>
-                            </Card.Content>
-                        </Card>
-                    </Grid.Column>
-                    <Grid.Column>
-                        <Card style={{width: '100%'}}>
-                            <Card.Content>
-                                <Card.Header className="ui left floated">Shows e Eventos</Card.Header>
-                                <Card.Meta className="ui right floated">
-                                    <span className='date'>{showsEvents.length} agendados</span>
-                                </Card.Meta>
-                                <Card.Description>
-                                    {events.requesting ? (
-                                        <Header textAlign='center'>
-                                            <Icon loading name='spinner' size='large' />
-                                        </Header>
-                                    ) : (
-                                        <>
-                                        <h4 className="ui sub header mt-1 mb-3">Próximos</h4>
-                                        <List relaxed>
-                                        {showsEvents.map((evento, key) =>
-                                            <List.Item key={key}>
-                                                <Label as="span" size="mini" ribbon className="mb-1">
-                                                    Criado por {evento.uname}
-                                                </Label>
-                                                <div className={'item mb-1 '+evento.eid}>
-                                                    <div className="content py-1">
-                                                        <a href={'/events/?id='+evento.eid}>
-                                                            <Image className="left floated mr-2" src={'https://mublin.com/img/projects/'+evento.pid+'/'+evento.picture} width='35' height='35' rounded  />
-                                                            <Header as='h6'>{evento.title_ptbr} com {evento.pname}</Header>
-                                                            <div className="meta mb-2 pt-1 pt-md-0" style={{fontSize: '0.875rem', color: 'grey'}}>
-                                                                <span className='mr-2'>{moment(evento.date_opening, 'YYYY-MM-DD').format('DD/MM/YYYY')} às {moment(evento.hour_opening, 'HH:mm:ss').format('HH:mm')}</span> 
-                                                                {evento.method === 1 ? (
-                                                                    <><Icon name='street view' className='mr-0 ml-2' /> <span>Presencial</span></>
-                                                                ) : (
-                                                                    <><Icon name='computer' /> <span>Online</span></>
-                                                                )}
-                                                            </div>
-                                                            <Popup inverted content={evento.description} trigger={<h5 className="header pt-1">{evento.title}</h5>} />
-                                                        </a>
-                                                        <div className="description mb-2 mt-1 mt-md-0" style={{fontSize: 'smaller'}}>
-                                                            Será em {evento.city} {evento.plname && '('+evento.plname+')'}
-                                                        </div>
-                                                        {{  
-                                                            2:
-                                                                <Button.Group size='mini'>
-                                                                    <Button positive>Confirmar</Button>
-                                                                    <Button.Or text='ou' />
-                                                                    <Button negative>Não poderei participar</Button>
-                                                                </Button.Group>,
-                                                            1:
-                                                            <><Label as='a' basic color='green' size='tiny'>
-                                                                Você confirmou participação
-                                                            </Label> <Label size="tiny">Desfazer</Label></>,
-                                                            0:
-                                                                <><Label as='a' basic color='red' size='tiny'>
-                                                                    Você informou que não poderá participar
-                                                                </Label> <a style={{fontSize: 'smaller'}}>Desfazer</a></>
-                                                        }[evento.presence_confirmed]}
-                                                    </div>
-                                                </div>
-                                            </List.Item>
-                                        )}
-                                        </List>
-                                        </>
-                                    )}
-                                </Card.Description>
-                            </Card.Content>
-                            <Card.Content extra style={{fontSize: 'smaller'}}>
-                                <Link to={{ pathname: '/tbd' }}>
-                                    <Icon name='bars' /> Ver todos os meus eventos
-                                </Link>
-                                <Link className="ml-3" to={{ pathname: '/tbd' }}>
-                                    <Icon name='plus' /> Novo evento
                                 </Link>
                             </Card.Content>
                         </Card>

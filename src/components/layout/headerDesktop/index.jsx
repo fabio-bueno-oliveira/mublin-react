@@ -5,8 +5,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { userInfos } from '../../../store/actions/user';
 import { searchInfos } from '../../../store/actions/search';
 import { userActions } from '../../../store/actions/authentication';
-import {IKImage
-} from "imagekitio-react";
+import {IKImage} from "imagekitio-react";
 import MublinLogo from '../../../assets/img/logos/mublin-logo-text-white.png';
 import HeaderWrapper from './styles';
 
@@ -18,27 +17,33 @@ const HeaderDesktop = () => {
 
     useEffect(() => { 
         dispatch(userInfos.getInfo());
-    }, []);
+    }, [dispatch]);
 
     const userInfo = useSelector(state => state.user);
 
     const search = useSelector(state => state.search);
 
-    const [query, setQuery] = useState('')
-    const [lastQuery, setLastQuery] = useState('')
+    const [query, setQuery] = useState('');
+    const [lastQuery, setLastQuery] = useState('');
 
     const handleSearchChange = (e) => {
         setQuery(e)
         if (e.length > 2 && query !== lastQuery) {
             setTimeout(() => {
-                dispatch(searchInfos.getSearchResults(e))
+                 dispatch(searchInfos.getSearchResults(e))
             }, 700)
             setLastQuery(e)
         }
     }
 
-    const handleResultSelect = () => {
-        history.push("/profile")
+    const handleResultSelect = (data) => {
+        if (data.result.category === "Usuário") {
+            history.push('/'+data.result.extra2)
+        } else if (data.result.category === "Projeto") {
+            history.push('/project/'+data.result.extra1)
+        } else if (data.result.category === "Evento") {
+            history.push('/event/'+data.result.extra1)
+        }
     }
 
     const logout = () => {
@@ -103,7 +108,7 @@ const HeaderDesktop = () => {
                                 <i className="far fa-bell"></i> <span className="ui red circular mini label d-none" id="feedlabel"></span>
                             </div>
                             <div className="menu">
-                                <a className="item none">Nenhuma nova notificação</a>
+                                <span className="item none">Nenhuma nova notificação</span>
                             </div>
                         </div>
                         <div className="item">
@@ -119,7 +124,9 @@ const HeaderDesktop = () => {
                                 results={search.results}
                                 value={query}
                                 onSearchChange={e => handleSearchChange(e.target.value)}
-                                onResultSelect={handleResultSelect}
+                                onResultSelect={(e, data) =>
+                                    handleResultSelect(data)
+                                }
                             />
                         </div>
                         <div className="right menu">
@@ -130,7 +137,7 @@ const HeaderDesktop = () => {
                                 {/* <img className="ui avatar image mr-2" src={'/img/'+userInfo.id+'/'+userInfo.picture} /> {userInfo.name} */}
                                 <IKImage 
                                     path={'/users/avatars/'+userInfo.id+'/'+userInfo.picture}
-                                    transformation={[{ "height": "200", "width": "200"}]} 
+                                    transformation={[{ "height": "200", "width": "200", "r": "max" }]} 
                                 />
                                 {userInfo.payment_plan === 2 && <div className="ui mini blue label">PRO</div> } <i className="dropdown icon"></i>
                                 <div className="menu">

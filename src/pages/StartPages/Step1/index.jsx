@@ -15,7 +15,7 @@ function StartStep1Page () {
 
     useEffect(() => { 
         dispatch(userInfos.getInfo());
-    }, []);
+    }, [dispatch]);
 
     const userInfo = useSelector(state => state.user);
 

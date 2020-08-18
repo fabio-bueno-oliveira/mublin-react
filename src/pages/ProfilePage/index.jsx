@@ -1,13 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Link } from 'react-router-dom';
 import HeaderDesktop from '../../components/layout/headerDesktop';
 import { profileInfos } from '../../store/actions/profile';
-import { Header, Tab, Card, Grid, List, Image, Icon, Menu, Button, Label, Dimmer, Loader as UiLoader } from 'semantic-ui-react';
-import Flickity from 'react-flickity-component';
-import {IKImage,IKUpload} from "imagekitio-react";
-import Loader from 'react-loader-spinner';
-import moment from 'moment';
+import { Header, Tab, Card, Grid, Image, Button, Label, Dimmer, Loader } from 'semantic-ui-react';
 import './styles.scss';
 
 function ProfilePage (props) {
@@ -18,54 +13,25 @@ function ProfilePage (props) {
 
     useEffect(() => {
         dispatch(profileInfos.getProfileInfo(username));
-    }, []);
+    }, [dispatch, username]);
 
-    const user = useSelector(state => state.user)
+    //const user = useSelector(state => state.user)
     const profile = useSelector(state => state.profile);
 
-    const [isLoading, SetIsLoading] = useState(false)
-
-    const sliderOptions = {
-        autoPlay: false,
-        cellAlign: 'left',
-        freeScroll: true,
-        prevNextButtons: false,
-        pageDots: false,
-        wrapAround: false,
-        draggable: '>1',
-        resize: true,
-        contain: true
-    }
-
-    //imagekit
-
-    const [uploadedImage, setUploadedImage] = useState("/sample-folder/avatar-undefined_Kblh5CBKPp.jpg")
-
-    const onError = err => {
-        SetIsLoading(false)
-        alert("Error");
-        console.log(err);
-    };
-      
-    const onSuccess = res => {
-        SetIsLoading(false)
-        alert("Success");
-        console.log(res);
-        setUploadedImage(res.filePath)
-    };
+    // const sliderOptions = {
+    //     autoPlay: false,
+    //     cellAlign: 'left',
+    //     freeScroll: true,
+    //     prevNextButtons: false,
+    //     pageDots: false,
+    //     wrapAround: false,
+    //     draggable: '>1',
+    //     resize: true,
+    //     contain: true
+    // }
 
     return (
         <>
-        {isLoading && 
-            <Loader
-                className="appLoadingIcon"
-                type="Audio"
-                color="#ff0032"
-                height={100}
-                width={100}
-                timeout={10000} //10 secs
-            />
-        }
         <HeaderDesktop />
             <Grid id="bio" columns={2} stackable className="container mb-2 mt-4 mt-md-5 pt-5">
                 <Grid.Row>
@@ -144,31 +110,6 @@ function ProfilePage (props) {
                         <Card id="strengths" style={{ width: "100%" }}>
                             <Card.Content>
                                 <Header as='h2'>Depoimentos</Header>
-
-                                <IKUpload
-                                    fileName="avatar.jpg"
-                                    // tags={["sample-tag1","sample-tag2"]}
-                                    // customCoordinates={"10,10,10,10"}
-                                    isPrivateFile={false}
-                                    useUniqueFileName={false}
-                                    folder={"/users/avatars/1/"}
-                                    onError={onError}
-                                    onSuccess={onSuccess}
-                                    onChange={() => SetIsLoading(true)}
-                                />
-
-                                <IKImage path={uploadedImage} transformation={[{
-                                    "height": "200",
-                                    "width": "200",
-                                    "fo-face": true
-                                }]} />
-
-                                <IKImage path={"/users/avatars/1/"+user.picture} transformation={[{
-                                    "height": "300",
-                                    "width": "300",
-                                    "effectUSM": 1,
-                                }]} lqip={{active:true, quality: 20}} />
-
                             </Card.Content>
                         </Card>
                     </Grid.Column>

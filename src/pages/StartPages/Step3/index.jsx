@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { userInfos } from '../../../store/actions/user';
 import { miscInfos } from '../../../store/actions/misc';
 import { useHistory, Link } from 'react-router-dom';
-import { Progress, Button, Header, Grid, Image, Segment, Form,  Dropdown, Select, Label, Icon } from 'semantic-ui-react';
+import { Progress, Button, Header, Grid, Image, Segment, Form, Select, Label, Icon } from 'semantic-ui-react';
 import Loader from 'react-loader-spinner';
 import '../styles.scss'
 
@@ -17,7 +17,6 @@ function StartStep3Page () {
 
     let user = JSON.parse(localStorage.getItem('user'));
 
-    // const [isValid, setIsValid] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
 
     useEffect(() => { 
@@ -26,7 +25,7 @@ function StartStep3Page () {
         dispatch(userInfos.getUserRolesInfoById(user.id));
         dispatch(miscInfos.getMusicGenres());
         dispatch(miscInfos.getRoles());
-    }, []);
+    }, [dispatch, user.id]);
 
     const userInfo = useSelector(state => state.user);
     const musicGenres = useSelector(state => state.musicGenres);
@@ -193,21 +192,6 @@ function StartStep3Page () {
                                     search
                                 />
                                 {userInfo.genres[0].idGenre && userGenres}
-                                {/* {(!userInfo.requesting && !musicGenres.requesting) &&
-                                <Dropdown
-                                    id="genre"
-                                    name="genre"
-                                    placeholder='Skills' 
-                                    fluid 
-                                    multiple 
-                                    selection 
-                                    options={musicGenresList} 
-                                    onChange={(e, { value }) => addGenre(value)}
-                                    onLabelClick={(e, { LabelProps }) => alert(LabelProps)}
-                                    defaultValue={userSelectedGenres}
-                                    search
-                                />
-                                } */}
                             </Segment>
                             <Segment basic textAlign='center' className="mt-3">
                                 <Form.Field

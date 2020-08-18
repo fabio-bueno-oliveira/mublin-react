@@ -28,15 +28,16 @@ function LoginPage (props) {
     const validate = values => {
         const errors = {};
   
-        if (!values.email) {
-            errors.email = 'Informe seu email!';
-        } else if (!ValidateUtils.email(values.email)) {
-            errors.email = 'Email inválido!'
-        }
+        // if (!values.email) {
+        //     errors.email = 'Informe seu email ou username!';
+        // } 
+        // else if (!ValidateUtils.email(values.email)) {
+        //     errors.email = 'Email inválido!'
+        // }
   
-        if (!values.password) {
-          errors.password = 'Informe sua senha!';
-        }
+        // if (!values.password) {
+        //   errors.password = 'Informe sua senha!';
+        // }
   
         return errors;
     };
@@ -112,7 +113,7 @@ function LoginPage (props) {
                                             id='email'
                                             name="email" 
                                             control={Input}
-                                            label='Email'
+                                            label='Email ou nome de usuário'
                                             autoFocus='autofocus'
                                             onChange={e => {
                                                 handleChange(e);
@@ -151,7 +152,7 @@ function LoginPage (props) {
                                             type="submit" 
                                             secondary fluid 
                                             className="mb-3" 
-                                            disabled={isValid || isSubmitting ? false : true}
+                                            disabled={(!values.email || !values.password || isSubmitting) ? true : false}
                                             onClick={handleSubmit}
                                         >
                                             Entrar

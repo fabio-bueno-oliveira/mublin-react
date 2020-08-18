@@ -17,6 +17,7 @@ function StartStep2Page () {
     ]
 
     const regionOptions = [
+        { key: '', text: 'Selecione...', value: '' },
         { key: 'AC', text: 'Acre', value: '415' },
         { key: 'AL', text: 'Alagoas', value: '422' },
         { key: 'AP', text: 'Amapá', value: '406' },
@@ -50,7 +51,7 @@ function StartStep2Page () {
 
     useEffect(() => { 
         dispatch(userInfos.getInfo());
-    }, []);
+    }, [dispatch]);
 
     let user = JSON.parse(localStorage.getItem('user'));
 
@@ -63,7 +64,7 @@ function StartStep2Page () {
     // form fields
     const [gender, setGender] = useState(userInfo.gender)
     const [bio, setBio] = useState(userInfo.bio)
-    const [id_country_fk, setId_country_fk] = useState(userInfo.country)
+    const [id_country_fk, setId_country_fk] = useState('27')
     const [id_region_fk, setId_region_fk] = useState(userInfo.region)
     const [id_city_fk, setId_city_fk] = useState('')
 
@@ -100,7 +101,7 @@ function StartStep2Page () {
     const [searchCity] = useDebouncedCallback((keyword) => {
             if (keyword.length > 1) {
                 setCitySearchIsLoading(true)
-                fetch('https://mublin.herokuapp.com/search/cities/'+keyword, {
+                fetch('https://mublin.herokuapp.com/search/cities/'+keyword+'/'+id_region_fk, {
                     method: 'GET'
                 })
                     .then(res => res.json())
@@ -243,6 +244,7 @@ function StartStep2Page () {
                                         }}
                                         noResultsMessage="Nenhum resultado"
                                         loading={citySearchIsLoading}
+                                        disabled={!id_region_fk ? true : false}
                                     />
                                 </Segment>
                                 <Segment basic textAlign='center' attached="bottom" style={{ border: 'none' }}>

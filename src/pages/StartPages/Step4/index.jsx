@@ -27,7 +27,9 @@ function StartStep3Page () {
     }, [user.id, dispatch]);
 
     const [checkUsername] = useDebouncedCallback((string) => {
-            dispatch(usernameCheckInfos.checkProjectUsernameByString(string))
+            if (string.length) {
+                dispatch(usernameCheckInfos.checkProjectUsernameByString(string))
+            }
         },1000
     );
 
@@ -93,6 +95,7 @@ function StartStep3Page () {
     const [end_year, setEndYear] = useState(null)
     const [bio, setBio] = useState('')
     const [type, setType] = useState('2')
+    const [kind, setKind] = useState('1')
     const [npMain_role_fk, setNpMain_role_fk] = useState('')
     const [publicProject, setPublicProject] = useState('1')
     const [userStatus, setUserStatus] = useState('1')
@@ -196,7 +199,7 @@ function StartStep3Page () {
                 'Content-Type': 'application/json',
                 'Authorization': 'Bearer ' + user.token
             },
-            body: JSON.stringify({ id_user_creator_fk: user.id, projectName: projectName, projectUserName: projectUserName, foundation_year: foundation_year, end_year: end_year, bio: bio, type: type, public: publicProject })
+            body: JSON.stringify({ id_user_creator_fk: user.id, projectName: projectName, projectUserName: projectUserName, foundation_year: foundation_year, end_year: end_year, bio: bio, type: type, kind: kind, public: publicProject })
         })
         .then(response => {
             return response.json();
@@ -449,7 +452,7 @@ function StartStep3Page () {
                                                     color={color}
                                                     style={{fontWeight: 'normal', textAlign: 'center'}} 
                                                 >
-                                                    { projectUsernameAvailability.available &&
+                                                    { (projectUserName && projectUsernameAvailability.available) &&
                                                         <Icon name="check" /> 
                                                     }
                                                     mublin.com/project/{projectUserName}
@@ -468,7 +471,7 @@ function StartStep3Page () {
                                                 value={bio}
                                                 maxLength="200"
                                                 rows="2"
-                                                error={bio.length == "200" && {content: 'A bio atingiu o limite de 200 caracteres' }}
+                                                error={bio.length === "200" && {content: 'A bio atingiu o limite de 200 caracteres' }}
                                             />
                                             <label style={{fontWeight: '600', fontSize: '.92857143em'}}>Sua principal função no projeto</label>
                                             <Form.Field
@@ -479,20 +482,32 @@ function StartStep3Page () {
                                                 onChange={(e, { value }) => setNpMain_role_fk(value)}
                                                 search
                                             />
-                                            <Form.Field 
-                                                label='Tipo de projeto' 
-                                                control='select'
-                                                onChange={(e) => handleTypeChange(e.target.options[e.target.selectedIndex].value)}
-                                                value={type}
-                                            >
-                                                <option value='2'>Banda</option>
-                                                <option value='3'>Projeto</option>
-                                                <option value='1'>Artista Solo</option>
-                                                <option value='8'>DJ</option>
-                                                <option value='7'>Ideia ainda no papel</option>
-                                                <option value='4'>Duo</option>
-                                                <option value='5'>Trio</option>
-                                            </Form.Field>
+                                            <Form.Group widths='equal'>
+                                                <Form.Field 
+                                                    label='Tipo de projeto' 
+                                                    control='select'
+                                                    onChange={(e) => handleTypeChange(e.target.options[e.target.selectedIndex].value)}
+                                                    value={type}
+                                                >
+                                                    <option value='2'>Banda</option>
+                                                    <option value='3'>Projeto</option>
+                                                    <option value='1'>Artista Solo</option>
+                                                    <option value='8'>DJ</option>
+                                                    <option value='4'>Duo</option>
+                                                    <option value='5'>Trio</option>
+                                                    <option value='7'>Ideia no papel</option>
+                                                </Form.Field>
+                                                <Form.Field 
+                                                    label='Conteúdo principal' 
+                                                    control='select'
+                                                    onChange={(e) => setKind(e.target.options[e.target.selectedIndex].value)}
+                                                    value={kind}
+                                                >
+                                                    <option value='1'>Autoral</option>
+                                                    <option value='2'>Cover</option>
+                                                    <option value='3'>Autoral + Cover</option>
+                                                </Form.Field>
+                                            </Form.Group>
                                             <Form.Group inline className="mb-0">
                                                 <label>Visibilidade</label>
                                                 <Form.Field
@@ -519,7 +534,7 @@ function StartStep3Page () {
                                     <Button 
                                         color="black" 
                                         onClick={handleSubmitNewProject}
-                                        disabled={(projectName && projectUserName && foundation_year && type && publicProject && npMain_role_fk && projectUsernameAvailability.available) ? false : true }
+                                        disabled={(projectName && projectUserName && foundation_year && type && kind && publicProject && npMain_role_fk && projectUsernameAvailability.available) ? false : true }
                                     >
                                         Cadastrar
                                     </Button>

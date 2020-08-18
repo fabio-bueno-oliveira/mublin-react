@@ -17,9 +17,10 @@ function LandingPage () {
     const dispatch = useDispatch();
 
     const [checkUsername] = useDebouncedCallback((string) => {
-            dispatch(usernameCheckInfos.checkUsernameByString(string));
-        },900
-    )
+            if (string.length) {
+                dispatch(usernameCheckInfos.checkUsernameByString(string));
+            }
+    },900)
 
     const [checkEmail] = useDebouncedCallback((string) => {
         dispatch(emailCheckInfos.checkEmailByString(string));
@@ -27,7 +28,15 @@ function LandingPage () {
     )
 
     const usernameAvailability = useSelector(state => state.usernameCheck);
+    const [usernameChoosen, setUsernameChoosen] = useState('')
     const emailAvailability = useSelector(state => state.emailCheck);
+
+    let color
+    if (usernameChoosen && usernameAvailability.available === false) {
+        color="red"
+    } else if (usernameChoosen && usernameAvailability.available === true) {
+        color="green"
+    }
 
     const [isLoading, setIsLoading] = useState(false);
 
@@ -146,7 +155,6 @@ function LandingPage () {
                                 >
                                     <Form.Group widths='equal'>
                                         <Form.Input 
-                                            required
                                             id="name"
                                             name="name"
                                             fluid 
@@ -163,7 +171,6 @@ function LandingPage () {
                                             }) : null } 
                                         />
                                         <Form.Input 
-                                            required
                                             id="lastname"
                                             name="lastname"
                                             fluid 
@@ -182,12 +189,12 @@ function LandingPage () {
                                     </Form.Group>
                                     <Form.Input 
                                         className={emailAvailability.available === false && "error"}
-                                        required
                                         id="email"
                                         name="email"
                                         fluid 
                                         label="Email" 
                                         placeholder="Email"
+                                        loading={emailAvailability.requesting}
                                         onChange={e => {
                                             handleChange(e);
                                         }}
@@ -216,7 +223,6 @@ function LandingPage () {
                                     }
                                     <Form.Input 
                                         className={usernameAvailability.available === false && "error"}
-                                        required
                                         id="username"
                                         name="username"
                                         fluid 
@@ -227,20 +233,35 @@ function LandingPage () {
                                         }}
                                         onKeyUp={e => {
                                             checkUsername(e.target.value)
+                                            setUsernameChoosen(e.target.value)
                                         }}
                                         onBlur={e => {
                                             handleBlur(e);
                                         }}
-                                        value={values.username}
-                                        error={touched.username && errors.username ? ( {
-                                            content: touched.username ? errors.username : null,
-                                            size: "tiny",
-                                        }) : null } 
+                                        value={values.username.replace(/[^A-Z0-9]/ig, "").toLowerCase()}
                                         loading={usernameAvailability.requesting}
-                                        icon={usernameAvailability.available ? "check" : ""} 
-                                        iconPosition={usernameAvailability.requesting || usernameAvailability.available ? "left" : ""} 
+                                        icon='at'
+                                        iconPosition='left'
+                                        // error={touched.username && errors.username ? ( {
+                                        //     content: touched.username ? errors.username : null,
+                                        //     size: "tiny",
+                                        // }) : null } 
+                                        // icon={usernameAvailability.available ? "check" : ""} 
+                                        // iconPosition={usernameAvailability.requesting || usernameAvailability.available ? "left" : ""} 
                                     />
-                                    {usernameAvailability.available === false &&
+                                    <Label 
+                                        className="mt-0 mb-2 mr-2"
+                                        size="tiny" 
+                                        pointing 
+                                        color={color}
+                                        style={{fontWeight: 'normal', textAlign: 'center'}} 
+                                    >
+                                        { (usernameChoosen && usernameAvailability.available) &&
+                                            <Icon name="check" /> 
+                                        }
+                                        mublin.com/{usernameChoosen}
+                                    </Label>
+                                    {(usernameChoosen && usernameAvailability.available === false) &&
                                         <Label 
                                             className="mt-0 mb-2"
                                             size="mini" 
@@ -255,7 +276,6 @@ function LandingPage () {
                                     <Form.Group widths='equal'>
                                         <Form.Input 
                                             type="password"
-                                            required
                                             id="password"
                                             name="password"
                                             fluid 
@@ -273,7 +293,6 @@ function LandingPage () {
                                         />
                                         <Form.Input 
                                             type="password"
-                                            required
                                             id="repassword"
                                             name="repassword"
                                             fluid 
@@ -291,6 +310,7 @@ function LandingPage () {
                                         />
                                     </Form.Group>
                                     <Button 
+                                        className="mt-4"
                                         type="submit" 
                                         secondary fluid 
                                         disabled={(isValid && usernameAvailability.available && emailAvailability.available) ? false : true}

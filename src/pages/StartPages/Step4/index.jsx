@@ -62,6 +62,7 @@ function StartStep3Page () {
     const [modalOpen, setModalOpen] = useState(false)
     const [modalProjectInfo, setModalProjectInfo] = useState('')
     const [modalProjectTitle, setModalProjectTitle] = useState('')
+    const [modalProjectImage, setModalProjectImage] = useState('')
     const [modalProjectFoundationYear, setModalFoundationYear] = useState('')
     const [modalProjectEndYear, setModalEndYear] = useState('')
 
@@ -145,6 +146,7 @@ function StartStep3Page () {
         setModalFoundationYear(result.foundation_year)
         setJoined_in(result.foundation_year)
         setModalEndYear(result.end_year)
+        setModalProjectImage(result.image)
         setModalOpen(true)
     }
 
@@ -286,7 +288,7 @@ function StartStep3Page () {
     const handleFormSubmit = () => {
         setIsLoading(true)
         let user = JSON.parse(localStorage.getItem('user'));
-        fetch('https://mublin.herokuapp.com/user/'+userInfo.id+'/firstAccess', {
+        fetch('https://mublin.herokuapp.com/user/'+user.id+'/firstAccess', {
             method: 'PUT',
             headers: {
                 'Accept': 'application/json, text/plain, */*',
@@ -357,11 +359,11 @@ function StartStep3Page () {
                                 >
                                     <Modal.Header>Ingressar em {modalProjectTitle}?</Modal.Header>
                                     <Modal.Content>
-                                        <Image centered rounded src={'https://ik.imagekit.io/mublin/tr:h-200,w-200/projects/11/segredo-da-vida_q5H1GJdr6.jpg'} size='tiny' className="mb-2" />
+                                        <Image centered rounded src={modalProjectImage} size='tiny' className="mb-2" />
                                         <p style={{fontSize: '11px', textAlign: 'center'}}>{modalProjectInfo}</p>
-                                        <p style={{fontSize: '11px', textAlign: 'center'}}>{'Formada em: '+modalProjectFoundationYear}{modalProjectEndYear && ' ・ Encerrada em '+modalProjectEndYear}</p>
+                                        <p style={{fontSize: '11px', textAlign: 'center'}}>{'Formada em '+modalProjectFoundationYear}{modalProjectEndYear && ' ・ Encerrada em '+modalProjectEndYear}</p>
                                         <Form className="mt-4">
-                                            <label style={{fontWeight: '600', fontSize: '.92857143em'}}>Qual é/foi sua ligação com este projeto?</label>
+                                            <label style={{fontWeight: '600', fontSize: '.92857143em'}}>Qual é (ou foi) sua ligação com este projeto?</label>
                                             <Form.Field>
                                                 <Radio
                                                     className="mt-3"

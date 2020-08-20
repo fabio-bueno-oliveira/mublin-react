@@ -134,11 +134,17 @@ const HeaderDesktop = () => {
                                 <i className="far fa-envelope"></i> <span className="ui red circular mini label">2</span>
                             </Link>
                             <div className="ui simple dropdown item">
-                                {/* <img className="ui avatar image mr-2" src={'/img/'+userInfo.id+'/'+userInfo.picture} /> {userInfo.name} */}
-                                <IKImage 
-                                    path={'/users/avatars/'+userInfo.id+'/'+userInfo.picture}
-                                    transformation={[{ "height": "200", "width": "200", "r": "max" }]} 
-                                />
+                                { userInfo.picture ? (
+                                    <IKImage 
+                                        path={'/users/avatars/'+userInfo.id+'/'+userInfo.picture}
+                                        transformation={[{ "height": "200", "width": "200", "r": "max" }]} 
+                                    />
+                                ) : (
+                                    <IKImage 
+                                        path={'/sample-folder/avatar-alien_46GjWhMRNr.png'}
+                                        transformation={[{ "height": "200", "width": "200", "r": "max" }]} 
+                                    />
+                                )}
                                 {userInfo.payment_plan === 2 && <div className="ui mini blue label">PRO</div> } <i className="dropdown icon"></i>
                                 <div className="menu">
                                     <a className="item" href="/<?=$row_user_info['username']?>">Meu perfil</a>

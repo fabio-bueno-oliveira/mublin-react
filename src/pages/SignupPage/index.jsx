@@ -106,8 +106,8 @@ function LandingPage () {
         }
         <main className="signupPage">
             <div className="ui container" style={{ height: '100%' }}>
-                <Grid centered columns={2} verticalAlign='middle'>
-                    <Grid.Column>
+                <Grid centered columns={1} verticalAlign='middle'>
+                    <Grid.Column mobile={16} computer={10}>
                         <Segment attached='top'>
                             <Header as='h2' className="mb-4">
                                 <Image
@@ -322,7 +322,7 @@ function LandingPage () {
                             )}
                             </Formik>
                         </Segment>
-                        <Segment attached='bottom' textAlign='center'>
+                        <Segment attached='bottom' textAlign='center' className='mb-4'>
                             <Link to={{ pathname: "/login" }}>
                                 Já tem uma conta? Clique aqui para entrar
                             </Link>

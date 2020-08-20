@@ -3,9 +3,11 @@ main.signupPage {
   background-repeat: no-repeat;
   background-position: center;
   background-size: cover;
+  background-color: #000;
   min-height: 100%;
   padding: 16px 0 0 0;
   display: flex;
+  justify-content: center;
   align-items: center;
 
   header {

@@ -8,18 +8,25 @@ import { Form, Button, Header, Grid, Image, Segment, Label, Icon } from 'semanti
 import { Formik } from 'formik';
 import ValidateUtils from '../../utils/ValidateUtils';
 import Loader from 'react-loader-spinner';
+import Logo from '../../assets/img/logos/logo-mublin-circle-black.png'
 import './styles.scss'
 
-function LandingPage () {
+function SignupPage (props) {
 
     let history = useHistory();
+    let dispatch = useDispatch();
 
-    const dispatch = useDispatch();
+    let emailProspect
+    if (props.location.state) {
+        emailProspect = props.location.state.email
+    } else {
+        emailProspect = ''
+    }
 
     const [checkUsername] = useDebouncedCallback((string) => {
-            if (string.length) {
-                dispatch(usernameCheckInfos.checkUsernameByString(string));
-            }
+        if (string.length) {
+            dispatch(usernameCheckInfos.checkUsernameByString(string));
+        }
     },900)
 
     const [checkEmail] = useDebouncedCallback((string) => {
@@ -107,11 +114,11 @@ function LandingPage () {
         <main className="signupPage">
             <div className="ui container" style={{ height: '100%' }}>
                 <Grid centered columns={1} verticalAlign='middle'>
-                    <Grid.Column mobile={16} computer={10}>
+                    <Grid.Column mobile={16} computer={10} className="pb-0">
                         <Segment attached='top'>
                             <Header as='h2' className="mb-4">
                                 <Image
-                                    src='https://mublin.com/img/logo-mublin-circle-black.png'
+                                    src={Logo}
                                     as='a'
                                     size='small'
                                     href='/'
@@ -125,7 +132,7 @@ function LandingPage () {
                                 initialValues={{ 
                                     name: '',
                                     lastname: '',
-                                    email: '', 
+                                    email: emailProspect, 
                                     username: '',
                                     password: ''
                                     //rePassword: ''
@@ -322,7 +329,7 @@ function LandingPage () {
                             )}
                             </Formik>
                         </Segment>
-                        <Segment attached='bottom' textAlign='center' className='mb-4'>
+                        <Segment attached='bottom' textAlign='center' className='mb-0 mb-md-4'>
                             <Link to={{ pathname: "/login" }}>
                                 Já tem uma conta? Clique aqui para entrar
                             </Link>
@@ -335,4 +342,4 @@ function LandingPage () {
     );
 };
 
-export default LandingPage;
+export default SignupPage;

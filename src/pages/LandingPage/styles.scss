@@ -6,16 +6,16 @@ main.landingPage {
   min-height: 100%;
   padding: 16px 0 0 0;
 
+  h1 {
+    color: #FFF;
+    font-family: 'Baloo';
+    font-size: 32px;
+  }
+
   header {
     display: flex;
     justify-content: space-between;
     width: 100%;
-
-    h1 {
-      color: #FFF;
-      font-family: 'Baloo';
-      font-size: 32px;
-    }
 
     .action {
       padding: 8px 0 0 0;
@@ -24,19 +24,20 @@ main.landingPage {
   }
 
   section#cta {
-    align-items: center;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    margin: 240px 0 0 0;
-    width: 100%;
+    margin: 160px 0 0 0;
+    @media only screen and (min-width: 600px) {
+      margin: 240px 0 0 0;
+    }
 
     h2 {
-      color: #FFF;
-      font-family: 'Poppins', sans-serif;
-      font-size: 22px;
-      font-weight: 400;
-      margin: 0 0 26px 0;
+      font-weight: 400!important;
+      margin: 0 0 36px 0!important;
     }
+  }
+
+  footer {
+    position: absolute; 
+    bottom: 0px;
+    width: 100%;
   }
 }

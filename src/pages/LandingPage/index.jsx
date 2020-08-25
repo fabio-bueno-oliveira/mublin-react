@@ -24,24 +24,24 @@ function LandingPage () {
             <Container>
                 <Grid padded as='header'>
                     <Grid.Row columns={1} only='mobile'>
-                        <Grid.Column width={16} textAlign='center'>
+                        <Grid.Column width={17} textAlign='center'>
                             <h1>mublin</h1>
                         </Grid.Column>
                     </Grid.Row>
                     <Grid.Row columns={2} only='computer'>
-                        <Grid.Column width={8} textAlign='left'>
+                        <Grid.Column width={3} textAlign='left'>
                             <Link to={{ pathname: "/" }}>
                                 <h1>mublin</h1>
                             </Link>
                         </Grid.Column>
-                        <Grid.Column width={8} textAlign='right'>
+                        <Grid.Column width={12} textAlign='right'>
                             <Button 
                                 inverted 
                                 color='white' 
                                 size='medium' 
                                 className="mr-2 mt-2"
                                 onClick={() => history.push("/login")}
-                            >
+                            > 
                                 Entrar
                             </Button>
                             <Button 
@@ -51,16 +51,18 @@ function LandingPage () {
                                 className="mt-2"
                                 onClick={() => history.push("/signup")}
                             >
-                                Cadastro
+                                Cadastre-se
                             </Button>
                         </Grid.Column>
                     </Grid.Row>
                 </Grid>
                 <Grid centered columns={1} as='section' id="cta" className="mr-0">
-                    <Grid.Column width={6} textAlign='center' only='computer'>
-                        <Header as='h2' inverted>Informações das suas bandas,<br/> <nobr>centralizadas em um só lugar.</nobr></Header>
-                        <Form>
+                    <Grid.Column width={8} textAlign='center' only='computer'>
+                        <Header as='h1' inverted>Sseus projetos de música, centralizados em um só lugar</Header>
+                        <Header as='h3' inverted>Não possui uma conta?<br />Cadastre-se gratuitamente</Header>
+                        <Form style={{ display: "flex", justifyContent: "center" }}>
                             <Input 
+                                style={{ width: "70%" }}
                                 type='email'
                                 fluid
                                 action={{

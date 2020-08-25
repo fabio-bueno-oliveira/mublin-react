@@ -10,8 +10,9 @@ import { project } from './project';
 import { projects } from './projects';
 import { profile } from './profile';
 import { events } from './events';
-import { musicGenres } from './musicGenres'
-import { roles } from './roles'
+import { notes } from './notes';
+import { musicGenres } from './musicGenres';
+import { roles } from './roles';
 
 const rootReducer = combineReducers({
   authentication,
@@ -25,6 +26,7 @@ const rootReducer = combineReducers({
   projects,
   profile,
   events,
+  notes,
   musicGenres,
   roles
 });

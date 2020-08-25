@@ -159,6 +159,9 @@ function SignupPage (props) {
                                             handleSubmit();
                                         }
                                     }}
+                                    onChange={e => {
+                                        checkEmail(values.email)
+                                    }}
                                 >
                                     <Form.Group widths='equal'>
                                         <Form.Input 

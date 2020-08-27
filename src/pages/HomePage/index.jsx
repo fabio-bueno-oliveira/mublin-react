@@ -1,11 +1,13 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import HeaderDesktop from '../../components/layout/headerDesktop';
+import { projectInfos } from '../../store/actions/project';
 import { projectsInfos } from '../../store/actions/projects';
+import { userInfos } from '../../store/actions/user';
 import { eventsInfos } from '../../store/actions/events';
 import { notesInfos } from '../../store/actions/notes';
-import { Header, Tab, Card, Grid, List, Image, Icon, Menu, Button, Label, Popup } from 'semantic-ui-react';
+import { Loader, Header, Modal, Tab, Card, Grid, List, Image, Icon, Menu, Button, Label, Popup, Form, Checkbox, Radio, Dropdown, Segment } from 'semantic-ui-react';
 import Flickity from 'react-flickity-component'
 import moment from 'moment';
 import './styles.scss';
@@ -21,13 +23,19 @@ function HomePage () {
     useEffect(() => {
         dispatch(projectsInfos.getUserMainProjects(user.id));
         dispatch(projectsInfos.getUserPortfolioProjects(user.id));
+        dispatch(userInfos.getUserProjects(user.id));
         dispatch(eventsInfos.getUserEvents(user.id));
         dispatch(notesInfos.getUserNotes(user.id));
     }, [user.id, dispatch]);
 
+    const userProjects = useSelector(state => state.user.projects)
+
     const projects = useSelector(state => state.projects);
     const mainProjects = projects.mainProjects;
     const portfolioProjects = projects.portfolioProjects;
+
+    const mainProjects2 = userProjects.filter((project) => { return project.portfolio !== 0 })
+    // console.log(35, mainProjects2)
 
     let mainProjectsTotal
     if (!mainProjects[0].id) {
@@ -48,8 +56,6 @@ function HomePage () {
     const publicEvents = allEvents.filter((evento) => { return evento.id_event_type_fk === 2 || evento.id_event_type_fk === 5 || evento.id_event_type_fk === 5 ||  evento.id_event_type_fk === 6 })
     const groupMeetings = allEvents.filter((evento) => { return evento.id_event_type_fk === 1 || evento.id_event_type_fk === 3 || evento.id_event_type_fk === 4 })
 
-    const notes = useSelector(state => state.notes.list)
-
     const sliderOptions = {
         autoPlay: false,
         cellAlign: 'left',
@@ -61,6 +67,40 @@ function HomePage () {
         resize: true,
         contain: true
     }
+
+    //// START NOTES SECTION ////
+    const notes = useSelector(state => state.notes.list)
+    const [modalNewNoteOpen, setModalNewNoteOpen] = useState(false)
+    const [newNoteTitle, setNewNoteTitle] = useState('')
+    const [newNoteDone, setNewNoteDone] = useState('0')
+    const [newNoteTargetDate, setNewNoteTargetDate] = useState('')
+    const [newNoteProjectAssociated, setNewNoteProjectAssociated] = useState('')
+    const handleChangeProjectAssociated = (value) => {
+        setNewNoteProjectAssociated(value)
+        dispatch(projectInfos.getProjectMembersByProjectId(value));
+    }
+    // const toggleNewNoteDone = () => setNewNoteDone(value => !value)
+    const toggleNewNoteDone = () => {
+        if (newNoteDone === '1') {
+            setNewNoteDone('0')
+        } else if (newNoteDone === '0') {
+            setNewNoteDone('1')
+        }
+    }
+    const projectsList = userProjects.filter((project) => { return project.confirmed === 1 }).map(project => ({ 
+        text: project.name,
+        value: project.projectid,
+        key: project.projectid,
+        image: { avatar: true, src: 'https://ik.imagekit.io/mublin/tr:h-200,w-200,r-max/projects/'+project.projectid+'/'+project.picture+'' }
+    }));
+    const members = useSelector(state => state.project.members);
+    const projectMembersList = members.filter((member) => { return member.id !== user.id }).map(member => ({ 
+        text: member.name+' '+member.lastname,
+        value: member.id,
+        key: member.id,
+        image: { avatar: true, src: 'https://ik.imagekit.io/mublin/tr:h-200,w-200,r-max/users/avatars/'+member.id+'/'+member.picture+'' }
+    }));
+    //// END NOTES SECTION ////
 
     return (
         <>
@@ -103,7 +143,7 @@ function HomePage () {
                                             )
                                         ) : (
                                             <div className="carousel-cell">
-                                                <Image src={'https://ik.imagekit.io/mublin/misc/square-sad-music_dx7mz599v.jpg'} height='85' width='85' rounded />
+                                                <Image src={'https://ik.imagekit.io/mublin/misc/square-sad-music_SeGz8vs_2A.jpg'} height='85' width='85' rounded />
                                                 <h5 className="ui header mt-2 mb-0">
                                                     <div className="sub header mt-1">Sem projetos</div>
                                                 </h5>
@@ -150,7 +190,7 @@ function HomePage () {
                                     )
                                     ) : (
                                         <div className="carousel-cell">
-                                            <Image src={'https://ik.imagekit.io/mublin/misc/square-sad-music_dx7mz599v.jpg'} height='85' width='85' rounded />
+                                            <Image src={'https://ik.imagekit.io/mublin/misc/square-sad-music_SeGz8vs_2A.jpg'} height='85' width='85' rounded />
                                             <h5 className="ui header mt-2 mb-0">
                                                 <div className="sub header mt-1">Sem portfolio</div>
                                             </h5>
@@ -401,7 +441,7 @@ function HomePage () {
                     </Card>
                 </Grid.Column>
                 <Grid.Column>
-                    <Card style={{width: '100%'}}>
+                    <Card id="notes" style={{width: '100%'}}>
                         <Card.Content>
                             <Image src='https://ik.imagekit.io/mublin/tr:r-8,w-300,h-80,c-maintain_ratio/misc/plan_99Rjsl0kD.jpg' fluid className="mb-3" />
                             <Card.Header className="ui mt-0 mb-1">Notas</Card.Header>
@@ -420,36 +460,100 @@ function HomePage () {
                                 ) : (
                                     <List relaxed>
                                     {notes.map((note, key) =>
-                                        <List.Item key={key}>
-                                            { note.ownerId !== user.id ? (
-                                                <Label as='span' size='tiny' ribbon className="mb-1">
-                                                    {'Criado por '+note.ownerName+' em '+note.noteCreated.substr(0, 10)}
-                                                </Label>
-                                            ) : (
-                                                <Label as='span' size='tiny' ribbon className="mb-1">
-                                                    {'Criado por mim em '+note.noteCreated.substr(0, 10)}
-                                                </Label>
-                                            )}
-                                            <div className={'item mb-1 '+note.eid}>
-                                                <div className="content py-1">
-                                                    <Link to={{ pathname: '/notes/?id='+note.noteId }}>
-                                                        <Image className="left floated mr-2" src={note.projectPicture} width='35' height='35' rounded  />
-                                                        <Header as='h6'>{note.noteTitle}</Header>
-                                                        <div className="meta mb-2 pt-1 pt-md-0" style={{fontSize: '0.775rem', color: 'grey'}}>
-                                                            <span className='mr-2'>relacionada a {note.projectName}</span> 
-                                                        </div>
-                                                        <h5 className="header pt-1">{note.noteDescription}</h5>
-                                                    </Link>
-                                                </div>
-                                            </div>
-                                        </List.Item>
+                                        <>
+                                            <Segment key={key} inverted color='yellow' tertiary>
+                                                { note.ownerId !== user.id ? (
+                                                    <p style={{color:'#272727',fontSize:'11px'}} className="mb-0">
+                                                        Criado por <Link to={{pathname: '/'+note.ownerUsername}} style={{opacity: '1'}}>{note.ownerName}</Link> em {note.noteCreated.substr(0, 10)}
+                                                    </p>
+                                                ) : (
+                                                    <p style={{color:'#272727',fontSize:'11px'}} className="mb-0">
+                                                        {'Criado por mim em '+note.noteCreated.substr(0, 10)}
+                                                    </p>
+                                                )}
+                                                <Header as='h5' style={{color:'#272727'}} className="mt-1 mb-3">
+                                                    {note.noteTitle}  <Icon name='volume up' style={{fontSize:'11px',verticalAlign:'baseline'}} />
+                                                </Header>
+                                                <Header as='h5' className="my-1">
+                                                    <Button size='mini' primary>Arquivar</Button> <Button size='mini' primary>Excluir</Button>
+                                                </Header>
+                                            </Segment>
+                                        </>
                                     )}
                                     </List>
                                 )}
+                                <Modal
+                                    size='mini'
+                                    open={modalNewNoteOpen}
+                                    onClose={() => setModalNewNoteOpen(false)}
+                                >
+                                    <Modal.Header>Criar nova nota</Modal.Header>
+                                    <Modal.Content>
+                                        <Form>
+                                            <Form.Field>
+                                                <input 
+                                                    placeholder='Título'
+                                                    value={newNoteTitle}
+                                                    onChange={e => setNewNoteTitle(e.target.value)} 
+                                                />
+                                            </Form.Field>
+                                            <Form.TextArea placeholder='Anotação...' />
+                                            {/* <Form.Field>
+                                                <Checkbox label='I agree to the Terms and Conditions' />
+                                            </Form.Field> */}
+                                            <Header as='h4'>Informações opcionais</Header>
+                                            <Dropdown
+                                                placeholder='Projeto relacionado'
+                                                fluid
+                                                selection
+                                                closeOnEscape
+                                                options={projectsList}
+                                                noResultsMessage='Nenhum projeto disponível'
+                                                onChange={(e, { value }) => handleChangeProjectAssociated(value)}
+                                                value={newNoteProjectAssociated}
+                                                className="mb-3"
+                                            />
+                                            { members[0].id &&
+                                                <Dropdown
+                                                    placeholder='Associar nota a outros integrantes'
+                                                    fluid
+                                                    multiple
+                                                    search
+                                                    selection
+                                                    options={projectMembersList}
+                                                    className="mb-3"
+                                                />
+                                            }
+                                            <Form.Field>
+                                                <label>Data relacionada</label>
+                                                <input 
+                                                    type="date"
+                                                    placeholder='Data relacionada'
+                                                    value={newNoteTargetDate}
+                                                    onChange={e => setNewNoteTargetDate(e.target.value)} 
+                                                />
+                                            </Form.Field>
+                                            <Radio 
+                                                toggle 
+                                                label={newNoteDone === '0' ? 'Atividade não concluída' : 'Atividade concluída'}
+                                                checked={newNoteDone === '1'}
+                                                onChange={() => toggleNewNoteDone()}
+                                            />
+                                        </Form>
+                                    </Modal.Content>
+                                    <Modal.Actions>
+                                        <Button onClick={() => setModalNewNoteOpen(false)}>
+                                            Cancelar
+                                        </Button>
+                                        <Button positive>
+                                            Salvar
+                                        </Button>
+                                    </Modal.Actions>
+                                </Modal>
                             </Card.Description>
                         </Card.Content>
                         <Card.Content extra style={{fontSize: 'small'}}>
-                            <Link to={{ pathname: "/tbd" }}>
+                            <Link onClick={() => setModalNewNoteOpen(true)}>
                                 <Icon name='pencil alternate' /> Nova anotação
                             </Link>
                             <Link className="ml-3" to={{ pathname: "/tbd" }}>

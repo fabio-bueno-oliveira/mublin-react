@@ -18,6 +18,8 @@ function ProfilePage (props) {
     //const user = useSelector(state => state.user)
     const profile = useSelector(state => state.profile);
 
+    document.title = profile.name+' '+profile.lastname+' | Mublin'
+
     // const sliderOptions = {
     //     autoPlay: false,
     //     cellAlign: 'left',

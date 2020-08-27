@@ -4,6 +4,7 @@ import { projectService } from '../../api/projects';
 export const projectInfos = {
     getProjectInfo: getProjectInfo,
     getProjectMembers: getProjectMembers,
+    getProjectMembersByProjectId: getProjectMembersByProjectId,
     getProjectOpportunities: getProjectOpportunities
 };
 
@@ -37,6 +38,22 @@ function getProjectMembers(username) {
     function request(username) { return { type: projectTypes.GET_PROJECT_MEMBERS_REQUEST, username } }
     function success(list) { return { type: projectTypes.GET_PROJECT_MEMBERS_SUCCESS, list } }
     function failure(username, error) { return { type: projectTypes.GET_PROJECT_MEMBERS_FAILURE, username, error } }
+}
+
+function getProjectMembersByProjectId(id) {
+    return dispatch => {
+        dispatch(request(id));
+
+        projectService.getProjectMembersByProjectId(id)
+            .then(
+                list => dispatch(success(list)),
+                error => dispatch(failure(id, error.toString()))
+            );
+    };
+
+    function request(id) { return { type: projectTypes.GET_PROJECT_MEMBERS_REQUEST, id } }
+    function success(list) { return { type: projectTypes.GET_PROJECT_MEMBERS_SUCCESS, list } }
+    function failure(id, error) { return { type: projectTypes.GET_PROJECT_MEMBERS_FAILURE, id, error } }
 }
 
 function getProjectOpportunities(username) {

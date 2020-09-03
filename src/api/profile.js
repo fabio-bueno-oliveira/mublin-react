@@ -19,6 +19,7 @@ export const profileService = {
     getProfileInfo,
     getProfileMainProjects,
     getProfilePortfolioProjects,
+    getProfileRoles,
     logout
 };
 
@@ -27,7 +28,7 @@ function getProfileInfo(username) {
         method: 'GET',
         headers: authHeader()
     };
-    return fetch(`${BASE_URL}/user/${username}`, requestOptions).then(handleResponse);
+    return fetch(`${BASE_URL}/profile/${username}`, requestOptions).then(handleResponse);
 }
 
 function getProfileMainProjects(username) {
@@ -44,6 +45,14 @@ function getProfilePortfolioProjects(username) {
         headers: authHeader()
     };
     return fetch(`${BASE_URL}/user/${username}/projects/portfolio`, requestOptions).then(handleResponse);
+}
+
+function getProfileRoles(username) {
+    const requestOptions = {
+        method: 'GET',
+        headers: authHeader()
+    };
+    return fetch(`${BASE_URL}/profile/${username}/roles`, requestOptions).then(handleResponse);
 }
 
 function logout() {

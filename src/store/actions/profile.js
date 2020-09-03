@@ -4,7 +4,8 @@ import { profileService } from '../../api/profile';
 export const profileInfos = {
     getProfileInfo: getProfileInfo,
     getProfileMainProjects: getProfileMainProjects,
-    getProfilePortfolioProjects: getProfilePortfolioProjects
+    getProfilePortfolioProjects: getProfilePortfolioProjects,
+    getProfileRoles: getProfileRoles
 };
 
 function getProfileInfo(username) {
@@ -53,4 +54,20 @@ function getProfilePortfolioProjects(username) {
     function request(username) { return { type: profileTypes.GET_PROFILE_PORTFOLIO_PROJECTS_REQUEST, username } }
     function success(list) { return { type: profileTypes.GET_PROFILE_PORTFOLIO_PROJECTS_SUCCESS, list } }
     function failure(username, error) { return { type: profileTypes.GET_PROFILE_PORTFOLIO_PROJECTS_FAILURE, username, error } }
+}
+
+function getProfileRoles(username) {
+    return dispatch => {
+        dispatch(request(username));
+
+        profileService.getProfileRoles(username)
+            .then(
+                list => dispatch(success(list)),
+                error => dispatch(failure(username, error.toString()))
+            );
+    };
+  
+    function request(username) { return { type: profileTypes.GET_PROFILE_ROLES_REQUEST, username } }
+    function success(list) { return { type: profileTypes.GET_PROFILE_ROLES_SUCCESS, list } }
+    function failure(username, error) { return { type: profileTypes.GET_PROFILE_ROLES_FAILURE, username, error } }
 }

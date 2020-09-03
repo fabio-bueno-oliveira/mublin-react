@@ -13,9 +13,9 @@ function ProfilePage (props) {
 
     useEffect(() => {
         dispatch(profileInfos.getProfileInfo(username));
+        dispatch(profileInfos.getProfileRoles(username));
     }, [dispatch, username]);
 
-    //const user = useSelector(state => state.user)
     const profile = useSelector(state => state.profile);
 
     document.title = profile.name+' '+profile.lastname+' | Mublin'
@@ -35,10 +35,10 @@ function ProfilePage (props) {
     return (
         <>
         <HeaderDesktop />
-            <Grid id="bio" columns={2} stackable className="container mb-2 mt-4 mt-md-5 pt-5">
+            <Grid id="info" columns={2} stackable className="container mb-2 mt-4 mt-md-5 pt-5">
                 <Grid.Row>
                     <Grid.Column width={4}>
-                        <Card style={{ width: "100%" }}>
+                        <Card id="card" style={{ width: "100%" }}>
                             <Card.Content>
                                 { profile.requesting ? (
                                     <Dimmer active inverted>
@@ -47,11 +47,15 @@ function ProfilePage (props) {
                                 ) : (
                                     <>
                                     <div className="center aligned mb-3 mt-2 mt-md-2">
-                                        <Image src={'https://mublin.com/img/users/avatars/'+profile.id+'/'+profile.picture} size="tiny" circular alt={'Foto de '+profile.name} />
+                                        <Image src={profile.picture} size="tiny" circular alt={'Foto de '+profile.name} />
                                     </div>
                                     <div className="center aligned">
-                                        <Header size="medium" className="mb-1">{profile.name+' '+profile.lastname} <Label basic color="black" size="tiny" className="ml-1 p-1">PRO</Label></Header>
-                                        <p className="mb-1" style={{ fontSize: "13px" }}>Role1, Role2, Role3</p>
+                                        <Header size="medium" className="mb-1">{profile.name+' '+profile.lastname} <Label basic color="black" size="tiny" className="ml-1 p-1">{profile.plan}</Label></Header>
+                                        <p className="mb-1" style={{ fontSize: "13px" }}>
+                                            {profile.roles.map((role, key) =>
+                                                <span key={key}>{role.name}{key < (profile.roles.length-1) && ', '}</span>
+                                            )}
+                                        </p>
                                         <p className="mb-1" style={{ fontSize: "11px" }}>{profile.city+', '+profile.region}</p>
                                         <Button.Group fluid color="black" size="tiny" className="mt-3">
                                             <Button>Seguindo</Button>

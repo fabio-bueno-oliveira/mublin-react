@@ -11,7 +11,14 @@ const initialState = {
   country: '',
   region: '',
   city: '',
-  roles: [],
+  roles: [
+    { 
+      id: '', 
+      name: '',
+      description: '',
+      main: ''
+    }
+  ],
   availabilityId: '',
   availabilityTitle: '',
   availabilityColor: '',
@@ -163,6 +170,24 @@ export function profile(state = initialState, action) {
         requesting: false,
       };
     case profileTypes.GET_PROFILE_PORTFOLIO_PROJECTS_FAILURE:
+      return {
+        ...state,
+        requesting: false,
+        error: "A solicitação falhou"
+      };
+    // ROLES
+    case profileTypes.GET_PROFILE_ROLES_REQUEST:
+      return {
+        ...state,
+        requesting: true
+      };
+    case profileTypes.GET_PROFILE_ROLES_SUCCESS:
+      return {
+        ...state,
+        roles: action.list,
+        requesting: false,
+      };
+    case profileTypes.GET_PROFILE_ROLES_FAILURE:
       return {
         ...state,
         requesting: false,

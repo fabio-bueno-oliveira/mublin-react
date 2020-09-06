@@ -20,6 +20,9 @@ export const profileService = {
     getProfileMainProjects,
     getProfilePortfolioProjects,
     getProfileRoles,
+    getProfileFollowers,
+    getProfileFollowing,
+    checkProfileFollowing,
     logout
 };
 
@@ -53,6 +56,30 @@ function getProfileRoles(username) {
         headers: authHeader()
     };
     return fetch(`${BASE_URL}/profile/${username}/roles`, requestOptions).then(handleResponse);
+}
+
+function getProfileFollowers(username) {
+    const requestOptions = {
+        method: 'GET',
+        headers: authHeader()
+    };
+    return fetch(`${BASE_URL}/profile/${username}/followers`, requestOptions).then(handleResponse);
+}
+
+function getProfileFollowing(username) {
+    const requestOptions = {
+        method: 'GET',
+        headers: authHeader()
+    };
+    return fetch(`${BASE_URL}/profile/${username}/following`, requestOptions).then(handleResponse);
+}
+
+function checkProfileFollowing(username) {
+    const requestOptions = {
+        method: 'GET',
+        headers: authHeader()
+    };
+    return fetch(`${BASE_URL}/profile/${username}/checkFollow`, requestOptions).then(handleResponse);
 }
 
 function logout() {

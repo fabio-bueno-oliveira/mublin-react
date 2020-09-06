@@ -58,7 +58,7 @@ function LandingPage () {
                 </Grid>
                 <Grid centered columns={1} as='section' id="cta" className="mr-0">
                     <Grid.Column width={8} textAlign='center' only='computer'>
-                        <Header as='h1' inverted>Sseus projetos de música, centralizados em um só lugar</Header>
+                        <Header as='h1' inverted>Seus projetos de música, centralizados em um só lugar</Header>
                         <Header as='h3' inverted>Não possui uma conta?<br />Cadastre-se gratuitamente</Header>
                         <Form style={{ display: "flex", justifyContent: "center" }}>
                             <Input 

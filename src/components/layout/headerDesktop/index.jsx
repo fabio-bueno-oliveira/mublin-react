@@ -147,7 +147,7 @@ const HeaderDesktop = () => {
                                 )}
                                 {userInfo.payment_plan === 2 && <div className="ui mini blue label">PRO</div> } <i className="dropdown icon"></i>
                                 <div className="menu">
-                                    <a className="item" href="/<?=$row_user_info['username']?>">Meu perfil</a>
+                                    <a className="item" href={'/'+userInfo.username}>Meu perfil</a>
                                     <a className="item settings" href="/settings">Configurações</a>
                                     {/* <!-- Projects Menu goes here (header-global-scripts.php) --> */}
                                     <div className="divider"></div>

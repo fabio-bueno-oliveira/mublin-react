@@ -22,7 +22,6 @@ const initialState = {
   availabilityId: '',
   availabilityTitle: '',
   availabilityColor: '',
-  firstAccess: '',
   projects: {
     main: [
       {
@@ -76,13 +75,25 @@ const initialState = {
     ]
   },
   followers: [
-    { 
-      id: '', 
+    {
+      id: '',
+      followerId: '',
+      followedId: '',
       name: '',
       lastname: '',
       username: '',
-      picture: '',
-      followedByMe: false
+      picture: ''
+    }
+  ],
+  following: [
+    {
+      id: '',
+      followerId: '',
+      followedId: '',
+      name: '',
+      lastname: '',
+      username: '',
+      picture: ''
     }
   ],
   strengths: [
@@ -188,6 +199,42 @@ export function profile(state = initialState, action) {
         requesting: false,
       };
     case profileTypes.GET_PROFILE_ROLES_FAILURE:
+      return {
+        ...state,
+        requesting: false,
+        error: "A solicitação falhou"
+      };
+    // FOLLOWERS
+    case profileTypes.GET_PROFILE_FOLLOWERS_REQUEST:
+      return {
+        ...state,
+        requesting: true
+      };
+    case profileTypes.GET_PROFILE_FOLLOWERS_SUCCESS:
+      return {
+        ...state,
+        followers: action.list,
+        requesting: false,
+      };
+    case profileTypes.GET_PROFILE_FOLLOWERS_FAILURE:
+      return {
+        ...state,
+        requesting: false,
+        error: "A solicitação falhou"
+      };
+    // FOLLOWING
+    case profileTypes.GET_PROFILE_FOLLOWING_REQUEST:
+      return {
+        ...state,
+        requesting: true
+      };
+    case profileTypes.GET_PROFILE_FOLLOWING_SUCCESS:
+      return {
+        ...state,
+        following: action.list,
+        requesting: false,
+      };
+    case profileTypes.GET_PROFILE_FOLLOWING_FAILURE:
       return {
         ...state,
         requesting: false,

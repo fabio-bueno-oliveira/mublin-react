@@ -132,7 +132,15 @@ function ProjectPage (props) {
                             members.map((member, key) =>
                             <Card className="my-0 ml-1 mr-3 member-card" href={'/'+member.username}>
                                 <Card.Content extra className="center aligned">
-                                    <Image src={'https://ik.imagekit.io/mublin/users/avatars/tr:h-200,w-200,c-maintain_ratio/'+member.id+'/'+member.picture} width="25" height="25" circular alt={'Foto de '+member.name} /> {'@'+member.username}
+                                    { member.picture ? (
+                                        <>
+                                        <Image src={'https://ik.imagekit.io/mublin/users/avatars/tr:h-200,w-200,c-maintain_ratio/'+member.id+'/'+member.picture} width="25" height="25" circular alt={'Foto de '+member.name} /> <span>@ {member.username}</span>
+                                        </>
+                                    ) : (
+                                        <>
+                                        <Image src='https://ik.imagekit.io/mublin/sample-folder/avatar-undefined_Kblh5CBKPp.jpg' width="25" height="25" circular alt={'Foto de '+member.name} /> <span>@ {member.username}</span>
+                                        </>
+                                    )}
                                 </Card.Content>
                                 <Card.Content>
                                     <div class="center aligned ui small header mb-1">

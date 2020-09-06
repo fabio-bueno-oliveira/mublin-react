@@ -9,6 +9,7 @@ import { user } from './user';
 import { project } from './project';
 import { projects } from './projects';
 import { profile } from './profile';
+import { followedByMe } from './follow';
 import { events } from './events';
 import { notes } from './notes';
 import { musicGenres } from './musicGenres';
@@ -25,6 +26,7 @@ const rootReducer = combineReducers({
   project,
   projects,
   profile,
+  followedByMe,
   events,
   notes,
   musicGenres,

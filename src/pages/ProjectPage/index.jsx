@@ -23,6 +23,8 @@ function ProjectPage (props) {
     const members = project.members;
     const opportunities = project.opportunities;
 
+    document.title = project.name+' | Mublin'
+
     const sliderOptions = {
         autoPlay: false,
         cellAlign: 'left',

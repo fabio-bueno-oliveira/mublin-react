@@ -103,6 +103,21 @@ const initialState = {
       icon: ''
     }
   ],
+  gear: [
+    {
+      brandId: '',
+      brandName: '',
+      brandLogo: '',
+      productId: '',
+      productName: '',
+      category: '',
+      picture: '',
+      currentlyUsing: '',
+      featured: '',
+      forSale: '',
+      price: ''
+    }
+  ],
   testimonials: [
     { 
       idUser: '',
@@ -237,6 +252,39 @@ export function profile(state = initialState, action) {
     case profileTypes.GET_PROFILE_FOLLOWING_FAILURE:
       return {
         ...state,
+        requesting: false,
+        error: "A solicitação falhou"
+      };
+    // GEAR
+    case profileTypes.GET_PROFILE_GEAR_REQUEST:
+      return {
+        ...state,
+        requesting: true
+      };
+    case profileTypes.GET_PROFILE_GEAR_SUCCESS:
+      return {
+        ...state,
+        gear: action.list,
+        requesting: false,
+      };
+    case profileTypes.GET_PROFILE_GEAR_FAILURE:
+      return {
+        ...state,
+        gear: [
+          {
+            brandId: '',
+            brandName: '',
+            brandLogo: '',
+            productId: '',
+            productName: '',
+            category: '',
+            picture: '',
+            currentlyUsing: '',
+            featured: '',
+            forSale: '',
+            price: ''
+          }
+        ],
         requesting: false,
         error: "A solicitação falhou"
       };

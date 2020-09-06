@@ -18,10 +18,27 @@
     padding: 0px 9px!important;
   }
 }
-.carousel-cell h5 {
-	white-space: nowrap;
- 	overflow: hidden;
- 	text-overflow: ellipsis;
+
+.carousel-cell {
+
+  h5 {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+
+    .content {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      width: 100%;
+
+      .sub.header {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      } 
+    }
+  }
 }
 
 h2 {

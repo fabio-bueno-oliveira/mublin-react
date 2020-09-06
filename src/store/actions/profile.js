@@ -8,7 +8,8 @@ export const profileInfos = {
     getProfileRoles: getProfileRoles,
     getProfileFollowers: getProfileFollowers,
     getProfileFollowing: getProfileFollowing,
-    checkProfileFollowing: checkProfileFollowing
+    checkProfileFollowing: checkProfileFollowing,
+    getProfileGear: getProfileGear
 };
 
 function getProfileInfo(username) {
@@ -121,4 +122,20 @@ function checkProfileFollowing(username) {
     function request(username) { return { type: profileTypes.GET_PROFILE_CHECKFOLLOWING_REQUEST, username } }
     function success(info) { return { type: profileTypes.GET_PROFILE_CHECKFOLLOWING_SUCCESS, info } }
     function failure(username, error) { return { type: profileTypes.GET_PROFILE_CHECKFOLLOWING_FAILURE, username, error } }
+}
+
+function getProfileGear(username) {
+    return dispatch => {
+        dispatch(request(username));
+
+        profileService.getProfileGear(username)
+            .then(
+                list => dispatch(success(list)),
+                error => dispatch(failure(username, error.toString()))
+            );
+    };
+  
+    function request(username) { return { type: profileTypes.GET_PROFILE_GEAR_REQUEST, username } }
+    function success(list) { return { type: profileTypes.GET_PROFILE_GEAR_SUCCESS, list } }
+    function failure(username, error) { return { type: profileTypes.GET_PROFILE_GEAR_FAILURE, username, error } }
 }

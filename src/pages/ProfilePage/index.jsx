@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react';
-// import { Link } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import HeaderDesktop from '../../components/layout/headerDesktop';
 import { profileInfos } from '../../store/actions/profile';
 import { followInfos } from '../../store/actions/follow';
-import { Header, Tab, Card, Grid, Image, Button, Label, Dimmer, Loader, Icon, Modal, List, Confirm, Placeholder} from 'semantic-ui-react';
+import { Header, Tab, Card, Grid, Image, Button, Label, Dimmer, Loader, Icon, Modal, List, Confirm, Placeholder, Popup} from 'semantic-ui-react';
+import Flickity from 'react-flickity-component';
 import './styles.scss';
 
 function ProfilePage (props) {
@@ -23,6 +24,7 @@ function ProfilePage (props) {
         dispatch(profileInfos.getProfileRoles(username));
         dispatch(profileInfos.getProfileFollowers(username));
         dispatch(profileInfos.getProfileFollowing(username));
+        dispatch(profileInfos.getProfileGear(username));
         dispatch(followInfos.checkProfileFollowing(username));
     }, [dispatch, username]);
 
@@ -31,17 +33,17 @@ function ProfilePage (props) {
 
     document.title = profile.name+' '+profile.lastname+' | Mublin'
 
-    // const sliderOptions = {
-    //     autoPlay: false,
-    //     cellAlign: 'left',
-    //     freeScroll: true,
-    //     prevNextButtons: false,
-    //     pageDots: false,
-    //     wrapAround: false,
-    //     draggable: '>1',
-    //     resize: true,
-    //     contain: true
-    // }
+    const sliderOptions = {
+        autoPlay: false,
+        cellAlign: 'left',
+        freeScroll: true,
+        prevNextButtons: false,
+        pageDots: false,
+        wrapAround: false,
+        draggable: '>1',
+        resize: true,
+        contain: true
+    }
 
     const [loadingFollow, setLoadingFollow] = useState(false)
 
@@ -173,7 +175,7 @@ function ProfilePage (props) {
                     <Grid.Column width={12}>
                         <Card id="projects" style={{ width: "100%" }}>
                             <Card.Content>
-                                <Header as='h2'>Projetos</Header>
+                                <Header as='h3'>Projetos</Header>
                                 <Tab menu={{ secondary: true }} panes={
                                     [
                                         {
@@ -197,12 +199,54 @@ function ProfilePage (props) {
                         </Card>
                         <Card id="strengths" style={{ width: "100%" }}>
                             <Card.Content>
-                                <Header as='h2'>Pontos Fortes</Header>
+                                <Header as='h3'>Pontos Fortes</Header>
                             </Card.Content>
                         </Card>
                         <Card id="strengths" style={{ width: "100%" }}>
                             <Card.Content>
-                                <Header as='h2'>Depoimentos</Header>
+                                <Header as='h3'>Equipamento</Header>
+                                { profile.requesting ? (
+                                    <Icon loading name='spinner' size='large' />
+                                ) : ( 
+                                    profile.gear[0].brandId ? (
+                                        <Flickity
+                                            className={'carousel'}
+                                            elementType={'div'}
+                                            options={sliderOptions}
+                                            disableImagesLoaded={false}
+                                            reloadOnUpdate
+                                        >
+                                            {profile.gear.map((product, key) =>
+                                                <div className='carousel-cell' key={product.key}>
+                                                    {product.picture ? (
+                                                        product.featured ? (
+                                                            <Image src={product.picture} rounded label={{ as: 'div', corner: 'left', icon: 'heart', size: 'mini' }} />
+                                                        ) : (
+                                                            <Image src={product.picture} rounded />
+                                                        )
+                                                    ) : (
+                                                        <Image src={'https://ik.imagekit.io/mublin/misc/tr:h-200,w-200,c-maintain_ratio/no-picture_pKZ8CRarWks.jpg'} height='85' width='85' rounded label={{ as: 'a', corner: 'left', icon: 'heart' }} />
+                                                    )}
+                                                    <Popup inverted size='mini' content={product.category+' '+product.brandName+' '+product.productName} trigger={<Header as='h5' className='mt-2 mb-0' style={{cursor:'default'}}><Header.Content>{product.productName}</Header.Content></Header>} />
+                                                    <Header.Subheader style={{fontWeight: '500',fontSize: '11px'}}><Link to={{pathname: "/brands", search: "?id="+product.brandId, state: { fromProfile: true } }} style={{color:'gray'}}>{product.brandName}</Link></Header.Subheader>
+                                                    { product.forSale ? (
+                                                        <Label tag content={product.price.toLocaleString('pt-br',{style: 'currency', currency: 'BRL'})} size='mini' style={{fontWeight: '500',fontSize: '9px',cursor:'default'}} className='mt-1' color='green' />
+                                                    ) : (
+                                                        !!product.currentlyUsing && 
+                                                        <Label content='Em uso' icon='checkmark' size='mini' style={{fontWeight: '400',fontSize: '9px',cursor:'default'}} className='mt-1' />
+                                                    )}
+                                                </div>
+                                            )}
+                                        </Flickity>
+                                    ) : (
+                                        <Header as='h6' className='my-0'>Nenhum equipamento cadastrado</Header>
+                                    )
+                                )}
+                            </Card.Content>
+                        </Card>
+                        <Card id="strengths" style={{ width: "100%" }}>
+                            <Card.Content>
+                                <Header as='h3'>Depoimentos</Header>
                             </Card.Content>
                         </Card>
                     </Grid.Column>

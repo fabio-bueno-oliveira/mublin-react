@@ -23,6 +23,7 @@ export const profileService = {
     getProfileFollowers,
     getProfileFollowing,
     checkProfileFollowing,
+    getProfileGear,
     logout
 };
 
@@ -80,6 +81,14 @@ function checkProfileFollowing(username) {
         headers: authHeader()
     };
     return fetch(`${BASE_URL}/profile/${username}/checkFollow`, requestOptions).then(handleResponse);
+}
+
+function getProfileGear(username) {
+    const requestOptions = {
+        method: 'GET',
+        headers: authHeader()
+    };
+    return fetch(`${BASE_URL}/profile/${username}/gear`, requestOptions).then(handleResponse);
 }
 
 function logout() {

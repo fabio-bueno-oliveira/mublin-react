@@ -9,7 +9,8 @@ export const profileInfos = {
     getProfileFollowers: getProfileFollowers,
     getProfileFollowing: getProfileFollowing,
     checkProfileFollowing: checkProfileFollowing,
-    getProfileGear: getProfileGear
+    getProfileGear: getProfileGear,
+    getProfileTestimonials: getProfileTestimonials
 };
 
 function getProfileInfo(username) {
@@ -138,4 +139,20 @@ function getProfileGear(username) {
     function request(username) { return { type: profileTypes.GET_PROFILE_GEAR_REQUEST, username } }
     function success(list) { return { type: profileTypes.GET_PROFILE_GEAR_SUCCESS, list } }
     function failure(username, error) { return { type: profileTypes.GET_PROFILE_GEAR_FAILURE, username, error } }
+}
+
+function getProfileTestimonials(username) {
+    return dispatch => {
+        dispatch(request(username));
+
+        profileService.getProfileTestimonials(username)
+            .then(
+                list => dispatch(success(list)),
+                error => dispatch(failure(username, error.toString()))
+            );
+    };
+  
+    function request(username) { return { type: profileTypes.GET_PROFILE_TESTIMONIALS_REQUEST, username } }
+    function success(list) { return { type: profileTypes.GET_PROFILE_TESTIMONIALS_SUCCESS, list } }
+    function failure(username, error) { return { type: profileTypes.GET_PROFILE_TESTIMONIALS_FAILURE, username, error } }
 }

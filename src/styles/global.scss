@@ -142,3 +142,15 @@ body, html {
   #menu-mobile {display:none;}
   #menu-desktop{display:block;display:block;}
 }
+
+/* General */
+
+.cardTitle {
+  display: flex;
+  justify-content: space-between;
+
+  div:last-child {
+    height: fit-content;
+    cursor: pointer;
+  }
+}

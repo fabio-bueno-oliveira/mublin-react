@@ -120,14 +120,15 @@ const initialState = {
   ],
   testimonials: [
     { 
-      idUser: '',
-      name: '',
-      lastname: '',
-      username: '',
-      picture: '',
-      date: '',
+      id: '',
+      created: '',
       title: '',
-      testimonial: ''
+      testimonial: '',
+      friendId: '',
+      friendName: '',
+      friendUsername: '',
+      friendPicture: '',
+      friendPlan: ''
     }
   ],
   plan: ''
@@ -288,6 +289,36 @@ export function profile(state = initialState, action) {
         requesting: false,
         error: "A solicitação falhou"
       };
+      // TESTIMONIALS
+      case profileTypes.GET_PROFILE_TESTIMONIALS_REQUEST:
+        return {
+          ...state,
+          requesting: true
+        };
+      case profileTypes.GET_PROFILE_TESTIMONIALS_SUCCESS:
+        return {
+          ...state,
+          testimonials: action.list,
+          requesting: false,
+        };
+      case profileTypes.GET_PROFILE_TESTIMONIALS_FAILURE:
+        return {
+          ...state,
+          testimonials: [
+            { 
+              id: '',
+              created: '',
+              title: '',
+              testimonial: '',
+              friendId: '',
+              friendName: '',
+              friendUsername: '',
+              friendPicture: ''
+            }
+          ],
+          requesting: false,
+          error: "A solicitação falhou"
+        };
     default:
       return state
   }

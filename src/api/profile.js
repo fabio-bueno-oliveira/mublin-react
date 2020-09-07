@@ -24,6 +24,7 @@ export const profileService = {
     getProfileFollowing,
     checkProfileFollowing,
     getProfileGear,
+    getProfileTestimonials,
     logout
 };
 
@@ -89,6 +90,14 @@ function getProfileGear(username) {
         headers: authHeader()
     };
     return fetch(`${BASE_URL}/profile/${username}/gear`, requestOptions).then(handleResponse);
+}
+
+function getProfileTestimonials(username) {
+    const requestOptions = {
+        method: 'GET',
+        headers: authHeader()
+    };
+    return fetch(`${BASE_URL}/profile/${username}/testimonials`, requestOptions).then(handleResponse);
 }
 
 function logout() {

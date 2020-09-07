@@ -1,13 +1,18 @@
 /* carousel */
-.projects-carousel .carousel-cell,
-.portfolio-carousel .carousel-cell,
-.newproject-carousel .carousel-cell{
-  width: 28%;
+.carousel-cell{
+  width: 113px;
   height: 165px;
-  padding: 0px 3px;
+  padding: 0px 8px;
   margin-right: 3px;
   counter-increment: gallery-cell;
-  text-align: center;
+  text-align: left;
+
+  h5 {
+    width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
 }
 
 @media screen and (min-width: 601px) {
@@ -20,7 +25,6 @@
 }
 
 .carousel-cell {
-
   h5 {
     white-space: nowrap;
     overflow: hidden;
@@ -30,7 +34,7 @@
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
-      width: 100%;
+      width: 99%;
 
       .sub.header {
         white-space: nowrap;

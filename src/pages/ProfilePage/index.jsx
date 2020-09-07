@@ -8,6 +8,7 @@ import { followInfos } from '../../store/actions/follow';
 import { Header, Tab, Card, Grid, Image, Button, Label, Dimmer, Loader, Icon, Modal, List, Confirm, Placeholder, Popup} from 'semantic-ui-react';
 import Flickity from 'react-flickity-component';
 import './styles.scss';
+import './flickity.scss';
 
 function ProfilePage (props) {
 
@@ -25,11 +26,16 @@ function ProfilePage (props) {
         dispatch(profileInfos.getProfileFollowers(username));
         dispatch(profileInfos.getProfileFollowing(username));
         dispatch(profileInfos.getProfileGear(username));
+        dispatch(profileInfos.getProfileTestimonials(username));
         dispatch(followInfos.checkProfileFollowing(username));
     }, [dispatch, username]);
 
     const profile = useSelector(state => state.profile);
     const followedByMe = useSelector(state => state.followedByMe)
+
+    const myTestimonial = profile.testimonials.filter((testimonial) => { return testimonial.friendId === user.id}).map(testimonial => ({ 
+        id: testimonial.id
+    }))
 
     document.title = profile.name+' '+profile.lastname+' | Mublin'
 
@@ -43,6 +49,13 @@ function ProfilePage (props) {
         draggable: '>1',
         resize: true,
         contain: true
+    }
+
+    const sliderTestimonialsOptions = {
+        autoPlay: false,
+        freeScroll: false,
+        prevNextButtons: false,
+        pageDots: true,
     }
 
     const [loadingFollow, setLoadingFollow] = useState(false)
@@ -119,7 +132,7 @@ function ProfilePage (props) {
                                 <div className="center aligned">
                                     { !profile.requesting &&
                                     <>
-                                        <Header size="medium" className="mb-1">{!profile.requesting && profile.name+' '+profile.lastname} <Label basic color="black" size="tiny" className="ml-1 p-1">{profile.plan === 'Pro' && profile.plan}</Label></Header>
+                                        <Header size="medium" className="mb-1">{!profile.requesting && profile.name+' '+profile.lastname} {profile.plan === 'Pro' && <Label basic color="black" size="tiny" className="ml-1 p-1">Pro</Label>}</Header>
                                         <p className="mb-1" style={{ fontSize: "13px" }}>
                                             {profile.roles.map((role, key) =>
                                                 <span key={key}>{role.name}{key < (profile.roles.length-1) && ', '}</span>
@@ -202,7 +215,7 @@ function ProfilePage (props) {
                                 <Header as='h3'>Pontos Fortes</Header>
                             </Card.Content>
                         </Card>
-                        <Card id="strengths" style={{ width: "100%" }}>
+                        <Card id="gear" style={{ width: "100%" }}>
                             <Card.Content>
                                 <Header as='h3'>Equipamento</Header>
                                 { profile.requesting ? (
@@ -217,7 +230,7 @@ function ProfilePage (props) {
                                             reloadOnUpdate
                                         >
                                             {profile.gear.map((product, key) =>
-                                                <div className='carousel-cell' key={product.key}>
+                                                <div className='carousel-cell' key={key}>
                                                     {product.picture ? (
                                                         product.featured ? (
                                                             <Image src={product.picture} rounded label={{ as: 'div', corner: 'left', icon: 'heart', size: 'mini' }} />
@@ -239,14 +252,48 @@ function ProfilePage (props) {
                                             )}
                                         </Flickity>
                                     ) : (
-                                        <Header as='h6' className='my-0'>Nenhum equipamento cadastrado</Header>
+                                        <Card.Description className="mt-3" style={{ fontSize: "13px" }}>
+                                            Nenhum equipamento cadastrado
+                                        </Card.Description>
                                     )
                                 )}
                             </Card.Content>
                         </Card>
-                        <Card id="strengths" style={{ width: "100%" }}>
+                        <Card id="testimonials" style={{ width: "100%" }} className={profile.testimonials[0].id && 'pb-4'}>
                             <Card.Content>
-                                <Header as='h3'>Depoimentos</Header>
+                                <div className='cardTitle'>
+                                    <Header as='h3'>Depoimentos {profile.testimonials[0].id && '('+profile.testimonials.length+')'}</Header>
+                                    { profile.id !== user.id &&
+                                        <Label size='small' content={myTestimonial.length ? 'Editar' : 'Escrever'} icon={!myTestimonial.length ? 'plus' : 'pencil'} />
+                                    }
+                                </div>
+                                { profile.testimonials[0].id ? (
+                                    <Flickity 
+                                        className="pt-2"
+                                        options={sliderTestimonialsOptions}
+                                    > 
+                                        {profile.testimonials.map((testimonial, key) =>
+                                            <div key={key} className='testimonial-cell'>
+                                                <Header as='h4'>
+                                                    <Image circular src={testimonial.friendPicture} size='small' href={'/'+testimonial.friendUsername} />
+                                                    <Header.Content>
+                                                        {testimonial.title}
+                                                        <Header.Subheader>
+                                                            {testimonial.friendName} {testimonial.friendPlan === 'Pro' && <Label size="tiny" className="ml-1 p-1">Pro</Label>}
+                                                        </Header.Subheader>
+                                                    </Header.Content>
+                                                </Header>
+                                                <Header.Subheader style={{cursor:'default'}} className='mt-2'>
+                                                    {testimonial.testimonial}
+                                                </Header.Subheader>
+                                            </div>
+                                        )}
+                                    </Flickity>
+                                ) : (
+                                    <Card.Description className={profile.id !== user.id ? 'mt-0' : 'mt-3'} style={{ fontSize: "13px" }}>
+                                        Nenhum depoimento para {profile.name} até o momento
+                                    </Card.Description>
+                                )}
                             </Card.Content>
                         </Card>
                     </Grid.Column>

@@ -3,8 +3,14 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useHistory, Link } from 'react-router-dom';
 import HeaderDesktop from '../../../components/layout/headerDesktop';
 import { userInfos } from '../../../store/actions/user';
-import { Form, Segment, Header, List, Card, Grid, Image, Menu, Button, Icon, Loader as UiLoader } from 'semantic-ui-react';
+import { usernameCheckInfos } from '../../../store/actions/usernameCheck';
+import { emailCheckInfos } from '../../../store/actions/emailCheck';
+import { Form, Header, List, Card, Grid, Image, Icon, Menu, Button, Label, Loader as UiLoader } from 'semantic-ui-react';
+import Loader from 'react-loader-spinner';
 import { Formik } from 'formik';
+import ValidateUtils from '../../../utils/ValidateUtils';
+import { useDebouncedCallback } from 'use-debounce';
+import './styles.scss';
 
 function ProfilePage () {
 
@@ -17,8 +23,6 @@ function ProfilePage () {
     useEffect(() => {
         dispatch(userInfos.getInfo());
     }, []);
-
-    const [isLoading, setIsLoading] = useState(false)
 
     const userInfo = useSelector(state => state.user)
 
@@ -55,33 +59,29 @@ function ProfilePage () {
         { key: 'SP', text: 'São Paulo', value: '412' },
         { key: 'SE', text: 'Sergipe', value: '423' },
         { key: 'TO', text: 'Tocantins', value: '420' },
-    ]
+    ] 
+
+    const [isLoading, setIsLoading] = useState(false)
     
     const submitForm = (values) => {
-        setIsLoading(true)
-        let user = JSON.parse(localStorage.getItem('user'));
-        fetch('https://mublin.herokuapp.com/user/updateProfile', {
-            method: 'PUT',
+        fetch('https://mublin.herokuapp.com/user/create/', {
+            method: 'post',
             headers: {
                 'Accept': 'application/json, text/plain, */*',
-                'Content-Type': 'application/json',
-                'Authorization': 'Bearer ' + user.token
+                'Content-Type': 'application/json'
             },
-            body: JSON.stringify({userId: user.id, name: values.name, lastname: values.lastname, gender: values.gender, gender: values.gender, phone_mobile: values.phone_mobile, website: values.website, bio: values.bio, id_country_fk: values.id_country_fk, id_region_fk: values.id_region_fk, public: values.public})
-        }).then((response) => {
-            response.json().then((response) => {
-                //console.log(response);
-                setIsLoading(false)
-                dispatch(userInfos.getInfo());
-            })
-        }).catch(err => {
-                setIsLoading(false)
-                console.error(err)
-            })
+            body: JSON.stringify({name: values.name, lastname: values.lastname, email: values.email, username: values.username, password: values.password})
+        })
+        .then(res => res.json())
+        // .then(res => localStorage.setItem('user', JSON.stringify(res)))
+        .then(
+            history.push("/login?info=firstAccess")
+        )
     }
 
     const [usernameChoosen, setUsernameChoosen] = useState(userInfo.username)
     const usernameAvailability = useSelector(state => state.usernameCheck);
+    const emailAvailability = useSelector(state => state.emailCheck);
 
     let color
     if (usernameChoosen === userInfo.username || usernameAvailability.requesting) {
@@ -92,6 +92,18 @@ function ProfilePage () {
         color="green"
     }
 
+    const [checkUsername] = useDebouncedCallback((string) => {
+        if (string.length && string !== userInfo.username) {
+            dispatch(usernameCheckInfos.checkUsernameByString(string));
+        }
+    },900)
+
+    const [checkEmail] = useDebouncedCallback((string) => {
+        if (string !== userInfo.email) {
+            dispatch(emailCheckInfos.checkEmailByString(string));
+        }
+    },900)
+
     const validate = values => {
         const errors = {};
   
@@ -101,6 +113,16 @@ function ProfilePage () {
 
         if (!values.lastname) {
             errors.lastname = 'Campo obrigatório';
+        }
+
+        if (!values.email) {
+            errors.email = 'Informe seu email';
+        } else if (!ValidateUtils.email(values.email)) {
+            errors.email = 'Email inválido'
+        }
+
+        if (!values.username) {
+            errors.username = 'Escolha um nome de usuário';
         }
 
         if (!values.id_country_fk) {
@@ -116,28 +138,36 @@ function ProfilePage () {
 
     return (
         <>
+        {isLoading && 
+            <Loader
+                className="appLoadingIcon"
+                type="Audio"
+                color="#ff0032"
+                height={100}
+                width={100}
+                timeout={10000} //10 secs
+            />
+        }
         <HeaderDesktop />
-            <Grid centered verticalAlign='middle' columns={1} className="container mb-2 mt-4 mt-md-5 pt-5">
+            <Grid centered columns={1} className="container mb-2 mt-4 mt-md-5 pt-5">
                 <Grid.Row>
-                    <Grid.Column mobile={16} computer={10}>
+                    <Grid.Column width={12}>
                         <Card style={{ width: "100%" }}>
                             <Card.Content>
                                 <Menu fluid pointing secondary widths={3} className='mb-3'>
-                                    <Menu.Item as='span' active>
+                                    <Menu.Item as='a' active>
                                         Editar perfil
                                     </Menu.Item>
                                     <Menu.Item as='a'>
                                         Preferências artísticas
                                     </Menu.Item>
-                                    <Menu.Item as='a' onClick={() => history.push("/settings")}>
+                                    <Menu.Item as='a'>
                                         Configurações
                                     </Menu.Item>
                                 </Menu>
                                 <List bulleted horizontal link className='mb-4'>
-                                    <List.Item as='a' active>Informações</List.Item>
-                                    <List.Item as='a' onClick={() => history.push("/settings/profile/picture")}>Foto</List.Item>
-                                    <List.Item as='a'>Username</List.Item>
-                                    <List.Item as='a'>Email</List.Item>
+                                    <List.Item as='a' active>Informações básicas</List.Item>
+                                    <List.Item as='a'>Foto</List.Item>
                                     <List.Item as='a'>Senha</List.Item>
                                 </List>
                                 
@@ -150,10 +180,11 @@ function ProfilePage () {
                                         )}
                                         <Header.Content>
                                             {userInfo.username}
-                                            <Header.Subheader as='a' onClick={() => history.push("/settings/profile/picture")}><Icon name='camera' />Alterar foto</Header.Subheader>
+                                            <Header.Subheader as='a' onClick={() => history.push("/settings/profile/picture")}>Alterar foto</Header.Subheader>
                                         </Header.Content>
                                     </Header>
                                 </section>
+
                                 { userInfo.requesting ? (
                                     <UiLoader active inline='centered' size='large' className='my-5' />
                                 ) : (
@@ -162,28 +193,32 @@ function ProfilePage () {
                                             name: userInfo.name,
                                             lastname: userInfo.lastname,
                                             gender: userInfo.gender,
+                                            email: userInfo.email, 
+                                            username: userInfo.username,
                                             id_country_fk: userInfo.country,
-                                            id_region_fk: userInfo.region,
-                                            website: userInfo.website,
-                                            bio: userInfo.bio,
-                                            phone_mobile: userInfo.phone,
-                                            public: userInfo.public.toString()
+                                            id_region_fk: userInfo.region
                                         }}
                                         validate={validate}
                                         validateOnMount={true}
                                         validateOnBlur={true}
                                         onSubmit={(values, { setSubmitting }) => {
+                                        setIsLoading(true);
                                         setTimeout(() => {
                                             setSubmitting(false);
+                                            //dispatch(userActions.login(values.email, values.password));
                                             submitForm(values)
-                                            //alert(JSON.stringify(values, null, 2))
                                         }, 400);
                                         }}
                                     >
                                         {({
                                             values, errors, touched, handleChange, handleSubmit, handleBlur, isValid, isSubmitting
                                         }) => (
-                                            <Form loading={isSubmitting || isLoading}>
+                                            <Form
+                                                onSubmit={handleSubmit}
+                                                onChange={e => {
+                                                    checkEmail(values.email)
+                                                }}
+                                            >
                                                 <Form.Group widths='equal'>
                                                     <Form.Input 
                                                         id="name"
@@ -218,67 +253,118 @@ function ProfilePage () {
                                                         }) : null } 
                                                     />
                                                 </Form.Group>
-                                                <Form.Field
-                                                    disabled={userInfo.requesting}
-                                                    control='select'
-                                                    id="gender"
-                                                    name="gender"
-                                                    label='Gênero'
-                                                    value={values.gender}
-                                                    onChange={e => {
-                                                        handleChange(e);
-                                                    }}
-                                                >
-                                                    <option value='m' selected={values.gender == 'm' ? "selected" : ""} onChange={handleChange}>Masculino</option>
-                                                    <option value='f' selected={values.gender == 'f' ? "selected" : ""} onChange={handleChange}>Feminino</option>
-                                                    <option value='n' selected={values.gender == 'n' ? "selected" : ""} onChange={handleChange}>Não informar</option>
-                                                </Form.Field>
-                                                <Form.Group widths='equal'>
-                                                    <Form.Input 
-                                                        id="phone_mobile"
-                                                        name="phone_mobile"
-                                                        fluid 
-                                                        label="Telefone" 
-                                                        placeholder="Telefone"
-                                                        onChange={e => {
-                                                            handleChange(e);
-                                                        }}
+                                                <Form.Group inline>
+                                                    <label>Gênero</label>
+                                                    <Form.Radio
+                                                        id="gender1"
+                                                        name="gender"
+                                                        label='Masculino'
+                                                        value='m'
+                                                        checked={values.gender === 'm'}
+                                                        onChange={handleChange}
                                                         onBlur={handleBlur}
-                                                        value={values.phone_mobile}
-                                                        error={touched.phone_mobile && errors.phone_mobile ? ( {
-                                                            content: touched.phone_mobile ? errors.phone_mobile : null,
-                                                            size: "tiny",
-                                                        }) : null } 
                                                     />
-                                                    <Form.Input 
-                                                        id="website"
-                                                        name="website"
-                                                        fluid 
-                                                        label="Website" 
-                                                        placeholder="Website"
-                                                        onChange={e => {
-                                                            handleChange(e);
-                                                        }}
+                                                    <Form.Radio
+                                                        id="gender2"
+                                                        name="gender"
+                                                        label='Feminino'
+                                                        value='f'
+                                                        checked={values.gender === 'f'}
+                                                        onChange={handleChange}
                                                         onBlur={handleBlur}
-                                                        value={values.website}
-                                                        error={touched.website && errors.website ? ( {
-                                                            content: touched.website ? errors.website : null,
-                                                            size: "tiny",
-                                                        }) : null } 
+                                                    />
+                                                    <Form.Radio
+                                                        id="gender3"
+                                                        name="gender"
+                                                        label='Não informar'
+                                                        value='n'
+                                                        checked={values.gender === 'n'}
+                                                        onChange={handleChange}
+                                                        onBlur={handleBlur}
                                                     />
                                                 </Form.Group>
-                                                <Form.TextArea 
-                                                    id='bio'
-                                                    name='bio'
-                                                    label='Bio' 
-                                                    value={values.bio}
-                                                    placeholder='Escreva pouco sobre você...' 
+                                                <Form.Input 
+                                                    className={(emailAvailability.available === false && values.email !== userInfo.email) && "error"}
+                                                    disabled={emailAvailability.requesting}
+                                                    id="email"
+                                                    name="email"
+                                                    fluid 
+                                                    label="Email" 
+                                                    placeholder="Email"
+                                                    loading={emailAvailability.requesting}
                                                     onChange={e => {
                                                         handleChange(e);
                                                     }}
-                                                    onBlur={handleBlur}
-                                                    maxLength="220"
+                                                    onKeyUp={e => {
+                                                        checkEmail(e.target.value)
+                                                    }}
+                                                    onBlur={e => {
+                                                        handleBlur(e);
+                                                    }}
+                                                    value={values.email}
+                                                    error={touched.email && errors.email ? ( {
+                                                        content: touched.email ? errors.email : null,
+                                                        size: "tiny",
+                                                    }) : null } 
                                                 />
+                                                {(emailAvailability.available === false && values.email !== userInfo.email) &&
+                                                    <Label 
+                                                        className="mt-0 mb-2"
+                                                        size="mini" 
+                                                        pointing 
+                                                        color="red"
+                                                        style={{fontWeight: 'normal', textAlign: 'center'}} 
+                                                    >
+                                                        <Icon name="times" /> Email já registrado
+                                                    </Label>
+                                                }
+                                                <Form.Input 
+                                                    className={usernameAvailability.available === false && "error"}
+                                                    disabled={usernameAvailability.requesting}
+                                                    id="username"
+                                                    name="username"
+                                                    fluid 
+                                                    label="Username" 
+                                                    placeholder="Username"
+                                                    onChange={e => {
+                                                        handleChange(e);
+                                                    }}
+                                                    onKeyUp={e => {
+                                                        checkUsername(e.target.value)
+                                                        setUsernameChoosen(e.target.value)
+                                                    }}
+                                                    onBlur={e => {
+                                                        handleBlur(e);
+                                                    }}
+                                                    value={values.username.replace(/[^A-Z0-9]/ig, "").toLowerCase()}
+                                                    loading={usernameAvailability.requesting}
+                                                    icon='at'
+                                                    iconPosition='left'
+                                                />
+                                                <Label 
+                                                    className="mt-0 mb-2 mr-2"
+                                                    size="tiny" 
+                                                    pointing 
+                                                    color={color}
+                                                    style={{fontWeight: 'normal', textAlign: 'center'}} 
+                                                >
+                                                    { (usernameChoosen && usernameAvailability.available) &&
+                                                        <Icon name="check" /> 
+                                                    }
+                                                    mublin.com/{values.username}
+                                                </Label>
+                                                {(usernameChoosen && usernameAvailability.available === false) &&
+                                                    <Label 
+                                                        className="mt-0 mb-2"
+                                                        size="mini" 
+                                                        pointing 
+                                                        color="red"
+                                                        style={{fontWeight: 'normal', textAlign: 'center'}} 
+                                                    >
+                                                        <Icon name="times" /> 
+                                                        Username não disponível
+                                                    </Label>
+                                                }
                                                 <Form.Group widths='equal' className='mt-2'>
                                                     <Form.Field
                                                         disabled={userInfo.requesting}
@@ -310,48 +396,26 @@ function ProfilePage () {
                                                         )}
                                                     </Form.Field>
                                                 </Form.Group>
-                                                <Form.Field className='mb-4'>
-                                                    <label>Cidade: <span style={{fontWeight:'400'}}>{userInfo.cityName}</span> <Button basic size='mini' className='ml-1'>Alterar</Button></label>
-                                                </Form.Field>
-                                                <Form.Group inline className='mb-0'>
-                                                    <Form.Radio
-                                                        id="public1"
-                                                        name="public"
-                                                        label='Perfil público'
-                                                        value='1'
-                                                        checked={values.public === '1' ? true : false}
-                                                        onChange={e => {
-                                                            handleChange(e);
-                                                        }}
-                                                        onBlur={handleBlur}
-                                                    />
-                                                    <Form.Radio
-                                                        id="public2"
-                                                        name="public"
-                                                        label='Perfil privado'
-                                                        value='0'
-                                                        checked={values.public === '0' ? true : false}
-                                                        onChange={e => {
-                                                            handleChange(e);
-                                                        }}
-                                                        onBlur={handleBlur}
-                                                    />
-                                                </Form.Group>
-                                                <span style={{fontSize:'12px'}}>{values.public === '1' ? 'Seu perfil estará visível nas buscas' : 'Seu perfil será privado e visível apenas para suas conexões'}</span>
-                                                <Segment>
-                                                    <Form.Field>
-                                                        <label className='mb-0'>Plano: <span style={{fontWeight:'400'}}>{userInfo.plan}</span> <Button basic size='mini' className='ml-1'>Alterar</Button></label>
-                                                    </Form.Field>
-                                                </Segment>
+                                                <Header as='h6'>{'Cidade: '+userInfo.cityName} <Button basic size='mini' className='ml-1'>Alterar</Button></Header>
                                                 <Button 
-                                                    className="mt-2"
+                                                    className="mt-4"
                                                     type="submit" 
                                                     secondary 
-                                                    disabled={isValid ? false : true}
+                                                    disabled={(isValid && (values.username === userInfo.username && usernameAvailability.available !== false)) ? false : true}
                                                     onClick={handleSubmit}
                                                 >
-                                                    Salvar
+                                                    Continuar
                                                 </Button>
+                                                { isSubmitting && 
+                                                    <Loader
+                                                        className="appLoadingIcon"
+                                                        type="Audio"
+                                                        color="#ff0032"
+                                                        height={100}
+                                                        width={100}
+                                                        timeout={10000} //10 secs
+                                                    />
+                                                }
                                         </Form>
                                     )}
                                     </Formik>

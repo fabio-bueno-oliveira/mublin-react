@@ -10,9 +10,17 @@ const initialState = {
   bio: '',
   country: '',
   region: '',
+  regionName: '',
   city: '',
+  cityName: '',
   picture: '',
-  payment_plan: '',
+  plan: '',
+  public: '',
+  instagram: '',
+  phone: '',
+  status: '',
+  legend: '',
+  website: '',
   roles: [
     { id: '', idRole: '', name: '', description: '', mainActivity: '' }
   ],
@@ -67,9 +75,17 @@ export function user(state = initialState, action) {
         bio: action.info.bio,
         country: action.info.country,
         region: action.info.region,
+        regionName: action.info.regionName,
         city: action.info.city,
+        cityName: action.info.cityName,
         picture: action.info.picture,
-        payment_plan: action.info.payment_plan
+        plan: action.info.plan,
+        public: action.info.public,
+        instagram: action.info.instagram,
+        phone: action.info.phone,
+        status: action.info.status,
+        legend: action.info.legend_badge,
+        website: action.info.website
       };
     case userTypes.GET_USER_INFO_FAILURE:
       return {

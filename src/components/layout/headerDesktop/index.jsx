@@ -145,7 +145,7 @@ const HeaderDesktop = () => {
                                         transformation={[{ "height": "200", "width": "200", "r": "max" }]} 
                                     />
                                 )}
-                                {userInfo.payment_plan === 2 && <div className="ui mini blue label">PRO</div> } <i className="dropdown icon"></i>
+                                {userInfo.plan === 2 && <div className="ui mini blue label">PRO</div> } <i className="dropdown icon"></i>
                                 <div className="menu">
                                     <a className="item" href={'/'+userInfo.username}>Meu perfil</a>
                                     <a className="item settings" href="/settings">Configurações</a>

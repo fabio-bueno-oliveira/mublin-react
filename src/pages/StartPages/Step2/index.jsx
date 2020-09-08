@@ -133,7 +133,7 @@ function StartStep2Page () {
                         ) : (
                             <Form>
                                 <Segment basic textAlign='center' attached="top" style={{ border: 'none' }}>
-                                    <Image src='https://mublin.com/img/logo-mublin-circle-black.png' size='mini' centered />
+                                    <Image src='https://ik.imagekit.io/mublin/logos/logo-mublin-circle-black_hQJn5eU5ChR.png' size='mini' centered />
                                     <Header as='h1' className="pb-3">
                                         Passo 2 de 4
                                         <Header.Subheader>
@@ -142,17 +142,17 @@ function StartStep2Page () {
                                     </Header>
                                     <Progress percent={50} color='green' size='small' />
                                     <Form.Group inline>
-                                        <label>Sou</label>
+                                        <label>Sexo</label>
                                         <Form.Radio
                                             name="gender"
-                                            label='Homem'
+                                            label='Masculino'
                                             value='m'
                                             checked={gender === 'm'}
                                             onChange={(e, { value }) => setGender(value)}
                                         />
                                         <Form.Radio
                                             name="gender"
-                                            label='Mulher'
+                                            label='Feminino'
                                             value='f'
                                             checked={gender === 'f'}
                                             onChange={(e, { value }) => setGender(value)}
@@ -169,12 +169,12 @@ function StartStep2Page () {
                                         id='bio'
                                         name='bio'
                                         label='Bio' 
-                                        placeholder='Fale resumidamente sobre você (opcional)' 
-                                        maxLength='200'
+                                        placeholder='Escreva pouco sobre você...' 
+                                        maxLength='220'
                                         value={bio}
                                         onChange={(e, { value }) => {
                                             setBio(value)
-                                            checkLength(value, 200)
+                                            checkLength(value, 220)
                                         }}
                                     />
                                     { maxLengthReached &&

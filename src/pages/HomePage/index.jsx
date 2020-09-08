@@ -193,26 +193,26 @@ function HomePage () {
                                     reloadOnUpdate // default false
                                 >
                                     <div className="carousel-cell pt-2" style={{textAlign: 'center'}}>
-                                        <a href="/project/new/" className="circular ui icon massive button">
-                                            <i className="fas fa-plus fa-fw"></i>
-                                        </a>
-                                        <a href="/project/new/">
-                                            <h5 className="ui header mt-2 mb-1">
-                                                Novo
-                                            </h5>
-                                            <h6 className="mt-0" style={{fontWeight: '400',fontSize: '11px', color: 'black', opacity: '0.8'}}>Criar projeto do zero</h6>
-                                        </a>
+                                        <Link to={{pathname:"/project/new/", search:"?type=new", state:{type:'new'}}} style={{color:'gray'}}>
+                                            <Button circular icon='plus' size='massive' />
+                                        </Link>
+                                        <Link to={{pathname:"/project/new/", search:"?type=new", state:{type:'new'}}} style={{color:'gray'}}>
+                                            <Header as='h5' className='mt-2 mb-1'>Novo</Header>
+                                            <h6 className="mt-0" style={{fontWeight: '400',fontSize: '11px', color: 'black', opacity: '0.8'}}>
+                                                Criar projeto <nobr>do zero</nobr>
+                                            </h6>
+                                        </Link>
                                     </div>
                                     <div className="carousel-cell pt-2" style={{textAlign: 'center'}}>
-                                        <a href="/project/new/?type=idea" className="circular ui icon massive button">
-                                            <i className="far fa-lightbulb fa-fw"></i>
-                                        </a>
-                                        <a href="/project/new/?type=idea">
-                                            <h5 className="ui header mt-2 mb-1">
-                                                Ideia
-                                            </h5>
-                                            <h6 className="mt-0" style={{fontWeight: '400',fontSize: '11px', color: 'black', opacity: '0.8'}}>Criar uma proposta para atrair outros músicos</h6>
-                                        </a>
+                                        <Link to={{pathname:"/project/new/", search:"?type=idea", state:{type:'idea'}}} style={{color:'gray'}}>
+                                            <Button circular icon='lightbulb outline' size='massive' />
+                                        </Link>
+                                        <Link to={{pathname:"/project/new/", search:"?type=idea", state:{type:'idea'}}} style={{color:'gray'}}>
+                                            <Header as='h5' className='mt-2 mb-1'>Ideia</Header>
+                                            <h6 className="mt-0" style={{fontWeight: '400',fontSize: '11px', color: 'black', opacity: '0.8'}}>
+                                                Criar uma proposta para atrair outros músicos
+                                            </h6>
+                                        </Link>
                                     </div>
                                     <div className="carousel-cell pt-2" style={{textAlign: 'center'}}>
                                         <a href="/project/new/?type=join" className="circular ui icon massive button">

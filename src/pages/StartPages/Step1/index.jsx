@@ -75,7 +75,7 @@ function StartStep1Page () {
                 <Grid centered columns={1} verticalAlign='middle'>
                     <Grid.Column mobile={16} computer={8}>
                         <Segment basic textAlign='center' attached="top" style={{ border: 'none' }}>
-                            <Image src='https://mublin.com/img/logo-mublin-circle-black.png' size='mini' centered />
+                            <Image src='https://ik.imagekit.io/mublin/logos/logo-mublin-circle-black_hQJn5eU5ChR.png' size='mini' centered />
                             <Header as='h1' className="pb-3">
                                 Passo 1 de 4
                                 <Header.Subheader>

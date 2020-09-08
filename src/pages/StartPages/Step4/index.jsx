@@ -325,7 +325,7 @@ function StartStep3Page () {
                     <Grid.Column mobile={16} computer={8}>
                         <Form>
                             <Segment basic textAlign='center' className="pb-0">
-                                <Image src='https://mublin.com/img/logo-mublin-circle-black.png' size='mini' centered />
+                                <Image src='https://ik.imagekit.io/mublin/logos/logo-mublin-circle-black_hQJn5eU5ChR.png' size='mini' centered />
                                 <Header as='h1' className="pb-3">
                                     Passo 4 de 4
                                     <Header.Subheader>

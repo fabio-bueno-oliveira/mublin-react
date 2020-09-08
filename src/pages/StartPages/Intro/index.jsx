@@ -22,7 +22,7 @@ function StartIntroPage () {
                 <Grid centered columns={1} verticalAlign='middle'>
                     <Grid.Column mobile={16} computer={8}>
                         <Segment basic textAlign='center'>
-                            <Image src='https://mublin.com/img/logo-mublin-circle-black.png' size='mini' centered />
+                            <Image src='https://ik.imagekit.io/mublin/logos/logo-mublin-circle-black_hQJn5eU5ChR.png' size='mini' centered />
                             <Header as='h1' className="pb-3">
                                 Bem-vindo, {userInfo.name}!
                                 <Header.Subheader>

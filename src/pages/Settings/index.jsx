@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory, Link } from 'react-router-dom';
-import HeaderDesktop from '../../../components/layout/headerDesktop';
-import { userInfos } from '../../../store/actions/user';
+import HeaderDesktop from '../../components/layout/headerDesktop';
+import { userInfos } from '../../store/actions/user';
 import { Form, Segment, Header, List, Card, Grid, Image, Menu, Button, Icon, Loader as UiLoader } from 'semantic-ui-react';
 import { Formik } from 'formik';
 
 function ProfilePage () {
 
-    document.title = 'Editar perfil | Mublin'
+    document.title = 'Configurações | Mublin'
 
     let history = useHistory();
 
@@ -17,8 +17,6 @@ function ProfilePage () {
     useEffect(() => {
         dispatch(userInfos.getInfo());
     }, []);
-
-    const [isLoading, setIsLoading] = useState(false)
 
     const userInfo = useSelector(state => state.user)
 
@@ -58,30 +56,24 @@ function ProfilePage () {
     ]
     
     const submitForm = (values) => {
-        setIsLoading(true)
-        let user = JSON.parse(localStorage.getItem('user'));
-        fetch('https://mublin.herokuapp.com/user/updateProfile', {
-            method: 'PUT',
+        fetch('https://mublin.herokuapp.com/user/create/', {
+            method: 'post',
             headers: {
                 'Accept': 'application/json, text/plain, */*',
-                'Content-Type': 'application/json',
-                'Authorization': 'Bearer ' + user.token
+                'Content-Type': 'application/json'
             },
-            body: JSON.stringify({userId: user.id, name: values.name, lastname: values.lastname, gender: values.gender, gender: values.gender, phone_mobile: values.phone_mobile, website: values.website, bio: values.bio, id_country_fk: values.id_country_fk, id_region_fk: values.id_region_fk, public: values.public})
-        }).then((response) => {
-            response.json().then((response) => {
-                //console.log(response);
-                setIsLoading(false)
-                dispatch(userInfos.getInfo());
-            })
-        }).catch(err => {
-                setIsLoading(false)
-                console.error(err)
-            })
+            body: JSON.stringify({name: values.name, lastname: values.lastname, email: values.email, username: values.username, password: values.password})
+        })
+        .then(res => res.json())
+        // .then(res => localStorage.setItem('user', JSON.stringify(res)))
+        .then(
+            history.push("/login?info=firstAccess")
+        )
     }
 
     const [usernameChoosen, setUsernameChoosen] = useState(userInfo.username)
     const usernameAvailability = useSelector(state => state.usernameCheck);
+    const emailAvailability = useSelector(state => state.emailCheck);
 
     let color
     if (usernameChoosen === userInfo.username || usernameAvailability.requesting) {
@@ -122,38 +114,17 @@ function ProfilePage () {
                     <Grid.Column mobile={16} computer={10}>
                         <Card style={{ width: "100%" }}>
                             <Card.Content>
-                                <Menu fluid pointing secondary widths={3} className='mb-3'>
-                                    <Menu.Item as='span' active>
+                                <Menu fluid pointing secondary widths={3} className='mb-5'>
+                                    <Menu.Item as='a' onClick={() => history.push("/settings/profile")}>
                                         Editar perfil
                                     </Menu.Item>
                                     <Menu.Item as='a' onClick={() => history.push("/settings/preferences")}>
                                         Preferências
                                     </Menu.Item>
-                                    <Menu.Item as='a' onClick={() => history.push("/settings")}>
+                                    <Menu.Item as='span' active>
                                         Configurações
                                     </Menu.Item>
                                 </Menu>
-                                <List bulleted horizontal link className='mb-4'>
-                                    <List.Item as='a' active>Informações</List.Item>
-                                    <List.Item as='a' onClick={() => history.push("/settings/profile/picture")}>Foto</List.Item>
-                                    <List.Item as='a'>Username</List.Item>
-                                    <List.Item as='a'>Email</List.Item>
-                                    <List.Item as='a'>Senha</List.Item>
-                                </List>
-                                
-                                <section id='pictureUpdate' className='mb-4'>
-                                    <Header as='h2'>
-                                        { !userInfo.picture ? (
-                                            <Image as='a' centered src='https://ik.imagekit.io/mublin/tr:h-200,w-200,r-max/sample-folder/avatar-undefined_Kblh5CBKPp.jpg' onClick={() => history.push("/settings/profile/picture")} />
-                                        ) : (
-                                            <Image as='a' circular centered src={'https://ik.imagekit.io/mublin/tr:h-200,w-200,c-maintain_ratio/users/avatars/'+userInfo.id+'/'+userInfo.picture} onClick={() => history.push("/settings/profile/picture")} />
-                                        )}
-                                        <Header.Content>
-                                            {userInfo.username}
-                                            <Header.Subheader as='a' onClick={() => history.push("/settings/profile/picture")}>Alterar foto</Header.Subheader>
-                                        </Header.Content>
-                                    </Header>
-                                </section>
                                 { userInfo.requesting ? (
                                     <UiLoader active inline='centered' size='large' className='my-5' />
                                 ) : (
@@ -165,7 +136,6 @@ function ProfilePage () {
                                             id_country_fk: userInfo.country,
                                             id_region_fk: userInfo.region,
                                             website: userInfo.website,
-                                            bio: userInfo.bio,
                                             phone_mobile: userInfo.phone,
                                             public: userInfo.public.toString()
                                         }}
@@ -175,15 +145,16 @@ function ProfilePage () {
                                         onSubmit={(values, { setSubmitting }) => {
                                         setTimeout(() => {
                                             setSubmitting(false);
-                                            submitForm(values)
-                                            //alert(JSON.stringify(values, null, 2))
+                                            // dispatch(userActions.login(values.email, values.password));
+                                            // submitForm(values)
+                                            alert(JSON.stringify(values, null, 2))
                                         }, 400);
                                         }}
                                     >
                                         {({
                                             values, errors, touched, handleChange, handleSubmit, handleBlur, isValid, isSubmitting
                                         }) => (
-                                            <Form loading={isSubmitting || isLoading}>
+                                            <Form loading={isSubmitting}>
                                                 <Form.Group widths='equal'>
                                                     <Form.Input 
                                                         id="name"
@@ -233,86 +204,38 @@ function ProfilePage () {
                                                     <option value='f' selected={values.gender == 'f' ? "selected" : ""} onChange={handleChange}>Feminino</option>
                                                     <option value='n' selected={values.gender == 'n' ? "selected" : ""} onChange={handleChange}>Não informar</option>
                                                 </Form.Field>
-                                                <Form.Group widths='equal'>
-                                                    <Form.Input 
-                                                        id="phone_mobile"
-                                                        name="phone_mobile"
-                                                        fluid 
-                                                        label="Telefone" 
-                                                        placeholder="Telefone"
-                                                        onChange={e => {
-                                                            handleChange(e);
-                                                        }}
-                                                        onBlur={handleBlur}
-                                                        value={values.phone_mobile}
-                                                        error={touched.phone_mobile && errors.phone_mobile ? ( {
-                                                            content: touched.phone_mobile ? errors.phone_mobile : null,
-                                                            size: "tiny",
-                                                        }) : null } 
-                                                    />
-                                                    <Form.Input 
-                                                        id="website"
-                                                        name="website"
-                                                        fluid 
-                                                        label="Website" 
-                                                        placeholder="Website"
-                                                        onChange={e => {
-                                                            handleChange(e);
-                                                        }}
-                                                        onBlur={handleBlur}
-                                                        value={values.website}
-                                                        error={touched.website && errors.website ? ( {
-                                                            content: touched.website ? errors.website : null,
-                                                            size: "tiny",
-                                                        }) : null } 
-                                                    />
-                                                </Form.Group>
-                                                <Form.TextArea 
-                                                    id='bio'
-                                                    name='bio'
-                                                    label='Bio' 
-                                                    value={values.bio}
-                                                    placeholder='Escreva pouco sobre você...' 
+                                                <Form.Input 
+                                                    id="phone_mobile"
+                                                    name="phone_mobile"
+                                                    fluid 
+                                                    label="Telefone" 
+                                                    placeholder="Telefone"
                                                     onChange={e => {
                                                         handleChange(e);
                                                     }}
                                                     onBlur={handleBlur}
-                                                    maxLength="220"
+                                                    value={values.phone_mobile}
+                                                    error={touched.phone_mobile && errors.phone_mobile ? ( {
+                                                        content: touched.phone_mobile ? errors.phone_mobile : null,
+                                                        size: "tiny",
+                                                    }) : null } 
                                                 />
-                                                <Form.Group widths='equal' className='mt-2'>
-                                                    <Form.Field
-                                                        disabled={userInfo.requesting}
-                                                        control='select'
-                                                        id="id_country_fk"
-                                                        name="id_country_fk"
-                                                        label='País'
-                                                        value={values.id_country_fk}
-                                                        onChange={e => {
-                                                            handleChange(e);
-                                                        }}
-                                                    >
-                                                        {countryOptions.map((country, key) =>
-                                                            <option key={key} value={country.value} selected={values.id_country_fk == country.value ? "selected" : ""} onChange={() => handleChange(country.value)}>{country.text}</option>
-                                                        )}
-                                                    </Form.Field>
-                                                    <Form.Field
-                                                        control='select'
-                                                        id="id_region_fk"
-                                                        name="id_region_fk"
-                                                        label='Estado'
-                                                        value={values.id_region_fk}
-                                                        onChange={e => {
-                                                            handleChange(e);
-                                                        }}
-                                                    >
-                                                        {regionOptions.map((region, key) =>
-                                                            <option key={key} value={region.value} selected={values.id_region_fk == region.value ? "selected" : ""} >{region.text}</option>
-                                                        )}
-                                                    </Form.Field>
-                                                </Form.Group>
-                                                <Form.Field className='mb-4'>
-                                                    <label>Cidade: <span style={{fontWeight:'400'}}>{userInfo.cityName}</span> <Button basic size='mini' className='ml-1'>Alterar</Button></label>
-                                                </Form.Field>
+                                                <Form.Input 
+                                                    id="website"
+                                                    name="website"
+                                                    fluid 
+                                                    label="Website" 
+                                                    placeholder="Website"
+                                                    onChange={e => {
+                                                        handleChange(e);
+                                                    }}
+                                                    onBlur={handleBlur}
+                                                    value={values.website}
+                                                    error={touched.website && errors.website ? ( {
+                                                        content: touched.website ? errors.website : null,
+                                                        size: "tiny",
+                                                    }) : null } 
+                                                />
                                                 <Form.Group inline className='mb-0'>
                                                     <Form.Radio
                                                         id="public1"

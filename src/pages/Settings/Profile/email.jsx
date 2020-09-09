@@ -159,7 +159,7 @@ function ProfilePage () {
                                         Editar perfil
                                     </Menu.Item>
                                     <Menu.Item as='a'>
-                                        Preferências artísticas
+                                        Preferências
                                     </Menu.Item>
                                     <Menu.Item as='a'>
                                         Configurações

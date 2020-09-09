@@ -1,59 +1,108 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useHistory, Link } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import HeaderDesktop from '../../../components/layout/headerDesktop';
 import { userInfos } from '../../../store/actions/user';
-import { Form, Segment, Header, List, Card, Grid, Image, Menu, Button, Icon, Loader as UiLoader } from 'semantic-ui-react';
-import { Formik } from 'formik';
+import { miscInfos } from '../../../store/actions/misc';
+import { Form, Select, Modal, Header, Label, List, Card, Grid, Menu, Button, Icon, Loader as UiLoader } from 'semantic-ui-react';
 
 function ProfilePage () {
 
     document.title = 'Configurações | Mublin'
 
-    let history = useHistory();
+    let history = useHistory()
 
-    let dispatch = useDispatch();
+    let dispatch = useDispatch()
 
-    useEffect(() => {
+    let user = JSON.parse(localStorage.getItem('user'))
+
+    const [isLoading, setIsLoading] = useState(false)
+
+    const [modalGenresIsOpen, setModalGenresIsOpen] = useState(false)
+    const closeGenresModal = () => {
+        setModalGenresIsOpen(false)
+        setGenreToAdd('')
+    }
+    
+    const [modalRolesIsOpen, setModalRolesIsOpen] = useState(false)
+    const closeRolesModal = () => {
+        setModalRolesIsOpen(false)
+        setRoleToAdd('')
+    }
+
+    useEffect(() => { 
         dispatch(userInfos.getInfo());
-    }, []);
+        dispatch(userInfos.getUserGenresInfoById(user.id));
+        dispatch(userInfos.getUserRolesInfoById(user.id));
+        dispatch(miscInfos.getMusicGenres());
+        dispatch(miscInfos.getRoles());
+    }, [dispatch, user.id]);
 
-    const userInfo = useSelector(state => state.user)
+    const userInfo = useSelector(state => state.user);
+    const musicGenres = useSelector(state => state.musicGenres);
+    const roles = useSelector(state => state.roles);
 
-    const countryOptions = [
-        { key: 'br', text: 'Brasil', value: '27' },
-    ]
+    const userSelectedGenres = userInfo.genres.map(item => item.idGenre)
+    const userSelectedRoles = userInfo.roles.map(item => item.idRole)
 
-    const regionOptions = [
-        { key: '', text: 'Selecione...', value: '' },
-        { key: 'AC', text: 'Acre', value: '415' },
-        { key: 'AL', text: 'Alagoas', value: '422' },
-        { key: 'AP', text: 'Amapá', value: '406' },
-        { key: 'AM', text: 'Amazonas', value: '407' },
-        { key: 'BA', text: 'Bahia', value: '402' },
-        { key: 'CE', text: 'Ceará', value: '409' },
-        { key: 'DF', text: 'Distrito Federal', value: '424' },
-        { key: 'ES', text: 'Espírito Santo', value: '401' },
-        { key: 'GO', text: 'Goiás', value: '411' },
-        { key: 'MA', text: 'Maranhão', value: '419' },
-        { key: 'MT', text: 'Mato Grosso', value: '418' },
-        { key: 'MS', text: 'Mato Grosso do Sul', value: '399' },
-        { key: 'MG', text: 'Minas Gerais', value: '404' },
-        { key: 'PA', text: 'Pará', value: '408' },
-        { key: 'PB', text: 'Paraíba', value: '405' },
-        { key: 'PR', text: 'Paraná', value: '413' },
-        { key: 'PE', text: 'Pernambuco', value: '417' },
-        { key: 'PI', text: 'Piauí', value: '416' },
-        { key: 'RJ', text: 'Rio de Janeiro', value: '410' },
-        { key: 'RN', text: 'Rio Grande do Norte', value: '414' },
-        { key: 'RS', text: 'Rio Grande do Sul', value: '400' },
-        { key: 'RO', text: 'Rondônia', value: '403' },
-        { key: 'RR', text: 'Roraima', value: '421' },
-        { key: 'SC', text: 'Santa Catarina', value: '398' },
-        { key: 'SP', text: 'São Paulo', value: '412' },
-        { key: 'SE', text: 'Sergipe', value: '423' },
-        { key: 'TO', text: 'Tocantins', value: '420' },
-    ]
+    const musicGenresList = musicGenres.list.filter(e => !userSelectedGenres.includes(e.id)).map(genre => ({ 
+        text: genre.name,
+        value: genre.id,
+        key: genre.id
+    }));
+
+    const rolesList = roles.list.filter(e => !userSelectedRoles.includes(e.id)).map(role => ({ 
+        text: role.description,
+        value: role.id,
+        key: role.id
+    }));
+
+    const [genreToAdd, setGenreToAdd] = useState('')
+    const [roleToAdd, setRoleToAdd] = useState('')
+
+    const addGenre = (musicGenreId) => {
+        setIsLoading(true)
+        let setMainGenre
+        if (!userInfo.genres[0].idGenre) { setMainGenre = 1 } else { setMainGenre = 0 }
+        setTimeout(() => {
+            fetch('https://mublin.herokuapp.com/user/add/musicGenre', {
+                method: 'post',
+                headers: {
+                    'Accept': 'application/json, text/plain, */*',
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + user.token
+                },
+                body: JSON.stringify({userId: user.id, musicGenreId: musicGenreId, musicGenreMain: setMainGenre})
+            }).then((response) => {
+                //console.log(response);
+                dispatch(userInfos.getUserGenresInfoById(user.id))
+                setIsLoading(false)
+                setModalGenresIsOpen(false)
+            }).catch(err => {
+                console.error(err)
+                alert("Ocorreu um erro ao adicionar o gênero")
+            })
+        }, 400);
+    }
+
+    const deleteGenre = (userGenreId) => {
+        setIsLoading(true)
+        fetch('https://mublin.herokuapp.com/user/delete/musicGenre', {
+            method: 'delete',
+            headers: {
+                'Accept': 'application/json, text/plain, */*',
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + user.token
+            },
+            body: JSON.stringify({userId: user.id, userGenreId: userGenreId})
+        }).then((response) => {
+            dispatch(userInfos.getUserGenresInfoById(user.id))
+            setIsLoading(false)
+        }).catch(err => {
+            console.error(err)
+            alert("Ocorreu um erro ao remover o gênero")
+        })
+    }
     
     const submitForm = (values) => {
         fetch('https://mublin.herokuapp.com/user/create/', {
@@ -71,40 +120,49 @@ function ProfilePage () {
         )
     }
 
-    const [usernameChoosen, setUsernameChoosen] = useState(userInfo.username)
-    const usernameAvailability = useSelector(state => state.usernameCheck);
-    const emailAvailability = useSelector(state => state.emailCheck);
-
-    let color
-    if (usernameChoosen === userInfo.username || usernameAvailability.requesting) {
-        color=null
-    } else if (usernameChoosen && usernameAvailability.available === false) {
-        color="red"
-    } else if (usernameChoosen && usernameAvailability.available === true) {
-        color="green"
+    const addRole = (roleId) => {
+        setIsLoading(true)
+        let setMainRole
+        if (!userInfo.roles[0].idRole) { setMainRole = 1 } else { setMainRole = 0 }
+        setTimeout(() => {
+            fetch('https://mublin.herokuapp.com/user/add/role', {
+                method: 'post',
+                headers: {
+                    'Accept': 'application/json, text/plain, */*',
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + user.token
+                },
+                body: JSON.stringify({userId: user.id, roleId: roleId, roleMain: setMainRole})
+            }).then((response) => {
+                dispatch(userInfos.getUserRolesInfoById(user.id))
+                setIsLoading(false)
+                setModalRolesIsOpen(false)
+            }).catch(err => {
+                console.error(err)
+                alert("Ocorreu um erro ao adicionar a atividade")
+            })
+        }, 400);
     }
 
-    const validate = values => {
-        const errors = {};
-  
-        if (!values.name) {
-            errors.name = 'Campo obrigatório';
-        }
-
-        if (!values.lastname) {
-            errors.lastname = 'Campo obrigatório';
-        }
-
-        if (!values.id_country_fk) {
-            errors.id_country_fk = 'Escolha um País';
-        }
-
-        if (!values.id_region_fk) {
-            errors.id_region_fk = 'Escolha um Estado';
-        }
-  
-        return errors;
-    };
+    const deleteRole = (userRoleId) => {
+        setIsLoading(true)
+        fetch('https://mublin.herokuapp.com/user/delete/role', {
+            method: 'delete',
+            headers: {
+                'Accept': 'application/json, text/plain, */*',
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + user.token
+            },
+            body: JSON.stringify({userId: user.id, userRoleId: userRoleId})
+        }).then((response) => {
+            console.log(response);
+            dispatch(userInfos.getUserRolesInfoById(user.id))
+            setIsLoading(false)
+        }).catch(err => {
+            console.error(err)
+            alert("Ocorreu um erro ao remover o gênero")
+        })
+    }
 
     return (
         <>
@@ -114,170 +172,120 @@ function ProfilePage () {
                     <Grid.Column mobile={16} computer={10}>
                         <Card style={{ width: "100%" }}>
                             <Card.Content>
-                                <Menu fluid pointing secondary widths={3} className='mb-5'>
+                                <Menu fluid pointing secondary widths={3} className='mb-3'>
                                     <Menu.Item as='a' onClick={() => history.push("/settings/profile")}>
                                         Editar perfil
                                     </Menu.Item>
-                                    <Menu.Item as='a'>
-                                        Preferências artísticas
-                                    </Menu.Item>
                                     <Menu.Item as='span' active>
+                                        Preferências
+                                    </Menu.Item>
+                                    <Menu.Item as='a' onClick={() => history.push("/settings/")}>
                                         Configurações
                                     </Menu.Item>
                                 </Menu>
+                                <Header as='h4'>Sua ligação com a música</Header>
                                 { userInfo.requesting ? (
                                     <UiLoader active inline='centered' size='large' className='my-5' />
                                 ) : (
-                                    <Formik
-                                        initialValues={{ 
-                                            name: userInfo.name,
-                                            lastname: userInfo.lastname,
-                                            gender: userInfo.gender,
-                                            id_country_fk: userInfo.country,
-                                            id_region_fk: userInfo.region,
-                                            website: userInfo.website,
-                                            phone_mobile: userInfo.phone,
-                                            public: userInfo.public.toString()
-                                        }}
-                                        validate={validate}
-                                        validateOnMount={true}
-                                        validateOnBlur={true}
-                                        onSubmit={(values, { setSubmitting }) => {
-                                        setTimeout(() => {
-                                            setSubmitting(false);
-                                            // dispatch(userActions.login(values.email, values.password));
-                                            // submitForm(values)
-                                            alert(JSON.stringify(values, null, 2))
-                                        }, 400);
-                                        }}
-                                    >
-                                        {({
-                                            values, errors, touched, handleChange, handleSubmit, handleBlur, isValid, isSubmitting
-                                        }) => (
-                                            <Form loading={isSubmitting}>
-                                                <Form.Group widths='equal'>
-                                                    <Form.Input 
-                                                        id="name"
-                                                        name="name"
-                                                        fluid 
-                                                        label="Nome" 
-                                                        placeholder="Nome"
-                                                        onChange={e => {
-                                                            handleChange(e);
-                                                        }}
-                                                        onBlur={handleBlur}
-                                                        value={values.name}
-                                                        error={touched.name && errors.name ? ( {
-                                                            content: touched.name ? errors.name : null,
-                                                            size: "tiny",
-                                                        }) : null } 
+                                    <>
+                                        <section id='genres' className='mt-4 mb-4'>
+                                            <Header sub className='mb-2' style={{opacity:'0.5'}}>Principais gêneros musicais relacionados à sua atuação na música</Header>
+                                            {userInfo.genres.map((genre, key) =>
+                                                <Label color='black' key={key} style={{ fontWeight: 'normal' }} className='mb-1'>
+                                                    {genre.name}
+                                                    <Icon name='delete' onClick={() => deleteGenre(genre.id)} />
+                                                </Label>
+                                            )}
+                                            <Label as='a' color='blue' style={{ fontWeight: 'normal' }} onClick={() => setModalGenresIsOpen(true)} content='Adicionar novo' icon='plus' />
+                                            <Modal
+                                                size='mini'
+                                                open={modalGenresIsOpen}
+                                                onClose={() => setModalGenresIsOpen(false)}
+                                            >
+                                                <Modal.Header>Adicionar novo gênero musical</Modal.Header>
+                                                <Modal.Content>
+                                                    <Form.Field
+                                                        fluid
+                                                        id="genre"
+                                                        name="genre"
+                                                        control={Select}
+                                                        options={musicGenresList}
+                                                        placeholder="Selecione ou digite"
+                                                        onChange={(e, { value }) => setGenreToAdd(value)}
+                                                        search
                                                     />
-                                                    <Form.Input 
-                                                        id="lastname"
-                                                        name="lastname"
-                                                        fluid 
-                                                        label="Sobrenome" 
-                                                        placeholder="Sobrenome"
-                                                        onChange={e => {
-                                                            handleChange(e);
-                                                        }}
-                                                        onBlur={handleBlur}
-                                                        value={values.lastname}
-                                                        error={touched.lastname && errors.lastname ? ( {
-                                                            content: touched.lastname ? errors.lastname : null,
-                                                            size: "tiny",
-                                                        }) : null } 
+                                                </Modal.Content>
+                                                <Modal.Actions>
+                                                    <Button size='small' onClick={() => closeGenresModal()}>
+                                                        <Icon name='remove' /> Fechar
+                                                    </Button>
+                                                    <Button size='small' color='blue' onClick={() => addGenre(genreToAdd)} disabled={!genreToAdd}>
+                                                        <Icon name='checkmark' /> Salvar
+                                                    </Button>
+                                                </Modal.Actions>
+                                            </Modal>
+                                        </section>
+                                        <section id='roles' className='mb-4'>
+                                            <Header sub className='mb-2' style={{opacity:'0.5'}}>Principais atividades e atuações na música</Header>
+                                            {userInfo.roles.map((role, key) =>
+                                                <Label color='black' key={key} style={{ fontWeight: 'normal' }}>
+                                                    {role.name}
+                                                    <Icon name='delete' onClick={() => deleteRole(role.id)} />
+                                                </Label>
+                                            )}
+                                            <Label as='a' color='blue' style={{ fontWeight: 'normal' }} onClick={() => setModalRolesIsOpen(true)} content='Adicionar nova' icon='plus' />
+                                            <Modal
+                                                size='mini'
+                                                open={modalRolesIsOpen}
+                                                onClose={() => setModalRolesIsOpen(false)}
+                                            >
+                                                <Modal.Header>Adicionar nova atividade</Modal.Header>
+                                                <Modal.Content>
+                                                    <Form.Field
+                                                        fluid
+                                                        id="role"
+                                                        name="role"
+                                                        control={Select}
+                                                        options={rolesList}
+                                                        placeholder="Selecione ou digite"
+                                                        onChange={(e, { value }) => setRoleToAdd(value)}
+                                                        search
                                                     />
-                                                </Form.Group>
-                                                <Form.Field
-                                                    disabled={userInfo.requesting}
-                                                    control='select'
-                                                    id="gender"
-                                                    name="gender"
-                                                    label='Gênero'
-                                                    value={values.gender}
-                                                    onChange={e => {
-                                                        handleChange(e);
-                                                    }}
-                                                >
-                                                    <option value='m' selected={values.gender == 'm' ? "selected" : ""} onChange={handleChange}>Masculino</option>
-                                                    <option value='f' selected={values.gender == 'f' ? "selected" : ""} onChange={handleChange}>Feminino</option>
-                                                    <option value='n' selected={values.gender == 'n' ? "selected" : ""} onChange={handleChange}>Não informar</option>
-                                                </Form.Field>
-                                                <Form.Input 
-                                                    id="phone_mobile"
-                                                    name="phone_mobile"
-                                                    fluid 
-                                                    label="Telefone" 
-                                                    placeholder="Telefone"
-                                                    onChange={e => {
-                                                        handleChange(e);
-                                                    }}
-                                                    onBlur={handleBlur}
-                                                    value={values.phone_mobile}
-                                                    error={touched.phone_mobile && errors.phone_mobile ? ( {
-                                                        content: touched.phone_mobile ? errors.phone_mobile : null,
-                                                        size: "tiny",
-                                                    }) : null } 
+                                                </Modal.Content>
+                                                <Modal.Actions>
+                                                    <Button size='small' onClick={() => closeRolesModal()}>
+                                                        <Icon name='remove' /> Fechar
+                                                    </Button>
+                                                    <Button size='small' color='blue' onClick={() => addRole(roleToAdd)} disabled={!roleToAdd}>
+                                                        <Icon name='checkmark' /> Salvar
+                                                    </Button>
+                                                </Modal.Actions>
+                                            </Modal>
+                                        </section>
+                                        <section id='roles' className='mb-2'>
+                                            <Header sub className='mb-2' style={{opacity:'0.5'}}>Disponibilidade para projetos</Header>
+                                            <Form.Group>
+                                                <Form.Radio
+                                                    label='Small'
+                                                    value='sm'
+                                                    checked={'value' === 'sm'}
+                                                    // onChange={this.handleChange}
                                                 />
-                                                <Form.Input 
-                                                    id="website"
-                                                    name="website"
-                                                    fluid 
-                                                    label="Website" 
-                                                    placeholder="Website"
-                                                    onChange={e => {
-                                                        handleChange(e);
-                                                    }}
-                                                    onBlur={handleBlur}
-                                                    value={values.website}
-                                                    error={touched.website && errors.website ? ( {
-                                                        content: touched.website ? errors.website : null,
-                                                        size: "tiny",
-                                                    }) : null } 
+                                                <Form.Radio
+                                                    label='Medium'
+                                                    value='md'
+                                                    checked={'value' === 'md'}
+                                                    // onChange={this.handleChange}
                                                 />
-                                                <Form.Group inline className='mb-0'>
-                                                    <Form.Radio
-                                                        id="public1"
-                                                        name="public"
-                                                        label='Perfil público'
-                                                        value='1'
-                                                        checked={values.public === '1' ? true : false}
-                                                        onChange={e => {
-                                                            handleChange(e);
-                                                        }}
-                                                        onBlur={handleBlur}
-                                                    />
-                                                    <Form.Radio
-                                                        id="public2"
-                                                        name="public"
-                                                        label='Perfil privado'
-                                                        value='0'
-                                                        checked={values.public === '0' ? true : false}
-                                                        onChange={e => {
-                                                            handleChange(e);
-                                                        }}
-                                                        onBlur={handleBlur}
-                                                    />
+                                                <Form.Radio
+                                                    label='Large'
+                                                    value='lg'
+                                                    checked={'value' === 'lg'}
+                                                    // onChange={this.handleChange}
+                                                />
                                                 </Form.Group>
-                                                <span style={{fontSize:'12px'}}>{values.public === '1' ? 'Seu perfil estará visível nas buscas' : 'Seu perfil será privado e visível apenas para suas conexões'}</span>
-                                                <Segment>
-                                                    <Form.Field>
-                                                        <label className='mb-0'>Plano: <span style={{fontWeight:'400'}}>{userInfo.plan}</span> <Button basic size='mini' className='ml-1'>Alterar</Button></label>
-                                                    </Form.Field>
-                                                </Segment>
-                                                <Button 
-                                                    className="mt-2"
-                                                    type="submit" 
-                                                    secondary 
-                                                    disabled={isValid ? false : true}
-                                                    onClick={handleSubmit}
-                                                >
-                                                    Salvar
-                                                </Button>
-                                        </Form>
-                                    )}
-                                    </Formik>
+                                        </section>
+                                    </>
                                 )}
                             </Card.Content>
                         </Card>

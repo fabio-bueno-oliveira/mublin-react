@@ -77,7 +77,7 @@ function ProfilePage (props) {
                                         Editar perfil
                                     </Menu.Item>
                                     <Menu.Item as='a'>
-                                        Preferências artísticas
+                                        Preferências
                                     </Menu.Item>
                                     <Menu.Item as='a' onClick={() => history.push("/settings")}>
                                         Configurações

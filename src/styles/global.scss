@@ -53,7 +53,7 @@ body, html {
   }
 }
 
-#menu-desktop {
+#headerDesktop {
   .ui.icon.input {
     input {
       background-color: transparent;
@@ -116,31 +116,25 @@ body, html {
   .ui.card{border-radius:0!important}
 }
 
-#menu-mobile {
-  display:block;
-  border:none;
-  box-shadow:0 1px 1px 0 rgba(34,36,38,.15);
-}
-
-#menu-desktop {
+#headerDesktop {
   display:none;
 }
 
-#menu-desktop.ui.inverted.menu .item:before{
+#headerDesktop.ui.inverted.menu .item:before{
   background:0 0!important;
 }
 
-#menu-desktop .header:hover {
+#headerDesktop .header:hover {
   background:0 0;
 }
 
-#menu-desktop .header img {
+#headerDesktop .header img {
   width:5.5em;
 }
 
 @media only screen and (min-width:700px) {
-  #menu-mobile {display:none;}
-  #menu-desktop{display:block;display:block;}
+  #headerMobile {display:none;}
+  #headerDesktop{display:block;display:block;}
 }
 
 /* General */

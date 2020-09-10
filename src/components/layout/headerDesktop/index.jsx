@@ -1,13 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { Search } from 'semantic-ui-react';
-import { useHistory, Link } from 'react-router-dom';
+import { Search, Menu, Container, Dropdown, Image, Icon, Label } from 'semantic-ui-react';
+import { useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { userInfos } from '../../../store/actions/user';
 import { searchInfos } from '../../../store/actions/search';
 import { userActions } from '../../../store/actions/authentication';
 import {IKImage} from "imagekitio-react";
 import MublinLogo from '../../../assets/img/logos/mublin-logo-text-white.png';
-import HeaderWrapper from './styles';
 
 const HeaderDesktop = () => {
 
@@ -52,114 +51,107 @@ const HeaderDesktop = () => {
 
     return (
         <>
-        <HeaderWrapper>
-            <div id="menu-desktop" className="ui fixed inverted menu">
-                <div className="ui container">
-                    <Link className="header item pl-0" to={{ pathname: "/home" }}>
-                        <img className="logo" src={MublinLogo} alt="Mublin Logo" />
-                    </Link>
-                    <Link className={window.location.pathname === "/home" ? "active item" : 'item'} to={{ pathname: "/home" }}>
-                        <i className="fas fa-home mr-2"></i> Início
-                    </Link>
-                    <Link className="item" to={{ pathname: "/feed" }}>
+            <Menu id='headerDesktop' fixed='top' inverted borderless>
+                <Container>
+                    <Menu.Item header onClick={() => history.push("/home")}>
+                        <Image src={MublinLogo} alt="Logo do Mublin" />
+                    </Menu.Item>
+                    <Menu.Item onClick={() => history.push("/home")} active={window.location.pathname === "/home"}>
+                        <Icon name='home'/> Início
+                    </Menu.Item>
+                    <Menu.Item onClick={() => history.push("/feed")} active={window.location.pathname === "/feed"}>
                         <i className="fas fa-globe-americas mr-2"></i> Feed
-                    </Link>
-                    <div className="ui simple dropdown item">
-                        <i className="fas fa-plus mr-2"></i> Novo <i className="dropdown icon"></i>
-                        <div className="menu">
-                            <Link className="item" to={{ pathname: "/feed" }}>
+                    </Menu.Item>
+                    <Dropdown item simple text='Novo' icon='caret down'  key='new'>
+                        <Dropdown.Menu>
+                            <Dropdown.Item onClick={() => history.push("/home")}>
                                 <i className="fas fa-pencil-alt mr-1"></i> Composição
-                            </Link>
-                            <Link className="item" to={{ pathname: "/feed" }}>
+                            </Dropdown.Item>
+                            <Dropdown.Item onClick={() => history.push("/home")}>
                                 <i className="fas fa-drum mr-1"></i> Ensaio
-                            </Link>
-                            <Link className="item" to={{ pathname: "/feed" }}>
+                            </Dropdown.Item>
+                            <Dropdown.Item onClick={() => history.push("/home")}>
                                 <i className="fas fa-ticket-alt mr-1"></i> Show
-                            </Link>
-                            <Link className="item" to={{ pathname: "/feed" }}>
+                            </Dropdown.Item>
+                            <Dropdown.Item onClick={() => history.push("/home")}>
                                 <i className="fas fa-road mr-1"></i> Turnê
-                            </Link>
-                            <div className="item">
-                                <i className="dropdown icon"></i>
-                                <i className="fas fa-music mr-1"></i> Projeto
-                                <div className="menu">
-                                    <Link className="item" to={{ pathname: "/project/new/" }}>
+                            </Dropdown.Item>
+                            <Dropdown.Item>
+                                <i className='dropdown icon' />
+                                <i className="text fas fa-music mr-1"></i> Projeto
+                                <Dropdown.Menu>
+                                    <Dropdown.Item onClick={() => history.push("/home")}>
                                         <i className="fas fa-plus fa-fw"></i> Criar do zero
-                                    </Link>
-                                    <div className="divider"></div>
-                                        <Link className="item" to={{ pathname: "/project/new/?type=idea" }}>
-                                            <i className="far fa-lightbulb fa-fw"></i> Nova ideia de projeto
-                                        </Link>
-                                        <Link className="item" to={{ pathname: "/project/new/?type=join" }}>
-                                            <i className="fas fa-user-plus fa-fw"></i> Ingressar em um projeto
-                                        </Link>
-                                        <Link className="item" to={{ pathname: "/invite" }}>
-                                            <i className="fas fa-envelope-open-text fa-fw"></i> Convidar alguém para um projeto
-                                        </Link>
-                                        <Link className="item" to={{ pathname: "/search?type=projects&status=hiring" }}>
-                                            <i className="fas fa-crosshairs fa-fw"></i> Buscar projetos que estão contratando
-                                        </Link>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div id="notifications" className="ui simple dropdown item">
-                            <div className="alert">
-                                <i className="far fa-bell"></i> <span className="ui red circular mini label d-none" id="feedlabel"></span>
-                            </div>
-                            <div className="menu">
-                                <span className="item none">Nenhuma nova notificação</span>
-                            </div>
-                        </div>
-                        <div className="item">
-                            <Search
-                                size='small'
-                                // category
-                                // fluid
-                                // inverted
-                                icon="search"
-                                placeholder="Pesquisar..."
-                                noResultsMessage="Nenhum resultado"
-                                loading={search.requesting}
-                                results={search.results}
-                                value={query}
-                                onSearchChange={e => handleSearchChange(e.target.value)}
-                                onResultSelect={(e, data) =>
-                                    handleResultSelect(data)
-                                }
-                            />
-                        </div>
-                        <div className="right menu">
-                            <Link className="item" to={{ pathname: "/messages" }}>
-                                <i className="far fa-envelope"></i> <span className="ui red circular mini label">2</span>
-                            </Link>
-                            <div className="ui simple dropdown item">
-                                { userInfo.picture ? (
-                                    <IKImage 
-                                        path={'/users/avatars/'+userInfo.id+'/'+userInfo.picture}
-                                        transformation={[{ "height": "200", "width": "200", "r": "max" }]} 
-                                    />
-                                ) : (
-                                    <IKImage 
-                                        path={'/sample-folder/avatar-undefined_Kblh5CBKPp.jpg'}
-                                        transformation={[{ "height": "200", "width": "200", "r": "max" }]} 
-                                    />
-                                )}
-                                {userInfo.plan === 2 && <div className="ui mini blue label">PRO</div> } <i className="dropdown icon"></i>
-                                <div className="menu">
-                                    <a className="item" href={'/'+userInfo.username}>Meu perfil</a>
-                                    <a className="item settings" href="/settings">Configurações</a>
-                                    {/* <!-- Projects Menu goes here (header-global-scripts.php) --> */}
-                                    <div className="divider"></div>
-                                    <Link className="item" onClick={logout}>
-                                        Sair
-                                    </Link>
-                                </div>
-                            </div>
-                        </div>
+                                    </Dropdown.Item>
+                                    <Dropdown.Item onClick={() => history.push("/home")}>
+                                        <i className="far fa-lightbulb fa-fw"></i> Nova ideia de projeto
+                                    </Dropdown.Item>
+                                    <Dropdown.Item onClick={() => history.push("/home")}>
+                                        <i className="fas fa-user-plus fa-fw"></i> Ingressar em um projeto
+                                    </Dropdown.Item>
+                                    <Dropdown.Item onClick={() => history.push("/home")}>
+                                        <i className="fas fa-envelope-open-text fa-fw"></i> Convidar alguém para um projeto
+                                    </Dropdown.Item>
+                                    <Dropdown.Item onClick={() => history.push("/home")}>
+                                        <i className="fas fa-crosshairs fa-fw"></i> Buscar projetos que estão contratando
+                                    </Dropdown.Item>
+                                </Dropdown.Menu>
+                            </Dropdown.Item>
+                        </Dropdown.Menu>
+                    </Dropdown>
+                    <div className="ui simple dropdown item" key='notifications'>
+                        <Icon name='bell outline' className='mr-0'/><span className="ui red circular mini label">6</span>
+                        <Dropdown.Menu>
+                            <Dropdown.Item>
+                                Nenhuma nova notificação
+                            </Dropdown.Item>
+                        </Dropdown.Menu>
                     </div>
-                </div>
-            </HeaderWrapper>
+                    <Menu.Item key='search'>
+                        <Search
+                            size='small'
+                            // category
+                            // fluid
+                            // inverted
+                            icon="search"
+                            placeholder="Pesquisar..."
+                            noResultsMessage="Nenhum resultado"
+                            loading={search.requesting}
+                            results={search.results}
+                            value={query}
+                            onSearchChange={e => handleSearchChange(e.target.value)}
+                            onResultSelect={(e, data) =>
+                                handleResultSelect(data)
+                            }
+                        />
+                    </Menu.Item>
+                    <Menu.Menu position='right'>
+                        <Menu.Item key='messages' onClick={() => history.push("/messages")} active={window.location.pathname === "/messages"}>
+                            <Icon name='envelope outline' className='mr-0'/><span className="ui red circular mini label">2</span>
+                        </Menu.Item>
+                        <div className="ui simple dropdown item" key='userMenu'>
+                            { userInfo.picture ? (
+                                <IKImage 
+                                    path={'/users/avatars/'+userInfo.id+'/'+userInfo.picture}
+                                    transformation={[{ "height": "200", "width": "200", "r": "max" }]} 
+                                />
+                            ) : (
+                                <IKImage 
+                                    path={'/sample-folder/avatar-undefined_Kblh5CBKPp.jpg'}
+                                    transformation={[{ "height": "200", "width": "200", "r": "max" }]} 
+                                />
+                            )}
+                            {userInfo.plan === 'Pro' && <Label size='mini' content='PRO' />} <i className='dropdown icon' />
+                            <Dropdown.Menu>
+                                <Dropdown.Item icon='user circle' text='Meu perfil' onClick={() => history.push('/'+userInfo.username)} />
+                                <Dropdown.Item icon='setting' text='Configurações' onClick={() => history.push('/settings')} />
+                                <Dropdown.Divider />
+                                <Dropdown.Item icon='sign-out' text='Sair' onClick={logout} />
+                            </Dropdown.Menu>
+                        </div>
+                    </Menu.Menu>
+                </Container>
+            </Menu>
         </>
     );
 };

@@ -26,7 +26,7 @@ const HeaderMobile = () => {
 
     return (
         <>
-            <Menu fixed='top' inverted size='mini' borderless>
+            <Menu id='headerMobile' fixed='top' inverted size='mini' borderless>
                 <Container>
                     <Menu.Item header onClick={() => history.push("/home")}>
                         <Image size='tiny' src={MublinLogo} style={{ marginRight: '1.5em' }} alt="Logo do Mublin" />

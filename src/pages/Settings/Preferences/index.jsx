@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import HeaderDesktop from '../../../components/layout/headerDesktop';
+import HeaderMobile from '../../../components/layout/headerMobile';
 import { userInfos } from '../../../store/actions/user';
 import { miscInfos } from '../../../store/actions/misc';
 import { Form, Select, Modal, Header, Label, List, Card, Grid, Menu, Button, Icon, Loader as UiLoader } from 'semantic-ui-react';
@@ -167,6 +168,7 @@ function ProfilePage () {
     return (
         <>
         <HeaderDesktop />
+        <HeaderMobile />
             <Grid centered verticalAlign='middle' columns={1} className="container mb-2 mt-4 mt-md-5 pt-5">
                 <Grid.Row>
                     <Grid.Column mobile={16} computer={10}>

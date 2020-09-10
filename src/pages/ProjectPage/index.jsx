@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { projectInfos } from '../../store/actions/project';
 import HeaderDesktop from '../../components/layout/headerDesktop';
+import HeaderMobile from '../../components/layout/headerMobile';
 import { Header, Placeholder, Grid, Card, Image, Icon, Button, Label } from 'semantic-ui-react';
 import Flickity from 'react-flickity-component';
 import './styles.scss';
@@ -40,6 +41,7 @@ function ProjectPage (props) {
     return (
         <>
         <HeaderDesktop />
+        <HeaderMobile />
             <Grid columns={2} stackable className="container mb-2 mt-4 mt-md-5 pt-5">
                 <Grid.Row>
                     <Grid.Column>

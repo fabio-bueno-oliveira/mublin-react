@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import HeaderDesktop from '../../components/layout/headerDesktop';
+import HeaderMobile from '../../components/layout/headerMobile';
 import { projectInfos } from '../../store/actions/project';
 import { projectsInfos } from '../../store/actions/projects';
 import { userInfos } from '../../store/actions/user';
@@ -83,8 +84,9 @@ function HomePage () {
     return (
         <>
         <HeaderDesktop />
-        <main className="home mt-5 pt-5">
-            <section id="carousels" className="ui container px-3">
+        <HeaderMobile />
+        <main className="home mt-5 pt-4 pt-md-5">
+            <section id="carousels" className="ui container px-3 pt-3 pt-md-0">
                 <Header as='h2'>Meus projetos</Header>
                 <Tab menu={{ secondary: true }} panes={
                     [

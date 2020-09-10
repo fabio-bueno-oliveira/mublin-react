@@ -141,7 +141,7 @@ const HeaderDesktop = () => {
                                     />
                                 ) : (
                                     <IKImage 
-                                        path={'/sample-folder/avatar-alien_46GjWhMRNr.png'}
+                                        path={'/sample-folder/avatar-undefined_Kblh5CBKPp.jpg'}
                                         transformation={[{ "height": "200", "width": "200", "r": "max" }]} 
                                     />
                                 )}

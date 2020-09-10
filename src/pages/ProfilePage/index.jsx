@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import HeaderDesktop from '../../components/layout/headerDesktop';
+import HeaderMobile from '../../components/layout/headerMobile';
 import { profileInfos } from '../../store/actions/profile';
 import { followInfos } from '../../store/actions/follow';
 import { Header, Tab, Card, Grid, Image, Button, Label, Dimmer, Loader, Icon, Modal, List, Confirm, Placeholder, Popup} from 'semantic-ui-react';
@@ -117,6 +118,7 @@ function ProfilePage (props) {
     return (
         <>
         <HeaderDesktop />
+        <HeaderMobile />
             <Grid id="info" columns={2} stackable className="container mb-2 mt-4 mt-md-5 pt-5">
                 <Grid.Row>
                     <Grid.Column width={4}>

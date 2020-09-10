@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory, Link } from 'react-router-dom';
 import HeaderDesktop from '../../../components/layout/headerDesktop';
+import HeaderMobile from '../../../components/layout/headerMobile';
 import { userInfos } from '../../../store/actions/user';
 import { usernameCheckInfos } from '../../../store/actions/usernameCheck';
 import { emailCheckInfos } from '../../../store/actions/emailCheck';
@@ -180,6 +181,7 @@ function ProfilePage (props) {
             />
         }
         <HeaderDesktop />
+        <HeaderMobile />
             <Grid centered columns={1} className="container mb-2 mt-4 mt-md-5 pt-5">
                 <Grid.Row>
                     <Grid.Column width={12}>

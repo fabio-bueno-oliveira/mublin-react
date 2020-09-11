@@ -18,6 +18,9 @@ export function authHeader() {
 export const miscService = {
     getAllMusicGenres,
     getAllRoles,
+    getAvailabilityStatuses,
+    getAvailabilityItems,
+    getAvailabilityFocuses,
     logout
 };
 
@@ -35,6 +38,30 @@ function getAllRoles() {
         headers: authHeader()
     };
     return fetch(`${BASE_URL}/music/roles`, requestOptions).then(handleResponse);
+}
+
+function getAvailabilityStatuses() {
+    const requestOptions = {
+        method: 'GET',
+        headers: authHeader()
+    };
+    return fetch(`${BASE_URL}/availabilityStatuses`, requestOptions).then(handleResponse);
+}
+
+function getAvailabilityItems() {
+    const requestOptions = {
+        method: 'GET',
+        headers: authHeader()
+    };
+    return fetch(`${BASE_URL}/availabilityItems`, requestOptions).then(handleResponse);
+}
+
+function getAvailabilityFocuses() {
+    const requestOptions = {
+        method: 'GET',
+        headers: authHeader()
+    };
+    return fetch(`${BASE_URL}/availabilityFocuses`, requestOptions).then(handleResponse);
 }
 
 function logout() {

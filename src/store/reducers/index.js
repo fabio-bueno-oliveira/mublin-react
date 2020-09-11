@@ -14,6 +14,7 @@ import { events } from './events';
 import { notes } from './notes';
 import { musicGenres } from './musicGenres';
 import { roles } from './roles';
+import { availabilityOptions } from './availabilityOptions';
 
 const rootReducer = combineReducers({
   authentication,
@@ -30,7 +31,8 @@ const rootReducer = combineReducers({
   events,
   notes,
   musicGenres,
-  roles
+  roles,
+  availabilityOptions
 });
 
 export default rootReducer;

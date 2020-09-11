@@ -1,10 +1,14 @@
 import { musicGenresTypes } from '../types/musicGenres';
 import { rolesTypes } from '../types/roles';
+import { availabilityOptionsTypes } from '../types/availabilityOptions';
 import { miscService } from '../../api/misc';
 
 export const miscInfos = {
     getMusicGenres: getMusicGenres,
-    getRoles: getRoles
+    getRoles: getRoles,
+    getAvailabilityStatuses: getAvailabilityStatuses,
+    getAvailabilityItems: getAvailabilityItems,
+    getAvailabilityFocuses: getAvailabilityFocuses
 };
 
 function getMusicGenres() {
@@ -37,4 +41,52 @@ function getRoles() {
     function request() { return { type: rolesTypes.GET_ROLES_REQUEST} }
     function success(list) { return { type: rolesTypes.GET_ROLES_SUCCESS, list } }
     function failure(error) { return { type: rolesTypes.GET_ROLES_FAILURE, error } }
+}
+
+function getAvailabilityStatuses() {
+    return dispatch => {
+        dispatch(request());
+  
+        miscService.getAvailabilityStatuses()
+            .then(
+                list => dispatch(success(list)),
+                error => dispatch(failure(error.toString()))
+            );
+        };
+  
+    function request() { return { type: availabilityOptionsTypes.GET_AVAILABILITY_STATUSES_REQUEST} }
+    function success(list) { return { type: availabilityOptionsTypes.GET_AVAILABILITY_STATUSES_SUCCESS, list } }
+    function failure(error) { return { type: availabilityOptionsTypes.GET_AVAILABILITY_STATUSES_FAILURE, error } }
+}
+
+function getAvailabilityItems() {
+    return dispatch => {
+        dispatch(request());
+  
+        miscService.getAvailabilityItems()
+            .then(
+                list => dispatch(success(list)),
+                error => dispatch(failure(error.toString()))
+            );
+        };
+  
+    function request() { return { type: availabilityOptionsTypes.GET_AVAILABILITY_ITEMS_REQUEST} }
+    function success(list) { return { type: availabilityOptionsTypes.GET_AVAILABILITY_ITEMS_SUCCESS, list } }
+    function failure(error) { return { type: availabilityOptionsTypes.GET_AVAILABILITY_ITEMS_FAILURE, error } }
+}
+
+function getAvailabilityFocuses() {
+    return dispatch => {
+        dispatch(request());
+  
+        miscService.getAvailabilityFocuses()
+            .then(
+                list => dispatch(success(list)),
+                error => dispatch(failure(error.toString()))
+            );
+        };
+  
+    function request() { return { type: availabilityOptionsTypes.GET_AVAILABILITY_FOCUSES_REQUEST} }
+    function success(list) { return { type: availabilityOptionsTypes.GET_AVAILABILITY_FOCUSES_SUCCESS, list } }
+    function failure(error) { return { type: availabilityOptionsTypes.GET_AVAILABILITY_FOCUSES_FAILURE, error } }
 }

@@ -5,11 +5,11 @@ import HeaderDesktop from '../../../components/layout/headerDesktop';
 import HeaderMobile from '../../../components/layout/headerMobile';
 import { userInfos } from '../../../store/actions/user';
 import { miscInfos } from '../../../store/actions/misc';
-import { Form, Select, Modal, Header, Label, List, Card, Grid, Menu, Button, Icon, Loader as UiLoader } from 'semantic-ui-react';
+import { Form, Segment, Select, Modal, Header, Label, Dropdown, List, Card, Grid, Menu, Button, Icon, Loader as UiLoader } from 'semantic-ui-react';
 
-function ProfilePage () {
+function PreferencesPage () {
 
-    document.title = 'Configurações | Mublin'
+    document.title = 'Preferências | Mublin'
 
     let history = useHistory()
 
@@ -37,11 +37,15 @@ function ProfilePage () {
         dispatch(userInfos.getUserRolesInfoById(user.id));
         dispatch(miscInfos.getMusicGenres());
         dispatch(miscInfos.getRoles());
+        dispatch(miscInfos.getAvailabilityStatuses());
+        dispatch(miscInfos.getAvailabilityItems());
+        dispatch(miscInfos.getAvailabilityFocuses());
     }, [dispatch, user.id]);
 
     const userInfo = useSelector(state => state.user);
     const musicGenres = useSelector(state => state.musicGenres);
     const roles = useSelector(state => state.roles);
+    const availabilityOptions = useSelector(state => state.availabilityOptions)
 
     const userSelectedGenres = userInfo.genres.map(item => item.idGenre)
     const userSelectedRoles = userInfo.roles.map(item => item.idRole)
@@ -156,7 +160,7 @@ function ProfilePage () {
             },
             body: JSON.stringify({userId: user.id, userRoleId: userRoleId})
         }).then((response) => {
-            console.log(response);
+            // console.log(response);
             dispatch(userInfos.getUserRolesInfoById(user.id))
             setIsLoading(false)
         }).catch(err => {
@@ -164,6 +168,27 @@ function ProfilePage () {
             alert("Ocorreu um erro ao remover o gênero")
         })
     }
+
+    const [availabilityStatus, setAvailabilityStatus] = useState('')
+
+    const availabilityStatuses = availabilityOptions.statuses.map(status => ({ 
+        label: {color: status.color, empty: true, circular: true},
+        text: status.title,
+        value: status.id,
+        key: status.id
+    }));
+
+    const availabilityItems = availabilityOptions.items.map(status => ({ 
+        text: status.name,
+        value: status.id,
+        key: status.id
+    }));
+
+    const availabilityFocuses = availabilityOptions.focuses.map(status => ({ 
+        text: status.title,
+        value: status.id,
+        key: status.id
+    }));
 
     return (
         <>
@@ -185,20 +210,20 @@ function ProfilePage () {
                                         Configurações
                                     </Menu.Item>
                                 </Menu>
-                                <Header as='h4'>Sua ligação com a música</Header>
+                                {/* <Header as='h4'>Minha ligação com a música</Header> */}
                                 { userInfo.requesting ? (
                                     <UiLoader active inline='centered' size='large' className='my-5' />
                                 ) : (
                                     <>
-                                        <section id='genres' className='mt-4 mb-4'>
-                                            <Header sub className='mb-2' style={{opacity:'0.5'}}>Principais gêneros musicais relacionados à sua atuação na música</Header>
+                                        <Segment as='section' id='genres' className='mt-4 mb-4'>
+                                            <Header sub className='mb-2' style={{opacity:'0.5'}}>Principais gêneros musicais relacionados à minha atuação na música</Header>
                                             {userInfo.genres.map((genre, key) =>
                                                 <Label color='black' key={key} style={{ fontWeight: 'normal' }} className='mb-1'>
                                                     {genre.name}
                                                     <Icon name='delete' onClick={() => deleteGenre(genre.id)} />
                                                 </Label>
                                             )}
-                                            <Label as='a' color='blue' style={{ fontWeight: 'normal' }} onClick={() => setModalGenresIsOpen(true)} content='Adicionar novo' icon='plus' />
+                                            <Label as='a' color='blue' style={{ fontWeight: 'normal' }} onClick={() => setModalGenresIsOpen(true)} content='Adicionar' icon='plus' />
                                             <Modal
                                                 size='mini'
                                                 open={modalGenresIsOpen}
@@ -226,16 +251,16 @@ function ProfilePage () {
                                                     </Button>
                                                 </Modal.Actions>
                                             </Modal>
-                                        </section>
-                                        <section id='roles' className='mb-4'>
-                                            <Header sub className='mb-2' style={{opacity:'0.5'}}>Principais atividades e atuações na música</Header>
+                                        </Segment>
+                                        <Segment as='section' id='roles' className='mb-4'>
+                                            <Header sub className='mb-2' style={{opacity:'0.5'}}>Minhas principais atividades e atuações na música</Header>
                                             {userInfo.roles.map((role, key) =>
                                                 <Label color='black' key={key} style={{ fontWeight: 'normal' }}>
                                                     {role.name}
                                                     <Icon name='delete' onClick={() => deleteRole(role.id)} />
                                                 </Label>
                                             )}
-                                            <Label as='a' color='blue' style={{ fontWeight: 'normal' }} onClick={() => setModalRolesIsOpen(true)} content='Adicionar nova' icon='plus' />
+                                            <Label as='a' color='blue' style={{ fontWeight: 'normal' }} onClick={() => setModalRolesIsOpen(true)} content='Adicionar' icon='plus' />
                                             <Modal
                                                 size='mini'
                                                 open={modalRolesIsOpen}
@@ -263,30 +288,39 @@ function ProfilePage () {
                                                     </Button>
                                                 </Modal.Actions>
                                             </Modal>
-                                        </section>
-                                        <section id='roles' className='mb-2'>
-                                            <Header sub className='mb-2' style={{opacity:'0.5'}}>Disponibilidade para projetos</Header>
-                                            <Form.Group>
-                                                <Form.Radio
-                                                    label='Small'
-                                                    value='sm'
-                                                    checked={'value' === 'sm'}
-                                                    // onChange={this.handleChange}
-                                                />
-                                                <Form.Radio
-                                                    label='Medium'
-                                                    value='md'
-                                                    checked={'value' === 'md'}
-                                                    // onChange={this.handleChange}
-                                                />
-                                                <Form.Radio
-                                                    label='Large'
-                                                    value='lg'
-                                                    checked={'value' === 'lg'}
-                                                    // onChange={this.handleChange}
-                                                />
-                                                </Form.Group>
-                                        </section>
+                                        </Segment>
+                                        <Segment as='section' id='roles' className='mb-2'>
+                                            <Header sub className='mb-2' style={{opacity:'0.5'}}>Disponibilidade atual:</Header>
+                                            <Dropdown
+                                                placeholder='Selecione'
+                                                selection
+                                                fluid
+                                                options={availabilityStatuses}
+                                                defaultValue={7}
+                                                onChange={(e, { value }) => setAvailabilityStatus(value)}
+                                            />
+                                            <Header sub className='mb-2 mt-3' style={{opacity:'0.5'}}>Para as seguintes atividades:</Header>
+                                            <Label color='black' style={{ fontWeight: 'normal' }} className='mb-1'>
+                                                Ensaios <Icon name='delete'/>
+                                            </Label>
+                                            <Label color='black' style={{ fontWeight: 'normal' }} className='mb-1'>
+                                                Shows <Icon name='delete'/>
+                                            </Label>
+                                            <Label color='black' style={{ fontWeight: 'normal' }} className='mb-1'>
+                                                Dar aulas <Icon name='delete'/>
+                                            </Label>
+                                            <Label as='a' color='blue' style={{ fontWeight: 'normal' }} content='Adicionar' icon='plus' />
+                                            {/* <Dropdown
+                                                selection
+                                                fluid
+                                                options={availabilityItems}
+                                                defaultValue={1}
+                                                // onChange={(e, { value }) => setAvailabilityStatus(value)}
+                                            /> */}
+                                            <Header sub className='mb-2 mt-3' style={{opacity:'0.5'}}>Com os seguintes projetos:</Header>
+                                            <Form.Checkbox label='Meus projetos' checked /> 
+                                            <Form.Checkbox label='Outros projetos' checked />
+                                        </Segment>
                                     </>
                                 )}
                             </Card.Content>
@@ -298,4 +332,4 @@ function ProfilePage () {
     );
 };
 
-export default ProfilePage;
+export default PreferencesPage;

@@ -52,7 +52,13 @@ const initialState = {
       role2: '',
       role3: '',
     }
-  ]
+  ],
+  availabilityStatus: '',
+  availabilityItems: [
+    { id: '', idItem: '', name: '' }
+  ],
+  availabilityItemsLoaded: false,
+  availabilityFocus: ''
 }
 
 export function user(state = initialState, action) {
@@ -85,7 +91,9 @@ export function user(state = initialState, action) {
         phone: action.info.phone,
         status: action.info.status,
         legend: action.info.legend_badge,
-        website: action.info.website
+        website: action.info.website,
+        availabilityStatus: action.info.availability_status,
+        availabilityFocus: action.info.availability_focus
       };
     case userTypes.GET_USER_INFO_FAILURE:
       return {
@@ -127,6 +135,27 @@ export function user(state = initialState, action) {
       return {
         ...state,
         requesting: false,
+        error: "A solicitação falhou"
+      };
+    // get user´s availability items
+    case userTypes.GET_USER_AVAILABILITY_ITEMS_REQUEST:
+      return {
+        ...state,
+        requesting: true,
+        availabilityItemsLoaded: false
+      };
+    case userTypes.GET_USER_AVAILABILITY_ITEMS_SUCCESS:
+      return {
+        ...state,
+        requesting: false,
+        availabilityItems: action.list,
+        availabilityItemsLoaded: true
+      };
+    case userTypes.GET_USER_AVAILABILITY_ITEMS_FAILURE:
+      return {
+        ...state,
+        requesting: false,
+        availabilityItemsLoaded: false,
         error: "A solicitação falhou"
       };
     // get user´s projects

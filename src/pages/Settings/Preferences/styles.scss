@@ -1,0 +1,12 @@
+.ui.fluid.multiple.selection.dropdown{
+  a.ui.label{
+    .delete.icon{
+      display:none;
+    }
+  }
+}
+
+.disabledDivItems {
+  opacity: 0.4;
+  pointer-events: none;
+}

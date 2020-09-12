@@ -15,8 +15,6 @@ function ProfilePage (props) {
 
     let dispatch = useDispatch();
 
-    const username = props.match.params.username
-
     useEffect(() => { 
         dispatch(userInfos.getInfo());
     }, [dispatch]);

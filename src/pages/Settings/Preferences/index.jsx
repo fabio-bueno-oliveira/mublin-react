@@ -6,6 +6,7 @@ import HeaderMobile from '../../../components/layout/headerMobile';
 import { userInfos } from '../../../store/actions/user';
 import { miscInfos } from '../../../store/actions/misc';
 import { Form, Segment, Select, Modal, Header, Label, Dropdown, List, Card, Grid, Menu, Button, Icon, Loader as UiLoader } from 'semantic-ui-react';
+import './styles.scss'
 
 function PreferencesPage () {
 
@@ -35,6 +36,7 @@ function PreferencesPage () {
         dispatch(userInfos.getInfo());
         dispatch(userInfos.getUserGenresInfoById(user.id));
         dispatch(userInfos.getUserRolesInfoById(user.id));
+        dispatch(userInfos.getUserAvailabilityItemsById(user.id));
         dispatch(miscInfos.getMusicGenres());
         dispatch(miscInfos.getRoles());
         dispatch(miscInfos.getAvailabilityStatuses());
@@ -49,6 +51,11 @@ function PreferencesPage () {
 
     const userSelectedGenres = userInfo.genres.map(item => item.idGenre)
     const userSelectedRoles = userInfo.roles.map(item => item.idRole)
+    const userSelectedAvailabilityItems = userInfo.availabilityItems.map(item => ({ 
+        id: item.idItem
+    })).map(function (obj) {
+        return obj.id;
+    });
 
     const musicGenresList = musicGenres.list.filter(e => !userSelectedGenres.includes(e.id)).map(genre => ({ 
         text: genre.name,
@@ -108,22 +115,6 @@ function PreferencesPage () {
             alert("Ocorreu um erro ao remover o gênero")
         })
     }
-    
-    const submitForm = (values) => {
-        fetch('https://mublin.herokuapp.com/user/create/', {
-            method: 'post',
-            headers: {
-                'Accept': 'application/json, text/plain, */*',
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({name: values.name, lastname: values.lastname, email: values.email, username: values.username, password: values.password})
-        })
-        .then(res => res.json())
-        // .then(res => localStorage.setItem('user', JSON.stringify(res)))
-        .then(
-            history.push("/login?info=firstAccess")
-        )
-    }
 
     const addRole = (roleId) => {
         setIsLoading(true)
@@ -169,6 +160,27 @@ function PreferencesPage () {
         })
     }
 
+    const updateAvailabilityStatus = (availabilityStatusId) => {
+        setIsLoading(true)
+        setTimeout(() => {
+            fetch('https://mublin.herokuapp.com/user/updateAvailabilityStatus', {
+                method: 'PUT',
+                headers: {
+                    'Accept': 'application/json, text/plain, */*',
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + user.token
+                },
+                body: JSON.stringify({userId: user.id, availabilityStatusId: availabilityStatusId})
+            }).then((response) => {
+                dispatch(userInfos.getInfo())
+                setIsLoading(false)
+            }).catch(err => {
+                console.error(err)
+                alert("Ocorreu um erro ao atualizar o status de disponibilidade")
+            })
+        }, 400);
+    }
+
     const [availabilityStatus, setAvailabilityStatus] = useState('')
 
     const availabilityStatuses = availabilityOptions.statuses.map(status => ({ 
@@ -184,11 +196,66 @@ function PreferencesPage () {
         key: status.id
     }));
 
-    const availabilityFocuses = availabilityOptions.focuses.map(status => ({ 
-        text: status.title,
-        value: status.id,
-        key: status.id
-    }));
+    const renderLabel = (label) => ({
+        color: '',
+        content: label.text,
+        icon: 'times'
+    })
+
+    const addAvailabilityItem = (availabilityItemId) => {
+        fetch('https://mublin.herokuapp.com/user/userAvailabilityItem', {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json, text/plain, */*',
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + user.token
+            },
+            body: JSON.stringify({userId: user.id, availabilityItemId: availabilityItemId})
+        }).then((response) => {
+            dispatch(userInfos.getUserAvailabilityItemsById(user.id));
+        }).catch(err => {
+            console.error(err)
+            alert("Ocorreu um erro ao adicionar o item")
+        })
+    }
+
+    const deleteAvailabilityItem = (userItemId) => {
+        fetch('https://mublin.herokuapp.com/user/userAvailabilityItem', {
+            method: 'DELETE',
+            headers: {
+                'Accept': 'application/json, text/plain, */*',
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + user.token
+            },
+            body: JSON.stringify({userId: user.id, userItemId: userItemId})
+        }).then((response) => {
+            dispatch(userInfos.getUserAvailabilityItemsById(user.id));
+        }).catch(err => {
+            console.error(err)
+            alert("Ocorreu um erro ao remover o item")
+        })
+    }
+
+    const updateAvailabilityFocus = (focusId) => {
+        setIsLoading(true)
+        setTimeout(() => {
+            fetch('https://mublin.herokuapp.com/user/updateAvailabilityFocus', {
+                method: 'PUT',
+                headers: {
+                    'Accept': 'application/json, text/plain, */*',
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + user.token
+                },
+                body: JSON.stringify({userId: user.id, availabilityFocus: focusId})
+            }).then((response) => {
+                dispatch(userInfos.getInfo())
+                setIsLoading(false)
+            }).catch(err => {
+                console.error(err)
+                alert("Ocorreu um erro ao atualizar a disponibilidade de foco de carreira")
+            })
+        }, 400);
+    }
 
     return (
         <>
@@ -290,36 +357,67 @@ function PreferencesPage () {
                                             </Modal>
                                         </Segment>
                                         <Segment as='section' id='roles' className='mb-2'>
-                                            <Header sub className='mb-2' style={{opacity:'0.5'}}>Disponibilidade atual:</Header>
-                                            <Dropdown
-                                                placeholder='Selecione'
-                                                selection
-                                                fluid
-                                                options={availabilityStatuses}
-                                                defaultValue={7}
-                                                onChange={(e, { value }) => setAvailabilityStatus(value)}
-                                            />
-                                            <Header sub className='mb-2 mt-3' style={{opacity:'0.5'}}>Para as seguintes atividades:</Header>
-                                            <Label color='black' style={{ fontWeight: 'normal' }} className='mb-1'>
-                                                Ensaios <Icon name='delete'/>
-                                            </Label>
-                                            <Label color='black' style={{ fontWeight: 'normal' }} className='mb-1'>
-                                                Shows <Icon name='delete'/>
-                                            </Label>
-                                            <Label color='black' style={{ fontWeight: 'normal' }} className='mb-1'>
-                                                Dar aulas <Icon name='delete'/>
-                                            </Label>
-                                            <Label as='a' color='blue' style={{ fontWeight: 'normal' }} content='Adicionar' icon='plus' />
-                                            {/* <Dropdown
-                                                selection
-                                                fluid
-                                                options={availabilityItems}
-                                                defaultValue={1}
-                                                // onChange={(e, { value }) => setAvailabilityStatus(value)}
-                                            /> */}
-                                            <Header sub className='mb-2 mt-3' style={{opacity:'0.5'}}>Com os seguintes projetos:</Header>
-                                            <Form.Checkbox label='Meus projetos' checked /> 
-                                            <Form.Checkbox label='Outros projetos' checked />
+                                            <Header sub className='mb-2' style={{opacity:'0.5'}}>Minha disponibilidade atual:</Header>
+                                            { !userInfo.requesting &&
+                                                <Dropdown
+                                                    placeholder='Selecione'
+                                                    selection
+                                                    fluid
+                                                    options={availabilityStatuses}
+                                                    defaultValue={userInfo.availabilityStatus}
+                                                    onChange={(e, { value }) => updateAvailabilityStatus(value)}
+                                                />
+                                            }
+                                            <div className={(userInfo.availabilityStatus === 1 || userInfo.availabilityStatus === 5) ? '' : 'disabledDivItems'}>
+                                                <Header sub className='mb-2 mt-3' style={{opacity:'0.5'}}>Para as seguintes atividades:</Header>
+                                                {/* {alert(JSON.stringify(availabilityItemsSelected, null, 2))} */}
+                                                { userInfo.availabilityItemsLoaded &&
+                                                    <Dropdown 
+                                                        placeholder='Selecione...' 
+                                                        fluid 
+                                                        multiple selection 
+                                                        options={availabilityItems} 
+                                                        className='mb-2'
+                                                        defaultValue={userSelectedAvailabilityItems}
+                                                        onLabelClick={(e, { value }) => deleteAvailabilityItem(value)}
+                                                        onChange={(e, { value }) => addAvailabilityItem(value.slice(value.length - 1))}
+                                                        renderLabel={renderLabel}
+                                                    />
+                                                }
+                                                <Header sub className='mb-2 mt-3' style={{opacity:'0.5'}}>Disponível para:</Header>
+                                                <Form.Group grouped>
+                                                    <Form.Field
+                                                        disabled={userInfo.requesting}
+                                                        label='Meus projetos'
+                                                        control='input'
+                                                        type='radio'
+                                                        name='availabilityFocus'
+                                                        value={1}
+                                                        checked={userInfo.availabilityFocus === 1 && true}
+                                                        onClick={() => updateAvailabilityFocus(1)}
+                                                    />
+                                                    <Form.Field
+                                                        disabled={userInfo.requesting}
+                                                        label='Outros projetos (convidado)'
+                                                        control='input'
+                                                        type='radio'
+                                                        name='availabilityFocus'
+                                                        value={2}
+                                                        checked={userInfo.availabilityFocus === 2 && true}
+                                                        onClick={() => updateAvailabilityFocus(2)}
+                                                    />
+                                                    <Form.Field
+                                                        disabled={userInfo.requesting}
+                                                        label='Qualquer projeto (autorais e convidado)'
+                                                        control='input'
+                                                        type='radio'
+                                                        name='availabilityFocus'
+                                                        value={3}
+                                                        checked={userInfo.availabilityFocus === 3 && true}
+                                                        onClick={() => updateAvailabilityFocus(3)}
+                                                    />
+                                                </Form.Group>
+                                            </div>
                                         </Segment>
                                     </>
                                 )}

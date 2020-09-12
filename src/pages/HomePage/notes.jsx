@@ -45,7 +45,7 @@ const Notes = (props) => {
         <>
             <Card id="notes" style={{width: '100%'}}>
                 <Card.Content>
-                    <Image src='https://ik.imagekit.io/mublin/tr:r-8,w-300,h-80,c-maintain_ratio/misc/plan_99Rjsl0kD.jpg' fluid className="mb-3" />
+                    <Image src='https://ik.imagekit.io/mublin/tr:r-8,w-300,h-80,c-maintain_ratio/misc/music/home-banners/music-notes_fbRjZcNpeR.jpg' fluid className="mb-3" />
                     <Card.Header className="ui mt-0 mb-1">Notas</Card.Header>
                     <Card.Meta className="mb-3">
                         { notes.length ? (

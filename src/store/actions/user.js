@@ -9,6 +9,7 @@ export const userInfos = {
     getInfoById: getInfoById,
     getUserGenresInfoById: getUserGenresInfoById,
     getUserRolesInfoById: getUserRolesInfoById,
+    getUserAvailabilityItemsById: getUserAvailabilityItemsById,
     getUserProjects: getUserProjects
     // delete: _delete
 };
@@ -75,6 +76,22 @@ function getUserRolesInfoById(id) {
     function request(id) { return { type: userTypes.GET_USER_ROLES_INFO_REQUEST, id } }
     function success(list) { return { type: userTypes.GET_USER_ROLES_INFO_SUCCESS, list } }
     function failure(id, error) { return { type: userTypes.GET_USER_ROLES_INFO_FAILURE, id, error } }
+}
+
+function getUserAvailabilityItemsById(id) {
+    return dispatch => {
+        dispatch(request(id));
+
+        userService.getUserAvailabilityItemsById(id)
+            .then(
+                list => dispatch(success(list)),
+                error => dispatch(failure(id, error.toString()))
+            );
+    };
+
+    function request(id) { return { type: userTypes.GET_USER_AVAILABILITY_ITEMS_REQUEST, id } }
+    function success(list) { return { type: userTypes.GET_USER_AVAILABILITY_ITEMS_SUCCESS, list } }
+    function failure(id, error) { return { type: userTypes.GET_USER_AVAILABILITY_ITEMS_FAILURE, id, error } }
 }
 
 function getUserProjects(id) {

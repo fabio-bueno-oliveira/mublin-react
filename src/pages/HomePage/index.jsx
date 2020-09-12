@@ -261,7 +261,7 @@ function HomePage () {
                 <Grid.Column>
                     <Card style={{width: '100%'}}>
                         <Card.Content>
-                            <Image src='https://ik.imagekit.io/mublin/tr:r-8,w-300,h-80,c-maintain_ratio/misc/music/public-speaking-3926344_640_trR-oN-Fap.jpg' fluid className="mb-3" />
+                            <Image src='https://ik.imagekit.io/mublin/tr:r-8,w-300,h-80,c-maintain_ratio/misc/music/home-banners/concertb_pDfexWGWn.jpg' fluid className="mb-3" />
                             <Card.Header className="ui mt-0 mb-1">Apresentações e Eventos</Card.Header>
                             <Card.Meta className="mb-3">
                                 <span className='date'>{publicEvents.length} agendados</span>
@@ -347,7 +347,7 @@ function HomePage () {
                 <Grid.Column>
                     <Card style={{width: '100%'}}>
                         <Card.Content>
-                            <Image src='https://ik.imagekit.io/mublin/tr:r-8,w-300,h-80,c-maintain_ratio/misc/music/microphone-1003559_640_o0CDJQ05zi.jpg' fluid className="mb-3" />
+                            <Image src='https://ik.imagekit.io/mublin/tr:r-8,w-300,h-80,c-maintain_ratio/misc/music/home-banners/rehearsalb_wvXBLq5Wg.jpg' fluid className="mb-3" />
                             <Card.Header className="ui mt-0 mb-1">Ensaios, Reuniões e Gravações</Card.Header>
                             <Card.Meta className="mb-3">
                                 <span className='date'>{groupMeetings.length} agendados</span>

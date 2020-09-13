@@ -86,7 +86,7 @@ function LandingPage () {
                             <Button 
                                 inverted 
                                 color='white' 
-                                size='medium' 
+                                size='large' 
                                 className="mr-2"
                                 onClick={() => history.push("/login")}
                             >
@@ -95,7 +95,7 @@ function LandingPage () {
                             <Button 
                                 inverted 
                                 color='blue' 
-                                size='medium'
+                                size='large'
                                 onClick={() => history.push("/signup")}
                             >
                                 Cadastro

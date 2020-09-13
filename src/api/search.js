@@ -16,10 +16,28 @@ export function authHeader() {
 }
 
 export const searchService = {
+    getSearchUsersResults,
+    getSearchProjectsResults,
     getSearchResults,
     getSearchProjectResults,
     logout
 };
+
+function getSearchUsersResults(query) {
+    const requestOptions = {
+        method: 'GET',
+        headers: authHeader()
+    };
+    return fetch(`${BASE_URL}/search/users/${query}`, requestOptions).then(handleResponse);
+}
+
+function getSearchProjectsResults(query) {
+    const requestOptions = {
+        method: 'GET',
+        headers: authHeader()
+    };
+    return fetch(`${BASE_URL}/search/projects/${query}`, requestOptions).then(handleResponse);
+}
 
 function getSearchResults(query) {
     const requestOptions = {
@@ -34,7 +52,7 @@ function getSearchProjectResults(query) {
         method: 'GET',
         headers: authHeader()
     };
-    return fetch(`${BASE_URL}/search/project/${query}`, requestOptions).then(handleResponse);
+    return fetch(`${BASE_URL}/semanticSearch/project/${query}`, requestOptions).then(handleResponse);
 }
 
 function logout() {

@@ -2,9 +2,43 @@ import { searchTypes } from '../types/search';
 import { searchService } from '../../api/search';
 
 export const searchInfos = {
+    getSearchUsersResults: getSearchUsersResults,
+    getSearchProjectsResults: getSearchProjectsResults,
     getSearchResults: getSearchResults,
     getSearchProjectResults: getSearchProjectResults
 };
+
+function getSearchUsersResults(query) {
+    return dispatch => {
+        dispatch(request(query));
+
+        searchService.getSearchUsersResults(query)
+            .then(
+                results => dispatch(success(results)),
+                error => dispatch(failure(query, error.toString()))
+            );
+        };
+
+    function request(query) { return { type: searchTypes.SEARCH_USERS_REQUEST, query } }
+    function success(results) { return { type: searchTypes.SEARCH_USERS_SUCCESS, results } }
+    function failure(error) { return { type: searchTypes.SEARCH_USERS_FAILURE, error } }
+}
+
+function getSearchProjectsResults(query) {
+    return dispatch => {
+        dispatch(request(query));
+
+        searchService.getSearchProjectsResults(query)
+            .then(
+                results => dispatch(success(results)),
+                error => dispatch(failure(query, error.toString()))
+            );
+        };
+
+    function request(query) { return { type: searchTypes.SEARCH_PROJECTS_REQUEST, query } }
+    function success(results) { return { type: searchTypes.SEARCH_PROJECTS_SUCCESS, results } }
+    function failure(error) { return { type: searchTypes.SEARCH_PROJECTS_FAILURE, error } }
+}
 
 function getSearchResults(query) {
     return dispatch => {

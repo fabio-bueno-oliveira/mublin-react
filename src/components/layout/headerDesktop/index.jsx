@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Search, Menu, Container, Dropdown, Image, Icon, Label } from 'semantic-ui-react';
+import { Search, Menu, Container, Dropdown, Input, Image, Icon, Label, Form } from 'semantic-ui-react';
 import { useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { userInfos } from '../../../store/actions/user';
@@ -9,6 +9,8 @@ import {IKImage} from "imagekitio-react";
 import MublinLogo from '../../../assets/img/logos/mublin-logo-text-white.png';
 
 const HeaderDesktop = () => {
+
+    let searchedKeywords = (new URLSearchParams(window.location.search)).get("keywords")
 
     let history = useHistory();
 
@@ -20,34 +22,43 @@ const HeaderDesktop = () => {
 
     const userInfo = useSelector(state => state.user);
 
-    const search = useSelector(state => state.search);
+    // const search = useSelector(state => state.search);
 
-    const [query, setQuery] = useState('');
-    const [lastQuery, setLastQuery] = useState('');
+    // const [query, setQuery] = useState('');
+    // const [lastQuery, setLastQuery] = useState('');
 
-    const handleSearchChange = (e) => {
-        setQuery(e)
-        if (e.length > 2 && query !== lastQuery) {
-            setTimeout(() => {
-                 dispatch(searchInfos.getSearchResults(e))
-            }, 700)
-            setLastQuery(e)
-        }
-    }
+    // const handleSearchChange = (e) => {
+    //     setQuery(e)
+    //     if (e.length > 2 && query !== lastQuery) {
+    //         setTimeout(() => {
+    //              dispatch(searchInfos.getSearchResults(e))
+    //         }, 700)
+    //         setLastQuery(e)
+    //     }
+    // }
 
-    const handleResultSelect = (data) => {
-        if (data.result.category === "Usuário") {
-            history.push('/'+data.result.extra2)
-        } else if (data.result.category === "Projeto") {
-            history.push('/project/'+data.result.extra1)
-        } else if (data.result.category === "Evento") {
-            history.push('/event/'+data.result.extra1)
-        }
-    }
+    // const handleResultSelect = (data) => {
+    //     if (data.result.category === "Usuário") {
+    //         history.push('/'+data.result.extra2)
+    //     } else if (data.result.category === "Projeto") {
+    //         history.push('/project/'+data.result.extra1)
+    //     } else if (data.result.category === "Evento") {
+    //         history.push('/event/'+data.result.extra1)
+    //     }
+    // }
 
     const logout = () => {
         dispatch(userActions.logout());
     }
+
+    const handleSearch = (query) => {
+        history.push({
+            pathname: '/search',
+            search: '?keywords='+query
+        })
+    }
+
+    const [searchQuery, setSearchQuery] = useState(searchedKeywords)
 
     return (
         <>
@@ -108,7 +119,22 @@ const HeaderDesktop = () => {
                         </Dropdown.Menu>
                     </div>
                     <Menu.Item key='search'>
-                        <Search
+                        <Form
+                            onKeyDown={(e) => {
+                                if (e.key === 'Enter') {
+                                    setSearchQuery(searchQuery);
+                                }
+                            }}
+                        >
+                            <Input 
+                                size='small'
+                                action={{ icon: 'search', onClick: () => handleSearch(searchQuery) }} 
+                                placeholder='Pesquisar...'
+                                value={searchQuery} 
+                                onChange={e => setSearchQuery(e.target.value)}
+                            />
+                        </Form>
+                        {/* <Search
                             size='small'
                             // category
                             // fluid
@@ -123,7 +149,7 @@ const HeaderDesktop = () => {
                             onResultSelect={(e, data) =>
                                 handleResultSelect(data)
                             }
-                        />
+                        /> */}
                     </Menu.Item>
                     <Menu.Menu position='right'>
                         <Menu.Item key='messages' onClick={() => history.push("/messages")} active={window.location.pathname === "/messages"}>

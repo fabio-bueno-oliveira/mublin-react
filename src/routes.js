@@ -13,6 +13,7 @@ import StartStep4Page from './pages/StartPages/Step4';
 import HomePage from './pages/HomePage';
 import ProfilePage from './pages/ProfilePage';
 import ProjectPage from './pages/ProjectPage';
+import SearchPage from './pages/SearchPage';
 import Settings from './pages/Settings';
 import SettingsPreferences from './pages/Settings/Preferences';
 import SettingsProfile from './pages/Settings/Profile';
@@ -45,8 +46,8 @@ function Routes () {
                 <PrivateRoute authed={loggedIn} path="/start/step3" component={StartStep3Page} />
                 <PrivateRoute authed={loggedIn} path="/start/step4" component={StartStep4Page} />
                 <PrivateRoute authed={loggedIn} path="/home" component={HomePage} />
-                <PrivateRoute authed={loggedIn} path="/profile" component={ProfilePage} />
                 <PrivateRoute authed={loggedIn} path="/project/:username" component={ProjectPage} />
+                <PrivateRoute authed={loggedIn} path="/search" component={SearchPage} />
                 <PrivateRoute authed={loggedIn} path="/settings/profile/picture" component={SettingsProfilePicture} />
                 <PrivateRoute authed={loggedIn} path="/settings/profile" component={SettingsProfile} />
                 <PrivateRoute authed={loggedIn} path="/settings/preferences" component={SettingsPreferences} />

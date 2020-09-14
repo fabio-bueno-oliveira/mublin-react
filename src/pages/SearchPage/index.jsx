@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { searchInfos } from '../../store/actions/search';
-import { Grid, Tab, Image, List, Label, Loader as UiLoader } from 'semantic-ui-react'
+import { Grid, Tab, Image, List, Label, Icon, Loader as UiLoader } from 'semantic-ui-react'
 import HeaderDesktop from '../../components/layout/headerDesktop';
 import HeaderMobile from '../../components/layout/headerMobile';
 
@@ -54,15 +54,15 @@ function SearchPage (props) {
                                                             <Image circular size='mini' src='https://ik.imagekit.io/mublin/sample-folder/tr:h-200,w-200,c-maintain_ratio/avatar-undefined_Kblh5CBKPp.jpg' onClick={() => history.push('/'+user.username)} style={{cursor:'pointer',width:'50px'}} /> 
                                                         )}
                                                         <List.Content>
-                                                            <List.Header as='a' onClick={() => history.push('/'+user.username)}>
-                                                                {user.name+' '+user.lastname} {user.plan === 'Pro' && <Label size="tiny" className="ml-1 p-1">Pro</Label>} {userInfo.id === user.id && <span style={{color:'gray'}}>・Você</span>}
+                                                            <List.Header as='a' href={'/'+user.username}>
+                                                                {user.name+' '+user.lastname} {!!user.verified && <Icon name='check circle' color='blue' className='verifiedIcon' title='Verificado' />}{/*!!user.legend && <Icon name='star' color='yellow' />*/}{user.plan === 'Pro' && <Label color='black' size="tiny" className="ml-1 p-1">Pro</Label>} {userInfo.id === user.id && <span style={{color:'gray'}}>・Você</span>}
                                                             </List.Header>
                                                             <List.Description style={{fontSize:'13px'}}>
                                                                 {user.mainRole} {(user.city && user.mainRole) && '・'} {user.city && user.city+', '+user.region}
                                                             </List.Description>
                                                             { !!(user.projectRelated && user.projectPublic && searchResults.projects[0].id) &&
                                                                 <List.Description style={{fontSize:'10px'}}>
-                                                                    Projeto relacionado à busca: {user.projectRelated} {'('+user.projectType+')'} 
+                                                                    Projeto relacionado: {user.projectRelated} {'('+user.projectType+')'} 
                                                                 </List.Description>
                                                             }
                                                         </List.Content>
@@ -78,17 +78,20 @@ function SearchPage (props) {
                                             {searchResults.projects.map((project, key) =>
                                                 <List relaxed>
                                                     <List.Item key={key} className='p-2'>
-                                                        <Image rounded size='mini' src={project.picture} />
+                                                        { project.picture ? (
+                                                            <Image rounded size='mini' src={project.picture} onClick={() => history.push('/project/'+project.username)} style={{cursor:'pointer', width:'50px'}} />
+                                                        ) : (
+                                                            <Image rounded size='mini' src='https://ik.imagekit.io/mublin/sample-folder/tr:h-200,w-200,c-maintain_ratio/avatar-undefined_Kblh5CBKPp.jpg' onClick={() => history.push('/project/'+project.username)} style={{cursor:'pointer',width:'50px'}} /> 
+                                                        )}
                                                         <List.Content>
-                                                            <List.Header as='a' href={'/'+project.username}>
+                                                            <List.Header as='a' href={'/project/'+project.username}>
                                                                 {project.name}
                                                             </List.Header>
-                                                            <List.Description>
-                                                                Last seen watching{' '}
-                                                                <a>
-                                                                    <b>Arrested Development</b>
-                                                                </a>{' '}
-                                                                just now.
+                                                            <List.Description style={{fontSize:'13px'}}>
+                                                                {project.type+' ・ '+project.mainGenre}
+                                                            </List.Description>
+                                                            <List.Description style={{fontSize:'10px'}}>
+                                                                {project.city && project.city+', '+project.region}
                                                             </List.Description>
                                                         </List.Content>
                                                     </List.Item>

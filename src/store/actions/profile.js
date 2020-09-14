@@ -3,13 +3,13 @@ import { profileService } from '../../api/profile';
 
 export const profileInfos = {
     getProfileInfo: getProfileInfo,
-    getProfileMainProjects: getProfileMainProjects,
-    getProfilePortfolioProjects: getProfilePortfolioProjects,
+    getProfileProjects: getProfileProjects,
     getProfileRoles: getProfileRoles,
     getProfileFollowers: getProfileFollowers,
     getProfileFollowing: getProfileFollowing,
     checkProfileFollowing: checkProfileFollowing,
     getProfileGear: getProfileGear,
+    getProfileAvailabilityItems: getProfileAvailabilityItems,
     getProfileTestimonials: getProfileTestimonials
 };
 
@@ -29,36 +29,20 @@ function getProfileInfo(username) {
   function failure(username, error) { return { type: profileTypes.GET_PROFILE_INFO_FAILURE, username, error } }
 }
 
-function getProfileMainProjects(username) {
+function getProfileProjects(username) {
     return dispatch => {
         dispatch(request(username));
   
-        profileService.getProfileMainProjects(username)
+        profileService.getProfileProjects(username)
             .then(
                 list => dispatch(success(list)),
                 error => dispatch(failure(username, error.toString()))
             );
     };
   
-    function request(username) { return { type: profileTypes.GET_PROFILE_MAIN_PROJECTS_REQUEST, username } }
-    function success(list) { return { type: profileTypes.GET_PROFILE_MAIN_PROJECTS_SUCCESS, list } }
-    function failure(username, error) { return { type: profileTypes.GET_PROFILE_MAIN_PROJECTS_FAILURE, username, error } }
-}
-
-function getProfilePortfolioProjects(username) {
-    return dispatch => {
-        dispatch(request(username));
-  
-        profileService.getProfilePortfolioProjects(username)
-            .then(
-                list => dispatch(success(list)),
-                error => dispatch(failure(username, error.toString()))
-            );
-    };
-  
-    function request(username) { return { type: profileTypes.GET_PROFILE_PORTFOLIO_PROJECTS_REQUEST, username } }
-    function success(list) { return { type: profileTypes.GET_PROFILE_PORTFOLIO_PROJECTS_SUCCESS, list } }
-    function failure(username, error) { return { type: profileTypes.GET_PROFILE_PORTFOLIO_PROJECTS_FAILURE, username, error } }
+    function request(username) { return { type: profileTypes.GET_PROFILE_PROJECTS_REQUEST, username } }
+    function success(list) { return { type: profileTypes.GET_PROFILE_PROJECTS_SUCCESS, list } }
+    function failure(username, error) { return { type: profileTypes.GET_PROFILE_PROJECTS_FAILURE, username, error } }
 }
 
 function getProfileRoles(username) {
@@ -139,6 +123,22 @@ function getProfileGear(username) {
     function request(username) { return { type: profileTypes.GET_PROFILE_GEAR_REQUEST, username } }
     function success(list) { return { type: profileTypes.GET_PROFILE_GEAR_SUCCESS, list } }
     function failure(username, error) { return { type: profileTypes.GET_PROFILE_GEAR_FAILURE, username, error } }
+}
+
+function getProfileAvailabilityItems(username) {
+    return dispatch => {
+        dispatch(request(username));
+
+        profileService.getProfileAvailabilityItems(username)
+            .then(
+                list => dispatch(success(list)),
+                error => dispatch(failure(username, error.toString()))
+            );
+    };
+  
+    function request(username) { return { type: profileTypes.GET_PROFILE_AVAILABILITYITEMS_REQUEST, username } }
+    function success(list) { return { type: profileTypes.GET_PROFILE_AVAILABILITYITEMS_SUCCESS, list } }
+    function failure(username, error) { return { type: profileTypes.GET_PROFILE_AVAILABILITYITEMS_FAILURE, username, error } }
 }
 
 function getProfileTestimonials(username) {

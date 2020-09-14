@@ -17,13 +17,13 @@ export function authHeader() {
 
 export const profileService = {
     getProfileInfo,
-    getProfileMainProjects,
-    getProfilePortfolioProjects,
+    getProfileProjects,
     getProfileRoles,
     getProfileFollowers,
     getProfileFollowing,
     checkProfileFollowing,
     getProfileGear,
+    getProfileAvailabilityItems,
     getProfileTestimonials,
     logout
 };
@@ -36,20 +36,12 @@ function getProfileInfo(username) {
     return fetch(`${BASE_URL}/profile/${username}`, requestOptions).then(handleResponse);
 }
 
-function getProfileMainProjects(username) {
+function getProfileProjects(username) {
     const requestOptions = {
         method: 'GET',
         headers: authHeader()
     };
-    return fetch(`${BASE_URL}/user/${username}/projects/main`, requestOptions).then(handleResponse);
-}
-
-function getProfilePortfolioProjects(username) {
-    const requestOptions = {
-        method: 'GET',
-        headers: authHeader()
-    };
-    return fetch(`${BASE_URL}/user/${username}/projects/portfolio`, requestOptions).then(handleResponse);
+    return fetch(`${BASE_URL}/profile/${username}/projects`, requestOptions).then(handleResponse);
 }
 
 function getProfileRoles(username) {
@@ -90,6 +82,14 @@ function getProfileGear(username) {
         headers: authHeader()
     };
     return fetch(`${BASE_URL}/profile/${username}/gear`, requestOptions).then(handleResponse);
+}
+
+function getProfileAvailabilityItems(username) {
+    const requestOptions = {
+        method: 'GET',
+        headers: authHeader()
+    };
+    return fetch(`${BASE_URL}/profile/${username}/availabilityItems`, requestOptions).then(handleResponse);
 }
 
 function getProfileTestimonials(username) {

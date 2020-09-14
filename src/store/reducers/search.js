@@ -21,6 +21,7 @@ const initialState = {
       projectType: '',
       availabilityStatus: '',
       availability_color: '',
+      legend: '',
       projects: [
         { id: '', name: '', username: '', picture: '' }
       ]
@@ -36,6 +37,13 @@ const initialState = {
       city: '',
       region: '',
       country: '',
+      mainGenre: '',
+      secondGenre: '',
+      thirdGenre: '',
+      type: '',
+      labelShow: '',
+      labelText: '',
+      labelColor: '',
       members: [
         { id: '', name: '', lastname: '', username: '', picture: '' }
       ]

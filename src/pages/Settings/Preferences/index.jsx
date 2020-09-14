@@ -368,7 +368,7 @@ function PreferencesPage () {
                                                     onChange={(e, { value }) => updateAvailabilityStatus(value)}
                                                 />
                                             }
-                                            <div className={(userInfo.availabilityStatus === 1 || userInfo.availabilityStatus === 5) ? '' : 'disabledDivItems'}>
+                                            <div className={(userInfo.availabilityStatus === 1 || userInfo.availabilityStatus === 2) ? '' : 'disabledDivItems'}>
                                                 <Header sub className='mb-2 mt-3' style={{opacity:'0.5'}}>Para as seguintes atividades:</Header>
                                                 {/* {alert(JSON.stringify(availabilityItemsSelected, null, 2))} */}
                                                 { userInfo.availabilityItemsLoaded &&
@@ -388,7 +388,7 @@ function PreferencesPage () {
                                                 <Form.Group grouped>
                                                     <Form.Field
                                                         disabled={userInfo.requesting}
-                                                        label='Meus projetos'
+                                                        label='Projetos próprios'
                                                         control='input'
                                                         type='radio'
                                                         name='availabilityFocus'
@@ -408,7 +408,7 @@ function PreferencesPage () {
                                                     />
                                                     <Form.Field
                                                         disabled={userInfo.requesting}
-                                                        label='Qualquer projeto (autorais e convidado)'
+                                                        label='Todos os projetos (próprios e convidado)'
                                                         control='input'
                                                         type='radio'
                                                         name='availabilityFocus'

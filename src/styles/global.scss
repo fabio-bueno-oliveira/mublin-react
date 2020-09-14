@@ -45,6 +45,14 @@ body, html {
   background-color: rgba(0, 0, 0, 0.9);
 }
 
+.verifiedIcon {
+  margin: 0px!important;
+  display: contents!important;
+  &::before{
+    font-size: 14px;
+  }
+}
+
 .ui.search {
   .results {
     .price {

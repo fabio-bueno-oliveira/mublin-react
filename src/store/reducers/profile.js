@@ -22,58 +22,24 @@ const initialState = {
   availabilityId: '',
   availabilityTitle: '',
   availabilityColor: '',
-  projects: {
-    main: [
-      {
-        id: '', 
-        name: '',
-        username: '',
-        typeId: '',
-        typeName: '',
-        mutual: false,
-        genre1: '',
-        genre2: '',
-        genre3: '',
-        members: [
-          {
-            id: '', 
-            name: '',
-            lastname: '',
-            username: '',
-            picture: '',
-            role1: '',
-            role2: '',
-            role3: ''
-          }
-        ]
-      }
-    ],
-    portfolio: [
-      {
-        id: '', 
-        name: '',
-        username: '',
-        typeId: '',
-        typeName: '',
-        mutual: false,
-        genre1: '',
-        genre2: '',
-        genre3: '',
-        members: [
-          {
-            id: '', 
-            name: '',
-            lastname: '',
-            username: '',
-            picture: '',
-            role1: '',
-            role2: '',
-            role3: ''
-          }
-        ]
-      }
-    ]
-  },
+  availabilityFocus: '',
+  projects: [
+    { 
+      joined_in: '',
+      portfolio: '',
+      created: '',
+      id: '',
+      name: '',
+      username: '',
+      picture: '',
+      type: '',
+      workTitle: '',
+      workIcon: '',
+      role1: '',
+      role2: '',
+      role3: ''
+    }
+  ],
   followers: [
     {
       id: '',
@@ -118,6 +84,13 @@ const initialState = {
       price: ''
     }
   ],
+  availabilityItems: [
+    {
+      id: '',
+      itemId: '',
+      itemName: ''
+    }
+  ],
   testimonials: [
     { 
       id: '',
@@ -131,7 +104,9 @@ const initialState = {
       friendPlan: ''
     }
   ],
-  plan: ''
+  plan: '',
+  legend: '',
+  verified: ''
 }
 
 export function profile(state = initialState, action) {
@@ -157,8 +132,11 @@ export function profile(state = initialState, action) {
         availabilityId: action.info.availabilityId,
         availabilityTitle: action.info.availabilityTitle,
         availabilityColor: action.info.availabilityColor,
+        availabilityFocus: action.info.availabilityFocus,
         firstAccess: action.info.firstAccess,
-        plan: action.info.plan
+        plan: action.info.plan,
+        legend: action.info.legend,
+        verified: action.info.verified
       };
     case profileTypes.GET_PROFILE_INFO_FAILURE:
       return {
@@ -166,37 +144,19 @@ export function profile(state = initialState, action) {
         requesting: false,
         error: "A solicitação falhou"
       };
-    // MAIN PROJECTS
-    case profileTypes.GET_PROFILE_MAIN_PROJECTS_REQUEST:
+    // PROJECTS
+    case profileTypes.GET_PROFILE_PROJECTS_REQUEST:
       return {
         ...state,
         requesting: true
       };
-    case profileTypes.GET_PROFILE_MAIN_PROJECTS_SUCCESS:
+    case profileTypes.GET_PROFILE_PROJECTS_SUCCESS:
       return {
         ...state,
-        mainProjects: action.list,
+        projects: action.list,
         requesting: false,
       };
-    case profileTypes.GET_PROFILE_MAIN_PROJECTS_FAILURE:
-      return {
-        ...state,
-        requesting: false,
-        error: "A solicitação falhou"
-      };
-    // PORTFOLIO PROJECTS
-    case profileTypes.GET_PROFILE_PORTFOLIO_PROJECTS_REQUEST:
-      return {
-        ...state,
-        requesting: true
-      };
-    case profileTypes.GET_PROFILE_PORTFOLIO_PROJECTS_SUCCESS:
-      return {
-        ...state,
-        portfolioProjects: action.list,
-        requesting: false,
-      };
-    case profileTypes.GET_PROFILE_PORTFOLIO_PROJECTS_FAILURE:
+    case profileTypes.GET_PROFILE_PROJECTS_FAILURE:
       return {
         ...state,
         requesting: false,
@@ -289,6 +249,31 @@ export function profile(state = initialState, action) {
         requesting: false,
         error: "A solicitação falhou"
       };
+      // AVAILABILITY ITEMS (SHOWS, REHEARSALS, ETC)
+      case profileTypes.GET_PROFILE_AVAILABILITYITEMS_REQUEST:
+        return {
+          ...state,
+          requesting: true
+        };
+      case profileTypes.GET_PROFILE_AVAILABILITYITEMS_SUCCESS:
+        return {
+          ...state,
+          availabilityItems: action.list,
+          requesting: false,
+        };
+      case profileTypes.GET_PROFILE_AVAILABILITYITEMS_FAILURE:
+        return {
+          ...state,
+          availabilityItems: [
+            {
+              id: '',
+              itemId: '',
+              itemName: ''
+            }
+          ],
+          requesting: false,
+          error: "A solicitação falhou"
+        };
       // TESTIMONIALS
       case profileTypes.GET_PROFILE_TESTIMONIALS_REQUEST:
         return {

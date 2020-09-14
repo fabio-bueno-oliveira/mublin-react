@@ -23,10 +23,12 @@ function ProfilePage (props) {
 
     useEffect(() => {
         dispatch(profileInfos.getProfileInfo(username));
+        dispatch(profileInfos.getProfileProjects(username));
         dispatch(profileInfos.getProfileRoles(username));
         dispatch(profileInfos.getProfileFollowers(username));
         dispatch(profileInfos.getProfileFollowing(username));
         dispatch(profileInfos.getProfileGear(username));
+        dispatch(profileInfos.getProfileAvailabilityItems(username));
         dispatch(profileInfos.getProfileTestimonials(username));
         dispatch(followInfos.checkProfileFollowing(username));
     }, [dispatch, username]);
@@ -39,6 +41,9 @@ function ProfilePage (props) {
     }))
 
     document.title = profile.name+' '+profile.lastname+' | Mublin'
+
+    const mainProjects = profile.projects.filter((project) => { return project.portfolio === 0 })
+    const portfolioProjects = profile.projects.filter((project) => { return project.portfolio === 1 })
 
     const sliderOptions = {
         autoPlay: false,
@@ -134,7 +139,8 @@ function ProfilePage (props) {
                                 <div className="center aligned">
                                     { !profile.requesting &&
                                     <>
-                                        <Header size="medium" className="mb-1">{!profile.requesting && profile.name+' '+profile.lastname} {profile.plan === 'Pro' && <Label basic color="black" size="tiny" className="ml-1 p-1">Pro</Label>}</Header>
+                                        <Header size="medium" className="mb-1">{!profile.requesting && profile.name+' '+profile.lastname} {!!profile.verified && <Icon name='check circle' color='blue' className='verifiedIcon' title='Verificado' />}</Header>
+                                        <Header className='my-0'>{profile.plan === 'Pro' && <Label color="black" size="tiny" className="ml-1 p-1" style={{cursor:"default"}}>Pro</Label>}</Header>
                                         <p className="mb-1" style={{ fontSize: "13px" }}>
                                             {profile.roles.map((role, key) =>
                                                 <span key={key}>{role.name}{key < (profile.roles.length-1) && ', '}</span>
@@ -160,11 +166,21 @@ function ProfilePage (props) {
                                     {profile.bio}
                                 </Card.Description>
                             </Card.Content>
-                            <div className="content">
-                                <div className="center aligned" style={{ fontSize: "13px" }}>
-                                    <a class={'ui '+profile.availabilityColor+' empty circular mini label mr-1'} ></a> {profile.availabilityTitle}
-                                </div>
-                            </div>
+                            <Card.Content textAlign='center' style={{ fontSize: "13px" }}>
+                                <Label circular size='mini' color={profile.availabilityColor} empty key={profile.availabilityColor} /> {profile.availabilityTitle}
+                                { (profile.availabilityId === 1 || profile.availabilityId === 2) &&
+                                <>
+                                <p className='mt-1'>
+                                    { profile.availabilityItems[0].id && profile.availabilityItems.map((item, key) =>
+                                        <Label size='mini' className='mr-1' style={{cursor:"default"}}>{item.itemName}</Label>
+                                    )}  
+                                </p>
+                                <p style={{ fontSize: "11px" }}>
+                                    {profile.availabilityFocus === 1 || profile.availabilityFocus === 3 && <span className='mr-2'><Icon name='checkmark' size='small' />Projetos próprios</span>} {profile.availabilityFocus === 2 || profile.availabilityFocus === 3 && <span className='mr-2'><Icon name='checkmark' size='small' />Outros projetos</span>}
+                                </p>
+                                </>
+                                }
+                            </Card.Content>
                             <div className="content">
                                 { profile.following.length ? (
                                     <span className="right floated" style={{ fontSize: '13px', cursor: 'pointer' }} onClick={() => setModalFollowingOpen(true)}>
@@ -194,17 +210,97 @@ function ProfilePage (props) {
                                 <Tab menu={{ secondary: true }} panes={
                                     [
                                         {
-                                            menuItem: 'Principais (0)',
-                                            render: () => 
-                                                <Tab.Pane attached={false} as="div">
-                                                    
-                                                </Tab.Pane>,
-                                        },
+                                        menuItem: 'Principais ('+mainProjects.length+')',
+                                        render: () => 
+                                            <Tab.Pane loading={profile.requesting} attached={false} as="div">
+                                                <Flickity
+                                                    className={'carousel'} // default ''
+                                                    elementType={'div'} // default 'div'
+                                                    options={sliderOptions} // takes flickity options {}
+                                                    disableImagesLoaded={false} // default false
+                                                    reloadOnUpdate // default false
+                                                >
+                                                    { !profile.requesting ? (
+                                                        profile.projects[0].id ? (
+                                                            mainProjects.map((projeto, key) =>
+                                                                <div className="carousel-cell" key={projeto.id}>
+                                                                    <Link to={{ pathname: '/project/'+projeto.username }}>
+                                                                        {projeto.picture ? (
+                                                                            <Image src={projeto.picture} rounded />
+                                                                        ) : (
+                                                                            <Image src={'https://ik.imagekit.io/mublin/sample-folder/avatar-undefined_-dv9U6dcv3.jpg'} height='85' width='85' rounded />
+                                                                        )}
+                                                                        <h5 className="ui header mt-2 mb-0">
+                                                                            {projeto.name}
+                                                                            <div className="sub header mt-1">{projeto.type}</div>
+                                                                        </h5>
+                                                                        <div className="mt-2" style={{fontWeight: '400',fontSize: '11px', color: 'black', opacity: '0.8'}}>
+                                                                            <Icon name={projeto.workIcon} /> {projeto.workTitle}
+                                                                        </div>
+                                                                    </Link>
+                                                                </div>
+                                                            )
+                                                        ) : (
+                                                            <div className="carousel-cell">
+                                                                <Image src={'https://ik.imagekit.io/mublin/misc/square-sad-music_SeGz8vs_2A.jpg'} height='85' width='85' rounded />
+                                                                <h5 className="ui header mt-2 mb-0">
+                                                                    <div className="sub header mt-1">Sem projetos</div>
+                                                                </h5>
+                                                            </div> 
+                                                        )
+                                                    ) : (
+                                                        <div style={{textAlign: 'center', width: '100%'}}>
+                                                            <Icon loading name='spinner' size='big' />
+                                                        </div>
+                                                    )}
+                                                </Flickity>
+                                            </Tab.Pane>,
+                                        }, 
                                         {
-                                            menuItem: 'Portfolio (0)',
+                                            menuItem: 'Portfolio ('+portfolioProjects.length+')',
                                             render: () => 
                                                 <Tab.Pane attached={false} as="div">
-                                                    
+                                                    <Flickity
+                                                        className={'carousel'} // default ''
+                                                        elementType={'div'} // default 'div'
+                                                        options={sliderOptions} // takes flickity options {}
+                                                        disableImagesLoaded={false} // default false
+                                                        reloadOnUpdate // default false
+                                                    >
+                                                        { !profile.requesting ? (
+                                                            profile.projects[0].id ? (
+                                                                portfolioProjects.map((projeto, key) =>
+                                                                    <div className="carousel-cell" key={projeto.id}>
+                                                                        <Link to={{ pathname: '/project/'+projeto.username }}>
+                                                                            {projeto.picture ? (
+                                                                                <Image src={projeto.picture} rounded />
+                                                                            ) : (
+                                                                                <Image src={'https://ik.imagekit.io/mublin/sample-folder/avatar-undefined_-dv9U6dcv3.jpg'} height='85' width='85' rounded />
+                                                                            )}
+                                                                            <h5 className="ui header mt-2 mb-0">
+                                                                                {projeto.name}
+                                                                                <div className="sub header mt-1">{projeto.type}</div>
+                                                                            </h5>
+                                                                            <div className="mt-2" style={{fontWeight: '400',fontSize: '11px', color: 'black', opacity: '0.8'}}>
+                                                                                <Icon name={projeto.workIcon} /> {projeto.workTitle}
+                                                                            </div>
+                                                                        </Link>
+                                                                    </div>
+                                                                )
+                                                            ) : (
+                                                                <div className="carousel-cell">
+                                                                    <Image src={'https://ik.imagekit.io/mublin/misc/square-sad-music_SeGz8vs_2A.jpg'} height='85' width='85' rounded />
+                                                                    <h5 className="ui header mt-2 mb-0">
+                                                                        <div className="sub header mt-1">Sem projetos</div>
+                                                                    </h5>
+                                                                </div> 
+                                                            )
+                                                        ) : (
+                                                            <div style={{textAlign: 'center', width: '100%'}}>
+                                                                <Icon loading name='spinner' size='big' />
+                                                            </div>
+                                                        )}
+                                                    </Flickity>
                                                 </Tab.Pane>,
                                         }
                                     ]
@@ -245,7 +341,7 @@ function ProfilePage (props) {
                                                     <Popup inverted size='mini' content={product.category+' '+product.brandName+' '+product.productName} trigger={<Header as='h5' className='mt-2 mb-0' style={{cursor:'default'}}><Header.Content>{product.productName}</Header.Content></Header>} />
                                                     <Header.Subheader style={{fontWeight: '500',fontSize: '11px'}}><Link to={{pathname: "/brands", search: "?id="+product.brandId, state: { fromProfile: true } }} style={{color:'gray'}}>{product.brandName}</Link></Header.Subheader>
                                                     { product.forSale ? (
-                                                        <Label tag content={product.price.toLocaleString('pt-br',{style: 'currency', currency: 'BRL'})} size='mini' style={{fontWeight: '500',fontSize: '9px',cursor:'default'}} className='mt-1' color='green' />
+                                                        <Popup inverted size='mini' content='À venda' trigger={<Label tag content={product.price.toLocaleString('pt-br',{style: 'currency', currency: 'BRL'})} size='mini' style={{fontWeight: '500',fontSize: '9px',cursor:'default'}} className='mt-1' color='green' />} />
                                                     ) : (
                                                         !!product.currentlyUsing && 
                                                         <Label content='Em uso' icon='checkmark' size='mini' style={{fontWeight: '400',fontSize: '9px',cursor:'default'}} className='mt-1' />
@@ -313,7 +409,7 @@ function ProfilePage (props) {
                         <List verticalAlign='middle'>
                             <List.Item key={key}>
                                 <List.Content floated='right'>
-                                    <Button size='tiny'>Seguir</Button>
+                                    <Button size='tiny' onClick={() => goToProfile(follower.username)}>Ver perfil</Button>
                                 </List.Content>
                                 <Image avatar src={follower.picture ? follower.picture : 'https://ik.imagekit.io/mublin/sample-folder/avatar-undefined_Kblh5CBKPp.jpg'} onClick={() => goToProfile(follower.username)} style={{cursor:'pointer'}} />
                                 <List.Content>
@@ -326,11 +422,11 @@ function ProfilePage (props) {
                         </List>
                     )}
                 </Modal.Content>
-                <Modal.Actions>
+                {/* <Modal.Actions>
                     <Button size='medium' onClick={() => setModalFollowersOpen(false)}>
                         Fechar
                     </Button>
-                </Modal.Actions>
+                </Modal.Actions> */}
             </Modal>
             <Modal
                 size='mini'
@@ -344,7 +440,7 @@ function ProfilePage (props) {
                         <List verticalAlign='middle'>
                             <List.Item key={key}>
                                 <List.Content floated='right'>
-                                    <Button size='tiny'>Seguir</Button>
+                                    <Button size='tiny' onClick={() => goToProfile(following.username)}>Ver perfil</Button>
                                 </List.Content>
                                 <Image avatar src={following.picture ? following.picture : 'https://ik.imagekit.io/mublin/sample-folder/avatar-undefined_Kblh5CBKPp.jpg'} onClick={() => goToProfile(following.username)} style={{cursor:'pointer'}} />
                                 <List.Content>
@@ -357,11 +453,11 @@ function ProfilePage (props) {
                         </List>
                     )}
                 </Modal.Content>
-                <Modal.Actions>
+                {/* <Modal.Actions>
                     <Button size='medium' onClick={() => setModalFollowingOpen(false)}>
                         Fechar
                     </Button>
-                </Modal.Actions>
+                </Modal.Actions> */}
             </Modal>
         </>
     );

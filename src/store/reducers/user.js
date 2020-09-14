@@ -53,6 +53,22 @@ const initialState = {
       role3: '',
     }
   ],
+  gear: [
+    {
+      brandId: '',
+      brandName: '',
+      brandLogo: '',
+      productId: '',
+      productName: '',
+      category: '',
+      picture: '',
+      currentlyUsing: '',
+      featured: '',
+      forSale: '',
+      price: ''
+    }
+  ],
+  gearLoaded: false,
   availabilityStatus: '',
   availabilityItems: [
     { id: '', idItem: '', name: '' }
@@ -136,6 +152,27 @@ export function user(state = initialState, action) {
         ...state,
         requesting: false,
         error: "A solicitação falhou"
+      };
+    // get user´s gear
+    case userTypes.GET_USER_GEAR_REQUEST:
+      return {
+        ...state,
+        requesting: true,
+        gearLoaded: false
+      };
+    case userTypes.GET_USER_GEAR_SUCCESS:
+      return {
+        ...state,
+        requesting: false,
+        gear: action.list,
+        gearLoaded: true
+      };
+    case userTypes.GET_USER_GEAR_FAILURE:
+      return {
+        ...state,
+        requesting: false,
+        gearLoaded: false,
+        error: "A solicitação da lista dos equipamentos falhou"
       };
     // get user´s availability items
     case userTypes.GET_USER_AVAILABILITY_ITEMS_REQUEST:

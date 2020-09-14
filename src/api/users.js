@@ -20,6 +20,7 @@ export const userService = {
     getInfoById,
     getUserGenresInfoById,
     getUserRolesInfoById,
+    getUserGearInfoById,
     getUserAvailabilityItemsById,
     getUserProjects,
     update,
@@ -60,6 +61,15 @@ function getUserRolesInfoById(id) {
     };
 
     return fetch(`${BASE_URL}/userInfo/${id}/roles`, requestOptions).then(handleResponse);
+}
+
+function getUserGearInfoById(id) {
+    const requestOptions = {
+        method: 'GET',
+        headers: authHeader()
+    };
+
+    return fetch(`${BASE_URL}/user/${id}/gear`, requestOptions).then(handleResponse);
 }
 
 function getUserAvailabilityItemsById(id) {

@@ -36,6 +36,7 @@ function PreferencesPage () {
         dispatch(userInfos.getInfo());
         dispatch(userInfos.getUserGenresInfoById(user.id));
         dispatch(userInfos.getUserRolesInfoById(user.id));
+        dispatch(userInfos.getUserGearInfoById(user.id));
         dispatch(userInfos.getUserAvailabilityItemsById(user.id));
         dispatch(miscInfos.getMusicGenres());
         dispatch(miscInfos.getRoles());
@@ -257,6 +258,36 @@ function PreferencesPage () {
         }, 400);
     }
 
+    const myGearList = userInfo.gear.map(product => ({ 
+        text: product.brandName+' '+product.productName,
+        value: product.id,
+        key: product.id,
+        image: { avatar: true, src: product.picture }
+    }));
+
+    console.log(268, myGearList)
+
+    const friendOptions = [
+        {
+          key: 'Jenny Hess',
+          text: 'Jenny Hess',
+          value: 'Jenny Hess',
+          image: { avatar: true, src: '/images/avatar/small/jenny.jpg' },
+        },
+        {
+          key: 'Elliot Fu',
+          text: 'Elliot Fu',
+          value: 'Elliot Fu',
+          image: { avatar: true, src: '/images/avatar/small/elliot.jpg' },
+        },
+        {
+          key: 'Stevie Feliciano',
+          text: 'Stevie Feliciano',
+          value: 'Stevie Feliciano',
+          image: { avatar: true, src: '/images/avatar/small/stevie.jpg' },
+        },
+      ]
+
     return (
         <>
         <HeaderDesktop />
@@ -418,6 +449,23 @@ function PreferencesPage () {
                                                     />
                                                 </Form.Group>
                                             </div>
+                                        </Segment>
+                                        <Segment as='section' className='mb-2'>
+                                            <Header sub className='mb-2' style={{opacity:'0.5'}}>Meu equipamento:</Header>
+                                            { !userInfo.requesting &&
+                                                <Dropdown
+                                                    selection
+                                                    fluid
+                                                    text='Selecione'
+                                                >
+                                                    <Dropdown.Menu>
+                                                        <Dropdown.Header content='Meus equipamentos' />
+                                                        {myGearList.map((option) => (
+                                                            <Dropdown.Item key={option.value} {...option} />
+                                                        ))}
+                                                    </Dropdown.Menu>
+                                                </Dropdown>
+                                            }
                                         </Segment>
                                     </>
                                 )}

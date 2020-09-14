@@ -207,18 +207,18 @@ function ProfilePage (props) {
                         <Card id="projects" style={{ width: "100%" }}>
                             <Card.Content>
                                 <Header as='h3'>Projetos</Header>
-                                <Tab menu={{ secondary: true }} panes={
+                                <Tab defaultActiveIndex={(mainProjects.length > portfolioProjects.length || mainProjects.length === portfolioProjects.length) ? 0 : 1} menu={{ secondary: true }} panes={
                                     [
                                         {
                                         menuItem: 'Principais ('+mainProjects.length+')',
                                         render: () => 
                                             <Tab.Pane loading={profile.requesting} attached={false} as="div">
                                                 <Flickity
-                                                    className={'carousel'} // default ''
-                                                    elementType={'div'} // default 'div'
-                                                    options={sliderOptions} // takes flickity options {}
-                                                    disableImagesLoaded={false} // default false
-                                                    reloadOnUpdate // default false
+                                                    className={'carousel'}
+                                                    elementType={'div'}
+                                                    options={sliderOptions}
+                                                    disableImagesLoaded={false}
+                                                    reloadOnUpdate
                                                 >
                                                     { !profile.requesting ? (
                                                         profile.projects[0].id ? (
@@ -261,11 +261,11 @@ function ProfilePage (props) {
                                             render: () => 
                                                 <Tab.Pane attached={false} as="div">
                                                     <Flickity
-                                                        className={'carousel'} // default ''
-                                                        elementType={'div'} // default 'div'
-                                                        options={sliderOptions} // takes flickity options {}
-                                                        disableImagesLoaded={false} // default false
-                                                        reloadOnUpdate // default false
+                                                        className={'carousel'}
+                                                        elementType={'div'}
+                                                        options={sliderOptions}
+                                                        disableImagesLoaded={false}
+                                                        reloadOnUpdate
                                                     >
                                                         { !profile.requesting ? (
                                                             profile.projects[0].id ? (
@@ -412,9 +412,9 @@ function ProfilePage (props) {
                                     <Button size='tiny' onClick={() => goToProfile(follower.username)}>Ver perfil</Button>
                                 </List.Content>
                                 <Image avatar src={follower.picture ? follower.picture : 'https://ik.imagekit.io/mublin/sample-folder/avatar-undefined_Kblh5CBKPp.jpg'} onClick={() => goToProfile(follower.username)} style={{cursor:'pointer'}} />
-                                <List.Content>
-                                    <List.Header as='a' onClick={() => goToProfile(follower.username)}>{follower.name}</List.Header>
-                                    <List.Description>
+                                <List.Content onClick={() => goToProfile(follower.username)}>
+                                    <List.Header style={{cursor:'pointer'}}>{follower.name}</List.Header>
+                                    <List.Description style={{cursor:'pointer'}}>
                                         {'@'+follower.username}
                                     </List.Description>
                                 </List.Content>
@@ -443,9 +443,9 @@ function ProfilePage (props) {
                                     <Button size='tiny' onClick={() => goToProfile(following.username)}>Ver perfil</Button>
                                 </List.Content>
                                 <Image avatar src={following.picture ? following.picture : 'https://ik.imagekit.io/mublin/sample-folder/avatar-undefined_Kblh5CBKPp.jpg'} onClick={() => goToProfile(following.username)} style={{cursor:'pointer'}} />
-                                <List.Content>
-                                    <List.Header as='a' onClick={() => goToProfile(following.username)}>{following.name}</List.Header>
-                                    <List.Description>
+                                <List.Content onClick={() => goToProfile(following.username)}>
+                                    <List.Header style={{cursor:'pointer'}}>{following.name}</List.Header>
+                                    <List.Description style={{cursor:'pointer'}}>
                                         {'@'+following.username}
                                     </List.Description>
                                 </List.Content>

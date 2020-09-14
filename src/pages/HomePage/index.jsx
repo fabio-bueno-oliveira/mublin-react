@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useHistory, Link } from 'react-router-dom';
 import HeaderDesktop from '../../components/layout/headerDesktop';
 import HeaderMobile from '../../components/layout/headerMobile';
+import FooterMenuMobile from '../../components/layout/footerMenuMobile';
 import { projectsInfos } from '../../store/actions/projects';
 import { userInfos } from '../../store/actions/user';
 import { eventsInfos } from '../../store/actions/events';
@@ -431,6 +432,7 @@ function HomePage () {
                 </Grid.Column>
             </Grid>
         </main>
+        <FooterMenuMobile />
         </>
     );
 };

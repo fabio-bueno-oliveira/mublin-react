@@ -55,6 +55,12 @@ const HeaderMobile = () => {
                 <Modal.Content>
                     <Menu vertical fluid>
                         <Menu.Item
+                            key='profile'
+                            onClick={() => history.push('/'+userInfo.username)}
+                        >
+                            <Icon name='user circle' /> Ver meu perfil
+                        </Menu.Item>
+                        <Menu.Item
                             key='settings'
                             onClick={() => history.push("/settings")}
                         >

@@ -11,8 +11,11 @@ import StartStep2Page from './pages/StartPages/Step2';
 import StartStep3Page from './pages/StartPages/Step3';
 import StartStep4Page from './pages/StartPages/Step4';
 import HomePage from './pages/HomePage';
+import New from './pages/New';
 import ProfilePage from './pages/ProfilePage';
 import ProjectPage from './pages/ProjectPage';
+import ProjectsPage from './pages/ProjectsPage';
+import NotificationsPage from './pages/NotificationsPage';
 import SearchPage from './pages/SearchPage';
 import Settings from './pages/Settings';
 import SettingsPreferences from './pages/Settings/Preferences';
@@ -46,7 +49,10 @@ function Routes () {
                 <PrivateRoute authed={loggedIn} path="/start/step3" component={StartStep3Page} />
                 <PrivateRoute authed={loggedIn} path="/start/step4" component={StartStep4Page} />
                 <PrivateRoute authed={loggedIn} path="/home" component={HomePage} />
+                <PrivateRoute authed={loggedIn} path="/new" component={New} />
                 <PrivateRoute authed={loggedIn} path="/project/:username" component={ProjectPage} />
+                <PrivateRoute authed={loggedIn} path="/projects" component={ProjectsPage} />
+                <PrivateRoute authed={loggedIn} path="/notifications" component={NotificationsPage} />
                 <PrivateRoute authed={loggedIn} path="/search" component={SearchPage} />
                 <PrivateRoute authed={loggedIn} path="/settings/profile/picture" component={SettingsProfilePicture} />
                 <PrivateRoute authed={loggedIn} path="/settings/profile" component={SettingsProfile} />

@@ -4,6 +4,7 @@ import { useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import HeaderDesktop from '../../components/layout/headerDesktop';
 import HeaderMobile from '../../components/layout/headerMobile';
+import FooterMenuMobile from '../../components/layout/footerMenuMobile';
 import { profileInfos } from '../../store/actions/profile';
 import { followInfos } from '../../store/actions/follow';
 import { Header, Tab, Card, Grid, Image, Button, Label, Dimmer, Loader, Icon, Modal, List, Confirm, Placeholder, Popup} from 'semantic-ui-react';
@@ -397,6 +398,7 @@ function ProfilePage (props) {
                     </Grid.Column>
                 </Grid.Row>
             </Grid>
+            <FooterMenuMobile />
             <Modal
                 size='mini'
                 open={modalFollowersOpen}

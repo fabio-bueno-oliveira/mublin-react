@@ -4,6 +4,7 @@ import { useHistory } from 'react-router-dom';
 import { projectInfos } from '../../store/actions/project';
 import HeaderDesktop from '../../components/layout/headerDesktop';
 import HeaderMobile from '../../components/layout/headerMobile';
+import FooterMenuMobile from '../../components/layout/footerMenuMobile';
 import { Header, Placeholder, Grid, Card, Image, Icon, Button, Label } from 'semantic-ui-react';
 import Flickity from 'react-flickity-component';
 import './styles.scss';
@@ -107,7 +108,7 @@ function ProjectPage (props) {
                 </Grid.Column>
             </Grid>
 
-            <Grid id="members" className="container mt-3">
+            <Grid id="members" className="container mt-3 mb-5">
                 <Grid.Column width={16}>
                     <Header as="h3" className="mb-2">Integrantes</Header>
                     <Flickity
@@ -170,7 +171,7 @@ function ProjectPage (props) {
                     </Flickity>
                 </Grid.Column>
             </Grid>
-
+            <FooterMenuMobile />
         </>
     );
 };

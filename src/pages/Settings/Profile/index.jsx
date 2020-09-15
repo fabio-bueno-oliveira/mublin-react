@@ -139,8 +139,6 @@ function ProfilePage () {
                                     <List.Item as='a' active>Informações</List.Item>
                                     <List.Item as='a' onClick={() => history.push("/settings/profile/picture")}>Foto</List.Item>
                                     <List.Item as='a'>Username</List.Item>
-                                    <List.Item as='a'>Email</List.Item>
-                                    <List.Item as='a'>Senha</List.Item>
                                 </List>
                                 
                                 <section id='pictureUpdate' className='mb-4'>

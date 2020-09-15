@@ -86,9 +86,6 @@ function ProfilePage (props) {
                                 <List bulleted horizontal link className='mb-4'>
                                     <List.Item as='a' onClick={() => history.push("/settings/profile")}>Informações</List.Item>
                                     <List.Item as='a' active>Foto</List.Item>
-                                    <List.Item as='a'>Username</List.Item>
-                                    <List.Item as='a'>Email</List.Item>
-                                    <List.Item as='a'>Senha</List.Item>
                                 </List>
                                 { userInfo.requesting || isLoading ? (
                                     <UiLoader active inline='centered' />

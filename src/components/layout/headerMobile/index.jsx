@@ -20,6 +20,16 @@ const HeaderMobile = () => {
 
     const [mobilMenuOpen, setMobileMenuOpen] = useState(false)
 
+    const goToProfile = () => {
+        setMobileMenuOpen(false)
+        history.push('/'+userInfo.username)
+    }
+
+    const goToSettings = () => {
+        setMobileMenuOpen(false)
+        history.push('/settings')
+    }
+
     const logout = () => {
         dispatch(userActions.logout());
     }
@@ -56,13 +66,13 @@ const HeaderMobile = () => {
                     <Menu vertical fluid>
                         <Menu.Item
                             key='profile'
-                            onClick={() => history.push('/'+userInfo.username)}
+                            onClick={goToProfile}
                         >
                             <Icon name='user circle' /> Ver meu perfil
                         </Menu.Item>
                         <Menu.Item
                             key='settings'
-                            onClick={() => history.push("/settings")}
+                            onClick={goToSettings}
                         >
                             <Icon name='setting' /> Configurações
                         </Menu.Item>

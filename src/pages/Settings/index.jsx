@@ -4,10 +4,9 @@ import { useHistory, Link } from 'react-router-dom';
 import HeaderDesktop from '../../components/layout/headerDesktop';
 import HeaderMobile from '../../components/layout/headerMobile';
 import { userInfos } from '../../store/actions/user';
-import { Form, Segment, Header, List, Card, Grid, Image, Menu, Button, Icon, Loader as UiLoader } from 'semantic-ui-react';
-import { Formik } from 'formik';
+import { Modal, Form, Label, List, Card, Grid, Menu, Button, Icon, Loader as UiLoader } from 'semantic-ui-react';
 
-function ProfilePage () {
+function SettingsPage () {
 
     document.title = 'Configurações | Mublin'
 
@@ -19,62 +18,12 @@ function ProfilePage () {
         dispatch(userInfos.getInfo());
     }, []);
 
+    const [isLoading, setIsLoading] = useState(false)
+
     const userInfo = useSelector(state => state.user)
-
-    const countryOptions = [
-        { key: 'br', text: 'Brasil', value: '27' },
-    ]
-
-    const regionOptions = [
-        { key: '', text: 'Selecione...', value: '' },
-        { key: 'AC', text: 'Acre', value: '415' },
-        { key: 'AL', text: 'Alagoas', value: '422' },
-        { key: 'AP', text: 'Amapá', value: '406' },
-        { key: 'AM', text: 'Amazonas', value: '407' },
-        { key: 'BA', text: 'Bahia', value: '402' },
-        { key: 'CE', text: 'Ceará', value: '409' },
-        { key: 'DF', text: 'Distrito Federal', value: '424' },
-        { key: 'ES', text: 'Espírito Santo', value: '401' },
-        { key: 'GO', text: 'Goiás', value: '411' },
-        { key: 'MA', text: 'Maranhão', value: '419' },
-        { key: 'MT', text: 'Mato Grosso', value: '418' },
-        { key: 'MS', text: 'Mato Grosso do Sul', value: '399' },
-        { key: 'MG', text: 'Minas Gerais', value: '404' },
-        { key: 'PA', text: 'Pará', value: '408' },
-        { key: 'PB', text: 'Paraíba', value: '405' },
-        { key: 'PR', text: 'Paraná', value: '413' },
-        { key: 'PE', text: 'Pernambuco', value: '417' },
-        { key: 'PI', text: 'Piauí', value: '416' },
-        { key: 'RJ', text: 'Rio de Janeiro', value: '410' },
-        { key: 'RN', text: 'Rio Grande do Norte', value: '414' },
-        { key: 'RS', text: 'Rio Grande do Sul', value: '400' },
-        { key: 'RO', text: 'Rondônia', value: '403' },
-        { key: 'RR', text: 'Roraima', value: '421' },
-        { key: 'SC', text: 'Santa Catarina', value: '398' },
-        { key: 'SP', text: 'São Paulo', value: '412' },
-        { key: 'SE', text: 'Sergipe', value: '423' },
-        { key: 'TO', text: 'Tocantins', value: '420' },
-    ]
-    
-    const submitForm = (values) => {
-        fetch('https://mublin.herokuapp.com/user/create/', {
-            method: 'post',
-            headers: {
-                'Accept': 'application/json, text/plain, */*',
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({name: values.name, lastname: values.lastname, email: values.email, username: values.username, password: values.password})
-        })
-        .then(res => res.json())
-        // .then(res => localStorage.setItem('user', JSON.stringify(res)))
-        .then(
-            history.push("/login?info=firstAccess")
-        )
-    }
 
     const [usernameChoosen, setUsernameChoosen] = useState(userInfo.username)
     const usernameAvailability = useSelector(state => state.usernameCheck);
-    const emailAvailability = useSelector(state => state.emailCheck);
 
     let color
     if (usernameChoosen === userInfo.username || usernameAvailability.requesting) {
@@ -85,27 +34,42 @@ function ProfilePage () {
         color="green"
     }
 
-    const validate = values => {
-        const errors = {};
-  
-        if (!values.name) {
-            errors.name = 'Campo obrigatório';
-        }
+    // START Password Change
+    const [modalChangePasswordOpen, setModalChangePasswordOpen] = useState(false)
+    const [newPassword, setNewPassword] = useState('')
+    const [hideNewPassword, setHideNewPassword] = useState(true)
+    const [reNewPassword, setReNewPassword] = useState('')
+    const [hideReNewPassword, setHideReNewPassword] = useState(true)
+    const [passwordChangedSuccess, setPasswordChangedSuccess] = useState(false)
 
-        if (!values.lastname) {
-            errors.lastname = 'Campo obrigatório';
-        }
-
-        if (!values.id_country_fk) {
-            errors.id_country_fk = 'Escolha um País';
-        }
-
-        if (!values.id_region_fk) {
-            errors.id_region_fk = 'Escolha um Estado';
-        }
-  
-        return errors;
-    };
+    const handleSubmitPasswordChange = () => {
+        setIsLoading(true)
+        let user = JSON.parse(localStorage.getItem('user'));
+        fetch('https://mublin.herokuapp.com/user/changePassword', {
+            method: 'PUT',
+            headers: {
+                'Accept': 'application/json, text/plain, */*',
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + user.token
+            },
+            body: JSON.stringify({userId: user.id, newPassword: newPassword})
+        }).then((response) => {
+            response.json().then((response) => {
+                setIsLoading(false)
+                setPasswordChangedSuccess(true)
+                setModalChangePasswordOpen(false)
+                setNewPassword('')
+                setReNewPassword('')
+            })
+        }).catch(err => {
+                setIsLoading(false)
+                setModalChangePasswordOpen(false)
+                console.error(err)
+                alert('Ocorreu um erro ao tentar alterar sua senha. Tente novamente em instantes')
+                setNewPassword('')
+                setReNewPassword('')
+            })
+    }
 
     return (
         <>
@@ -116,7 +80,7 @@ function ProfilePage () {
                     <Grid.Column mobile={16} computer={10}>
                         <Card style={{ width: "100%" }}>
                             <Card.Content>
-                                <Menu fluid pointing secondary widths={3} className='mb-5'>
+                                <Menu fluid pointing secondary widths={3} className='mb-4'>
                                     <Menu.Item as='a' onClick={() => history.push("/settings/profile")}>
                                         Editar perfil
                                     </Menu.Item>
@@ -127,167 +91,100 @@ function ProfilePage () {
                                         Configurações
                                     </Menu.Item>
                                 </Menu>
-                                { userInfo.requesting ? (
-                                    <UiLoader active inline='centered' size='large' className='my-5' />
-                                ) : (
-                                    <Formik
-                                        initialValues={{ 
-                                            name: userInfo.name,
-                                            lastname: userInfo.lastname,
-                                            gender: userInfo.gender,
-                                            id_country_fk: userInfo.country,
-                                            id_region_fk: userInfo.region,
-                                            website: userInfo.website,
-                                            phone_mobile: userInfo.phone,
-                                            public: userInfo.public.toString()
-                                        }}
-                                        validate={validate}
-                                        validateOnMount={true}
-                                        validateOnBlur={true}
-                                        onSubmit={(values, { setSubmitting }) => {
-                                        setTimeout(() => {
-                                            setSubmitting(false);
-                                            // dispatch(userActions.login(values.email, values.password));
-                                            // submitForm(values)
-                                            alert(JSON.stringify(values, null, 2))
-                                        }, 400);
-                                        }}
-                                    >
-                                        {({
-                                            values, errors, touched, handleChange, handleSubmit, handleBlur, isValid, isSubmitting
-                                        }) => (
-                                            <Form loading={isSubmitting}>
-                                                <Form.Group widths='equal'>
-                                                    <Form.Input 
-                                                        id="name"
-                                                        name="name"
-                                                        fluid 
-                                                        label="Nome" 
-                                                        placeholder="Nome"
-                                                        onChange={e => {
-                                                            handleChange(e);
-                                                        }}
-                                                        onBlur={handleBlur}
-                                                        value={values.name}
-                                                        error={touched.name && errors.name ? ( {
-                                                            content: touched.name ? errors.name : null,
-                                                            size: "tiny",
-                                                        }) : null } 
-                                                    />
-                                                    <Form.Input 
-                                                        id="lastname"
-                                                        name="lastname"
-                                                        fluid 
-                                                        label="Sobrenome" 
-                                                        placeholder="Sobrenome"
-                                                        onChange={e => {
-                                                            handleChange(e);
-                                                        }}
-                                                        onBlur={handleBlur}
-                                                        value={values.lastname}
-                                                        error={touched.lastname && errors.lastname ? ( {
-                                                            content: touched.lastname ? errors.lastname : null,
-                                                            size: "tiny",
-                                                        }) : null } 
-                                                    />
-                                                </Form.Group>
-                                                <Form.Field
-                                                    disabled={userInfo.requesting}
-                                                    control='select'
-                                                    id="gender"
-                                                    name="gender"
-                                                    label='Gênero'
-                                                    value={values.gender}
-                                                    onChange={e => {
-                                                        handleChange(e);
-                                                    }}
-                                                >
-                                                    <option value='m' selected={values.gender == 'm' ? "selected" : ""} onChange={handleChange}>Masculino</option>
-                                                    <option value='f' selected={values.gender == 'f' ? "selected" : ""} onChange={handleChange}>Feminino</option>
-                                                    <option value='n' selected={values.gender == 'n' ? "selected" : ""} onChange={handleChange}>Não informar</option>
-                                                </Form.Field>
-                                                <Form.Input 
-                                                    id="phone_mobile"
-                                                    name="phone_mobile"
-                                                    fluid 
-                                                    label="Telefone" 
-                                                    placeholder="Telefone"
-                                                    onChange={e => {
-                                                        handleChange(e);
-                                                    }}
-                                                    onBlur={handleBlur}
-                                                    value={values.phone_mobile}
-                                                    error={touched.phone_mobile && errors.phone_mobile ? ( {
-                                                        content: touched.phone_mobile ? errors.phone_mobile : null,
-                                                        size: "tiny",
-                                                    }) : null } 
-                                                />
-                                                <Form.Input 
-                                                    id="website"
-                                                    name="website"
-                                                    fluid 
-                                                    label="Website" 
-                                                    placeholder="Website"
-                                                    onChange={e => {
-                                                        handleChange(e);
-                                                    }}
-                                                    onBlur={handleBlur}
-                                                    value={values.website}
-                                                    error={touched.website && errors.website ? ( {
-                                                        content: touched.website ? errors.website : null,
-                                                        size: "tiny",
-                                                    }) : null } 
-                                                />
-                                                <Form.Group inline className='mb-0'>
-                                                    <Form.Radio
-                                                        id="public1"
-                                                        name="public"
-                                                        label='Perfil público'
-                                                        value='1'
-                                                        checked={values.public === '1' ? true : false}
-                                                        onChange={e => {
-                                                            handleChange(e);
-                                                        }}
-                                                        onBlur={handleBlur}
-                                                    />
-                                                    <Form.Radio
-                                                        id="public2"
-                                                        name="public"
-                                                        label='Perfil privado'
-                                                        value='0'
-                                                        checked={values.public === '0' ? true : false}
-                                                        onChange={e => {
-                                                            handleChange(e);
-                                                        }}
-                                                        onBlur={handleBlur}
-                                                    />
-                                                </Form.Group>
-                                                <span style={{fontSize:'12px'}}>{values.public === '1' ? 'Seu perfil estará visível nas buscas' : 'Seu perfil será privado e visível apenas para suas conexões'}</span>
-                                                <Segment>
-                                                    <Form.Field>
-                                                        <label className='mb-0'>Plano: <span style={{fontWeight:'400'}}>{userInfo.plan}</span> <Button basic size='mini' className='ml-1'>Alterar</Button></label>
-                                                    </Form.Field>
-                                                </Segment>
-                                                <Button 
-                                                    className="mt-2"
-                                                    type="submit" 
-                                                    secondary 
-                                                    disabled={isValid ? false : true}
-                                                    onClick={handleSubmit}
-                                                >
-                                                    Salvar
-                                                </Button>
-                                        </Form>
-                                    )}
-                                    </Formik>
-                                )}
+                                <List divided relaxed>
+                                    <List.Item onClick={() => setModalChangePasswordOpen(true)}>
+                                        <List.Icon name='key' size='large' verticalAlign='middle' />
+                                        <List.Content>
+                                            <List.Header as='a'>Senha {passwordChangedSuccess && <Label content='Senha alterada com sucesso!' color='green' size='mini' />}</List.Header>
+                                            <List.Description as='a'>Alterar minha senha</List.Description>
+                                        </List.Content>
+                                    </List.Item>
+                                    <List.Item>
+                                        <List.Icon name='mail' size='large' verticalAlign='middle' />
+                                        <List.Content>
+                                            <List.Header as='a'>Alterar meu endereço de email</List.Header>
+                                            <List.Description as='a'>{userInfo.email}</List.Description>
+                                        </List.Content>
+                                    </List.Item>
+                                    <List.Item>
+                                        <List.Icon name='cart' size='large' verticalAlign='middle' />
+                                        <List.Content>
+                                            <List.Header as='a'>Alterar meu Plano</List.Header>
+                                            <List.Description as='a'>Atualmente você é um usuário {userInfo.plan}</List.Description>
+                                        </List.Content>
+                                    </List.Item>
+                                </List>
                             </Card.Content>
                         </Card>
                     </Grid.Column>
                 </Grid.Row>
             </Grid>
+            <Modal
+                size='mini'
+                open={modalChangePasswordOpen}
+                onClose={e => {
+                    setModalChangePasswordOpen(false)
+                    setNewPassword('')
+                    setReNewPassword('')
+                }}
+            >
+                <Modal.Header>Alterar minha senha</Modal.Header>
+                <Modal.Content>
+                    <Form>
+                        <Form.Field>
+                            <label>Nova senha</label>
+                            <Form.Input 
+                                type={hideNewPassword ? 'password' : 'text'}
+                                fluid
+                                name='newPassword'
+                                value={newPassword}
+                                onChange={e => setNewPassword(e.target.value)}
+                                error={(newPassword.length && newPassword.length < 4) ? ( {
+                                    content: 'A nova senha deve ter no mínimo 4 caracteres',
+                                    size: "tiny",
+                                }) : null }
+                                icon={{ name: hideNewPassword?'eye slash':'eye', link: true, onClick:() => setHideNewPassword(value => !value) }}
+                            />
+                        </Form.Field>
+                        <Form.Field>
+                            <label>Confirme a nova senha</label>
+                            <Form.Input 
+                                type={hideReNewPassword ? 'password' : 'text'}
+                                fluid
+                                name='reNewPassword'
+                                value={reNewPassword}
+                                onChange={e => setReNewPassword(e.target.value)}
+                                error={(newPassword !== reNewPassword && newPassword.length && reNewPassword.length) ? ( {
+                                    content: 'As senhas não conferem',
+                                    size: "tiny",
+                                }) : null }
+                                icon={{ name: hideReNewPassword?'eye slash':'eye', link: true, onClick:() => setHideReNewPassword(value => !value) }}
+                            />
+                        </Form.Field>
+                    </Form>
+                </Modal.Content>
+                <Modal.Actions>
+                    <Button
+                        onClick={e => {
+                            setModalChangePasswordOpen(false)
+                            setNewPassword('')
+                            setReNewPassword('')
+                        }}
+                    >
+                        Cancelar
+                    </Button>
+                    <Button 
+                        positive 
+                        onClick={() => setModalChangePasswordOpen(false)}
+                        disabled={(newPassword !== reNewPassword || !newPassword.length) ? true : false}
+                        onClick={handleSubmitPasswordChange}
+                    >
+                        Alterar
+                    </Button>
+                </Modal.Actions>
+            </Modal>
         </>
     );
 };
 
-export default ProfilePage;
+export default SettingsPage;

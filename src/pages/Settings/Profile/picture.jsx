@@ -91,7 +91,7 @@ function ProfilePage (props) {
                                     <UiLoader active inline='centered' />
                                 ) : (
                                     <>
-                                        <section style={{width:'100%',display:'flex',width:'100%',flexDirection:'column',justifyContent:'center',alignItems:'center'}} className='py-5'>
+                                        <section style={{width:'100%',display:'flex',flexDirection:'column',justifyContent:'center',alignItems:'center'}} className='py-5'>
                                             { isUpdated === false &&
                                                 <Message color='red'>Ocorreu um erro ao tentar atualizar a foto do perfil. Tente novamente em instantes</Message>
                                             }

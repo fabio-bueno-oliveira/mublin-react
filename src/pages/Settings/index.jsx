@@ -4,7 +4,11 @@ import { useHistory, Link } from 'react-router-dom';
 import HeaderDesktop from '../../components/layout/headerDesktop';
 import HeaderMobile from '../../components/layout/headerMobile';
 import { userInfos } from '../../store/actions/user';
-import { Modal, Form, Label, List, Card, Grid, Menu, Button, Icon, Loader as UiLoader } from 'semantic-ui-react';
+import { emailCheckInfos } from '../../store/actions/emailCheck';
+import { userActions } from '../../store/actions/authentication';
+import { useDebouncedCallback } from 'use-debounce';
+import { Modal, Form, Label, List, Card, Grid, Menu, Button, Icon, Segment, Message, Loader as UiLoader } from 'semantic-ui-react';
+import ValidateUtils from '../../utils/ValidateUtils';
 
 function SettingsPage () {
 
@@ -17,6 +21,10 @@ function SettingsPage () {
     useEffect(() => {
         dispatch(userInfos.getInfo());
     }, []);
+
+    const logout = () => {
+        dispatch(userActions.logout());
+    }
 
     const [isLoading, setIsLoading] = useState(false)
 
@@ -71,6 +79,61 @@ function SettingsPage () {
             })
     }
 
+    // START Email change
+    const [modalChangeEmailOpen, setModalChangeEmailOpen] = useState(false)
+    const [newEmail, setNewEmail] = useState('')
+    const [errorEmail, setErrorEmail] = useState('')
+    const [errorEmailIsTheSame, setErrorEmailIsTheSame] = useState(false)
+    const [emailChangedSuccess, setEmailChangedSuccess] = useState(false)
+    const handleChangeEmail = (value) => {
+        setNewEmail(value)
+        if (!value.length) {
+            setErrorEmail('Informe seu email')
+        } else if (!ValidateUtils.email(value)) {
+            setErrorEmail('Email inválido')
+        } else {
+            setErrorEmail('')
+        }
+    }
+    const [checkEmail] = useDebouncedCallback((string) => {
+        if (string !== userInfo.email) {
+            dispatch(emailCheckInfos.checkEmailByString(string));
+            setErrorEmailIsTheSame(false)
+        } else {
+            setErrorEmailIsTheSame(true)
+        }
+    },900)
+    const emailAvailability = useSelector(state => state.emailCheck);
+
+    const handleSubmitEmailChange = () => {
+        setIsLoading(true)
+        let user = JSON.parse(localStorage.getItem('user'));
+        fetch('https://mublin.herokuapp.com/user/changeEmail', {
+            method: 'PUT',
+            headers: {
+                'Accept': 'application/json, text/plain, */*',
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + user.token
+            },
+            body: JSON.stringify({userId: user.id, newEmail: newEmail})
+        }).then((response) => {
+            response.json().then((response) => {
+                dispatch(userInfos.getInfo())
+                setIsLoading(false)
+                setEmailChangedSuccess(true)
+                setModalChangeEmailOpen(false)
+                setNewEmail('')
+                logout()
+            })
+        }).catch(err => {
+                setIsLoading(false)
+                setModalChangeEmailOpen(false)
+                console.error(err)
+                alert('Ocorreu um erro ao tentar alterar seu email. Tente novamente em instantes')
+                setNewEmail('')
+            })
+    }
+
     return (
         <>
         <HeaderDesktop />
@@ -99,10 +162,10 @@ function SettingsPage () {
                                             <List.Description as='a'>Alterar minha senha</List.Description>
                                         </List.Content>
                                     </List.Item>
-                                    <List.Item>
+                                    <List.Item onClick={() => setModalChangeEmailOpen(true)}>
                                         <List.Icon name='mail' size='large' verticalAlign='middle' />
                                         <List.Content>
-                                            <List.Header as='a'>Alterar meu endereço de email</List.Header>
+                                            <List.Header as='a'>Alterar meu endereço de email {emailChangedSuccess && <Label content='Email alterado com sucesso!' color='green' size='mini' />}</List.Header>
                                             <List.Description as='a'>{userInfo.email}</List.Description>
                                         </List.Content>
                                     </List.Item>
@@ -178,6 +241,99 @@ function SettingsPage () {
                         onClick={() => setModalChangePasswordOpen(false)}
                         disabled={(newPassword !== reNewPassword || !newPassword.length) ? true : false}
                         onClick={handleSubmitPasswordChange}
+                    >
+                        Alterar
+                    </Button>
+                </Modal.Actions>
+            </Modal>
+            <Modal
+                size='mini'
+                open={modalChangeEmailOpen}
+                onClose={e => {
+                    setModalChangeEmailOpen(false)
+                    setNewEmail('')
+                }}
+            >
+                <Modal.Header>Alterar meu email</Modal.Header>
+                <Modal.Content>
+                    <Form>
+                        <Form.Field>
+                            <label>Email atual</label>
+                            <Form.Input 
+                                fluid
+                                name='oldEmail'
+                                value={userInfo.email}
+                                disabled
+                                icon='mail' 
+                                iconPosition='left'
+                            />
+                        </Form.Field>
+                        <Form.Field>
+                            <label>Novo email</label>
+                            <Form.Input 
+                                type='email'
+                                className={emailAvailability.available === false && "error"}
+                                loading={emailAvailability.requesting}
+                                fluid
+                                name='newEmail'
+                                value={newEmail}
+                                onChange={e => {
+                                    handleChangeEmail(e.target.value)
+                                }}
+                                onKeyUp={e => {
+                                    checkEmail(e.target.value)
+                                }}
+                                icon='mail' 
+                                iconPosition='left'
+                                error={(errorEmail) ? ( {
+                                    content: errorEmail,
+                                    size: "tiny",
+                                }) : null }
+                            />
+                            {emailAvailability.available === false && 
+                                <Label 
+                                    className="mt-0 mb-2"
+                                    size="mini" 
+                                    pointing 
+                                    color="red"
+                                    style={{fontWeight: 'normal', textAlign: 'center'}} 
+                                >
+                                    <Icon name="times" /> Email já registrado
+                                </Label>
+                            }
+                            {errorEmailIsTheSame && 
+                                <Label 
+                                    className="mt-0 mb-2"
+                                    size="mini" 
+                                    pointing 
+                                    color="orange"
+                                    style={{fontWeight: 'normal', textAlign: 'center'}} 
+                                >
+                                    <Icon name="exclamation" /> Este é seu email atual!
+                                </Label>
+                            }
+                        </Form.Field>
+                    </Form>
+                    <Message warning size='tiny'>
+                        Ao alterar seu email, você será direcionado para a tela de login novamente
+                    </Message>
+                </Modal.Content>
+                <Modal.Actions>
+                    <Button
+                        onClick={e => {
+                            setModalChangeEmailOpen(false)
+                            setNewEmail('')
+                        }}
+                    >
+                        Cancelar
+                    </Button>
+                    <Button 
+                        positive 
+                        disabled={(emailAvailability.available) ? false : true}
+                        onClick={() => {
+                            setModalChangeEmailOpen(false)
+                            handleSubmitEmailChange()
+                        }}
                     >
                         Alterar
                     </Button>

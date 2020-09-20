@@ -30,6 +30,11 @@ const HeaderMobile = () => {
         history.push('/settings')
     }
 
+    const goToMessages = () => {
+        setMobileMenuOpen(false)
+        history.push('/messages')
+    }
+
     const logout = () => {
         dispatch(userActions.logout());
     }
@@ -43,6 +48,13 @@ const HeaderMobile = () => {
                         {/* <Link to={{ pathname: "/usuario" }} style={{fontFamily:'Baloo',fontSize:'19px',fontWeight:'400',color:'white'}}><Icon name='arrow left' size='small' /> fabio</Link> */}
                     </Menu.Item>
                     <Menu.Menu position='right'>
+                        <Menu.Item
+                            name='message'
+                            onClick={() => goToMessages(true)}
+                            className='p-0'
+                        >
+                            <Icon name='mail outline' size='large' />
+                        </Menu.Item>
                         <Menu.Item
                             name='menu'
                             onClick={() => setMobileMenuOpen(true)}

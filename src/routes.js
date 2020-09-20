@@ -17,6 +17,7 @@ import ProjectPage from './pages/ProjectPage';
 import ProjectsPage from './pages/ProjectsPage';
 import NotificationsPage from './pages/NotificationsPage';
 import SearchPage from './pages/SearchPage';
+import Messages from './pages/Messages';
 import Settings from './pages/Settings';
 import MySubscription from './pages/Settings/Subscription';
 import SettingsPreferences from './pages/Settings/Preferences';
@@ -55,6 +56,7 @@ function Routes () {
                 <PrivateRoute authed={loggedIn} path="/projects" component={ProjectsPage} />
                 <PrivateRoute authed={loggedIn} path="/notifications" component={NotificationsPage} />
                 <PrivateRoute authed={loggedIn} path="/search" component={SearchPage} />
+                <PrivateRoute authed={loggedIn} path="/messages" component={Messages} />
                 <PrivateRoute authed={loggedIn} path="/settings/profile/picture" component={SettingsProfilePicture} />
                 <PrivateRoute authed={loggedIn} path="/settings/profile" component={SettingsProfile} />
                 <PrivateRoute authed={loggedIn} path="/settings/preferences" component={SettingsPreferences} />

@@ -169,7 +169,7 @@ function SettingsPage () {
                                             <List.Description as='a'>{userInfo.email}</List.Description>
                                         </List.Content>
                                     </List.Item>
-                                    <List.Item>
+                                    <List.Item onClick={() => history.push("/settings/subscription")}>
                                         <List.Icon name='cart' size='large' verticalAlign='middle' />
                                         <List.Content>
                                             <List.Header as='a'>Alterar meu Plano</List.Header>

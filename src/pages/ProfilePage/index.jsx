@@ -30,6 +30,7 @@ function ProfilePage (props) {
         dispatch(profileInfos.getProfileFollowing(username));
         dispatch(profileInfos.getProfileGear(username));
         dispatch(profileInfos.getProfileAvailabilityItems(username));
+        dispatch(profileInfos.getProfileStrengths(username));
         dispatch(profileInfos.getProfileTestimonials(username));
         dispatch(followInfos.checkProfileFollowing(username));
     }, [dispatch, username]);
@@ -311,7 +312,27 @@ function ProfilePage (props) {
                         </Card>
                         <Card id="strengths" style={{ width: "100%" }}>
                             <Card.Content>
-                                <Header as='h3'>Pontos Fortes</Header>
+                                <Header as='h3' className='mb-3'>Pontos Fortes</Header>
+                                { profile.requesting ? (
+                                    <Icon loading name='spinner' size='large' />
+                                ) : ( 
+                                    <Flickity
+                                        className={'carousel'}
+                                        elementType={'div'}
+                                        options={sliderOptions}
+                                        disableImagesLoaded={false}
+                                        reloadOnUpdate
+                                    >
+                                        {profile.strengths.map((strength, key) =>
+                                            <div key={key} class="center aligned mr-4" style={{height:'63px', listStyle:'none'}}>
+                                                <Header as='h3' className='my-0'><i className={strength.icon}></i></Header>
+                                                <Header as='h5' className='my-0'><nobr>{strength.strengthTitle}</nobr></Header>
+                                                {/* <Header sub className='my-0' style={{color:'grey',fontSize:'11px',fontWeight:'300'}}><nobr>{strength.percent} dos votos</nobr></Header> */}
+                                                <Label size='mini'>{strength.percent}</Label>
+                                            </div>
+                                        )}
+                                    </Flickity>
+                                )}
                             </Card.Content>
                         </Card>
                         <Card id="gear" style={{ width: "100%" }}>

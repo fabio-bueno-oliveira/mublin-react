@@ -124,7 +124,7 @@ function ProfilePage () {
                     <Grid.Column mobile={16} computer={10}>
                         <Card style={{ width: "100%" }}>
                             <Card.Content>
-                                <Menu fluid pointing secondary widths={3} className='mb-3'>
+                                <Menu fluid pointing secondary widths={3} className='mb-4'>
                                     <Menu.Item as='span' active>
                                         Editar perfil
                                     </Menu.Item>
@@ -135,12 +135,6 @@ function ProfilePage () {
                                         Configurações
                                     </Menu.Item>
                                 </Menu>
-                                <List bulleted horizontal link className='mb-4'>
-                                    <List.Item as='a' active>Informações</List.Item>
-                                    <List.Item as='a' onClick={() => history.push("/settings/profile/picture")}>Foto</List.Item>
-                                    <List.Item as='a'>Username</List.Item>
-                                </List>
-                                
                                 <section id='pictureUpdate' className='mb-4'>
                                     <Header as='h2'>
                                         { !userInfo.picture ? (

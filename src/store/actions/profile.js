@@ -9,6 +9,7 @@ export const profileInfos = {
     getProfileFollowing: getProfileFollowing,
     checkProfileFollowing: checkProfileFollowing,
     getProfileGear: getProfileGear,
+    getProfileStrengths: getProfileStrengths,
     getProfileAvailabilityItems: getProfileAvailabilityItems,
     getProfileTestimonials: getProfileTestimonials
 };
@@ -139,6 +140,22 @@ function getProfileAvailabilityItems(username) {
     function request(username) { return { type: profileTypes.GET_PROFILE_AVAILABILITYITEMS_REQUEST, username } }
     function success(list) { return { type: profileTypes.GET_PROFILE_AVAILABILITYITEMS_SUCCESS, list } }
     function failure(username, error) { return { type: profileTypes.GET_PROFILE_AVAILABILITYITEMS_FAILURE, username, error } }
+}
+
+function getProfileStrengths(username) {
+    return dispatch => {
+        dispatch(request(username));
+
+        profileService.getProfileStrengths(username)
+            .then(
+                list => dispatch(success(list)),
+                error => dispatch(failure(username, error.toString()))
+            );
+    };
+  
+    function request(username) { return { type: profileTypes.GET_PROFILE_STRENGTHS_REQUEST, username } }
+    function success(list) { return { type: profileTypes.GET_PROFILE_STRENGTHS_SUCCESS, list } }
+    function failure(username, error) { return { type: profileTypes.GET_PROFILE_STRENGTHS_FAILURE, username, error } }
 }
 
 function getProfileTestimonials(username) {

@@ -18,6 +18,7 @@ import ProjectsPage from './pages/ProjectsPage';
 import NotificationsPage from './pages/NotificationsPage';
 import SearchPage from './pages/SearchPage';
 import Settings from './pages/Settings';
+import MySubscription from './pages/Settings/Subscription';
 import SettingsPreferences from './pages/Settings/Preferences';
 import SettingsProfile from './pages/Settings/Profile';
 import SettingsProfilePicture from './pages/Settings/Profile/picture';
@@ -57,7 +58,8 @@ function Routes () {
                 <PrivateRoute authed={loggedIn} path="/settings/profile/picture" component={SettingsProfilePicture} />
                 <PrivateRoute authed={loggedIn} path="/settings/profile" component={SettingsProfile} />
                 <PrivateRoute authed={loggedIn} path="/settings/preferences" component={SettingsPreferences} />
-                <PrivateRoute authed={loggedIn} path="/settings/" component={Settings} />
+                <PrivateRoute authed={loggedIn} path="/settings/subscription" component={MySubscription} />
+                <PrivateRoute authed={loggedIn} path="/settings" component={Settings} />
                 <PrivateRoute authed={loggedIn} path="/:username" component={ProfilePage} />
             </Switch>
         </BrowserRouter>

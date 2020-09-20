@@ -64,8 +64,11 @@ const initialState = {
   ],
   strengths: [
     { 
-      title: '', 
-      percentage: '',
+      id: '', 
+      idUserTo: '',
+      strengthId: '',
+      strengthTitle: '',
+      percent: '',
       icon: ''
     }
   ],
@@ -269,6 +272,36 @@ export function profile(state = initialState, action) {
               id: '',
               itemId: '',
               itemName: ''
+            }
+          ],
+          requesting: false,
+          error: "A solicitação falhou"
+        };
+      // STRENGTHS
+      case profileTypes.GET_PROFILE_STRENGTHS_REQUEST:
+        return {
+          ...state,
+          requesting: true
+        };
+      case profileTypes.GET_PROFILE_STRENGTHS_SUCCESS:
+        return {
+          ...state,
+          strengths: action.list,
+          requesting: false,
+        };
+      case profileTypes.GET_PROFILE_STRENGTHS_FAILURE:
+        return {
+          ...state,
+          testimonials: [
+            { 
+              id: '',
+              created: '',
+              title: '',
+              testimonial: '',
+              friendId: '',
+              friendName: '',
+              friendUsername: '',
+              friendPicture: ''
             }
           ],
           requesting: false,

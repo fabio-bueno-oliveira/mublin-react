@@ -24,6 +24,7 @@ export const profileService = {
     checkProfileFollowing,
     getProfileGear,
     getProfileAvailabilityItems,
+    getProfileStrengths,
     getProfileTestimonials,
     logout
 };
@@ -90,6 +91,14 @@ function getProfileAvailabilityItems(username) {
         headers: authHeader()
     };
     return fetch(`${BASE_URL}/profile/${username}/availabilityItems`, requestOptions).then(handleResponse);
+}
+
+function getProfileStrengths(username) {
+    const requestOptions = {
+        method: 'GET',
+        headers: authHeader()
+    };
+    return fetch(`${BASE_URL}/profile/${username}/strengths`, requestOptions).then(handleResponse);
 }
 
 function getProfileTestimonials(username) {

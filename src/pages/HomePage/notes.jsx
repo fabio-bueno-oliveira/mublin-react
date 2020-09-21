@@ -63,7 +63,8 @@ const Notes = (props) => {
                             <List relaxed>
                             {notes.map((note, key) =>
                                 <>
-                                    <Segment key={key} secondary style={{borderWidth:'0px', cursor:'pointer'}} onClick={() => alert("teste")}>
+                                    <List.Item key={key}>
+                                    <Segment secondary style={{borderWidth:'0px', cursor:'pointer'}} onClick={() => alert("teste")}>
                                         { note.ownerId !== user.id ? (
                                             <>
                                                 <div style={{display:'flow-root'}}>
@@ -91,6 +92,7 @@ const Notes = (props) => {
                                             {note.noteTitle}
                                         </Header>
                                     </Segment>
+                                    </List.Item>
                                 </>
                             )}
                             </List>

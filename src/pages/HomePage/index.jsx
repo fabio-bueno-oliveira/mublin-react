@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useHistory, Link } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import HeaderDesktop from '../../components/layout/headerDesktop';
 import HeaderMobile from '../../components/layout/headerMobile';
 import FooterMenuMobile from '../../components/layout/footerMenuMobile';
@@ -8,17 +8,16 @@ import { projectsInfos } from '../../store/actions/projects';
 import { userInfos } from '../../store/actions/user';
 import { eventsInfos } from '../../store/actions/events';
 import { notesInfos } from '../../store/actions/notes';
-import { Header, Tab, Card, Grid, List, Image, Icon, Menu, Button, Label, Popup } from 'semantic-ui-react';
-import Notes from './notes'
+import { Container, Header, Tab, Grid, Image, Icon, Menu, Button } from 'semantic-ui-react';
+import Notes from './notes';
+import PublicEvents from './publicEvents';
+import PrivateEvents from './privateEvents';
 import Flickity from 'react-flickity-component';
-import moment from 'moment';
 import './styles.scss';
 
 function HomePage () {
 
     document.title = 'Mublin'
-
-    let history = useHistory();
 
     let dispatch = useDispatch();
 
@@ -55,9 +54,9 @@ function HomePage () {
     }
 
     const events = useSelector(state => state.events)
-    const allEvents = events.events
-    const publicEvents = allEvents.filter((evento) => { return evento.id_event_type_fk === 2 || evento.id_event_type_fk === 5 || evento.id_event_type_fk === 5 ||  evento.id_event_type_fk === 6 })
-    const groupMeetings = allEvents.filter((evento) => { return evento.id_event_type_fk === 1 || evento.id_event_type_fk === 3 || evento.id_event_type_fk === 4 })
+    const allEvents = events.list
+    const publicEvents = allEvents.filter((evento) => { return evento.eventType === 'Show' || evento.eventType === 'Entrevista' || evento.eventType === 'Workshop' })
+    const privateEvents = allEvents.filter((evento) => { return evento.eventType === 'Ensaio' || evento.eventType === 'Reunião' || evento.eventType === 'Gravação' })
 
     const sliderOptions = {
         autoPlay: false,
@@ -80,7 +79,6 @@ function HomePage () {
         image: { avatar: true, src: 'https://ik.imagekit.io/mublin/tr:h-200,w-200,r-max/projects/'+project.projectid+'/'+project.picture+'' }
     }));
     const members = useSelector(state => state.project.members);
-
     //// END NOTES SECTION ////
 
     return (
@@ -259,178 +257,19 @@ function HomePage () {
                 />
             </section>
 
-            <Grid id="events" stackable columns={3} className='ui container mt-1 mt-md-2 mb-5 mb-md-0 pb-5 pb-md-0'>
+            <Container>
+            <Grid stackable columns={3} className='mt-1 mt-md-2 mb-5 mb-md-0 pb-5 pb-md-0'>
                 <Grid.Column>
-                    <Card style={{width: '100%'}}>
-                        <Card.Content>
-                            <Image src='https://ik.imagekit.io/mublin/tr:r-8,w-300,h-80,c-maintain_ratio/misc/music/home-banners/concertb_pDfexWGWn.jpg' fluid className="mb-3" />
-                            <Card.Header className="ui mt-0 mb-1">Apresentações e Eventos</Card.Header>
-                            <Card.Meta className="mb-3">
-                                <span className='date'>{publicEvents.length} agendados</span>
-                            </Card.Meta>
-                            <Card.Description>
-                                {events.requesting ? (
-                                    <Header textAlign='center'>
-                                        <Icon loading name='spinner' size='large' />
-                                    </Header>
-                                ) : (
-                                    <>
-                                    { !!publicEvents.length &&
-                                        <>
-                                        <h4 className='ui sub header mt-1 mb-3'>Próximos:</h4>
-                                        <List relaxed>
-                                        {publicEvents.map((evento, key) =>
-                                            <List.Item key={key}>
-                                                <Label as="span" size="mini" ribbon className="mb-1">
-                                                    Criado por {evento.uname}
-                                                </Label>
-                                                <div className={'item mb-1 '+evento.eid}>
-                                                    <div className="content py-1">
-                                                        <a href={'/events/?id='+evento.eid}>
-                                                            <Image className="left floated mr-2" src={evento.picture} width='35' height='35' rounded  />
-                                                            <Header as='h6'>{evento.title_ptbr} com {evento.pname}</Header>
-                                                            <div className="meta mb-2 pt-1 pt-md-0" style={{fontSize: '0.875rem', color: 'grey'}}>
-                                                                <span className='mr-2'>{moment(evento.date_opening, 'YYYY-MM-DD').format('DD/MM/YYYY')} às {moment(evento.hour_opening, 'HH:mm:ss').format('HH:mm')}</span> 
-                                                            </div>
-                                                            <Label size='mini' basic>
-                                                                <Icon name='map marker alternate' />{evento.city} {evento.plname && '('+evento.plname+')'}
-                                                            </Label>
-                                                            <Label size='mini' basic>
-                                                                {evento.method === 1 ? (
-                                                                    <><Icon name='street view' />Presencial</>
-                                                                ) : (
-                                                                    <><Icon name='computer' />Online</>
-                                                                )}
-                                                            </Label>
-                                                            <Label size='mini' basic>
-                                                                <Icon name='plus' />detalhes
-                                                            </Label>
-                                                        </a>
-                                                        {{  
-                                                            2:
-                                                                <Button.Group size='mini'>
-                                                                    <Button positive>Confirmar</Button>
-                                                                    <Button.Or text='ou' />
-                                                                    <Button negative>Não poderei participar</Button>
-                                                                </Button.Group>,
-                                                            1:
-                                                            <>
-                                                                <span style={{fontSize: 'smaller'}}>Você confirmou participação</span>
-                                                                <Icon name='calendar times outline' color='red' title='desfazer' link />
-                                                            </>,
-                                                            0:
-                                                                <><Label as='a' basic color='red' size='tiny'>
-                                                                    Você informou que não poderá participar
-                                                                </Label> <Button basic size='tiny' color='blue' content='Desfazer' /></>
-                                                        }[evento.presence_confirmed]}
-                                                    </div>
-                                                </div>
-                                            </List.Item>
-                                        )}
-                                        </List>
-                                    </>
-                                    }
-                                    </>
-                                )}
-                            </Card.Description>
-                        </Card.Content>
-                        <Card.Content extra style={{fontSize: 'small'}}>
-                            { publicEvents.length > 6 &&
-                                <Link to={{ pathname: '/tbd' }} className='mr-3'>
-                                    <Icon name='bars' /> Ver todos
-                                </Link>
-                            }
-                            <Link to={{ pathname: '/tbd' }}>
-                                <Icon name='plus' /> Novo evento
-                            </Link>
-                        </Card.Content>
-                    </Card>
+                    <PublicEvents publicEvents={publicEvents} />
                 </Grid.Column>
                 <Grid.Column>
-                    <Card style={{width: '100%'}}>
-                        <Card.Content>
-                            <Image src='https://ik.imagekit.io/mublin/tr:r-8,w-300,h-80,c-maintain_ratio/misc/music/home-banners/rehearsalb_wvXBLq5Wg.jpg' fluid className="mb-3" />
-                            <Card.Header className="ui mt-0 mb-1">Ensaios, Reuniões e Gravações</Card.Header>
-                            <Card.Meta className="mb-3">
-                                <span className='date'>{groupMeetings.length} agendados</span>
-                            </Card.Meta>
-                            <Card.Description>
-                                {events.requesting ? (
-                                    <Header textAlign='center'>
-                                        <Icon loading name='spinner' size='large' />
-                                    </Header>
-                                ) : (
-                                    <>
-                                    { !!groupMeetings.length &&
-                                        <>
-                                        <h4 className="ui sub header mt-1 mb-3">Próximos:</h4>
-                                        <List relaxed>
-                                        {groupMeetings.map((evento, key) =>
-                                            <List.Item key={key}>
-                                                <Label as='span' size='mini' ribbon className="mb-1">
-                                                    Criado por {evento.uname}
-                                                </Label>
-                                                <div className={'item mb-1 '+evento.eid}>
-                                                    <div className="content py-1">
-                                                        <a href={'/events/?id='+evento.eid}>
-                                                            <Image className="left floated mr-2" src={evento.picture} width='35' height='35' rounded  />
-                                                            <Header as='h6'>{evento.title_ptbr} com {evento.pname}</Header>
-                                                            <div className="meta mb-2 pt-1 pt-md-0" style={{fontSize: '0.875rem', color: 'grey'}}>
-                                                                <span className='mr-2'>{moment(evento.date_opening, 'YYYY-MM-DD').format('DD/MM/YYYY')} às {moment(evento.hour_opening, 'HH:mm:ss').format('HH:mm')}</span> 
-                                                                {evento.method === 1 ? (
-                                                                    <><Icon name='street view' /> <span>Presencial</span></>
-                                                                ) : (
-                                                                    <><Icon name='computer' /> <span>Online</span></>
-                                                                )}
-                                                            </div>
-                                                            <Popup inverted content={evento.description} trigger={<h5 className="header pt-1">{evento.title}</h5>} />
-                                                        </a>
-                                                        <div className="description mb-2 mt-1 mt-md-0" style={{fontSize: 'smaller'}}>
-                                                            Será em {evento.city} {evento.plname && '('+evento.plname+')'}
-                                                        </div>
-                                                        {{  
-                                                            2:
-                                                                <Button.Group size='mini'>
-                                                                    <Button positive>Confirmar</Button>
-                                                                    <Button.Or text='ou' />
-                                                                    <Button negative>Não poderei participar</Button>
-                                                                </Button.Group>,
-                                                            1:
-                                                            <><Label as='a' basic color='green' size='tiny'>
-                                                                Você confirmou participação
-                                                            </Label> <span style={{fontSize: 'smaller'}}>Desfazer</span></>,
-                                                            0:
-                                                                <><Label as='a' basic color='red' size='tiny'>
-                                                                    Você informou que não poderá participar
-                                                                </Label> <span style={{fontSize: 'smaller'}}>Desfazer</span></>
-                                                        }[evento.presence_confirmed]}
-                                                    </div>
-                                                </div>
-                                            </List.Item>
-                                        )}
-                                        </List>
-                                        </>
-                                    }
-                                    </>                                           
-                                )}
-                            </Card.Description>
-                        </Card.Content>
-                        <Card.Content extra style={{fontSize: 'small'}}>
-                            { groupMeetings.length > 6 &&
-                                <Link to={{ pathname: '/tbd' }} className='mr-3'>
-                                    <Icon name='bars' /> Ver todos
-                                </Link>
-                            }
-                            <Link to={{ pathname: '/tbd' }}>
-                                <Icon name='plus' /> Novo ensaio
-                            </Link>
-                        </Card.Content>
-                    </Card>
+                    <PrivateEvents publicEvents={privateEvents} />
                 </Grid.Column>
                 <Grid.Column>
                     <Notes notes={notes} user={user} projectsList={projectsList} members={members} />
                 </Grid.Column>
             </Grid>
+            </Container>
         </main>
         <FooterMenuMobile />
         </>

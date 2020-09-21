@@ -114,7 +114,6 @@ function LoginPage (props) {
                                             name="email" 
                                             control={Input}
                                             label='Nome de usuário ou email'
-                                            autoFocus='autofocus'
                                             onChange={e => {
                                                 handleChange(e);
                                             }}

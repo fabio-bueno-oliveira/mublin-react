@@ -436,7 +436,6 @@ function StartStep3Page () {
                                                 <Form.Input size='small' name="projectName" fluid placeholder="Nome do projeto ou banda" onChange={(e, { value }) => setProjectName(value)} />
                                             </Form.Field>
                                             <Form.Field>
-                                                {/* <label>Username</label> */}
                                                 <Input 
                                                     size='small' 
                                                     placeholder='Username' 
@@ -465,16 +464,19 @@ function StartStep3Page () {
                                                 <Form.Input size='small' name="end_year" type="number" fluid label="Ano encerramento" error={end_year > currentYear && {content: 'O ano deve ser inferior ao atual' }} min={foundation_year} max={currentYear} onChange={(e, { value }) => setEndYear(value)} value={end_year} disabled={checkboxProjectActive} />
                                             </Form.Group>
                                             <Form.Checkbox checked={checkboxProjectActive} label="Em atividade" onChange={() => handleCheckboxProjectActive(checkboxProjectActive)} />
-                                            <Form.TextArea 
-                                                size='small' 
-                                                label='Bio' 
-                                                placeholder='Conte um pouco sobre o projeto (opcional)' 
-                                                onChange={(e, { value }) => setBio(value)}
-                                                value={bio}
-                                                maxLength="200"
-                                                rows="2"
-                                                error={bio.length === "200" && {content: 'A bio atingiu o limite de 200 caracteres' }}
-                                            />
+                                            <div className='mb-2'>
+                                                <Form.TextArea 
+                                                    size='small' 
+                                                    label='Bio' 
+                                                    placeholder='Conte um pouco sobre o projeto (opcional)' 
+                                                    onChange={(e, { value }) => setBio(value)}
+                                                    value={bio}
+                                                    maxLength="200"
+                                                    rows="2"
+                                                    error={bio.length === "200" && {content: 'A bio atingiu o limite de 200 caracteres' }}
+                                                />
+                                                <Label size='tiny' content={bio.length+'/200'} />
+                                            </div>
                                             <label style={{fontWeight: '600', fontSize: '.92857143em'}}>Sua principal função no projeto</label>
                                             <Form.Field
                                                 className="mt-2"

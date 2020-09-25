@@ -4,7 +4,6 @@ import { Link } from 'react-router-dom';
 import HeaderDesktop from '../../components/layout/headerDesktop';
 import HeaderMobile from '../../components/layout/headerMobile';
 import FooterMenuMobile from '../../components/layout/footerMenuMobile';
-import { projectsInfos } from '../../store/actions/projects';
 import { userInfos } from '../../store/actions/user';
 import { eventsInfos } from '../../store/actions/events';
 import { notesInfos } from '../../store/actions/notes';
@@ -24,34 +23,16 @@ function HomePage () {
     const user = JSON.parse(localStorage.getItem('user'));
 
     useEffect(() => {
-        dispatch(projectsInfos.getUserMainProjects(user.id));
-        dispatch(projectsInfos.getUserPortfolioProjects(user.id));
         dispatch(userInfos.getUserProjects(user.id));
         dispatch(eventsInfos.getUserEvents(user.id));
         dispatch(notesInfos.getUserNotes(user.id));
     }, [user.id, dispatch]);
 
+    const userInfo = useSelector(state => state.user)
+
     const userProjects = useSelector(state => state.user.projects)
-
-    const projects = useSelector(state => state.projects);
-    const mainProjects = projects.mainProjects;
-    const portfolioProjects = projects.portfolioProjects;
-
-    // const mainProjects2 = userProjects.filter((project) => { return project.portfolio !== 0 })
-
-    let mainProjectsTotal
-    if (!mainProjects[0].id) {
-        mainProjectsTotal = 0
-    } else {
-        mainProjectsTotal = mainProjects.length
-    }
-
-    let portfolioProjectsTotal
-    if (!portfolioProjects[0].id) {
-        portfolioProjectsTotal = 0
-    } else {
-        portfolioProjectsTotal = portfolioProjects.length
-    }
+    const projectsMain = userProjects.filter((project) => { return project.portfolio === 0 })
+    const projectsPortfolio = userProjects.filter((project) => { return project.portfolio === 1 })
 
     const events = useSelector(state => state.events)
     const allEvents = events.list
@@ -91,9 +72,9 @@ function HomePage () {
                 <Tab menu={{ secondary: true }} panes={
                     [
                         {
-                        menuItem: 'Principais ('+mainProjectsTotal+')',
+                        menuItem: 'Principais ('+projectsMain.length+')',
                         render: () => 
-                            <Tab.Pane loading={projects.requesting} attached={false} as="div">
+                            <Tab.Pane loading={userInfo.requesting} attached={false} as="div">
                                 <Flickity
                                     className={'carousel'} // default ''
                                     elementType={'div'} // default 'div'
@@ -101,20 +82,24 @@ function HomePage () {
                                     disableImagesLoaded={false} // default false
                                     reloadOnUpdate // default false
                                 >
-                                    { !projects.requesting ? (
-                                        mainProjects[0].id ? (
-                                            mainProjects.map((projeto, key) =>
-                                                <div className="carousel-cell" key={projeto.id}>
+                                    { !userInfo.requesting ? (
+                                        projectsMain.length ? (
+                                            projectsMain.map((projeto, key) =>
+                                                <div className="carousel-cell" key={key}>
                                                     <Link to={{ pathname: '/project/'+projeto.username }}>
                                                         {projeto.picture ? (
                                                             <Image src={'https://ik.imagekit.io/mublin/projects/tr:h-85,w-95,c-maintain_ratio/'+projeto.projectid+'/'+projeto.picture} rounded />
                                                         ) : (
                                                             <Image src={'https://ik.imagekit.io/mublin/sample-folder/avatar-undefined_-dv9U6dcv3.jpg'} height='85' width='85' rounded />
                                                         )}
-                                                        <h5 className="ui header mt-2 mb-0">
-                                                            {projeto.name}
-                                                            <div className="sub header mt-1">{projeto.ptname}</div>
-                                                        </h5>
+                                                        <Header as='h5' className='mt-2 mb-0'>
+                                                            <Header.Content>
+                                                                {projeto.name}
+                                                                <Header.Subheader style={{fontSize:'11.5px'}}>
+                                                                    {projeto.ptname}
+                                                                </Header.Subheader>
+                                                            </Header.Content>
+                                                        </Header>
                                                         <div className="mt-2" style={{fontWeight: '400',fontSize: '11px', color: 'black', opacity: '0.8'}}>
                                                             <Icon name={projeto.workIcon} /> {projeto.workTitle}
                                                         </div>
@@ -138,9 +123,9 @@ function HomePage () {
                             </Tab.Pane>,
                         }, 
                         {
-                        menuItem: 'Portfolio ('+portfolioProjectsTotal+')',
+                        menuItem: 'Portfolio ('+projectsPortfolio.length+')',
                         render: () => 
-                            <Tab.Pane loading={projects.requesting} attached={false} as="div">
+                            <Tab.Pane loading={userInfo.requesting} attached={false} as="div">
                                 <Flickity
                                     className={'carousel'} // default ''
                                     elementType={'div'} // default 'div'
@@ -148,26 +133,26 @@ function HomePage () {
                                     disableImagesLoaded={false} // default false
                                     reloadOnUpdate // default false
                                 >
-                                    { mainProjects[0].id ? (
-                                    portfolioProjects.map((projeto, key) =>
-                                        <div className="carousel-cell" key={projeto.id}>
-                                            <a href="/music/projectusername">
-                                                <div className="floating ui mini black label" style={{top: '0', left: '76%'}}>{projeto.joined_in}</div>
-                                                {projeto.picture ? (
-                                                    <Image src={'https://ik.imagekit.io/mublin/projects/tr:h-200,w-200,c-maintain_ratio/'+projeto.projectid+'/'+projeto.picture} height='85' width='85' rounded />
-                                                ) : (
-                                                    <Image src={'https://ik.imagekit.io/mublin/sample-folder/avatar-undefined_-dv9U6dcv3.jpg'} height='85' width='85' rounded />
-                                                )}
-                                                <h5 className="ui header mt-2 mb-0">
-                                                    {projeto.name}
-                                                    <div className="sub header mt-1">{projeto.ptname}</div>
-                                                </h5>
-                                                <div className="mt-2" style={{fontWeight: '400',fontSize: '11px', color: 'black', opacity: '0.8'}}>
-                                                    <Icon name={projeto.workIcon} /> {projeto.workTitle}
-                                                </div>
-                                            </a>
-                                        </div>
-                                    )
+                                    { projectsPortfolio[0].id ? (
+                                        projectsPortfolio.map((projeto, key) =>
+                                            <div className="carousel-cell" key={key}>
+                                                <a href="/music/projectusername">
+                                                    <div className="floating ui mini black label" style={{top: '0', left: '76%'}}>{projeto.joined_in}</div>
+                                                    {projeto.picture ? (
+                                                        <Image src={'https://ik.imagekit.io/mublin/projects/tr:h-200,w-200,c-maintain_ratio/'+projeto.projectid+'/'+projeto.picture} height='85' width='85' rounded />
+                                                    ) : (
+                                                        <Image src={'https://ik.imagekit.io/mublin/sample-folder/avatar-undefined_-dv9U6dcv3.jpg'} height='85' width='85' rounded />
+                                                    )}
+                                                    <h5 className="ui header mt-2 mb-0">
+                                                        {projeto.name}
+                                                        <div className="sub header mt-1">{projeto.ptname}</div>
+                                                    </h5>
+                                                    <div className="mt-2" style={{fontWeight: '400',fontSize: '11px', color: 'black', opacity: '0.8'}}>
+                                                        <Icon name={projeto.workIcon} /> {projeto.workTitle}
+                                                    </div>
+                                                </a>
+                                            </div>
+                                        )
                                     ) : (
                                         <div className="carousel-cell">
                                             <Image src={'https://ik.imagekit.io/mublin/misc/square-sad-music_SeGz8vs_2A.jpg'} height='85' width='85' rounded />
@@ -195,10 +180,10 @@ function HomePage () {
                                     reloadOnUpdate // default false
                                 >
                                     <div className="carousel-cell pt-2" style={{textAlign: 'center'}}>
-                                        <Link to={{pathname:"/project/new/", search:"?type=new", state:{type:'new'}}} style={{color:'gray'}}>
-                                            <Button circular icon='plus' size='massive' />
+                                        <Link to={{pathname:"/new/project", search:"?type=new", state:{type:'new'}}} style={{color:'gray'}}>
+                                            <Button circular color='black' icon='plus' size='massive' />
                                         </Link>
-                                        <Link to={{pathname:"/project/new/", search:"?type=new", state:{type:'new'}}} style={{color:'gray'}}>
+                                        <Link to={{pathname:"/new/project"}} style={{color:'gray'}}>
                                             <Header as='h5' className='mt-2 mb-1'>Novo</Header>
                                             <h6 className="mt-0" style={{fontWeight: '400',fontSize: '11px', color: 'black', opacity: '0.8'}}>
                                                 Criar projeto <nobr>do zero</nobr>
@@ -206,10 +191,10 @@ function HomePage () {
                                         </Link>
                                     </div>
                                     <div className="carousel-cell pt-2" style={{textAlign: 'center'}}>
-                                        <Link to={{pathname:"/project/new/", search:"?type=idea", state:{type:'idea'}}} style={{color:'gray'}}>
-                                            <Button circular icon='lightbulb outline' size='massive' />
+                                        <Link to={{pathname:"/new/project", search:"?type=idea", state:{type:'idea'}}} style={{color:'gray'}}>
+                                            <Button circular color='black' icon='lightbulb outline' size='massive' />
                                         </Link>
-                                        <Link to={{pathname:"/project/new/", search:"?type=idea", state:{type:'idea'}}} style={{color:'gray'}}>
+                                        <Link to={{pathname:"/new/project", search:"?type=idea", state:{type:'idea'}}} style={{color:'gray'}}>
                                             <Header as='h5' className='mt-2 mb-1'>Ideia</Header>
                                             <h6 className="mt-0" style={{fontWeight: '400',fontSize: '11px', color: 'black', opacity: '0.8'}}>
                                                 Criar uma proposta para atrair outros músicos
@@ -217,9 +202,9 @@ function HomePage () {
                                         </Link>
                                     </div>
                                     <div className="carousel-cell pt-2" style={{textAlign: 'center'}}>
-                                        <a href="/project/new/?type=join" className="circular ui icon massive button">
-                                            <i className="fas fa-user-plus fa-fw"></i>
-                                        </a>
+                                        <Link to={{pathname:"/project/new/?type=join", search:"?type=join", state:{type:'join'}}} style={{color:'gray'}}>
+                                            <Button circular color='black' icon='user plus' size='massive' />
+                                        </Link>
                                         <a href="/project/new/?type=join">
                                             <h5 className="ui header mt-2 mb-1">
                                                 Ingressar
@@ -228,9 +213,9 @@ function HomePage () {
                                         </a>
                                     </div>
                                     <div className="carousel-cell pt-2" style={{textAlign: 'center'}}>
-                                        <a href="/invite" className="circular ui icon massive button">
-                                            <i className="fas fa-envelope-open-text fa-fw"></i>
-                                        </a>
+                                        <Link to={{pathname:"/invite"}} style={{color:'gray'}}>
+                                            <Button circular color='black' icon='envelope open outline' size='massive' />
+                                        </Link>
                                         <a href="/invite">
                                             <h5 className="ui header mt-2 mb-1">
                                                 Convidar
@@ -239,9 +224,9 @@ function HomePage () {
                                         </a>
                                     </div>
                                     <div className="carousel-cell pt-2" style={{textAlign: 'center'}}>
-                                        <a href="/search?type=projects&status=hiring" className="circular ui icon massive button">
-                                            <i className="fas fa-crosshairs fa-fw"></i>
-                                        </a>
+                                        <Link to={{pathname:"/search?type=projects&status=hiring"}} style={{color:'gray'}}>
+                                            <Button circular color='black' icon='crosshairs' size='massive' />
+                                        </Link>
                                         <a href="/search?type=projects&status=hiring">
                                             <h5 className="ui header mt-2 mb-1">
                                                 Buscar

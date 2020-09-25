@@ -91,7 +91,7 @@ const HeaderDesktop = () => {
                                 <i className='dropdown icon' />
                                 <i className="text fas fa-music mr-1"></i> Projeto
                                 <Dropdown.Menu>
-                                    <Dropdown.Item onClick={() => history.push("/home")}>
+                                    <Dropdown.Item onClick={() => history.push("/new/project")}>
                                         <i className="fas fa-plus fa-fw"></i> Criar do zero
                                     </Dropdown.Item>
                                     <Dropdown.Item onClick={() => history.push("/home")}>

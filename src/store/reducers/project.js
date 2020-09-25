@@ -42,7 +42,10 @@ const initialState = {
       projectUsername: '',
       statusId: '',
       statusName: '',
-      statusIcon: ''
+      statusIcon: '',
+      admin: '',
+      leader: '',
+      touring: ''
     }
   ],
   opportunities: [

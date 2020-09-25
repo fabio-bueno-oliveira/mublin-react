@@ -20,6 +20,8 @@ function LoginPage (props) {
     const error = useSelector(state => state.authentication.error);
     const dispatch = useDispatch();
 
+    const [hidePassword, setHidePassword] = useState(true)
+
     // reset login status
     useEffect(() => { 
         dispatch(userActions.logout()); 
@@ -107,8 +109,6 @@ function LoginPage (props) {
                                 <div className="column">
                                     <div className="ui form">
                                         <Form.Field
-                                            icon='user' 
-                                            iconPosition='left'
                                             type="email"
                                             id='email'
                                             name="email" 
@@ -126,9 +126,7 @@ function LoginPage (props) {
                                             }) : null }
                                         />
                                         <Form.Field
-                                            icon='lock' 
-                                            iconPosition='left'
-                                            type="password"
+                                            type={hidePassword ? 'password' : 'text'}
                                             id='password'
                                             name="password" 
                                             control={Input}
@@ -143,6 +141,7 @@ function LoginPage (props) {
                                                 pointing: 'below',
                                                 size: 'tiny',
                                             }) : null }
+                                            icon={{ name: hidePassword?'eye':'eye slash', link: true, onClick:() => setHidePassword(value => !value) }}
                                         />
                                         {/* <Form.Field>
                                             <Checkbox label='Lembrar meus dados' />

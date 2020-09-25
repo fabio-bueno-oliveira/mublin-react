@@ -7,7 +7,6 @@ import { search } from './search';
 import { searchProject } from './searchProject';
 import { user } from './user';
 import { project } from './project';
-import { projects } from './projects';
 import { profile } from './profile';
 import { followedByMe } from './follow';
 import { events } from './events';
@@ -25,7 +24,6 @@ const rootReducer = combineReducers({
   searchProject,
   user,
   project,
-  projects,
   profile,
   followedByMe,
   events,

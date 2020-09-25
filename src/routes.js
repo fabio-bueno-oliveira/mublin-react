@@ -13,7 +13,9 @@ import StartStep4Page from './pages/StartPages/Step4';
 import HomePage from './pages/HomePage';
 import New from './pages/New';
 import ProfilePage from './pages/ProfilePage';
+import NewProject from './pages/New/project';
 import ProjectPage from './pages/ProjectPage';
+import ProjectAdminPage from './pages/ProjectPage/admin';
 import ProjectsPage from './pages/ProjectsPage';
 import NotificationsPage from './pages/NotificationsPage';
 import SearchPage from './pages/SearchPage';
@@ -51,7 +53,9 @@ function Routes () {
                 <PrivateRoute authed={loggedIn} path="/start/step3" component={StartStep3Page} />
                 <PrivateRoute authed={loggedIn} path="/start/step4" component={StartStep4Page} />
                 <PrivateRoute authed={loggedIn} path="/home" component={HomePage} />
+                <PrivateRoute authed={loggedIn} path="/new/project" component={NewProject} />
                 <PrivateRoute authed={loggedIn} path="/new" component={New} />
+                <PrivateRoute authed={loggedIn} path="/project/:username/admin" component={ProjectAdminPage} />
                 <PrivateRoute authed={loggedIn} path="/project/:username" component={ProjectPage} />
                 <PrivateRoute authed={loggedIn} path="/projects" component={ProjectsPage} />
                 <PrivateRoute authed={loggedIn} path="/notifications" component={NotificationsPage} />

@@ -292,7 +292,7 @@ export function profile(state = initialState, action) {
       case profileTypes.GET_PROFILE_STRENGTHS_FAILURE:
         return {
           ...state,
-          testimonials: [
+          strenghts: [
             { 
               id: '',
               created: '',

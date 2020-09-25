@@ -87,7 +87,7 @@ function getUserProjects(id) {
         headers: authHeader()
     };
 
-    return fetch(`${BASE_URL}/projects/user/${id}`, requestOptions).then(handleResponse);
+    return fetch(`${BASE_URL}/user/${id}/projects`, requestOptions).then(handleResponse);
 }
 
 function update(user) {

@@ -8,6 +8,7 @@
     "@testing-library/react": "^9.3.2",
     "@testing-library/user-event": "^7.1.2",
     "axios": "^0.19.2",
+    "date-fns": "^2.16.1",
     "flickity": "^2.2.1",
     "formik": "^2.1.4",
     "history": "^5.0.0",

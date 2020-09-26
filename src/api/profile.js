@@ -22,6 +22,7 @@ export const profileService = {
     getProfileFollowers,
     getProfileFollowing,
     checkProfileFollowing,
+    getProfilePosts,
     getProfileGear,
     getProfileAvailabilityItems,
     getProfileStrengths,
@@ -75,6 +76,14 @@ function checkProfileFollowing(username) {
         headers: authHeader()
     };
     return fetch(`${BASE_URL}/profile/${username}/checkFollow`, requestOptions).then(handleResponse);
+}
+
+function getProfilePosts(username) {
+    const requestOptions = {
+        method: 'GET',
+        headers: authHeader()
+    };
+    return fetch(`${BASE_URL}/profile/${username}/posts`, requestOptions).then(handleResponse);
 }
 
 function getProfileGear(username) {

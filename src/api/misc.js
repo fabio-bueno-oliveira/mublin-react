@@ -16,6 +16,7 @@ export function authHeader() {
 }
 
 export const miscService = {
+    getFeed,
     getAllMusicGenres,
     getAllRoles,
     getAvailabilityStatuses,
@@ -23,6 +24,14 @@ export const miscService = {
     getAvailabilityFocuses,
     logout
 };
+
+function getFeed() {
+    const requestOptions = {
+        method: 'GET',
+        headers: authHeader()
+    };
+    return fetch(`${BASE_URL}/feed`, requestOptions).then(handleResponse);
+}
 
 function getAllMusicGenres() {
     const requestOptions = {

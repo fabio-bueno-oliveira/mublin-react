@@ -7,8 +7,10 @@ import HeaderMobile from '../../components/layout/headerMobile';
 import FooterMenuMobile from '../../components/layout/footerMenuMobile';
 import { profileInfos } from '../../store/actions/profile';
 import { followInfos } from '../../store/actions/follow';
-import { Header, Tab, Card, Grid, Image, Button, Label, Dimmer, Loader, Icon, Modal, List, Confirm, Placeholder, Popup} from 'semantic-ui-react';
+import { Header, Tab, Card, Grid, Image, Button, Label, Dimmer, Loader, Icon, Modal, List, Confirm, Placeholder, Popup, Feed} from 'semantic-ui-react';
 import Flickity from 'react-flickity-component';
+import { formatDistance } from 'date-fns';
+import pt from 'date-fns/locale/pt-BR';
 import './styles.scss';
 import './flickity.scss';
 
@@ -28,6 +30,7 @@ function ProfilePage (props) {
         dispatch(profileInfos.getProfileRoles(username));
         dispatch(profileInfos.getProfileFollowers(username));
         dispatch(profileInfos.getProfileFollowing(username));
+        dispatch(profileInfos.getProfilePosts(username));
         dispatch(profileInfos.getProfileGear(username));
         dispatch(profileInfos.getProfileAvailabilityItems(username));
         dispatch(profileInfos.getProfileStrengths(username));
@@ -308,6 +311,46 @@ function ProfilePage (props) {
                                     ]
                                 }
                                 />
+                            </Card.Content>
+                        </Card>
+                        <Card id="posts" style={{ width: "100%" }}>
+                            <Card.Content>
+                                <Header as='h3' className='mb-3'>Atividades recentes</Header>
+                                { profile.requesting ? (
+                                    <Icon loading name='spinner' size='large' />
+                                ) : ( 
+                                    <Feed>
+                                        {profile.recentActivity.map((activity, key) =>
+                                            <Feed.Event key={key} className={key < (profile.recentActivity.length - 1) ? 'mb-2' : ''}>
+                                                <Feed.Label image={profile.picture} />
+                                                <Feed.Content className='mt-1'>
+                                                    <Feed.Date style={{fontSize:'11px',fontWeight:'500'}}>
+                                                        há {formatDistance(new Date(activity.created * 1000), new Date(), {locale:pt})}
+                                                    </Feed.Date>
+                                                    {activity.category === 'user' && 
+                                                        <Feed.Summary style={{fontWeight:'500'}}>
+                                                            {activity.extraText}
+                                                        </Feed.Summary>
+                                                    }
+                                                    {activity.category === 'project' && 
+                                                        <Feed.Summary>
+                                                            <span style={{fontWeight:'500'}}>
+                                                                {activity.action} {activity.category === 'project' ? activity.relatedProjectName+' ('+activity.relatedProjectType+')' : (<a>{activity.relatedEventTitle}</a>)}
+                                                            </span>
+                                                        </Feed.Summary>
+                                                    }
+                                                    {activity.category === 'event' && 
+                                                        <Feed.Summary>
+                                                            <span style={{fontWeight:'500'}}>
+                                                                {activity.action} <a>{activity.relatedEventTitle}</a>
+                                                            </span>
+                                                        </Feed.Summary>
+                                                    }
+                                                </Feed.Content>
+                                            </Feed.Event>
+                                        )}
+                                    </Feed>
+                                )}
                             </Card.Content>
                         </Card>
                         <Card id="strengths" style={{ width: "100%" }}>

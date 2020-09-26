@@ -62,6 +62,24 @@ const initialState = {
       picture: ''
     }
   ],
+  recentActivity: [
+    {
+      id: '',
+      category: '',
+      created: '',
+      action: '',
+      extraText: '',
+      image: '',
+      relatedProjectName: '',
+      relatedProjectUsername: '',
+      relatedProjectPicture: '',
+      relatedProjectType: '',
+      relatedEventId: '',
+      relatedEventTitle: '',
+      likes: '',
+      likedByMe: ''
+    }
+  ],
   strengths: [
     { 
       id: '', 
@@ -219,6 +237,41 @@ export function profile(state = initialState, action) {
         requesting: false,
         error: "A solicitação falhou"
       };
+    // POSTS (RECENT ACTIVITY)
+    case profileTypes.GET_PROFILE_POSTS_REQUEST:
+      return {
+        ...state,
+        requesting: true
+      };
+    case profileTypes.GET_PROFILE_POSTS_SUCCESS:
+      return {
+        ...state,
+        recentActivity: action.list,
+        requesting: false,
+      };
+    case profileTypes.GET_PROFILE_POSTS_FAILURE:
+      return {
+        ...state,
+        recentActivity: [
+          {
+            id: '',
+            created: '',
+            action: '',
+            extraText: '',
+            image: '',
+            relatedProjectName: '',
+            relatedProjectUsername: '',
+            relatedProjectPicture: '',
+            relatedProjectType: '',
+            relatedEventId: '',
+            relatedEventTitle: '',
+            likes: '',
+            likedByMe: ''
+          }
+        ],
+        requesting: false,
+        error: "A solicitação falhou"
+      };
     // GEAR
     case profileTypes.GET_PROFILE_GEAR_REQUEST:
       return {
@@ -252,91 +305,91 @@ export function profile(state = initialState, action) {
         requesting: false,
         error: "A solicitação falhou"
       };
-      // AVAILABILITY ITEMS (SHOWS, REHEARSALS, ETC)
-      case profileTypes.GET_PROFILE_AVAILABILITYITEMS_REQUEST:
-        return {
-          ...state,
-          requesting: true
-        };
-      case profileTypes.GET_PROFILE_AVAILABILITYITEMS_SUCCESS:
-        return {
-          ...state,
-          availabilityItems: action.list,
-          requesting: false,
-        };
-      case profileTypes.GET_PROFILE_AVAILABILITYITEMS_FAILURE:
-        return {
-          ...state,
-          availabilityItems: [
-            {
-              id: '',
-              itemId: '',
-              itemName: ''
-            }
-          ],
-          requesting: false,
-          error: "A solicitação falhou"
-        };
-      // STRENGTHS
-      case profileTypes.GET_PROFILE_STRENGTHS_REQUEST:
-        return {
-          ...state,
-          requesting: true
-        };
-      case profileTypes.GET_PROFILE_STRENGTHS_SUCCESS:
-        return {
-          ...state,
-          strengths: action.list,
-          requesting: false,
-        };
-      case profileTypes.GET_PROFILE_STRENGTHS_FAILURE:
-        return {
-          ...state,
-          strenghts: [
-            { 
-              id: '',
-              created: '',
-              title: '',
-              testimonial: '',
-              friendId: '',
-              friendName: '',
-              friendUsername: '',
-              friendPicture: ''
-            }
-          ],
-          requesting: false,
-          error: "A solicitação falhou"
-        };
-      // TESTIMONIALS
-      case profileTypes.GET_PROFILE_TESTIMONIALS_REQUEST:
-        return {
-          ...state,
-          requesting: true
-        };
-      case profileTypes.GET_PROFILE_TESTIMONIALS_SUCCESS:
-        return {
-          ...state,
-          testimonials: action.list,
-          requesting: false,
-        };
-      case profileTypes.GET_PROFILE_TESTIMONIALS_FAILURE:
-        return {
-          ...state,
-          testimonials: [
-            { 
-              id: '',
-              created: '',
-              title: '',
-              testimonial: '',
-              friendId: '',
-              friendName: '',
-              friendUsername: '',
-              friendPicture: ''
-            }
-          ],
-          requesting: false,
-          error: "A solicitação falhou"
-        };
+    // AVAILABILITY ITEMS (SHOWS, REHEARSALS, ETC)
+    case profileTypes.GET_PROFILE_AVAILABILITYITEMS_REQUEST:
+      return {
+        ...state,
+        requesting: true
+      };
+    case profileTypes.GET_PROFILE_AVAILABILITYITEMS_SUCCESS:
+      return {
+        ...state,
+        availabilityItems: action.list,
+        requesting: false,
+      };
+    case profileTypes.GET_PROFILE_AVAILABILITYITEMS_FAILURE:
+      return {
+        ...state,
+        availabilityItems: [
+          {
+            id: '',
+            itemId: '',
+            itemName: ''
+          }
+        ],
+        requesting: false,
+        error: "A solicitação falhou"
+      };
+    // STRENGTHS
+    case profileTypes.GET_PROFILE_STRENGTHS_REQUEST:
+      return {
+        ...state,
+        requesting: true
+      };
+    case profileTypes.GET_PROFILE_STRENGTHS_SUCCESS:
+      return {
+        ...state,
+        strengths: action.list,
+        requesting: false,
+      };
+    case profileTypes.GET_PROFILE_STRENGTHS_FAILURE:
+      return {
+        ...state,
+        strenghts: [
+          { 
+            id: '',
+            created: '',
+            title: '',
+            testimonial: '',
+            friendId: '',
+            friendName: '',
+            friendUsername: '',
+            friendPicture: ''
+          }
+        ],
+        requesting: false,
+        error: "A solicitação falhou"
+      };
+    // TESTIMONIALS
+    case profileTypes.GET_PROFILE_TESTIMONIALS_REQUEST:
+      return {
+        ...state,
+        requesting: true
+      };
+    case profileTypes.GET_PROFILE_TESTIMONIALS_SUCCESS:
+      return {
+        ...state,
+        testimonials: action.list,
+        requesting: false,
+      };
+    case profileTypes.GET_PROFILE_TESTIMONIALS_FAILURE:
+      return {
+        ...state,
+        testimonials: [
+          { 
+            id: '',
+            created: '',
+            title: '',
+            testimonial: '',
+            friendId: '',
+            friendName: '',
+            friendUsername: '',
+            friendPicture: ''
+          }
+        ],
+        requesting: false,
+        error: "A solicitação falhou"
+      };
     default:
       return state
   }

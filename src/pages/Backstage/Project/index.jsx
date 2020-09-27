@@ -9,7 +9,7 @@ import FooterMenuMobile from '../../../components/layout/footerMenuMobile';
 import Loader from 'react-loader-spinner';
 import { Formik } from 'formik';
 
-function ProjectAdminPage (props) {
+function ProjectBackstagePage (props) {
 
     let newProject = (new URLSearchParams(window.location.search)).get("new")
 
@@ -472,4 +472,4 @@ function ProjectAdminPage (props) {
     )
 }
 
-export default ProjectAdminPage;
+export default ProjectBackstagePage;

@@ -58,7 +58,7 @@ function ProjectPage (props) {
             <Grid columns={2} stackable className="container mb-2 mt-4 mt-md-5 pt-5">
                 <Grid.Row columns={2} only='mobile'>
                     <Grid.Column>
-                        <Button basic fluid color='blue' size='small' onClick={() => history.push(props.match.params.username+'/admin/')}>
+                        <Button basic fluid color='blue' size='small' onClick={() => history.push('/backstage/'+props.match.params.username)}>
                             <Icon name='warehouse' /> Backstage
                         </Button>
                     </Grid.Column>
@@ -91,7 +91,7 @@ function ProjectPage (props) {
                     </Grid.Column>
                     <Grid.Column className='d-none d-lg-block'>
                         <section id="options" style={{ textAlign: 'right' }}>
-                            <Button primary basic onClick={() => history.push(props.match.params.username+'/admin/')}><Icon name='warehouse' /> Backstage</Button>
+                            <Button primary basic onClick={() => history.push('/backstage/'+props.match.params.username)}><Icon name='warehouse' /> Backstage</Button>
                         </section>
                     </Grid.Column>
                 </Grid.Row>

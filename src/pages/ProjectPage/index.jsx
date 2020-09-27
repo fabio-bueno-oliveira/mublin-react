@@ -58,8 +58,8 @@ function ProjectPage (props) {
             <Grid columns={2} stackable className="container mb-2 mt-4 mt-md-5 pt-5">
                 <Grid.Row columns={2} only='mobile'>
                     <Grid.Column>
-                        <Button basic fluid color='blue' size='small' onClick={() => history.push('/backstage/'+props.match.params.username)}>
-                            <Icon name='warehouse' /> Backstage
+                        <Button basic fluid color='black' size='tiny' onClick={() => history.push('/backstage/'+props.match.params.username)}>
+                            <Icon name='warehouse' /> Ir para o Backstage deste projeto
                         </Button>
                     </Grid.Column>
                 </Grid.Row>

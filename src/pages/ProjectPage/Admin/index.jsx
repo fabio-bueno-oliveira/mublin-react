@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory, Link } from 'react-router-dom';
-import { Grid, Segment, Header, Icon, Button, Message, Image, Label, List, Form, Modal, Container } from 'semantic-ui-react';
+import { Grid, Segment, Header, Icon, Button, Message, Image, Label, List, Form, Checkbox, Select, Dropdown, Modal, Container, Statistic } from 'semantic-ui-react';
 import { projectInfos } from '../../../store/actions/project';
 import HeaderDesktop from '../../../components/layout/headerDesktop';
 import HeaderMobile from '../../../components/layout/headerMobile';
@@ -36,7 +36,6 @@ function ProjectAdminPage (props) {
     const [modalBioIsOpen, setModalBioIsOpen] = useState(false)
 
     const handleSubmitBio = (bio) => {
-        setIsLoading(true)
         setTimeout(() => {
             fetch('https://mublin.herokuapp.com/project/'+project.username+'/updateBio', {
                 method: 'PUT',
@@ -48,8 +47,46 @@ function ProjectAdminPage (props) {
                 body: JSON.stringify({projectId: project.id, bio: bio})
             }).then((response) => {
                 dispatch(projectInfos.getProjectInfo(props.match.params.username));
-                setIsLoading(false)
                 setModalBioIsOpen(false)
+            }).catch(err => {
+                console.error(err)
+                alert("Ocorreu um erro ao atualizar a bio. Tente novamente em instantes")
+            })
+        }, 400);
+    }
+
+    // modal tag
+    const [modalTagIsOpen, setModalTagIsOpen] = useState(false)
+
+    const colors = [
+        { key: 'red', text: 'Vermelho', value: 'red', label:{color: 'red', empty: true, circular: true} },
+        { key: 'orange', text: 'Laranja', value: 'orange', label:{color: 'orange', empty: true, circular: true} },
+        { key: 'yellow', text: 'Amarelo', value: 'yellow', label:{color: 'yellow', empty: true, circular: true} },
+        { key: 'olive', text: 'Oliva', value: 'olive', label:{color: 'olive', empty: true, circular: true} },
+        { key: 'green', text: 'Verde', value: 'green', label:{color: 'green', empty: true, circular: true} },
+        { key: 'teal', text: 'Azul petróleo', value: 'teal', label:{color: 'teal', empty: true, circular: true} },
+        { key: 'blue', text: 'Azul', value: 'blue', label:{color: 'blue', empty: true, circular: true} },
+        { key: 'violet', text: 'Violeta', value: 'violet', label:{color: 'violet', empty: true, circular: true} },
+        { key: 'purple', text: 'Roxo', value: 'purple', label:{color: 'purple', empty: true, circular: true} },
+        { key: 'pink', text: 'Pink', value: 'pink', label:{color: 'pink', empty: true, circular: true} },
+        { key: 'brown', text: 'Marrom', value: 'brown', label:{color: 'brown', empty: true, circular: true} },
+        { key: 'grey', text: 'Cinza', value: 'grey', label:{color: 'grey', empty: true, circular: true} },
+        { key: 'black', text: 'Preto', value: 'black', label:{color: 'black', empty: true, circular: true} }
+    ]
+
+    const handleSubmitTag = (label_show, label_text, label_color) => {
+        setTimeout(() => {
+            fetch('https://mublin.herokuapp.com/project/'+project.username+'/updateTag', {
+                method: 'PUT',
+                headers: {
+                    'Accept': 'application/json, text/plain, */*',
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + user.token
+                },
+                body: JSON.stringify({projectId: project.id, label_show: label_show, label_text: label_text, label_color: label_color})
+            }).then((response) => {
+                dispatch(projectInfos.getProjectInfo(props.match.params.username));
+                setModalTagIsOpen(false)
             }).catch(err => {
                 console.error(err)
                 alert("Ocorreu um erro ao atualizar a bio. Tente novamente em instantes")
@@ -91,7 +128,7 @@ function ProjectAdminPage (props) {
                                 </Message>
                             }
                             <div>
-                                <Label size='small'>Página do Administrador</Label> <Label size='small' as='a' color='blue' href={'/project/'+project.username}>Ver perfil</Label>
+                                <Label size='small'><Icon name='warehouse' />Backstage</Label> <Label size='small' as='a' color='black' href={'/project/'+project.username}>Ver perfil</Label>
                             </div>
                             <Segment>
                                 <Header as='h2'>
@@ -135,16 +172,15 @@ function ProjectAdminPage (props) {
                                         setTimeout(() => {
                                             setSubmitting(false);
                                             handleSubmitBio(values.bio)
-                                            //alert(JSON.stringify(values, null, 2))
                                         }, 400);
                                         }}
                                     >
                                     {({
-                                        values, errors, touched, handleChange, handleSubmit, handleBlur, isValid, isSubmitting
+                                        values, handleChange, handleSubmit, handleBlur, isSubmitting
                                     }) => (
                                         <>
                                         <Modal.Content>
-                                            <Form loading={isSubmitting || isLoading}>
+                                            <Form loading={isSubmitting}>
                                                 <Form.TextArea 
                                                     name='bio'
                                                     label='Bio' 
@@ -155,6 +191,7 @@ function ProjectAdminPage (props) {
                                                     onBlur={handleBlur}
                                                     maxLength="200"
                                                 />
+                                                <Label size='tiny' content={values.bio.length+'/200'} color={values.bio.length  > 199 ? 'red' : ''} />
                                             </Form>
                                         </Modal.Content>
                                         <Modal.Actions>
@@ -169,6 +206,154 @@ function ProjectAdminPage (props) {
                                                 color='black'
                                                 type="submit" 
                                                 onClick={handleSubmit}
+                                                disabled={values.bio === project.bio ? true : false}
+                                            >
+                                                Salvar
+                                            </Button>
+                                        </Modal.Actions>
+                                        </>
+                                        )}
+                                    </Formik>
+                                </Modal>
+                            </Segment>
+                            <Segment textAlign='left'>
+                                <Header as='h4'>
+                                    Tag
+                                </Header>
+                                { project.labelText ? (
+                                    <>
+                                        { project.labelShow ? (
+                                            <Icon name='eye' />
+                                        ) : (
+                                            <Icon name='eye slash' />
+                                        )}
+                                        <Label color={project.labelColor} size='tiny' style={{fontWeight:'500'}}>
+                                            {project.labelText}
+                                        </Label>
+                                    </>
+                                ) : (
+                                    <p>Nenhuma tag definida</p>
+                                )}
+                                <Button fluid size='tiny' className='mt-3' onClick={() => setModalTagIsOpen(true)}>
+                                    <Icon name='pencil' /> Alterar
+                                </Button>
+                                <Modal
+                                    size='mini'
+                                    onClose={() => setModalTagIsOpen(false)}
+                                    onOpen={() => setModalTagIsOpen(true)}
+                                    open={modalTagIsOpen}
+                                >
+                                    <Formik
+                                        initialValues={{ 
+                                            label_show: String(project.labelShow),
+                                            label_text: project.labelText,
+                                            label_color: project.labelColor
+                                        }}
+                                        validate={false}
+                                        validateOnMount={true}
+                                        validateOnBlur={true}
+                                        onSubmit={(values, { setSubmitting }) => {
+                                            // alert(JSON.stringify(values, null, 2))
+                                            setTimeout(() => {
+                                                setSubmitting(false);
+                                                handleSubmitTag(values.label_show, values.label_text, values.label_color)
+                                            }, 400);
+                                        }}
+                                    >
+                                    {({
+                                        values, handleChange, handleSubmit, handleBlur, isSubmitting
+                                    }) => (
+                                        <>
+                                        <Modal.Content>
+                                            <Form loading={isSubmitting}>
+                                                <Form.Field
+                                                    label='Texto da tag'
+                                                    id='label_text'
+                                                    name='label_text'
+                                                    control='input'
+                                                    value={values.label_text}
+                                                    onChange={e => {
+                                                        handleChange(e);
+                                                    }}
+                                                    onBlur={handleBlur}
+                                                    maxLength="30"
+                                                />
+                                                <Label size='tiny' content={values.label_text.length+'/30'} color={values.label_text.length  > 29 ? 'red' : ''} />
+                                                <Form.Field 
+                                                    label='Cor da tag' 
+                                                    control='select' 
+                                                    id='label_color'
+                                                    name='label_color'
+                                                    onChange={e => {
+                                                        handleChange(e);
+                                                    }}
+                                                    value={values.label_color}
+                                                >
+                                                    <option value='red'>Vermelho</option>
+                                                    <option value='orange'>Laranja</option>
+                                                    <option value='yellow'>Amarelo</option>
+                                                    <option value='olive'>Oliva</option>
+                                                    <option value='green'>Verde</option>
+                                                    <option value='teal'>Azul Petróleo</option>
+                                                    <option value='blue'>Azul</option>
+                                                    <option value='violet'>Violeta</option>
+                                                    <option value='purple'>Roxo</option>
+                                                    <option value='pink'>Pink</option>
+                                                    <option value='brown'>Marrom</option>
+                                                    <option value='grey'>Cinza</option>
+                                                    <option value='black'>Preto</option>
+                                                </Form.Field>
+                                                {/* <Form.Select
+                                                    id='label_color'
+                                                    name='label_color'
+                                                    fluid
+                                                    label='Cor da tag'
+                                                    options={colors}
+                                                    placeholder='Cor da tag'
+                                                    onChange={(e, { value }) => {
+                                                        handleChange(value);
+                                                    }}
+                                                    onBlur={handleBlur}
+                                                /> */}
+                                                <Form.Group inline>
+                                                    <Form.Radio
+                                                        id="label_show1"
+                                                        name="label_show"
+                                                        label='Exibir tag'
+                                                        value={1}
+                                                        checked={values.label_show === '1' ? true : false}
+                                                        onChange={e => {
+                                                            handleChange(e);
+                                                        }}
+                                                        onBlur={handleBlur}
+                                                    />
+                                                    <Form.Radio
+                                                        id="label_show2"
+                                                        name="label_show"
+                                                        label='Ocultar tag'
+                                                        value={0}
+                                                        checked={values.label_show === '0' ? true : false}
+                                                        onChange={e => {
+                                                            handleChange(e);
+                                                        }}
+                                                        onBlur={handleBlur}
+                                                    />
+                                                </Form.Group>
+                                            </Form>
+                                        </Modal.Content>
+                                        <Modal.Actions>
+                                            <Button
+                                                size='small'
+                                                onClick={() => setModalTagIsOpen(false)} 
+                                            >
+                                                Cancelar
+                                            </Button>
+                                            <Button
+                                                size='small' 
+                                                color='black'
+                                                type="submit" 
+                                                onClick={handleSubmit}
+                                                disabled={values.bio === project.bio ? true : false}
                                             >
                                                 Salvar
                                             </Button>
@@ -227,12 +412,54 @@ function ProjectAdminPage (props) {
                                 <p style={{fontSize:'11px'}}>Administradores podem editar toda a página, incluindo foto de perfil do projeto e excluir membros</p>
                                 <p style={{fontSize:'11px'}}>Líderes podem adicionar e editar eventos</p>
                             </Segment>
-                        </Grid.Column>
-                        <Grid.Column mobile={16} computer={6}>
                             <Segment>
                                 <Header as='h4'>
-                                    Membros
+                                    Eventos
                                 </Header>
+                                <List divided relaxed>
+                                    <List.Item>
+                                        <List.Icon name='calendar outline' size='large' verticalAlign='middle' />
+                                        <List.Content>
+                                            <List.Header as='a'>Semantic-Org/Semantic-UI</List.Header>
+                                            <List.Description as='a'>Updated 10 mins ago</List.Description>
+                                        </List.Content>
+                                    </List.Item>
+                                    <List.Item>
+                                        <List.Icon name='calendar outline' size='large' verticalAlign='middle' />
+                                        <List.Content>
+                                            <List.Header as='a'>Semantic-Org/Semantic-UI-Docs</List.Header>
+                                            <List.Description as='a'>Updated 22 mins ago</List.Description>
+                                        </List.Content>
+                                    </List.Item>
+                                    <List.Item>
+                                        <List.Icon name='calendar outline' size='large' verticalAlign='middle' />
+                                        <List.Content>
+                                            <List.Header as='a'>Semantic-Org/Semantic-UI-Meteor</List.Header>
+                                            <List.Description as='a'>Updated 34 mins ago</List.Description>
+                                        </List.Content>
+                                    </List.Item>
+                                </List>
+                            </Segment>
+                        </Grid.Column>
+                        <Grid.Column mobile={16} computer={6}>
+                            <Segment className='mb-5'>
+                                <Header as='h4'>
+                                    Estatísticas
+                                </Header>
+                                <Statistic.Group horizontal size='small'>
+                                    <Statistic>
+                                        <Statistic.Value>2,204</Statistic.Value>
+                                        <Statistic.Label>Views</Statistic.Label>
+                                    </Statistic>
+                                    <Statistic>
+                                        <Statistic.Value>3,322</Statistic.Value>
+                                        <Statistic.Label>Downloads</Statistic.Label>
+                                    </Statistic>
+                                    <Statistic>
+                                        <Statistic.Value>22</Statistic.Value>
+                                        <Statistic.Label>Tasks</Statistic.Label>
+                                    </Statistic>
+                                </Statistic.Group>
                             </Segment>
                         </Grid.Column>
                     </Grid.Row>

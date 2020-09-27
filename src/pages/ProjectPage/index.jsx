@@ -82,7 +82,7 @@ function ProjectPage (props) {
                                     }
                                     { project.labelShow === 1 && 
                                         <div id="featuredLabel" className="mt-1">
-                                            <Label color="blue" size="mini" className="ml-0" style={{ fontWeight: 'normal' }}>{project.labelText}</Label>
+                                            <Label color="blue" size="small" className="ml-0" style={{ fontWeight: 'normal' }}>{project.labelText}</Label>
                                         </div>
                                     }
                                 </div>
@@ -91,7 +91,7 @@ function ProjectPage (props) {
                     </Grid.Column>
                     <Grid.Column className='d-none d-lg-block'>
                         <section id="options" style={{ textAlign: 'right' }}>
-                            <Button primary basic onClick={() => history.push(props.match.params.username+'/admin/')}><Icon name='cog' /> Gerenciar</Button>
+                            <Button primary basic onClick={() => history.push(props.match.params.username+'/admin/')}><Icon name='warehouse' /> Backstage</Button>
                         </section>
                     </Grid.Column>
                 </Grid.Row>

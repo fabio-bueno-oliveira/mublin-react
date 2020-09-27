@@ -119,7 +119,10 @@ function NewProjectPage () {
         }).then((response) => {
             dispatch(userInfos.getUserProjects(user.id))
             setIsLoading(false)
-            history.push('/project/'+projectUserName+'/admin')
+            history.push({
+                pathname: '/project/'+projectUserName+'/admin',
+                search: '?new=true'
+            })
         }).catch(err => {
             console.error(err)
             alert("Ocorreu um erro ao criar o projeto. Tente novamente em instantes.")
@@ -136,11 +139,10 @@ function NewProjectPage () {
                         <Header as='h2'>Criar novo projeto</Header>
                         <Form>
                             <Form.Field>
-                                <Form.Input size='small' name="projectName" fluid placeholder="Nome do projeto ou banda" onChange={(e, { value }) => setProjectName(value)} />
+                                <Form.Input name="projectName" fluid placeholder="Nome do projeto ou banda" onChange={(e, { value }) => setProjectName(value)} />
                             </Form.Field>
                             <Form.Field>
                                 <Input 
-                                    size='small' 
                                     placeholder='Username' 
                                     label='@' 
                                     onChange={(e, { value }) => handleChangeProjectUserName(value)} 
@@ -163,14 +165,13 @@ function NewProjectPage () {
                                 </Label>
                             </Form.Field>
                             <Form.Group widths='equal'>
-                                <Form.Input size='small' name="foundation_year" type="number" fluid label="Ano de formação" error={foundation_year > currentYear && {content: 'O ano deve ser inferior ao atual' }} min="1900" max={currentYear} onChange={(e, { value }) => setFoundationYear(value)} value={foundation_year} />
-                                <Form.Input size='small' name="end_year" type="number" fluid label="Ano encerramento" error={end_year > currentYear && {content: 'O ano deve ser inferior ao atual' }} min={foundation_year} max={currentYear} onChange={(e, { value }) => setEndYear(value)} value={end_year} disabled={checkboxProjectActive} />
+                                <Form.Input name="foundation_year" type="number" fluid label="Ano de formação" error={foundation_year > currentYear && {content: 'O ano deve ser inferior ao atual' }} min="1900" max={currentYear} onChange={(e, { value }) => setFoundationYear(value)} value={foundation_year} />
+                                <Form.Input name="end_year" type="number" fluid label="Ano de encerramento" error={end_year > currentYear && {content: 'O ano deve ser inferior ao atual' }} min={foundation_year} max={currentYear} onChange={(e, { value }) => setEndYear(value)} value={end_year} disabled={checkboxProjectActive} />
                             </Form.Group>
                             <Form.Checkbox checked={checkboxProjectActive} label="Em atividade" onChange={() => handleCheckboxProjectActive(checkboxProjectActive)} />
                             <div className='mb-3'>
                                 <Form.TextArea 
                                     className='mb-1'
-                                    size='small' 
                                     label='Bio' 
                                     placeholder='Conte um pouco sobre o projeto (opcional)' 
                                     onChange={(e, { value }) => setBio(value)}
@@ -233,6 +234,7 @@ function NewProjectPage () {
                                 />
                             </Form.Group>
                             <Button 
+                                floated='right'
                                 loading={isLoading}
                                 className='mt-4'
                                 color="black" 

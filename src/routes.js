@@ -16,7 +16,7 @@ import New from './pages/New';
 import ProfilePage from './pages/ProfilePage';
 import NewProject from './pages/New/project';
 import ProjectPage from './pages/ProjectPage';
-import ProjectAdminPage from './pages/ProjectPage/admin';
+import ProjectAdminPage from './pages/ProjectPage/Admin';
 import ProjectsPage from './pages/ProjectsPage';
 import NotificationsPage from './pages/NotificationsPage';
 import SearchPage from './pages/SearchPage';

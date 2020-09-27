@@ -7,6 +7,7 @@ import HeaderMobile from '../../components/layout/headerMobile';
 import FooterMenuMobile from '../../components/layout/footerMenuMobile';
 import { Header, Placeholder, Grid, Card, Image, Icon, Button, Label } from 'semantic-ui-react';
 import Flickity from 'react-flickity-component';
+import Loader from 'react-loader-spinner';
 import './styles.scss';
 
 function ProjectPage (props) {
@@ -43,58 +44,58 @@ function ProjectPage (props) {
         <>
         <HeaderDesktop />
         <HeaderMobile />
+        { project.requesting ? (
+            <Loader
+                className="appLoadingIcon"
+                type="Audio"
+                color="#ffffff"
+                height={100}
+                width={100}
+                timeout={30000} //30 secs
+            />
+        ) : (
+            <>
             <Grid columns={2} stackable className="container mb-2 mt-4 mt-md-5 pt-5">
+                <Grid.Row columns={2} only='mobile'>
+                    <Grid.Column>
+                        <Button basic fluid color='blue' size='small'>
+                            <Icon name='cog' /> Gerenciar
+                        </Button>
+                    </Grid.Column>
+                </Grid.Row>
                 <Grid.Row>
                     <Grid.Column>
-                        { project.requesting ? (
-                            <div className="d-flex pt-3 pt-md-0">
-                                <Placeholder style={{ height: 110, width: 110 }} className="mr-3">
-                                    <Placeholder.Image />
-                                </Placeholder>
-                                <div className="content pt-1" style={{ width: '70%' }} >
-                                    <Placeholder>
-                                        <Placeholder.Header>
-                                            <Placeholder.Line />
-                                        </Placeholder.Header>
-                                        <Placeholder.Paragraph>
-                                            <Placeholder.Line />
-                                            <Placeholder.Line />
-                                            <Placeholder.Line />
-                                            <Placeholder.Line />
-                                        </Placeholder.Paragraph>
-                                    </Placeholder>
-                                </div>
-                            </div>
-                        ) : (
-                            <section id="title">
-                                <h1 className="ui large header d-flex pt-3 pt-md-0">
+                        <section id="title">
+                            <h1 className="ui large header d-flex pt-3 pt-md-0">
+                                {project.picture ? (
                                     <Image src={'https://ik.imagekit.io/mublin/projects/tr:h-200,w-200,c-maintain_ratio/'+project.id+'/'+project.picture} className="ui rounded image" style={{ width: '110px', height: '110px' }} />
-                                    <div className="content pt-1" style={{ alignItems: 'flex-start', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
-                                        {project.name}
-                                        <div className="sub header mt-1" style={{ fontSize: '14px' }}><strong>{project.typeName}</strong> {project.genre1 && ' de '+project.genre1} {project.genre2 && ' · '+project.genre2} {project.genre3 && ' · '+project.genre3}</div>
-                                        { project.city && 
-                                            <div className="sub header mt-2" style={{ fontSize: '12px' }}>
-                                                <Icon name='map marker alternate' className="mr-0" /> {project.city+', '+project.region}
-                                            </div>
-                                        }
-                                        { project.labelShow === 1 && 
-                                            <div id="featuredLabel" className="mt-1">
-                                                <Label color="blue" size="mini" className="ml-0" style={{ fontWeight: 'normal' }}>{project.labelText}</Label>
-                                            </div>
-                                        }
-                                    </div>
-                                </h1>
-                            </section>
-                        )}
+                                ) : (
+                                    <Image src='https://ik.imagekit.io/mublin/sample-folder/avatar-undefined_-dv9U6dcv3.jpg' className="ui rounded image" style={{ width: '110px', height: '110px' }} />
+                                )}
+                                <div className="content pt-1" style={{ alignItems: 'flex-start', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+                                    {project.name}
+                                    <div className="sub header mt-1" style={{ fontSize: '14px' }}><strong>{project.typeName}</strong> {project.genre1 && ' de '+project.genre1} {project.genre2 && ' · '+project.genre2} {project.genre3 && ' · '+project.genre3}</div>
+                                    { project.city && 
+                                        <div className="sub header mt-2" style={{ fontSize: '12px' }}>
+                                            <Icon name='map marker alternate' className="mr-0" /> {project.city+', '+project.region}
+                                        </div>
+                                    }
+                                    { project.labelShow === 1 && 
+                                        <div id="featuredLabel" className="mt-1">
+                                            <Label color="blue" size="mini" className="ml-0" style={{ fontWeight: 'normal' }}>{project.labelText}</Label>
+                                        </div>
+                                    }
+                                </div>
+                            </h1>
+                        </section>
                     </Grid.Column>
-                    <Grid.Column>
+                    <Grid.Column className='d-none d-lg-block'>
                         <section id="options" style={{ textAlign: 'right' }}>
-                            <Button primary onClick={() => history.push(props.match.params.username+'/admin/')}><Icon name='cog' /> Gerenciar</Button>
+                            <Button primary basic onClick={() => history.push(props.match.params.username+'/admin/')}><Icon name='cog' /> Gerenciar</Button>
                         </section>
                     </Grid.Column>
                 </Grid.Row>
             </Grid>
-
             <Grid id="events" className="container mt-0">
                 <Grid.Column width={16}>
                     <Header as='h3'>Sobre</Header>
@@ -107,7 +108,6 @@ function ProjectPage (props) {
                     )}
                 </Grid.Column>
             </Grid>
-
             <Grid id="members" className="container mt-3 mb-5">
                 <Grid.Column width={16}>
                     <Header as="h3" className="mb-2">Integrantes</Header>
@@ -171,7 +171,9 @@ function ProjectPage (props) {
                     </Flickity>
                 </Grid.Column>
             </Grid>
-            <FooterMenuMobile />
+            </>
+            )}
+        <FooterMenuMobile />
         </>
     );
 };

@@ -17,6 +17,7 @@ export function authHeader() {
 
 export const projectService = {
     getProjectInfo,
+    getProjectAdminAccessInfo,
     getProjectMembers,
     getProjectMembersByProjectId,
     getProjectOpportunities,
@@ -32,6 +33,14 @@ function getProjectInfo(username) {
         headers: authHeader()
     };
     return fetch(`${BASE_URL}/project/${username}`, requestOptions).then(handleResponse);
+}
+
+function getProjectAdminAccessInfo(username) {
+    const requestOptions = {
+        method: 'GET',
+        headers: authHeader()
+    };
+    return fetch(`${BASE_URL}/user/${username}/admin`, requestOptions).then(handleResponse);
 }
 
 function getProjectMembers(username) {

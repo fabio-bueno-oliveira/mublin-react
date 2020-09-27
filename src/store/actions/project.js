@@ -3,6 +3,7 @@ import { projectService } from '../../api/projects';
 
 export const projectInfos = {
     getProjectInfo: getProjectInfo,
+    getProjectAdminAccessInfo: getProjectAdminAccessInfo,
     getProjectMembers: getProjectMembers,
     getProjectMembersByProjectId: getProjectMembersByProjectId,
     getProjectOpportunities: getProjectOpportunities
@@ -23,6 +24,22 @@ function getProjectInfo(username) {
   function success(info) { return { type: projectTypes.GET_PROJECT_INFO_SUCCESS, info } }
   function failure(username, error) { return { type: projectTypes.GET_PROJECT_INFO_FAILURE, username, error } }
 }
+
+function getProjectAdminAccessInfo(username) {
+    return dispatch => {
+        dispatch(request(username));
+  
+        projectService.getProjectAdminAccessInfo(username)
+            .then(
+                info => dispatch(success(info)),
+                error => dispatch(failure(username, error.toString()))
+            );
+    };
+  
+    function request(username) { return { type: projectTypes.GET_PROJECT_ADMINACCESS_REQUEST, username } }
+    function success(info) { return { type: projectTypes.GET_PROJECT_ADMINACCESS_SUCCESS, info } }
+    function failure(username, error) { return { type: projectTypes.GET_PROJECT_ADMINACCESS_FAILURE, username, error } }
+  }
 
 function getProjectMembers(username) {
     return dispatch => {

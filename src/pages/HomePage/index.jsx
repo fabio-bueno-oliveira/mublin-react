@@ -69,7 +69,7 @@ function HomePage () {
         <main className="home mt-5 pt-4 pt-md-5">
             <section id="carousels" className="ui container px-3 pt-3 pt-md-0">
                 <Header as='h2'>Meus projetos</Header>
-                <Tab menu={{ secondary: true }} panes={
+                <Tab menu={{ secondary: true }} activeIndex={(!projectsMain.length && !projectsPortfolio.length) ? 2 : 0} panes={
                     [
                         {
                         menuItem: 'Principais ('+projectsMain.length+')',
@@ -84,24 +84,24 @@ function HomePage () {
                                 >
                                     { !userInfo.requesting ? (
                                         projectsMain.length ? (
-                                            projectsMain.map((projeto, key) =>
+                                            projectsMain.map((project, key) =>
                                                 <div className="carousel-cell" key={key}>
-                                                    <Link to={{ pathname: '/project/'+projeto.username }}>
-                                                        {projeto.picture ? (
-                                                            <Image src={'https://ik.imagekit.io/mublin/projects/tr:h-85,w-95,c-maintain_ratio/'+projeto.projectid+'/'+projeto.picture} rounded />
+                                                    <Link to={{ pathname: '/project/'+project.username }}>
+                                                        {project.picture ? (
+                                                            <Image src={'https://ik.imagekit.io/mublin/projects/tr:h-85,w-95,c-maintain_ratio/'+project.projectid+'/'+project.picture} rounded />
                                                         ) : (
                                                             <Image src={'https://ik.imagekit.io/mublin/sample-folder/avatar-undefined_-dv9U6dcv3.jpg'} height='85' width='85' rounded />
                                                         )}
                                                         <Header as='h5' className='mt-2 mb-0'>
                                                             <Header.Content>
-                                                                {projeto.name}
+                                                                {project.name}
                                                                 <Header.Subheader style={{fontSize:'11.5px'}}>
-                                                                    {projeto.ptname}
+                                                                    {project.ptname}
                                                                 </Header.Subheader>
                                                             </Header.Content>
                                                         </Header>
                                                         <div className="mt-2" style={{fontWeight: '400',fontSize: '11px', color: 'black', opacity: '0.8'}}>
-                                                            <Icon name={projeto.workIcon} /> {projeto.workTitle}
+                                                            <Icon name={project.workIcon} /> {project.workTitle}
                                                         </div>
                                                     </Link>
                                                 </div>
@@ -133,32 +133,38 @@ function HomePage () {
                                     disableImagesLoaded={false} // default false
                                     reloadOnUpdate // default false
                                 >
-                                    { projectsPortfolio[0].id ? (
-                                        projectsPortfolio.map((projeto, key) =>
-                                            <div className="carousel-cell" key={key}>
-                                                <a href="/music/projectusername">
-                                                    <div className="floating ui mini black label" style={{top: '0', left: '76%'}}>{projeto.joined_in}</div>
-                                                    {projeto.picture ? (
-                                                        <Image src={'https://ik.imagekit.io/mublin/projects/tr:h-200,w-200,c-maintain_ratio/'+projeto.projectid+'/'+projeto.picture} height='85' width='85' rounded />
-                                                    ) : (
-                                                        <Image src={'https://ik.imagekit.io/mublin/sample-folder/avatar-undefined_-dv9U6dcv3.jpg'} height='85' width='85' rounded />
-                                                    )}
-                                                    <h5 className="ui header mt-2 mb-0">
-                                                        {projeto.name}
-                                                        <div className="sub header mt-1">{projeto.ptname}</div>
-                                                    </h5>
-                                                    <div className="mt-2" style={{fontWeight: '400',fontSize: '11px', color: 'black', opacity: '0.8'}}>
-                                                        <Icon name={projeto.workIcon} /> {projeto.workTitle}
-                                                    </div>
-                                                </a>
-                                            </div>
+                                    { !userInfo.requesting ? (
+                                        projectsPortfolio.length ? (
+                                            projectsPortfolio.map((project, key) =>
+                                                <div className="carousel-cell" key={key}>
+                                                    <a href="/music/projectusername">
+                                                        <div className="floating ui mini black label" style={{top: '0', left: '76%'}}>{project.joined_in}</div>
+                                                        {project.picture ? (
+                                                            <Image src={'https://ik.imagekit.io/mublin/projects/tr:h-200,w-200,c-maintain_ratio/'+project.projectid+'/'+project.picture} height='85' width='85' rounded />
+                                                        ) : (
+                                                            <Image src={'https://ik.imagekit.io/mublin/sample-folder/avatar-undefined_-dv9U6dcv3.jpg'} height='85' width='85' rounded />
+                                                        )}
+                                                        <h5 className="ui header mt-2 mb-0">
+                                                            {project.name}
+                                                            <div className="sub header mt-1">{project.ptname}</div>
+                                                        </h5>
+                                                        <div className="mt-2" style={{fontWeight: '400',fontSize: '11px', color: 'black', opacity: '0.8'}}>
+                                                            <Icon name={project.workIcon} /> {project.workTitle}
+                                                        </div>
+                                                    </a>
+                                                </div>
+                                            )
+                                        ) : (
+                                            <div className="carousel-cell">
+                                                <Image src={'https://ik.imagekit.io/mublin/misc/square-sad-music_SeGz8vs_2A.jpg'} height='85' width='85' rounded />
+                                                <h5 className="ui header mt-2 mb-0">
+                                                    <div className="sub header mt-1">Sem projetos</div>
+                                                </h5>
+                                            </div> 
                                         )
                                     ) : (
-                                        <div className="carousel-cell">
-                                            <Image src={'https://ik.imagekit.io/mublin/misc/square-sad-music_SeGz8vs_2A.jpg'} height='85' width='85' rounded />
-                                            <h5 className="ui header mt-2 mb-0">
-                                                <div className="sub header mt-1">Sem portfolio</div>
-                                            </h5>
+                                        <div style={{textAlign: 'center', width: '100%'}}>
+                                            <Icon loading name='spinner' size='big' />
                                         </div>
                                     )}
                                 </Flickity>

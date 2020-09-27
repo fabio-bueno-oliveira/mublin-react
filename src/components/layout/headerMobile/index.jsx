@@ -30,6 +30,11 @@ const HeaderMobile = () => {
         history.push('/settings')
     }
 
+    const goToFeed = () => {
+        setMobileMenuOpen(false)
+        history.push('/feed')
+    }
+
     const goToMessages = () => {
         setMobileMenuOpen(false)
         history.push('/messages')
@@ -49,9 +54,18 @@ const HeaderMobile = () => {
                     </Menu.Item>
                     <Menu.Menu position='right'>
                         <Menu.Item
+                            name='feed'
+                            onClick={() => goToFeed(true)}
+                            className='pr-2'
+                            active={window.location.pathname === "/feed"}
+                        >
+                            <Icon name='globe' size='large' />
+                        </Menu.Item>
+                        <Menu.Item
                             name='message'
                             onClick={() => goToMessages(true)}
-                            className='p-0'
+                            className='pr-2'
+                            active={window.location.pathname === "/messages"}
                         >
                             <Icon name='mail outline' size='large' />
                         </Menu.Item>

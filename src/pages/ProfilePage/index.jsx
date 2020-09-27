@@ -7,7 +7,8 @@ import HeaderMobile from '../../components/layout/headerMobile';
 import FooterMenuMobile from '../../components/layout/footerMenuMobile';
 import { profileInfos } from '../../store/actions/profile';
 import { followInfos } from '../../store/actions/follow';
-import { Header, Tab, Card, Grid, Image, Button, Label, Dimmer, Loader, Icon, Modal, List, Confirm, Placeholder, Popup, Feed} from 'semantic-ui-react';
+import { Header, Tab, Card, Grid, Image, Button, Label, Dimmer, Icon, Modal, List, Confirm, Placeholder, Popup, Feed} from 'semantic-ui-react';
+import Loader from 'react-loader-spinner';
 import Flickity from 'react-flickity-component';
 import { formatDistance } from 'date-fns';
 import pt from 'date-fns/locale/pt-BR';
@@ -129,6 +130,17 @@ function ProfilePage (props) {
         <>
         <HeaderDesktop />
         <HeaderMobile />
+        { profile.requesting ? (
+            <Loader
+                className="appLoadingIcon"
+                type="Audio"
+                color="#ffffff"
+                height={100}
+                width={100}
+                timeout={30000} //30 secs
+            />
+        ) : (
+            <>
             <Grid id="info" columns={2} stackable className="container mb-2 mt-4 mt-md-5 pt-5">
                 <Grid.Row>
                     <Grid.Column width={4}>
@@ -462,69 +474,71 @@ function ProfilePage (props) {
                     </Grid.Column>
                 </Grid.Row>
             </Grid>
-            <FooterMenuMobile />
-            <Modal
-                size='mini'
-                open={modalFollowersOpen}
-                onClose={() => setModalFollowersOpen(false)}
-                closeIcon
-            >
-                <Modal.Header>{profile.followers.length+' seguidores'}</Modal.Header>
-                <Modal.Content>
-                    {profile.followers.map((follower, key) =>
-                        <List verticalAlign='middle'>
-                            <List.Item key={key}>
-                                <List.Content floated='right'>
-                                    <Button size='tiny' onClick={() => goToProfile(follower.username)}>Ver perfil</Button>
-                                </List.Content>
-                                <Image avatar src={follower.picture ? follower.picture : 'https://ik.imagekit.io/mublin/sample-folder/avatar-undefined_Kblh5CBKPp.jpg'} onClick={() => goToProfile(follower.username)} style={{cursor:'pointer'}} />
-                                <List.Content onClick={() => goToProfile(follower.username)}>
-                                    <List.Header style={{cursor:'pointer'}}>{follower.name}</List.Header>
-                                    <List.Description style={{cursor:'pointer'}}>
-                                        {'@'+follower.username}
-                                    </List.Description>
-                                </List.Content>
-                            </List.Item>
-                        </List>
-                    )}
-                </Modal.Content>
-                {/* <Modal.Actions>
-                    <Button size='medium' onClick={() => setModalFollowersOpen(false)}>
-                        Fechar
-                    </Button>
-                </Modal.Actions> */}
-            </Modal>
-            <Modal
-                size='mini'
-                open={modalFollowingOpen}
-                onClose={() => setModalFollowingOpen(false)}
-                closeIcon
-            >
-                <Modal.Header>{'Seguindo '+profile.following.length}</Modal.Header>
-                <Modal.Content>
-                    {profile.following.map((following, key) =>
-                        <List verticalAlign='middle'>
-                            <List.Item key={key}>
-                                <List.Content floated='right'>
-                                    <Button size='tiny' onClick={() => goToProfile(following.username)}>Ver perfil</Button>
-                                </List.Content>
-                                <Image avatar src={following.picture ? following.picture : 'https://ik.imagekit.io/mublin/sample-folder/avatar-undefined_Kblh5CBKPp.jpg'} onClick={() => goToProfile(following.username)} style={{cursor:'pointer'}} />
-                                <List.Content onClick={() => goToProfile(following.username)}>
-                                    <List.Header style={{cursor:'pointer'}}>{following.name}</List.Header>
-                                    <List.Description style={{cursor:'pointer'}}>
-                                        {'@'+following.username}
-                                    </List.Description>
-                                </List.Content>
-                            </List.Item>
-                        </List>
-                    )}
-                </Modal.Content>
-                {/* <Modal.Actions>
-                    <Button size='medium' onClick={() => setModalFollowingOpen(false)}>
-                        Fechar
-                    </Button>
-                </Modal.Actions> */}
-            </Modal>
+        <FooterMenuMobile />
+        </>
+        )}
+        <Modal
+            size='mini'
+            open={modalFollowersOpen}
+            onClose={() => setModalFollowersOpen(false)}
+            closeIcon
+        >
+            <Modal.Header>{profile.followers.length+' seguidores'}</Modal.Header>
+            <Modal.Content>
+                {profile.followers.map((follower, key) =>
+                    <List verticalAlign='middle'>
+                        <List.Item key={key}>
+                            <List.Content floated='right'>
+                                <Button size='tiny' onClick={() => goToProfile(follower.username)}>Ver perfil</Button>
+                            </List.Content>
+                            <Image avatar src={follower.picture ? follower.picture : 'https://ik.imagekit.io/mublin/sample-folder/avatar-undefined_Kblh5CBKPp.jpg'} onClick={() => goToProfile(follower.username)} style={{cursor:'pointer'}} />
+                            <List.Content onClick={() => goToProfile(follower.username)}>
+                                <List.Header style={{cursor:'pointer'}}>{follower.name}</List.Header>
+                                <List.Description style={{cursor:'pointer'}}>
+                                    {'@'+follower.username}
+                                </List.Description>
+                            </List.Content>
+                        </List.Item>
+                    </List>
+                )}
+            </Modal.Content>
+            {/* <Modal.Actions>
+                <Button size='medium' onClick={() => setModalFollowersOpen(false)}>
+                    Fechar
+                </Button>
+            </Modal.Actions> */}
+        </Modal>
+        <Modal
+            size='mini'
+            open={modalFollowingOpen}
+            onClose={() => setModalFollowingOpen(false)}
+            closeIcon
+        >
+            <Modal.Header>{'Seguindo '+profile.following.length}</Modal.Header>
+            <Modal.Content>
+                {profile.following.map((following, key) =>
+                    <List verticalAlign='middle'>
+                        <List.Item key={key}>
+                            <List.Content floated='right'>
+                                <Button size='tiny' onClick={() => goToProfile(following.username)}>Ver perfil</Button>
+                            </List.Content>
+                            <Image avatar src={following.picture ? following.picture : 'https://ik.imagekit.io/mublin/sample-folder/avatar-undefined_Kblh5CBKPp.jpg'} onClick={() => goToProfile(following.username)} style={{cursor:'pointer'}} />
+                            <List.Content onClick={() => goToProfile(following.username)}>
+                                <List.Header style={{cursor:'pointer'}}>{following.name}</List.Header>
+                                <List.Description style={{cursor:'pointer'}}>
+                                    {'@'+following.username}
+                                </List.Description>
+                            </List.Content>
+                        </List.Item>
+                    </List>
+                )}
+            </Modal.Content>
+            {/* <Modal.Actions>
+                <Button size='medium' onClick={() => setModalFollowingOpen(false)}>
+                    Fechar
+                </Button>
+            </Modal.Actions> */}
+        </Modal>
         </>
     );
 };

@@ -2,6 +2,7 @@ import { projectTypes } from '../types/project';
 
 const initialState = {
   requesting: false,
+  adminAccess: 0,
   id: '',
   name: '',
   oldName: '',
@@ -99,6 +100,24 @@ export function project(state = initialState, action) {
         ...state,
         requesting: false,
         error: "A solicitação falhou"
+      };
+    case projectTypes.GET_PROJECT_ADMINACCESS_REQUEST:
+      return {
+        ...state,
+        requesting: true
+      };
+    case projectTypes.GET_PROJECT_ADMINACCESS_SUCCESS:
+      return {
+        ...state,
+        requesting: false,
+        adminAccess: action.info.accessible
+      };
+    case projectTypes.GET_PROJECT_ADMINACCESS_FAILURE:
+      return {
+        ...state,
+        requesting: false,
+        error: "A solicitação falhou",
+        adminAccess: 0
       };
     case projectTypes.GET_PROJECT_MEMBERS_REQUEST:
       return {

@@ -50,7 +50,7 @@ function LoginPage (props) {
             <Loader
                 className="appLoadingIcon"
                 type="Audio"
-                color="#ff0032"
+                color="#ffffff"
                 height={100}
                 width={100}
                 timeout={30000} //30 secs

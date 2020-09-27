@@ -58,8 +58,8 @@ function ProjectPage (props) {
             <Grid columns={2} stackable className="container mb-2 mt-4 mt-md-5 pt-5">
                 <Grid.Row columns={2} only='mobile'>
                     <Grid.Column>
-                        <Button basic fluid color='blue' size='small'>
-                            <Icon name='cog' /> Gerenciar
+                        <Button basic fluid color='blue' size='small' onClick={() => history.push(props.match.params.username+'/admin/')}>
+                            <Icon name='warehouse' /> Backstage
                         </Button>
                     </Grid.Column>
                 </Grid.Row>
@@ -74,7 +74,7 @@ function ProjectPage (props) {
                                 )}
                                 <div className="content pt-1" style={{ alignItems: 'flex-start', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
                                     {project.name}
-                                    <div className="sub header mt-1" style={{ fontSize: '14px' }}><strong>{project.typeName}</strong> {project.genre1 && ' de '+project.genre1} {project.genre2 && ' · '+project.genre2} {project.genre3 && ' · '+project.genre3}</div>
+                                    <div className="sub header mt-1" style={{ fontSize: '14px' }}><strong>{project.typeName}</strong></div>
                                     { project.city && 
                                         <div className="sub header mt-2" style={{ fontSize: '12px' }}>
                                             <Icon name='map marker alternate' className="mr-0" /> {project.city+', '+project.region}
@@ -98,14 +98,9 @@ function ProjectPage (props) {
             </Grid>
             <Grid id="events" className="container mt-0">
                 <Grid.Column width={16}>
-                    <Header as='h3'>Sobre</Header>
-                    { project.requesting ? (
-                        <Placeholder>
-                            <Placeholder.Line />
-                        </Placeholder>
-                    ) : (
-                        <p>{project.bio}</p>
-                    )}
+                    {/* <Header as='h3'>Sobre</Header> */}
+                    <p style={{fontSize:'11.5px',opacity:'0.5'}} className='mb-2'>{project.genre1 && project.genre1} {project.genre2 && ' · '+project.genre2} {project.genre3 && ' · '+project.genre3}</p>
+                    <p>{project.bio}</p>
                 </Grid.Column>
             </Grid>
             <Grid id="members" className="container mt-3 mb-5">

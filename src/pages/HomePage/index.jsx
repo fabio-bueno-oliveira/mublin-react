@@ -69,7 +69,7 @@ function HomePage () {
         <main className="home mt-5 pt-4 pt-md-5">
             <section id="carousels" className="ui container px-3 pt-3 pt-md-0">
                 <Header as='h2'>Meus projetos</Header>
-                <Tab menu={{ secondary: true }} activeIndex={(!projectsMain.length && !projectsPortfolio.length) ? 2 : 0} panes={
+                <Tab menu={{ secondary: true }} defaultActiveIndex={(!projectsMain.length && !projectsPortfolio.length) ? 2 : 0} panes={
                     [
                         {
                         menuItem: 'Principais ('+projectsMain.length+')',

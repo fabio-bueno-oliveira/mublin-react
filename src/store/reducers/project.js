@@ -58,6 +58,17 @@ const initialState = {
       experienceName: ''
     }
   ],
+  notes: [
+    {
+      id: '',
+      note: '',
+      created: '',
+      authorUsername: '',
+      authorName: '',
+      authorLastname: '',
+      authorPicture: ''
+    }
+  ],
 }
 
 export function project(state = initialState, action) {
@@ -161,6 +172,23 @@ export function project(state = initialState, action) {
           }
         ],
         //error: "A solicitação falhou"
+      };
+    case projectTypes.GET_PROJECT_NOTES_REQUEST:
+      return {
+        ...state,
+        requesting: true
+      };
+    case projectTypes.GET_PROJECT_NOTES_SUCCESS:
+      return {
+        ...state,
+        requesting: false,
+        notes: action.list,
+      };
+    case projectTypes.GET_PROJECT_NOTES_FAILURE:
+      return {
+        ...state,
+        requesting: false,
+        error: "A solicitação falhou"
       };
     default:
       return state

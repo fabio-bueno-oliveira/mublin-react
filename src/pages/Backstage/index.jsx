@@ -44,7 +44,7 @@ function BackstageMainPage () {
                 )}
                 <Header.Content>
                     {project.name}
-                    <Header.Subheader style={{fontSize:'12px',width:'230px',whiteSpace:'nowrap',overflow:'hidden',textOverflow:'ellipsis'}}>{project.ptname} {project.genre1 && '('+project.genre1}{project.genre2 && ', '+project.genre2}{project.genre3 && ', '+project.genre3}{project.genre1 && ')'}</Header.Subheader>
+                    <Header.Subheader style={{fontSize:'12px',width:'240px',whiteSpace:'nowrap',overflow:'hidden',textOverflow:'ellipsis'}}>{project.ptname} {project.genre1 && '('+project.genre1}{project.genre2 && ', '+project.genre2}{project.genre3 && ', '+project.genre3}{project.genre1 && ')'}</Header.Subheader>
                 </Header.Content>
             </Header>
             {(project.yearEnd && project.yearEnd <= currentYear) &&

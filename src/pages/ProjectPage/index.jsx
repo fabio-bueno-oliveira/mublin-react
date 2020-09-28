@@ -91,7 +91,7 @@ function ProjectPage (props) {
                     </Grid.Column>
                     <Grid.Column className='d-none d-lg-block'>
                         <section id="options" style={{ textAlign: 'right' }}>
-                            <Button primary basic onClick={() => history.push('/backstage/'+props.match.params.username)}><Icon name='warehouse' /> Backstage</Button>
+                            <Button color='black' basic onClick={() => history.push('/backstage/'+props.match.params.username)}><Icon name='warehouse' /> Ir para o Backstage deste projeto</Button>
                         </section>
                     </Grid.Column>
                 </Grid.Row>

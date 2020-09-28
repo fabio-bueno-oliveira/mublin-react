@@ -21,6 +21,7 @@ export const projectService = {
     getProjectMembers,
     getProjectMembersByProjectId,
     getProjectOpportunities,
+    getProjectNotes,
     getUserMainProjects,
     getUserPortfolioProjects,
     getUserProjects,
@@ -67,6 +68,13 @@ function getProjectOpportunities(username) {
     return fetch(`${BASE_URL}/project/${username}/opportunities`, requestOptions).then(handleResponse);
 }
 
+function getProjectNotes(username) {
+    const requestOptions = {
+        method: 'GET',
+        headers: authHeader()
+    };
+    return fetch(`${BASE_URL}/project/${username}/notes`, requestOptions).then(handleResponse);
+}
 
 function getUserMainProjects(id) {
     const requestOptions = {

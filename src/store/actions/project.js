@@ -6,7 +6,8 @@ export const projectInfos = {
     getProjectAdminAccessInfo: getProjectAdminAccessInfo,
     getProjectMembers: getProjectMembers,
     getProjectMembersByProjectId: getProjectMembersByProjectId,
-    getProjectOpportunities: getProjectOpportunities
+    getProjectOpportunities: getProjectOpportunities,
+    getProjectNotes: getProjectNotes
 };
 
 function getProjectInfo(username) {
@@ -87,4 +88,20 @@ function getProjectOpportunities(username) {
     function request(username) { return { type: projectTypes.GET_PROJECT_OPPORTUNITIES_REQUEST, username } }
     function success(list) { return { type: projectTypes.GET_PROJECT_OPPORTUNITIES_SUCCESS, list } }
     function failure(username, error) { return { type: projectTypes.GET_PROJECT_OPPORTUNITIES_FAILURE, username, error } }
+}
+
+function getProjectNotes(username) {
+    return dispatch => {
+        dispatch(request(username));
+  
+        projectService.getProjectNotes(username)
+            .then(
+                list => dispatch(success(list)),
+                error => dispatch(failure(username, error.toString()))
+            );
+    };
+  
+    function request(username) { return { type: projectTypes.GET_PROJECT_NOTES_REQUEST, username } }
+    function success(list) { return { type: projectTypes.GET_PROJECT_NOTES_SUCCESS, list } }
+    function failure(username, error) { return { type: projectTypes.GET_PROJECT_NOTES_FAILURE, username, error } }
 }

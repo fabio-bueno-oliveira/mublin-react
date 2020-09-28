@@ -23,6 +23,7 @@ function ProjectBackstagePage (props) {
         dispatch(projectInfos.getProjectAdminAccessInfo(props.match.params.username));
         dispatch(projectInfos.getProjectInfo(props.match.params.username));
         dispatch(projectInfos.getProjectMembers(props.match.params.username));
+        dispatch(projectInfos.getProjectNotes(props.match.params.username));
     }, []);
 
     const project = useSelector(state => state.project);
@@ -128,7 +129,7 @@ function ProjectBackstagePage (props) {
                                 </Message>
                             }
                             <div>
-                                <Label size='small'><Icon name='warehouse' />Backstage</Label> <Label size='small' as='a' color='black' href={'/project/'+project.username}>Ver perfil</Label>
+                                <Label size='small' style={{fontWeight:'500'}}><Icon name='warehouse' />Backstage</Label> <Label size='small' as='a' color='black' href={'/project/'+project.username} style={{fontWeight:'500'}}><Icon name='arrow right' />Ir para o perfil do projeto</Label>
                             </div>
                             <Segment>
                                 <Header as='h2'>
@@ -146,6 +147,113 @@ function ProjectBackstagePage (props) {
                         </Grid.Column>
                     </Grid.Row>
                     <Grid.Row stretched>
+                        <Grid.Column mobile={16} computer={6}>
+                            <Segment textAlign='left'>
+                                <Header as='h4'>
+                                    Quadro de avisos
+                                </Header>
+                                {project.notes[0].id ? (
+                                    project.notes.map((note, key) =>
+                                        <Segment inverted basic style={{fontSize:'12px'}} key={key}>
+                                            {note.note}
+                                            <div className='mt-2'>
+                                                { note.authorPicture ? (
+                                                    <Image src={note.authorPicture} avatar />
+                                                ) : (
+                                                    <Image src='https://ik.imagekit.io/mublin/sample-folder/tr:h-200,w-200,c-maintain_ratio/avatar-undefined_Kblh5CBKPp.jpg' avatar />
+                                                )}
+                                                <span>{note.authorName+' '+note.authorLastname}</span>
+                                            </div>
+                                        </Segment>
+                                    )
+                                ) : (
+                                    <p>Nenhum aviso cadastrado no momento</p>
+                                )}
+                            </Segment>
+                            <Segment className='mb-5'>
+                                <Header as='h4'>
+                                    Estatísticas
+                                </Header>
+                                <Statistic.Group horizontal size='small'>
+                                    <Statistic>
+                                        <Statistic.Value>2,204</Statistic.Value>
+                                        <Statistic.Label>Views</Statistic.Label>
+                                    </Statistic>
+                                    <Statistic>
+                                        <Statistic.Value>3,322</Statistic.Value>
+                                        <Statistic.Label>Downloads</Statistic.Label>
+                                    </Statistic>
+                                    <Statistic>
+                                        <Statistic.Value>22</Statistic.Value>
+                                        <Statistic.Label>Tasks</Statistic.Label>
+                                    </Statistic>
+                                </Statistic.Group>
+                            </Segment>
+                        </Grid.Column>
+                        <Grid.Column mobile={16} computer={6}>
+                            <Segment attached='top'>
+                                {/* <Header as='h4'>
+                                    <Header.Content>
+                                        Membros
+                                        <Header.Subheader>Manage your preferences</Header.Subheader>
+                                    </Header.Content>
+                                </Header> */}
+                                <div className='cardTitle'>
+                                    <Header as='h4' className='pt-1'>{members.length} Membros</Header>
+                                    <Label size='small' content='Convidar novo' icon='user plus' />
+                                </div>
+                                <List relaxed divided verticalAlign='middle'>
+                                    {members.map((member, key) =>
+                                        <List.Item key={key}>
+                                            <List.Content floated='right'>
+                                                <Button size='mini' icon='cog' />
+                                            </List.Content>
+                                            { member.picture ? (
+                                                <Image src={'https://ik.imagekit.io/mublin/users/avatars/tr:h-200,w-200,c-maintain_ratio/'+member.id+'/'+member.picture} width="25" height="25" circular alt={'Foto de '+member.name} />
+                                            ) : (
+                                                <Image src='https://ik.imagekit.io/mublin/sample-folder/avatar-undefined_Kblh5CBKPp.jpg' width="25" height="25" circular alt={'Foto de '+member.name} />
+                                            )}
+                                            <List.Content>
+                                                <List.Header as='a'>{member.name+' '+member.lastname} ({member.statusName})</List.Header>
+                                                <span style={{fontSize:'11px'}}><Icon name={member.statusIcon} />{member.role1}{member.role2 && ', '+member.role2}{member.role3 && ', '+member.role3}</span>
+                                            </List.Content>
+                                        </List.Item>
+                                    )}
+                                </List>
+                            </Segment>
+                            <Segment secondary attached='bottom'>
+                                <p style={{fontSize:'11px'}}>Administradores podem editar toda a página, incluindo foto de perfil do projeto e excluir membros</p>
+                                <p style={{fontSize:'11px'}}>Líderes podem adicionar e editar eventos</p>
+                            </Segment>
+                            <Segment>
+                                <Header as='h4'>
+                                    Eventos
+                                </Header>
+                                <List divided relaxed>
+                                    <List.Item>
+                                        <List.Icon name='calendar outline' size='large' verticalAlign='middle' />
+                                        <List.Content>
+                                            <List.Header as='a'>Semantic-Org/Semantic-UI</List.Header>
+                                            <List.Description as='a'>Updated 10 mins ago</List.Description>
+                                        </List.Content>
+                                    </List.Item>
+                                    <List.Item>
+                                        <List.Icon name='calendar outline' size='large' verticalAlign='middle' />
+                                        <List.Content>
+                                            <List.Header as='a'>Semantic-Org/Semantic-UI-Docs</List.Header>
+                                            <List.Description as='a'>Updated 22 mins ago</List.Description>
+                                        </List.Content>
+                                    </List.Item>
+                                    <List.Item>
+                                        <List.Icon name='calendar outline' size='large' verticalAlign='middle' />
+                                        <List.Content>
+                                            <List.Header as='a'>Semantic-Org/Semantic-UI-Meteor</List.Header>
+                                            <List.Description as='a'>Updated 34 mins ago</List.Description>
+                                        </List.Content>
+                                    </List.Item>
+                                </List>
+                            </Segment>
+                        </Grid.Column>
                         <Grid.Column mobile={16} computer={4}>
                             <Segment textAlign='left'>
                                 <Header as='h4'>
@@ -375,91 +483,6 @@ function ProjectBackstagePage (props) {
                                 <Button fluid size='tiny' className='mt-3'>
                                     <Icon name='pencil' /> Alterar
                                 </Button>
-                            </Segment>
-                        </Grid.Column>
-                        <Grid.Column mobile={16} computer={6}>
-                            <Segment attached='top'>
-                                {/* <Header as='h4'>
-                                    <Header.Content>
-                                        Membros
-                                        <Header.Subheader>Manage your preferences</Header.Subheader>
-                                    </Header.Content>
-                                </Header> */}
-                                <div className='cardTitle'>
-                                    <Header as='h4' className='pt-1'>{members.length} Membros</Header>
-                                    <Label size='small' content='Convidar novo' icon='user plus' />
-                                </div>
-                                <List relaxed divided verticalAlign='middle'>
-                                    {members.map((member, key) =>
-                                        <List.Item key={key}>
-                                            <List.Content floated='right'>
-                                                <Button size='mini' icon='cog' />
-                                            </List.Content>
-                                            { member.picture ? (
-                                                <Image src={'https://ik.imagekit.io/mublin/users/avatars/tr:h-200,w-200,c-maintain_ratio/'+member.id+'/'+member.picture} width="25" height="25" circular alt={'Foto de '+member.name} />
-                                            ) : (
-                                                <Image src='https://ik.imagekit.io/mublin/sample-folder/avatar-undefined_Kblh5CBKPp.jpg' width="25" height="25" circular alt={'Foto de '+member.name} />
-                                            )}
-                                            <List.Content>
-                                                <List.Header as='a'>{member.name+' '+member.lastname} ({member.statusName})</List.Header>
-                                                <span style={{fontSize:'11px'}}><Icon name={member.statusIcon} />{member.role1}{member.role2 && ', '+member.role2}{member.role3 && ', '+member.role3}</span>
-                                            </List.Content>
-                                        </List.Item>
-                                    )}
-                                </List>
-                            </Segment>
-                            <Segment secondary attached='bottom'>
-                                <p style={{fontSize:'11px'}}>Administradores podem editar toda a página, incluindo foto de perfil do projeto e excluir membros</p>
-                                <p style={{fontSize:'11px'}}>Líderes podem adicionar e editar eventos</p>
-                            </Segment>
-                            <Segment>
-                                <Header as='h4'>
-                                    Eventos
-                                </Header>
-                                <List divided relaxed>
-                                    <List.Item>
-                                        <List.Icon name='calendar outline' size='large' verticalAlign='middle' />
-                                        <List.Content>
-                                            <List.Header as='a'>Semantic-Org/Semantic-UI</List.Header>
-                                            <List.Description as='a'>Updated 10 mins ago</List.Description>
-                                        </List.Content>
-                                    </List.Item>
-                                    <List.Item>
-                                        <List.Icon name='calendar outline' size='large' verticalAlign='middle' />
-                                        <List.Content>
-                                            <List.Header as='a'>Semantic-Org/Semantic-UI-Docs</List.Header>
-                                            <List.Description as='a'>Updated 22 mins ago</List.Description>
-                                        </List.Content>
-                                    </List.Item>
-                                    <List.Item>
-                                        <List.Icon name='calendar outline' size='large' verticalAlign='middle' />
-                                        <List.Content>
-                                            <List.Header as='a'>Semantic-Org/Semantic-UI-Meteor</List.Header>
-                                            <List.Description as='a'>Updated 34 mins ago</List.Description>
-                                        </List.Content>
-                                    </List.Item>
-                                </List>
-                            </Segment>
-                        </Grid.Column>
-                        <Grid.Column mobile={16} computer={6}>
-                            <Segment className='mb-5'>
-                                <Header as='h4'>
-                                    Estatísticas
-                                </Header>
-                                <Statistic.Group horizontal size='small'>
-                                    <Statistic>
-                                        <Statistic.Value>2,204</Statistic.Value>
-                                        <Statistic.Label>Views</Statistic.Label>
-                                    </Statistic>
-                                    <Statistic>
-                                        <Statistic.Value>3,322</Statistic.Value>
-                                        <Statistic.Label>Downloads</Statistic.Label>
-                                    </Statistic>
-                                    <Statistic>
-                                        <Statistic.Value>22</Statistic.Value>
-                                        <Statistic.Label>Tasks</Statistic.Label>
-                                    </Statistic>
-                                </Statistic.Group>
                             </Segment>
                         </Grid.Column>
                     </Grid.Row>

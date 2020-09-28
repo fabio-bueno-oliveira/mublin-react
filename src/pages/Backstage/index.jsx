@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { userInfos } from '../../store/actions/user';
 import { useHistory } from 'react-router-dom';
-import { Grid, Header, Segment, Form, Image, Icon, Message, Label } from 'semantic-ui-react';
+import { Grid, Header, Segment, Form, Image, Icon, Message, Label, Button } from 'semantic-ui-react';
 import HeaderDesktop from '../../components/layout/headerDesktop';
 import HeaderMobile from '../../components/layout/headerMobile';
 import FooterMenuMobile from '../../components/layout/footerMenuMobile';
@@ -16,6 +16,8 @@ function BackstageMainPage () {
     let dispatch = useDispatch();
 
     let history = useHistory();
+
+    const currentYear = new Date().getFullYear()
 
     useEffect(() => {
         dispatch(userInfos.getUserProjects(userToken.id));
@@ -32,7 +34,8 @@ function BackstageMainPage () {
     }
 
     const myProjects = (category) => userProjects.filter((project) => { return project.portfolio === category && (project.name.toLowerCase().includes(pesquisa.toLowerCase())) }).map((project, key) =>
-        <Segment key={key}>
+        <>
+        <Segment key={key} color={(project.yearEnd && project.yearEnd <= currentYear) ? 'red' : 'green'} attached='top'>
             <Header as='h4'>
                 {project.picture ? (
                     <Image src={'https://ik.imagekit.io/mublin/projects/tr:h-200,w-200,c-maintain_ratio/'+project.projectid+'/'+project.picture} rounded />
@@ -41,24 +44,31 @@ function BackstageMainPage () {
                 )}
                 <Header.Content>
                     {project.name}
-                    <Header.Subheader>{project.ptname}</Header.Subheader>
+                    <Header.Subheader style={{fontSize:'12px',width:'230px',whiteSpace:'nowrap',overflow:'hidden',textOverflow:'ellipsis'}}>{project.ptname} {project.genre1 && '('+project.genre1}{project.genre2 && ', '+project.genre2}{project.genre3 && ', '+project.genre3}{project.genre1 && ')'}</Header.Subheader>
                 </Header.Content>
             </Header>
+            {(project.yearEnd && project.yearEnd <= currentYear) &&
+                <Label attached='top right' size='tiny' color='red' style={{fontWeight:'500'}}>
+                    Encerrado em {project.yearEnd}
+                </Label>
+            }
             <div>
                 {userInfo.picture ? (
                     <Image src={'https://ik.imagekit.io/mublin/users/avatars/tr:h-200,w-200,c-maintain_ratio/'+userInfo.id+'/'+userInfo.picture} avatar />
                 ) : (
                     <Image src={'https://ik.imagekit.io/mublin/sample-folder/tr:h-200,w-200,c-maintain_ratio/sample-folder/avatar-undefined_Kblh5CBKPp.jpg'} avatar />
                 )}
-                <span><Icon name={project.workIcon} className='ml-1' />{project.workTitle}</span>
+                <span><Icon name={project.workIcon} className='ml-1' />{project.workTitle} {!!project.admin && <> · <Icon name='wrench' className='ml-1' />Administrador</>}</span>
             </div>
             <span style={{fontSize:'11px'}}>
                 {project.role1}{project.role2 && ', '+project.role2}{project.role3 && ', '+project.role3}
             </span>
-            <div className='mt-2'>
-                <Label as='a' size='small' style={{fontWeight:'500'}} href={'/backstage/'+project.username}>Ver Backstage</Label> <Label size='small' as='a' style={{fontWeight:'500'}} href={'/project/'+project.username}>Ver perfil</Label>
-            </div>
         </Segment>
+        <Button.Group attached='bottom' size='tiny'>
+            <Button onClick={() => history.push('/backstage/'+project.username)}><Icon name='warehouse' />Ver Backstage</Button>
+            <Button onClick={() => history.push('/project/'+project.username)}><Icon name='globe' />Ver Perfil</Button>
+        </Button.Group>
+        </>
     )
 
     return (

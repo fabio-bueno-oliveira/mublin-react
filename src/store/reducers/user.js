@@ -34,9 +34,14 @@ const initialState = {
       id_project_fk: '',
       confirmed: '',
       status: '',
+      active: '',
+      admin: '',
       joined_in: '',
+      yearLeftTheProject: '',
       main_role_fk: '',
       portfolio: '',
+      showOnProfile: '',
+      touring: '',
       created: '',
       projectid: '',
       name: '',
@@ -51,6 +56,11 @@ const initialState = {
       role1: '',
       role2: '',
       role3: '',
+      genre1: '',
+      genre2: '',
+      genre3: '',
+      yearFoundation: '',
+      yearEnd: ''
     }
   ],
   gear: [
@@ -214,8 +224,6 @@ export function user(state = initialState, action) {
         projects: [
           {
             id: '',
-            id_user_fk: '',
-            id_project_fk: '',
             confirmed: '',
             status: '',
             joined_in: '',

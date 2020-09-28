@@ -91,7 +91,7 @@ const PublicEvents = (props) => {
                                                 <p style={{fontSize:'12px',fontWeight:'500'}} className='mt-2'>{event.description}</p>
                                                 <div style={{fontSize:'11px',color:'grey'}}  className='py-0'>
                                                     { event.authorPicture ? (
-                                                        <Image as='a' avatar src={event.authorPicture}  onClick={() => history.push('/'+event.authorUsername)} />
+                                                        <Image as='a' avatar src={event.authorPicture} onClick={() => history.push('/'+event.authorUsername)} />
                                                     ) : (
                                                         <Image as='a' avatar src='https://ik.imagekit.io/mublin/sample-folder/avatar-undefined_Kblh5CBKPp.jpg' onClick={() => history.push('/'+event.authorUsername)} />
                                                     )}

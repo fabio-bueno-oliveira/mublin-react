@@ -56,13 +56,6 @@ function ProjectPage (props) {
         ) : (
             <>
             <Grid columns={2} stackable className="container mb-2 mt-4 mt-md-5 pt-5">
-                <Grid.Row columns={2} only='mobile'>
-                    <Grid.Column>
-                        <Button basic fluid color='black' size='tiny' onClick={() => history.push('/backstage/'+props.match.params.username)}>
-                            <Icon name='warehouse' /> Ir para o Backstage deste projeto
-                        </Button>
-                    </Grid.Column>
-                </Grid.Row>
                 <Grid.Row>
                     <Grid.Column>
                         <section id="title">
@@ -81,8 +74,8 @@ function ProjectPage (props) {
                                         </div>
                                     }
                                     { project.labelShow === 1 && 
-                                        <div id="featuredLabel" className="mt-1">
-                                            <Label color="blue" size="small" className="ml-0" style={{ fontWeight: 'normal' }}>{project.labelText}</Label>
+                                        <div id="featuredLabel" className="mt-1 pl-2">
+                                            <Label tag color="blue" size="tiny" className="ml-0" style={{ fontWeight: 'normal' }}>{project.labelText}</Label>
                                         </div>
                                     }
                                 </div>
@@ -91,14 +84,16 @@ function ProjectPage (props) {
                     </Grid.Column>
                     <Grid.Column className='d-none d-lg-block'>
                         <section id="options" style={{ textAlign: 'right' }}>
-                            <Button color='black' basic onClick={() => history.push('/backstage/'+props.match.params.username)}><Icon name='warehouse' /> Ir para o Backstage deste projeto</Button>
+                            <Button size='tiny' color='black' basic onClick={() => history.push('/backstage/'+props.match.params.username)}><Icon name='warehouse' /> Ir para o Backstage deste projeto</Button>
                         </section>
                     </Grid.Column>
                 </Grid.Row>
             </Grid>
             <Grid id="events" className="container mt-0">
                 <Grid.Column width={16}>
-                    {/* <Header as='h3'>Sobre</Header> */}
+                    <Button fluid basic className='mb-3 d-block d-sm-none' size='mini' onClick={() => history.push('/backstage/'+props.match.params.username)}>
+                        <Icon name='warehouse' /> Ir para o Backstage deste projeto
+                    </Button>
                     <p style={{fontSize:'11.5px',opacity:'0.5'}} className='mb-2'>{project.genre1 && project.genre1} {project.genre2 && ' · '+project.genre2} {project.genre3 && ' · '+project.genre3}</p>
                     <p>{project.bio}</p>
                 </Grid.Column>

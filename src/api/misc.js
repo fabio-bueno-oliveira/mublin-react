@@ -16,6 +16,7 @@ export function authHeader() {
 }
 
 export const miscService = {
+    getNotifications,
     getFeed,
     getAllMusicGenres,
     getAllRoles,
@@ -31,6 +32,14 @@ function getFeed() {
         headers: authHeader()
     };
     return fetch(`${BASE_URL}/feed`, requestOptions).then(handleResponse);
+}
+
+function getNotifications() {
+    const requestOptions = {
+        method: 'GET',
+        headers: authHeader()
+    };
+    return fetch(`${BASE_URL}/notifications`, requestOptions).then(handleResponse);
 }
 
 function getAllMusicGenres() {

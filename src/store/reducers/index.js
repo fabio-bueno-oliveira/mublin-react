@@ -3,6 +3,7 @@ import { authentication } from './authentication';
 import { usernameCheck } from './usernameCheck';
 import { projectUsernameCheck } from './projectUsernameCheck';
 import { emailCheck } from './emailCheck';
+import { notifications } from './notifications';
 import { feed } from './feed';
 import { search } from './search';
 import { searchProject } from './searchProject';
@@ -21,6 +22,7 @@ const rootReducer = combineReducers({
   usernameCheck,
   projectUsernameCheck,
   emailCheck,
+  notifications,
   feed,
   search,
   searchProject,

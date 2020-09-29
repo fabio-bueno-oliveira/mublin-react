@@ -73,7 +73,7 @@ const HeaderDesktop = () => {
                     <Menu.Item onClick={() => history.push("/feed")} active={window.location.pathname === "/feed"}>
                         <i className="fas fa-globe-americas mr-2"></i> Feed
                     </Menu.Item>
-                    <Menu.Item onClick={() => history.push("/backstage")} active={window.location.pathname === "/backstage"}>
+                    <Menu.Item onClick={() => history.push("/backstage")} active={window.location.pathname.includes("/backstage")}>
                         <i className="fas fa-warehouse mr-2"></i> Backstage
                     </Menu.Item>
                     <Dropdown item simple text='Novo' icon='caret down'  key='new'>
@@ -112,15 +112,11 @@ const HeaderDesktop = () => {
                                 </Dropdown.Menu>
                             </Dropdown.Item>
                         </Dropdown.Menu>
-                    </Dropdown>
-                    <div className="ui simple dropdown item" key='notifications'>
-                        <Icon name='bell outline' className='mr-0'/><span className="ui red circular mini label">6</span>
-                        <Dropdown.Menu>
-                            <Dropdown.Item>
-                                Nenhuma nova notificação
-                            </Dropdown.Item>
-                        </Dropdown.Menu>
-                    </div>
+                    </Dropdown >
+                    <Menu.Item onClick={() => history.push("/notifications")}>
+                        <Icon name='bell outline' className='mr-0'/>
+                        <span className="ui red circular mini label">6</span>
+                    </Menu.Item>
                     <Menu.Item key='search'>
                         <Form
                             onKeyDown={(e) => {

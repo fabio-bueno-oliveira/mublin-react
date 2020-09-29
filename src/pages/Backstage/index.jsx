@@ -36,7 +36,7 @@ function BackstageMainPage () {
     const myProjects = (category) => userProjects.filter((project) => { return project.portfolio === category && (project.name.toLowerCase().includes(pesquisa.toLowerCase())) }).map((project, key) =>
         <>
         <Segment key={key} color={(project.yearEnd && project.yearEnd <= currentYear) ? 'red' : 'green'} attached='top'>
-            <Header as='h4'>
+            <Header as='h4' onClick={() => history.push('/backstage/'+project.username)} style={{cursor:'pointer'}}>
                 {project.picture ? (
                     <Image src={'https://ik.imagekit.io/mublin/projects/tr:h-200,w-200,c-maintain_ratio/'+project.projectid+'/'+project.picture} rounded />
                 ) : (

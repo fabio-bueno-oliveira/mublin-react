@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useHistory, Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { miscInfos } from '../../store/actions/misc';
-import { Grid, Feed, Icon, Label } from 'semantic-ui-react';
+import { Grid, Feed, Icon, Label, Header } from 'semantic-ui-react';
 import HeaderDesktop from '../../components/layout/headerDesktop';
 import HeaderMobile from '../../components/layout/headerMobile';
 import FooterMenuMobile from '../../components/layout/footerMenuMobile';
@@ -86,6 +86,7 @@ function FeedPage () {
                 <Grid as='main' columns={1} className="container mb-2 mt-4 mt-md-5 pt-5">
                     <Grid.Row>
                         <Grid.Column width={16}>
+                            <Header className='mb-4'>Acontecendo em sua rede</Header>
                             <Feed>
                                 { feed.list.map((item, key) =>
                                     <Feed.Event key={key} className='mb-3'>

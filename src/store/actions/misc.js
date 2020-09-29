@@ -1,3 +1,4 @@
+import { notificationsTypes } from '../types/notifications';
 import { feedTypes } from '../types/feed';
 import { musicGenresTypes } from '../types/musicGenres';
 import { rolesTypes } from '../types/roles';
@@ -5,6 +6,7 @@ import { availabilityOptionsTypes } from '../types/availabilityOptions';
 import { miscService } from '../../api/misc';
 
 export const miscInfos = {
+    getNotifications: getNotifications,
     getFeed: getFeed,
     getMusicGenres: getMusicGenres,
     getRoles: getRoles,
@@ -27,6 +29,22 @@ function getFeed() {
     function request() { return { type: feedTypes.GET_USER_FEED_REQUEST} }
     function success(list) { return { type: feedTypes.GET_USER_FEED_SUCCESS, list } }
     function failure(error) { return { type: feedTypes.GET_USER_FEED_FAILURE, error } }
+}
+
+function getNotifications() {
+    return dispatch => {
+        dispatch(request());
+  
+        miscService.getNotifications()
+            .then(
+                list => dispatch(success(list)),
+                error => dispatch(failure(error.toString()))
+            );
+        };
+  
+    function request() { return { type: notificationsTypes.GET_USER_NOTIFICATIONS_REQUEST} }
+    function success(list) { return { type: notificationsTypes.GET_USER_NOTIFICATIONS_SUCCESS, list } }
+    function failure(error) { return { type: notificationsTypes.GET_USER_NOTIFICATIONS_FAILURE, error } }
 }
 
 function getMusicGenres() {

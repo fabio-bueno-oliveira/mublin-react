@@ -8,6 +8,8 @@ import HeaderMobile from '../../../components/layout/headerMobile';
 import FooterMenuMobile from '../../../components/layout/footerMenuMobile';
 import Loader from 'react-loader-spinner';
 import { Formik } from 'formik';
+import { formatDistance } from 'date-fns';
+import pt from 'date-fns/locale/pt-BR';
 
 function ProjectBackstagePage (props) {
 
@@ -128,26 +130,23 @@ function ProjectBackstagePage (props) {
                                     <Message.Header>{project.name} criado com sucesso!</Message.Header>
                                 </Message>
                             }
-                            <div>
-                                <Label size='small' style={{fontWeight:'500'}}><Icon name='warehouse' />Backstage</Label> <Label size='small' as='a' color='black' href={'/project/'+project.username} style={{fontWeight:'500'}}><Icon name='arrow right' />Ir para o perfil do projeto</Label>
-                            </div>
-                            <Segment>
-                                <Header as='h2'>
-                                    {project.picture ? (
-                                        <Image src={'https://ik.imagekit.io/mublin/projects/tr:h-200,w-200,c-maintain_ratio/'+project.id+'/'+project.picture} rounded />
-                                    ) : (
-                                        <Image src={'https://ik.imagekit.io/mublin/sample-folder/tr:h-200,w-200,c-maintain_ratio/avatar-undefined_-dv9U6dcv3.jpg'} rounded />
-                                    )}
-                                    <Header.Content>
-                                        {project.name}
-                                        <Header.Subheader>{project.typeName}</Header.Subheader>
-                                    </Header.Content>
-                                </Header>
-                            </Segment>
+                            <span style={{fontSize:'12px'}}><Icon name='warehouse' /> Backstage</span>
+                            <Header as='h3' style={{marginTop:'5px',marginBottom:'0px'}}>
+                                {project.picture ? (
+                                    <Image src={'https://ik.imagekit.io/mublin/projects/tr:h-200,w-200,c-maintain_ratio/'+project.id+'/'+project.picture} rounded />
+                                ) : (
+                                    <Image src={'https://ik.imagekit.io/mublin/sample-folder/tr:h-200,w-200,c-maintain_ratio/avatar-undefined_-dv9U6dcv3.jpg'} rounded />
+                                )}
+                                <Header.Content>
+                                    {project.name}
+                                    <Header.Subheader>{project.typeName}</Header.Subheader>
+                                </Header.Content>
+                            </Header>
                         </Grid.Column>
                     </Grid.Row>
                     <Grid.Row stretched>
-                        <Grid.Column mobile={16} computer={6}>
+                        <Grid.Column mobile={16} computer={4}>
+                            <Button fluid size='small' onClick={() => history.push('/project/'+project.username)}>Ir para a página do projeto</Button>
                             <Segment textAlign='left'>
                                 <Header as='h4'>
                                     Quadro de avisos
@@ -158,11 +157,11 @@ function ProjectBackstagePage (props) {
                                             {note.note}
                                             <div className='mt-2'>
                                                 { note.authorPicture ? (
-                                                    <Image src={note.authorPicture} avatar />
+                                                    <Image as='a' href={'/'+note.authorUsername} src={note.authorPicture} avatar />
                                                 ) : (
                                                     <Image src='https://ik.imagekit.io/mublin/sample-folder/tr:h-200,w-200,c-maintain_ratio/avatar-undefined_Kblh5CBKPp.jpg' avatar />
                                                 )}
-                                                <span>{note.authorName+' '+note.authorLastname}</span>
+                                                <span style={{opacity:'0.7'}}>{note.authorName+' '+note.authorLastname} há {formatDistance(new Date(note.created * 1000), new Date(), {locale:pt})}</span>
                                             </div>
                                         </Segment>
                                     )
@@ -190,7 +189,7 @@ function ProjectBackstagePage (props) {
                                 </Statistic.Group>
                             </Segment>
                         </Grid.Column>
-                        <Grid.Column mobile={16} computer={6}>
+                        <Grid.Column mobile={16} computer={8}>
                             <Segment attached='top'>
                                 {/* <Header as='h4'>
                                     <Header.Content>

@@ -52,7 +52,7 @@ function HomePage () {
     }
 
     //// START NOTES SECTION ////
-    const notes = useSelector(state => state.notes.list)
+    const notes = useSelector(state => state.notes)
     const projectsList = userProjects.filter((project) => { return project.confirmed === 1 }).map(project => ({ 
         text: project.name,
         value: project.projectid,
@@ -101,7 +101,7 @@ function HomePage () {
                                                             </Header.Content>
                                                         </Header>
                                                         <div className="mt-2" style={{fontWeight: '400',fontSize: '11px', color: 'black', opacity: '0.8'}}>
-                                                            <Icon name={project.workIcon} /> {project.workTitle}
+                                                            <Icon name={project.workIcon} />{project.workTitle}
                                                         </div>
                                                     </Link>
                                                 </div>
@@ -254,7 +254,7 @@ function HomePage () {
                     <PublicEvents publicEvents={publicEvents} />
                 </Grid.Column>
                 <Grid.Column>
-                    <PrivateEvents publicEvents={privateEvents} />
+                    <PrivateEvents privateEvents={privateEvents} />
                 </Grid.Column>
                 <Grid.Column>
                     <Notes notes={notes} user={user} projectsList={projectsList} members={members} />

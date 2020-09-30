@@ -1,10 +1,14 @@
 import React, { useState, useSelector } from 'react';
 import { useDispatch } from 'react-redux';
-import { Link } from 'react-router-dom';
-import { Header, Modal, Card, List, Image, Icon, Button, Form, Radio, Dropdown, Segment } from 'semantic-ui-react';
+import { Link, useHistory } from 'react-router-dom';
+import { Header, Modal, Card, List, Image, Label, Icon, Button, Form, Radio, Dropdown, Segment } from 'semantic-ui-react';
 import { projectInfos } from '../../store/actions/project';
+import { formatDistance } from 'date-fns';
+import pt from 'date-fns/locale/pt-BR';
 
 const Notes = (props) => {
+
+    let history = useHistory();
 
     let dispatch = useDispatch();
 
@@ -43,17 +47,27 @@ const Notes = (props) => {
 
     return (
         <>
-            <Card id="notes" style={{width: '100%'}}>
-                <Card.Content>
+            <Card id="notes" style={{width:'100%',backgroundColor:'transparent',boxShadow:'none'}} className='mb-5 mb-md-0'>
+                <Card.Content style={{paddingTop:'0px'}}>
                     <Image src='https://ik.imagekit.io/mublin/tr:r-8,w-300,h-80,c-maintain_ratio/misc/music/home-banners/music-notes_fbRjZcNpeR.jpg' fluid className="mb-3" />
-                    <Card.Header className="ui mt-0 mb-1">Notas</Card.Header>
-                    <Card.Meta className="mb-3">
-                        { notes.length ? (
-                            <span className='date'>Você tem {notes.length} notas salvas</span>
+                    <Card.Header className="ui mt-0 mb-3">Notas</Card.Header>
+                    <Card.Description className="mb-3 mb-md-5">
+                        { notes.list.length ? (
+                            <span style={{fontWeight:'500',fontSize:'13px'}}>Você tem {notes.list.length === 1 ? notes.list.length+' nota salva' : notes.list.length+' notas salvas'}</span>
                         ) : (
-                            <span className='date'>Você não tem notas salvas</span>
+                            <span style={{fontWeight:'500',fontSize:'13px'}}>Você não tem notas salvas</span>
                         )}
-                    </Card.Meta>
+                        <div className="right floated">
+                            <Link to={{ pathname: '/tbd' }}>
+                                <Label size='small' style={{fontWeight:'500'}}><Icon name='plus' /> Criar novo</Label>
+                            </Link>
+                            { notes.list.length > 6 &&
+                                <Link to={{ pathname: '/tbd' }} className='mr-3'>
+                                    <Label size='small' style={{fontWeight:'500'}}><Icon name='history' /></Label>
+                                </Link>
+                            }
+                        </div>
+                    </Card.Description>
                     <Card.Description>
                         {notes.requesting ? (
                             <Header textAlign='center'>
@@ -61,110 +75,29 @@ const Notes = (props) => {
                             </Header>
                         ) : (
                             <List relaxed>
-                            {notes.map((note, key) =>
-                                <>
-                                    <List.Item key={key}>
-                                    <Segment secondary style={{borderWidth:'0px', cursor:'pointer'}} onClick={() => alert("teste")}>
-                                        { note.ownerId !== user.id ? (
-                                            <>
-                                                <div style={{display:'flow-root'}}>
-                                                    <span style={{color:'#272727',fontSize:'11px'}} className="mb-0">
-                                                        Criado por <Link to={{pathname: '/'+note.ownerUsername}} style={{opacity: '1'}}>{note.ownerName}</Link> em {note.noteCreated.substr(0, 10)}
-                                                    </span>
-                                                    <div className="right floated">
-                                                        <Icon  name='volume up' style={{fontSize:'11px',opacity:'0.5'}} />
-                                                    </div>
-                                                </div>
-                                            </>
-                                        ) : (
-                                            <>
-                                            <div style={{display:'flow-root'}}>
-                                                <span style={{color:'#272727',fontSize:'11px'}} className="mb-0 left floated">
-                                                    {'Criado por mim em '+note.noteCreated.substr(0, 10)}
-                                                </span>
-                                                <div className="right floated">
-                                                <Icon name='attach' style={{fontSize:'11px',opacity:'0.5'}} /> <Icon name='volume up' style={{fontSize:'11px',opacity:'0.5'}} />
-                                                </div>
+                            {notes.list.map((note, key) =>
+                                <List.Item key={key}>
+                                    <Segment.Group>
+                                        <Segment className='py-2'>
+                                            <Header as='h5'>
+                                                <Header.Content>
+                                                    {note.noteTitle}
+                                                </Header.Content>
+                                            </Header>
+                                            <p style={{fontSize:'12px',fontWeight:'500'}} className='mt-2'>{note.noteDescription}</p>
+                                            <Icon name='attach' style={{fontSize:'11px',opacity:'0.5'}} /> <Icon name='volume up' style={{fontSize:'11px',opacity:'0.5'}} />
+                                        </Segment>
+                                        <Segment style={{fontSize:'11px',color:'#949494'}}  className='py-2'>
+                                            criada há {formatDistance(new Date(note.created * 1000), new Date(), {locale:pt})}
+                                            <div className="right floated">
+                                                <Icon name='trash alternate outline' style={{fontSize:'12px',color:'#949494',cursor:'pointer'}} />
                                             </div>
-                                            </>
-                                        )}
-                                        <Header as='h5' style={{color:'#272727'}} className="mt-1 mb-0">
-                                            {note.noteTitle}
-                                        </Header>
-                                    </Segment>
-                                    </List.Item>
-                                </>
+                                        </Segment>
+                                    </Segment.Group>
+                                </List.Item>
                             )}
                             </List>
                         )}
-                        <Modal
-                            size='mini'
-                            open={modalViewNoteOpen}
-                            onClose={() => setModalNewNoteOpen(false)}
-                        >
-                            <Modal.Header>Criar nova nota</Modal.Header>
-                            <Modal.Content>
-                                <Form>
-                                    <Form.Field>
-                                        <input 
-                                            placeholder='Título'
-                                            value={newNoteTitle}
-                                            onChange={e => setNewNoteTitle(e.target.value)} 
-                                        />
-                                    </Form.Field>
-                                    <Form.TextArea placeholder='Anotação...' />
-                                    {/* <Form.Field>
-                                        <Checkbox label='I agree to the Terms and Conditions' />
-                                    </Form.Field> */}
-                                    <Header as='h4'>Informações opcionais</Header>
-                                    <Dropdown
-                                        placeholder='Projeto relacionado'
-                                        fluid
-                                        selection
-                                        closeOnEscape
-                                        options={projectsList}
-                                        noResultsMessage='Nenhum projeto disponível'
-                                        onChange={(e, { value }) => handleChangeProjectAssociated(value)}
-                                        value={newNoteProjectAssociated}
-                                        className="mb-3"
-                                    />
-                                    { members[0].id &&
-                                        <Dropdown
-                                            placeholder='Associar nota a outros integrantes'
-                                            fluid
-                                            multiple
-                                            search
-                                            selection
-                                            options={projectMembersList}
-                                            className="mb-3"
-                                        />
-                                    }
-                                    <Form.Field>
-                                        <label>Data relacionada</label>
-                                        <input 
-                                            type="date"
-                                            placeholder='Data relacionada'
-                                            value={newNoteTargetDate}
-                                            onChange={e => setNewNoteTargetDate(e.target.value)} 
-                                        />
-                                    </Form.Field>
-                                    <Radio 
-                                        toggle 
-                                        label={newNoteDone === '0' ? 'Atividade não concluída' : 'Atividade concluída'}
-                                        checked={newNoteDone === '1'}
-                                        onChange={() => toggleNewNoteDone()}
-                                    />
-                                </Form>
-                            </Modal.Content>
-                            <Modal.Actions>
-                                <Button onClick={() => setModalNewNoteOpen(false)}>
-                                    Cancelar
-                                </Button>
-                                <Button positive>
-                                    Salvar
-                                </Button>
-                            </Modal.Actions>
-                        </Modal>
                         <Modal
                             size='mini'
                             open={modalNewNoteOpen}
@@ -234,11 +167,6 @@ const Notes = (props) => {
                             </Modal.Actions>
                         </Modal>
                     </Card.Description>
-                </Card.Content>
-                <Card.Content extra style={{fontSize: 'small'}}>
-                    <Link onClick={() => setModalNewNoteOpen(true)}>
-                        <Icon name='pencil alternate' /> Nova anotação
-                    </Link>
                 </Card.Content>
             </Card>
         </>

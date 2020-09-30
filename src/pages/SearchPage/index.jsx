@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { searchInfos } from '../../store/actions/search';
-import { Grid, Form, Input, Tab, Image, List, Label, Icon, Segment, Loader as UiLoader } from 'semantic-ui-react'
+import { Grid, Form, Header, Input, Tab, Image, List, Label, Icon, Segment, Loader as UiLoader } from 'semantic-ui-react'
 import HeaderDesktop from '../../components/layout/headerDesktop';
 import HeaderMobile from '../../components/layout/headerMobile';
 import FooterMenuMobile from '../../components/layout/footerMenuMobile';
@@ -78,39 +78,39 @@ function SearchPage (props) {
                                         menuItem: searchResults.users[0].id ? 'Pessoas ('+searchResults.users.length+')' : 'Pessoas (0)',
                                         render: () => 
                                             <Tab.Pane loading={searchResults.requesting}>
+                                                <List relaxed>
                                                 {searchResults.users.map((user, key) =>
-                                                    <List relaxed>
-                                                        <List.Item key={key} className='p-2'>
-                                                            { user.picture ? (
-                                                                <Image circular size='mini' src={user.picture} onClick={() => history.push('/'+user.username)} style={{cursor:'pointer', width:'50px'}} />
-                                                            ) : (
-                                                                <Image circular size='mini' src='https://ik.imagekit.io/mublin/sample-folder/tr:h-200,w-200,c-maintain_ratio/avatar-undefined_Kblh5CBKPp.jpg' onClick={() => history.push('/'+user.username)} style={{cursor:'pointer',width:'50px'}} /> 
-                                                            )}
-                                                            <List.Content>
-                                                                <List.Header as='a' href={'/'+user.username}>
-                                                                    {user.name+' '+user.lastname} {!!user.verified && <Icon name='check circle' color='blue' className='verifiedIcon' title='Verificado' />}{/*!!user.legend && <Icon name='star' color='yellow' />*/}{user.plan === 'Pro' && <Label color='black' size="tiny" className="ml-1 p-1">Pro</Label>} {userInfo.id === user.id && <span style={{color:'gray'}}>・Você</span>}
-                                                                </List.Header>
-                                                                <List.Description style={{fontSize:'13px'}}>
-                                                                    {user.mainRole} {(user.city && user.mainRole) && '・'} {user.city && user.city+', '+user.region}
+                                                    <List.Item key={key} className='p-2' style={{alignItems:'center',display:'flex'}}>
+                                                        { user.picture ? (
+                                                            <Image circular size='mini' src={user.picture} onClick={() => history.push('/'+user.username)} style={{cursor:'pointer', width:'50px'}} />
+                                                        ) : (
+                                                            <Image circular size='mini' src='https://ik.imagekit.io/mublin/sample-folder/tr:h-200,w-200,c-maintain_ratio/avatar-undefined_Kblh5CBKPp.jpg' onClick={() => history.push('/'+user.username)} style={{cursor:'pointer',width:'50px'}} /> 
+                                                        )}
+                                                        <List.Content>
+                                                            <List.Header as='a' href={'/'+user.username}>
+                                                                {user.name+' '+user.lastname} {!!user.verified && <Icon name='check circle' color='blue' className='verifiedIcon' title='Verificado' />}{/*!!user.legend && <Icon name='star' color='yellow' />*/} {user.plan === 'Pro' && <Label size="tiny" className="ml-1 p-1">Pro</Label>}{userInfo.id === user.id && <span style={{color:'black',opacity:'0.8',fontWeight:'400'}}>・Você</span>}
+                                                            </List.Header>
+                                                            <List.Description style={{fontSize:'13px'}}>
+                                                                {user.mainRole} {(user.city && user.mainRole) && '・'} {user.city && user.city+', '+user.region}
+                                                            </List.Description>
+                                                            { !!(user.projectRelated && user.projectPublic && searchResults.projects[0].id) &&
+                                                                <List.Description style={{fontSize:'10px'}}>
+                                                                    Projeto relacionado: {user.projectRelated} {'('+user.projectType+')'} 
                                                                 </List.Description>
-                                                                { !!(user.projectRelated && user.projectPublic && searchResults.projects[0].id) &&
-                                                                    <List.Description style={{fontSize:'10px'}}>
-                                                                        Projeto relacionado: {user.projectRelated} {'('+user.projectType+')'} 
-                                                                    </List.Description>
-                                                                }
-                                                            </List.Content>
-                                                        </List.Item>
-                                                    </List>
+                                                            }
+                                                        </List.Content>
+                                                    </List.Item>
                                                 )}
+                                                </List>
                                             </Tab.Pane>,
                                     }, 
                                     {
                                         menuItem: searchResults.projects[0].id ? 'Projetos ('+searchResults.projects.length+')' : 'Projetos (0)',
                                         render: () => 
                                             <Tab.Pane loading={searchResults.requesting}>
-                                                {searchResults.projects.map((project, key) =>
-                                                    <List relaxed>
-                                                        <List.Item key={key} className='p-2'>
+                                                <List relaxed>
+                                                    {searchResults.projects.map((project, key) =>
+                                                        <List.Item key={key} className='p-2' style={{alignItems:'center',display:'flex'}}>
                                                             { project.picture ? (
                                                                 <Image rounded size='mini' src={project.picture} onClick={() => history.push('/project/'+project.username)} style={{cursor:'pointer', width:'50px'}} />
                                                             ) : (
@@ -128,8 +128,8 @@ function SearchPage (props) {
                                                                 </List.Description>
                                                             </List.Content>
                                                         </List.Item>
-                                                    </List>
-                                                )}
+                                                    )}
+                                                </List>
                                             </Tab.Pane>,
                                     },
                                     {

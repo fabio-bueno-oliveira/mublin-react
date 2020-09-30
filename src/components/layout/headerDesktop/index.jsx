@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { Search, Menu, Container, Dropdown, Input, Image, Icon, Label, Form } from 'semantic-ui-react';
+import { Menu, Container, Dropdown, Input, Image, Icon, Label, Form } from 'semantic-ui-react';
 import { useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { userInfos } from '../../../store/actions/user';
-import { searchInfos } from '../../../store/actions/search';
+import { miscInfos } from '../../../store/actions/misc';
 import { userActions } from '../../../store/actions/authentication';
 import {IKImage} from "imagekitio-react";
 import MublinLogo from '../../../assets/img/logos/mublin-logo-text-white.png';
@@ -12,15 +12,25 @@ const HeaderDesktop = () => {
 
     let searchedKeywords = (new URLSearchParams(window.location.search)).get("keywords")
 
+    const user = JSON.parse(localStorage.getItem('user'));
+
     let history = useHistory();
 
     const dispatch = useDispatch();
 
     useEffect(() => { 
         dispatch(userInfos.getInfo());
+        dispatch(miscInfos.getNotifications());
     }, [dispatch]);
 
     const userInfo = useSelector(state => state.user);
+
+    const unreadNotifications = useSelector(state => state.notifications.list.filter((item) => { return item.seen === 0 }).map(item => ({ 
+        id: item.id,
+        seen: item.seen
+    })))
+
+    console.log(33, unreadNotifications)
 
     // const search = useSelector(state => state.search);
 
@@ -46,6 +56,22 @@ const HeaderDesktop = () => {
     //         history.push('/event/'+data.result.extra1)
     //     }
     // }
+
+    const goToNotifications = () => {
+        fetch('https://mublin.herokuapp.com/notifications/'+user.id+'/read', {
+            method: 'PUT',
+            headers: {
+                'Accept': 'application/json, text/plain, */*',
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + user.token
+            }
+        }).then((response) => {
+            history.push("/notifications")
+        }).catch(err => {
+            console.error(err)
+            history.push("/notifications")
+        })
+    }
 
     const logout = () => {
         dispatch(userActions.logout());
@@ -113,9 +139,9 @@ const HeaderDesktop = () => {
                             </Dropdown.Item>
                         </Dropdown.Menu>
                     </Dropdown >
-                    <Menu.Item onClick={() => history.push("/notifications")}>
+                    <Menu.Item onClick={() => goToNotifications()}>
                         <Icon name='bell outline' className='mr-0'/>
-                        <span className="ui red circular mini label">6</span>
+                        {!!unreadNotifications.length && <span className="ui red circular mini label">{unreadNotifications.length}</span>}
                     </Menu.Item>
                     <Menu.Item key='search'>
                         <Form

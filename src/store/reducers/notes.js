@@ -4,6 +4,7 @@ const initialState = {
   requesting: false,
   list: [
     {
+      created: '',
       noteId: '',
       noteCreated: '',
       ownerId: '',

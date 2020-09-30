@@ -156,10 +156,10 @@ function ProfilePage (props) {
                                 <div className="center aligned">
                                     { !profile.requesting &&
                                     <>
-                                        <Header size="large" className="mb-1">
-                                            {!profile.requesting && profile.name+' '+profile.lastname} {!!profile.verified && <Icon name='check circle' color='blue' className='verifiedIcon' title='Verificado' />}
+                                        <Header size="large" className="mb-1" style={{fontSize:'1.60428571em'}}>
+                                            {profile.name} <nobr>{profile.lastname} {!!profile.verified && <Icon name='check circle' color='blue' className='verifiedIcon' title='Verificado' />}</nobr>
                                         </Header>
-                                        <Header className='my-0'>{profile.plan === 'Pro' && <Label color="black" size="tiny" className="ml-1 p-1" style={{cursor:"default"}}>Pro</Label>}</Header>
+                                        <Header className='my-0'>{profile.plan === 'Pro' && <Label size="tiny" className="ml-1 p-1" style={{cursor:"default"}}>Pro</Label>}</Header>
                                         <p className="mb-1" style={{ fontSize: "13px" }}>
                                             {profile.roles.map((role, key) =>
                                                 <span key={key}>{role.name}{key < (profile.roles.length-1) && ', '}</span>

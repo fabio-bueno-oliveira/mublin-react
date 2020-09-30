@@ -35,7 +35,7 @@ function BackstageMainPage () {
 
     const myProjects = (category) => userProjects.filter((project) => { return project.portfolio === category && (project.name.toLowerCase().includes(pesquisa.toLowerCase())) }).map((project, key) =>
         <>
-        <Segment key={key} color={(project.yearEnd && project.yearEnd <= currentYear) ? 'red' : 'green'} attached='top'>
+        <Segment key={key} color={(project.yearEnd && project.yearEnd <= currentYear) ? 'red' : 'green'} attached='top' className='mb-4'>
             <Header as='h4' onClick={() => history.push('/backstage/'+project.username)} style={{cursor:'pointer'}}>
                 {project.picture ? (
                     <Image src={'https://ik.imagekit.io/mublin/projects/tr:h-200,w-200,c-maintain_ratio/'+project.projectid+'/'+project.picture} rounded />
@@ -64,10 +64,10 @@ function BackstageMainPage () {
                 {project.role1}{project.role2 && ', '+project.role2}{project.role3 && ', '+project.role3}
             </span>
         </Segment>
-        <Button.Group attached='bottom' size='tiny'>
+        {/* <Button.Group attached='bottom' size='tiny'>
             <Button onClick={() => history.push('/backstage/'+project.username)}><Icon name='warehouse' />Ver Backstage</Button>
             <Button onClick={() => history.push('/project/'+project.username)}><Icon name='globe' />Ver Perfil</Button>
-        </Button.Group>
+        </Button.Group> */}
         </>
     )
 
@@ -81,7 +81,7 @@ function BackstageMainPage () {
                         <Message
                             info 
                             size='tiny'
-                            icon='lightbulb outline'
+                            // icon='lightbulb outline'
                             header='Bem vindo ao seu Backstage!'
                             content='Aqui você tem uma visão geral dos status dos seus projetos'
                         />

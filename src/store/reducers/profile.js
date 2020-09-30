@@ -32,6 +32,7 @@ const initialState = {
       name: '',
       username: '',
       picture: '',
+      featured: '',
       type: '',
       workTitle: '',
       workIcon: '',

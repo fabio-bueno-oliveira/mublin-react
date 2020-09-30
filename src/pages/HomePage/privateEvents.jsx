@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useHistory, Link } from 'react-router-dom';
 import { eventsInfos } from '../../store/actions/events';
-import { Header, Card, List, Image, Icon, Button, Input, Segment, Form, Modal } from 'semantic-ui-react';
+import { Header, Card, List, Image, Icon, Button, Label, Segment, Form, Modal, Message } from 'semantic-ui-react';
 
 const PublicEvents = (props) => {
 
@@ -16,7 +16,7 @@ const PublicEvents = (props) => {
     
     const [isLoading, setIsLoading] = useState(null)
 
-    const publicEvents = props.publicEvents
+    const privateEvents = props.privateEvents
 
     const [modalDeclineShow, setModalDeclineShow] = useState(false)
     const [declineComment, setDeclineComment] = useState('Minha agenda estará comprometida nesta data')
@@ -46,32 +46,42 @@ const PublicEvents = (props) => {
 
     return (
         <>
-            <Card id="privateEvents" style={{width:'100%'}}>
-                <Card.Content>
+            <Card id="privateEvents" style={{width:'100%',backgroundColor:'transparent',boxShadow:'none'}}>
+                <Card.Content style={{paddingTop:'0px'}}>
                     <Image src='https://ik.imagekit.io/mublin/tr:r-8,w-300,h-80,c-maintain_ratio/misc/music/home-banners/drum-sticks_Xb6XYhVdx.png' fluid className="mb-3" />
-                    <Card.Header className="ui mt-0 mb-1">Ensaios, Reuniões e Gravações</Card.Header>
-                    <Card.Meta className="mb-3">
-                        { publicEvents.length ? (
-                            <span className='date'>{publicEvents.length} agendados</span>
+                    <Card.Header className="ui mt-0 mb-3">Ensaios, Reuniões e Gravações</Card.Header>
+                    <Card.Description className="mb-3">
+                        { privateEvents.length ? (
+                            <span style={{fontWeight:'500',fontSize:'13px'}}>{privateEvents.length} agendados</span>
                         ) : (
-                            <span className='date'>Sem eventos públicos próximos</span>
+                            <span style={{fontWeight:'500',fontSize:'13px'}}>Nenhum evento privado próximo</span>
                         )}
-                    </Card.Meta>
+                        <div className="right floated">
+                            <Link to={{ pathname: '/tbd' }}>
+                                <Label size='small' style={{fontWeight:'500'}}><Icon name='plus' /> Criar novo</Label>
+                            </Link>
+                            { privateEvents.length > 6 &&
+                                <Link to={{ pathname: '/tbd' }} className='mr-3'>
+                                    <Label size='small' style={{fontWeight:'500'}}><Icon name='history' /></Label>
+                                </Link>
+                            }
+                        </div>
+                    </Card.Description>
                     <Card.Description>
-                        {publicEvents.requesting ? (
+                        {privateEvents.requesting ? (
                             <Header textAlign='center'>
                                 <Icon loading name='spinner' size='large' />
                             </Header>
                         ) : (
                             <>
-                            { !!publicEvents.length &&
+                            { !!privateEvents.length &&
                                 <>
                                 <h4 className='ui sub header mt-1 mb-3'>Próximos:</h4>
                                 <List relaxed>
-                                {publicEvents.map((event, key) =>
+                                {privateEvents.map((event, key) =>
                                     <List.Item key={key}>
                                         <Segment.Group>
-                                        <Segment secondary style={{fontSize:'11px',color:'#949494'}}  className='py-2'>
+                                            <Segment style={{fontSize:'11px',color:'#949494'}}  className='py-2'>
                                                 {event.eventType} com {event.projectName+' · '+event.projectType}
                                             </Segment>
                                             <Segment className='py-2'>
@@ -103,7 +113,9 @@ const PublicEvents = (props) => {
                                                     onClose={() => setModalDeclineShow(false)}
                                                 >
                                                     <Modal.Content>
-                                                        <p className='mb-3' style={{fontSize:'13px'}}>Confirme sua ausência no evento de {event.eventDateStart} "<span style={{fontWeight:'500'}}>{event.title}</span>", com {event.projectName+' ('+event.projectType+')'}</p>
+                                                        <Message warning size='tiny' className='mb-3 p-3'>
+                                                            Confirme sua ausência no evento "<span style={{fontWeight:'500'}}>{event.title}</span>" de {event.projectName+' ('+event.projectType+')'} em <nobr>{event.eventDateStart}</nobr>
+                                                        </Message>
                                                         <Form>
                                                             <Form.TextArea 
                                                                 label='Motivo do declínio:' 
@@ -169,16 +181,6 @@ const PublicEvents = (props) => {
                             </>
                         )}
                     </Card.Description>
-                </Card.Content>
-                <Card.Content extra style={{fontSize: 'small'}}>
-                    { publicEvents.length > 6 &&
-                        <Link to={{ pathname: '/tbd' }} className='mr-3'>
-                            <Icon name='bars' /> Ver todos
-                        </Link>
-                    }
-                    <Link to={{ pathname: '/tbd' }}>
-                        <Icon name='plus' /> Novo evento
-                    </Link>
                 </Card.Content>
             </Card>
         </>

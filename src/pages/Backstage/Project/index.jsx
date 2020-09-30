@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useHistory, Link } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import { Grid, Segment, Header, Icon, Button, Message, Image, Label, List, Form, Checkbox, Select, Dropdown, Modal, Container, Statistic } from 'semantic-ui-react';
 import { projectInfos } from '../../../store/actions/project';
 import HeaderDesktop from '../../../components/layout/headerDesktop';
@@ -68,12 +68,10 @@ function ProjectBackstagePage (props) {
         { key: 'olive', text: 'Oliva', value: 'olive', label:{color: 'olive', empty: true, circular: true} },
         { key: 'green', text: 'Verde', value: 'green', label:{color: 'green', empty: true, circular: true} },
         { key: 'teal', text: 'Azul petróleo', value: 'teal', label:{color: 'teal', empty: true, circular: true} },
-        { key: 'blue', text: 'Azul', value: 'blue', label:{color: 'blue', empty: true, circular: true} },
         { key: 'violet', text: 'Violeta', value: 'violet', label:{color: 'violet', empty: true, circular: true} },
         { key: 'purple', text: 'Roxo', value: 'purple', label:{color: 'purple', empty: true, circular: true} },
         { key: 'pink', text: 'Pink', value: 'pink', label:{color: 'pink', empty: true, circular: true} },
         { key: 'brown', text: 'Marrom', value: 'brown', label:{color: 'brown', empty: true, circular: true} },
-        { key: 'grey', text: 'Cinza', value: 'grey', label:{color: 'grey', empty: true, circular: true} },
         { key: 'black', text: 'Preto', value: 'black', label:{color: 'black', empty: true, circular: true} }
     ]
 
@@ -402,12 +400,10 @@ function ProjectBackstagePage (props) {
                                                     <option value='olive'>Oliva</option>
                                                     <option value='green'>Verde</option>
                                                     <option value='teal'>Azul Petróleo</option>
-                                                    <option value='blue'>Azul</option>
                                                     <option value='violet'>Violeta</option>
                                                     <option value='purple'>Roxo</option>
                                                     <option value='pink'>Pink</option>
                                                     <option value='brown'>Marrom</option>
-                                                    <option value='grey'>Cinza</option>
                                                     <option value='black'>Preto</option>
                                                 </Form.Field>
                                                 {/* <Form.Select

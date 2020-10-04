@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import { Grid, Segment, Header, Icon, Button, Message, Image, Label, List, Form, Checkbox, Select, Dropdown, Modal, Container, Statistic } from 'semantic-ui-react';
+import { Grid, Segment, Header, Icon, Button, Message, Image, Label, List, Form, Checkbox, Select, Dropdown, Modal, Container, Statistic, Loader as UiLoader } from 'semantic-ui-react';
 import { projectInfos } from '../../../store/actions/project';
 import HeaderDesktop from '../../../components/layout/headerDesktop';
 import HeaderMobile from '../../../components/layout/headerMobile';
@@ -10,6 +10,7 @@ import Loader from 'react-loader-spinner';
 import { Formik } from 'formik';
 import { formatDistance } from 'date-fns';
 import pt from 'date-fns/locale/pt-BR';
+import {IKUpload} from "imagekitio-react";
 
 function ProjectBackstagePage (props) {
 
@@ -31,7 +32,7 @@ function ProjectBackstagePage (props) {
     const project = useSelector(state => state.project);
     const members = project.members;
 
-    document.title = project.name+' | Administrador | Mublin'
+    document.title = 'Backstage ' + project.name + ' | Mublin'
 
     const [isLoading, setIsLoading] = useState(false)
 
@@ -94,6 +95,53 @@ function ProjectBackstagePage (props) {
             })
         }, 400);
     }
+
+    // START Upload de foto para o imagekit.io
+
+    // Modal para cadastro de imagem do projeto
+    const [modalNewProjectPictureOpen, setModalNewProjectPictureOpen] = useState(false)
+    const [pictureIsLoading, SetPictureIsLoading] = useState(false)
+    const [newProjectPicture, setNewProjectPicture] = useState('')
+
+    const userAvatarPath = "/projects/"+project.id+"/"
+    const [pictureFilename, setPictureFilename] = useState('')
+
+    const onUploadError = err => {
+        alert("Ocorreu um erro ao enviar a imagem. Tente novamente em alguns minutos.");
+    };
+
+    const onUploadSuccess = res => {
+        let n = res.filePath.lastIndexOf('/');
+        let fileName = res.filePath.substring(n + 1);
+        updatePicture(user.id,fileName)
+        setPictureFilename(fileName)
+    };
+
+    // Update project avatar picture filename in bd
+    const updatePicture = (userId, value) => {
+        SetPictureIsLoading(true)
+        let user = JSON.parse(localStorage.getItem('user'));
+        fetch('https://mublin.herokuapp.com/project/'+project.id+'/picture', {
+            method: 'PUT',
+            headers: {
+                'Accept': 'application/json, text/plain, */*',
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + user.token
+            },
+            body: JSON.stringify({userId: userId, picture: value})
+        }).then((response) => {
+            response.json().then((response) => {
+                // console.log(response)
+                SetPictureIsLoading(false)
+                setNewProjectPicture(response.picture)
+                dispatch(projectInfos.getProjectInfo(props.match.params.username));
+                setModalNewProjectPictureOpen(false)
+            })
+          }).catch(err => {
+            SetPictureIsLoading(false)
+            console.error(err)
+        })
+    };
 
     return (
         <>
@@ -171,33 +219,32 @@ function ProjectBackstagePage (props) {
                                 <Header as='h4'>
                                     Estatísticas
                                 </Header>
-                                <Statistic.Group horizontal size='small'>
+                                <Statistic.Group horizontal size='mini'>
                                     <Statistic>
                                         <Statistic.Value>2,204</Statistic.Value>
-                                        <Statistic.Label>Views</Statistic.Label>
+                                        <Statistic.Label>eventos públicos</Statistic.Label>
                                     </Statistic>
                                     <Statistic>
                                         <Statistic.Value>3,322</Statistic.Value>
-                                        <Statistic.Label>Downloads</Statistic.Label>
+                                        <Statistic.Label>eventos privados</Statistic.Label>
                                     </Statistic>
                                     <Statistic>
-                                        <Statistic.Value>22</Statistic.Value>
-                                        <Statistic.Label>Tasks</Statistic.Label>
+                                        <Statistic.Value>R$ 1.950,00</Statistic.Value>
+                                        <Statistic.Label>faturado</Statistic.Label>
                                     </Statistic>
                                 </Statistic.Group>
                             </Segment>
                         </Grid.Column>
                         <Grid.Column mobile={16} computer={8}>
                             <Segment attached='top'>
-                                {/* <Header as='h4'>
-                                    <Header.Content>
-                                        Membros
-                                        <Header.Subheader>Manage your preferences</Header.Subheader>
-                                    </Header.Content>
-                                </Header> */}
                                 <div className='cardTitle'>
-                                    <Header as='h4' className='pt-1'>{members.length} Membros</Header>
-                                    <Label size='small' content='Convidar novo' icon='user plus' />
+                                    <Header as='h4'>
+                                        <Header.Content>
+                                            Membros
+                                            <Header.Subheader>{members.length} {members.length !== 1 ? 'usuários' : 'usuário'} relacionados</Header.Subheader>
+                                        </Header.Content>
+                                    </Header>
+                                    <Label size='small' content='Convidar novo' icon='user plus' className='cpointer' />
                                 </div>
                                 <List relaxed divided verticalAlign='middle'>
                                     {members.map((member, key) =>
@@ -254,12 +301,76 @@ function ProjectBackstagePage (props) {
                         <Grid.Column mobile={16} computer={4}>
                             <Segment textAlign='left'>
                                 <Header as='h4'>
-                                    Bio
+                                    Foto
                                 </Header>
-                                <p>{project.bio ? project.bio : 'Este projeto não possui descrição'}</p>
-                                <Button fluid size='tiny' className='mt-3' onClick={() => setModalBioIsOpen(true)}>
-                                    <Icon name='pencil' /> Editar
+                                {project.picture ? (
+                                        <Image centered bordered src={'https://ik.imagekit.io/mublin/projects/tr:h-400,w-400,c-maintain_ratio/'+project.id+'/'+project.picture} rounded size='small' />
+                                    ) : (
+                                        <Image centered bordered src={'https://ik.imagekit.io/mublin/sample-folder/tr:h-400,w-400,c-maintain_ratio/avatar-undefined_-dv9U6dcv3.jpg'} rounded size='small' />
+                                )}
+                                <Button fluid size='tiny' className='mt-3' onClick={() => setModalNewProjectPictureOpen(true)}>
+                                    <Icon name='pencil' /> Alterar
                                 </Button>
+                                <Modal
+                                    id="newProjectPicture"
+                                    size='mini'
+                                    onClose={() => setModalNewProjectPictureOpen(false)}
+                                    onOpen={() => setModalNewProjectPictureOpen(true)}
+                                    open={modalNewProjectPictureOpen}
+                                >
+                                    <Modal.Header>Alterar foto de {project.name}</Modal.Header>
+                                    <Modal.Content>
+                                        { !project.picture ? (
+                                            <>
+                                                {/* <Image centered rounded src='https://ik.imagekit.io/mublin/tr:h-200,w-200/sample-folder/avatar-undefined_-dv9U6dcv3.jpg' size='small' className="mb-3" /> */}
+                                            </>
+                                        ) : (
+                                            <Image centered rounded src={'https://ik.imagekit.io/mublin/tr:h-200,w-200,c-maintain_ratio/projects/'+project.id+'/'+project.picture} size='small' className="mb-4" />
+                                        )}
+                                        <div className="customFileUpload">
+                                            <IKUpload 
+                                                fileName="avatar.jpg"
+                                                folder={userAvatarPath}
+                                                tags={["avatar"]}
+                                                useUniqueFileName={true}
+                                                isPrivateFile= {false}
+                                                onError={onUploadError}
+                                                onSuccess={onUploadSuccess}
+                                            />
+                                        </div>
+                                        { pictureIsLoading &&
+                                            <UiLoader active inline='centered' />
+                                        }
+                                    </Modal.Content>
+                                    <Modal.Actions>
+                                    { !pictureFilename && 
+                                        <Button 
+                                            onClick={() => setModalNewProjectPictureOpen(false)}
+                                            loading={pictureIsLoading}
+                                        >
+                                            Cancelar
+                                        </Button>
+                                    }
+                                    {/* <Button 
+                                        color="black" 
+                                        disabled={!pictureFilename}
+                                        onClick={() => setModalNewProjectPictureOpen(false)}
+                                    >
+                                        Concluir
+                                    </Button> */}
+                                    </Modal.Actions>
+                                </Modal>
+                            </Segment>
+                            <Segment textAlign='left'>
+                                <div className='cardTitle'>
+                                    <Header as='h4'>
+                                        <Header.Content>
+                                            Bio
+                                        </Header.Content>
+                                    </Header>
+                                    <Label size='small' content='Editar' icon='pencil' onClick={() => setModalBioIsOpen(true)} />
+                                </div>
+                                <p>{project.bio ? project.bio : 'Este projeto não possui descrição'}</p>
                                 <Modal
                                     size='mini'
                                     onClose={() => setModalBioIsOpen(false)}
@@ -296,7 +407,9 @@ function ProjectBackstagePage (props) {
                                                     onBlur={handleBlur}
                                                     maxLength="200"
                                                 />
-                                                <Label size='tiny' content={values.bio.length+'/200'} color={values.bio.length  > 199 ? 'red' : ''} />
+                                                { values.bio && 
+                                                    <Label size='tiny' content={values.bio.length+'/200'} color={values.bio.length  > 199 ? 'red' : ''} />
+                                                }
                                             </Form>
                                         </Modal.Content>
                                         <Modal.Actions>
@@ -322,9 +435,14 @@ function ProjectBackstagePage (props) {
                                 </Modal>
                             </Segment>
                             <Segment textAlign='left'>
-                                <Header as='h4'>
-                                    Tag
-                                </Header>
+                                <div className='cardTitle'>
+                                    <Header as='h4'>
+                                        <Header.Content>
+                                        Tag
+                                        </Header.Content>
+                                    </Header>
+                                    <Label size='small' content='Editar' icon='pencil' onClick={() => setModalTagIsOpen(true)} />
+                                </div>
                                 { project.labelText ? (
                                     <>
                                         { project.labelShow ? (
@@ -339,9 +457,6 @@ function ProjectBackstagePage (props) {
                                 ) : (
                                     <p>Nenhuma tag definida</p>
                                 )}
-                                <Button fluid size='tiny' className='mt-3' onClick={() => setModalTagIsOpen(true)}>
-                                    <Icon name='pencil' /> Alterar
-                                </Button>
                                 <Modal
                                     size='mini'
                                     onClose={() => setModalTagIsOpen(false)}
@@ -383,7 +498,9 @@ function ProjectBackstagePage (props) {
                                                     onBlur={handleBlur}
                                                     maxLength="30"
                                                 />
-                                                <Label size='tiny' content={values.label_text.length+'/30'} color={values.label_text.length  > 29 ? 'red' : ''} />
+                                                { values.label_text && 
+                                                    <Label size='tiny' content={values.label_text.length+'/30'} color={values.label_text.length  > 29 ? 'red' : ''} />
+                                                }
                                                 <Form.Field 
                                                     label='Cor da tag' 
                                                     control='select' 
@@ -465,19 +582,6 @@ function ProjectBackstagePage (props) {
                                         )}
                                     </Formik>
                                 </Modal>
-                            </Segment>
-                            <Segment textAlign='left'>
-                                <Header as='h4'>
-                                    Foto
-                                </Header>
-                                {project.picture ? (
-                                        <Image centered bordered src={'https://ik.imagekit.io/mublin/projects/tr:h-400,w-400,c-maintain_ratio/'+project.id+'/'+project.picture} rounded size='small' />
-                                    ) : (
-                                        <Image centered bordered src={'https://ik.imagekit.io/mublin/sample-folder/tr:h-400,w-400,c-maintain_ratio/avatar-undefined_-dv9U6dcv3.jpg'} rounded size='small' />
-                                )}
-                                <Button fluid size='tiny' className='mt-3'>
-                                    <Icon name='pencil' /> Alterar
-                                </Button>
                             </Segment>
                         </Grid.Column>
                     </Grid.Row>

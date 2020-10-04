@@ -1,0 +1,10 @@
+.spacer {
+  height: 84px;
+  // background-color: greenyellow;
+}
+
+@media only screen and (max-width: 600px) {
+  .spacer {
+    height: 77px;
+  }
+}

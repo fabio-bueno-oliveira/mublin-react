@@ -30,8 +30,6 @@ const HeaderDesktop = () => {
         seen: item.seen
     })))
 
-    console.log(33, unreadNotifications)
-
     // const search = useSelector(state => state.search);
 
     // const [query, setQuery] = useState('');
@@ -197,6 +195,9 @@ const HeaderDesktop = () => {
                                 <Dropdown.Item icon='user circle' text='Meu perfil' onClick={() => history.push('/'+userInfo.username)} />
                                 <Dropdown.Item icon='setting' text='Configurações' onClick={() => history.push('/settings')} />
                                 <Dropdown.Divider />
+                                { userInfo.level === 1 &&
+                                    <Dropdown.Item icon='lock' text='Admin' onClick={() => history.push('/admin')} />
+                                }
                                 <Dropdown.Item icon='sign-out' text='Sair' onClick={logout} />
                             </Dropdown.Menu>
                         </div>

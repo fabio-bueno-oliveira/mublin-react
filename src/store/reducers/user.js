@@ -84,7 +84,8 @@ const initialState = {
     { id: '', idItem: '', name: '' }
   ],
   availabilityItemsLoaded: false,
-  availabilityFocus: ''
+  availabilityFocus: '',
+  level: ''
 }
 
 export function user(state = initialState, action) {
@@ -119,7 +120,8 @@ export function user(state = initialState, action) {
         legend: action.info.legend_badge,
         website: action.info.website,
         availabilityStatus: action.info.availability_status,
-        availabilityFocus: action.info.availability_focus
+        availabilityFocus: action.info.availability_focus,
+        level: action.info.level
       };
     case userTypes.GET_USER_INFO_FAILURE:
       return {

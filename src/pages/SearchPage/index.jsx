@@ -20,6 +20,7 @@ function SearchPage (props) {
     let history = useHistory();
 
     useEffect(() => {
+        window.scrollTo(0, 0)
         dispatch(searchInfos.getSearchUsersResults(searchedKeywords))
         dispatch(searchInfos.getSearchProjectsResults(searchedKeywords))
     }, [dispatch, searchedKeywords]);
@@ -78,7 +79,7 @@ function SearchPage (props) {
                                         menuItem: searchResults.users[0].id ? 'Pessoas ('+searchResults.users.length+')' : 'Pessoas (0)',
                                         render: () => 
                                             <Tab.Pane loading={searchResults.requesting}>
-                                                <List relaxed>
+                                                <List relaxed className='mb-5 mb-md-0'>
                                                 {searchResults.users.map((user, key) =>
                                                     <List.Item key={key} className='p-2' style={{alignItems:'center',display:'flex'}}>
                                                         { user.picture ? (

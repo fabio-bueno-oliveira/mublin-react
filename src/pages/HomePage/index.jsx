@@ -23,6 +23,7 @@ function HomePage () {
     const user = JSON.parse(localStorage.getItem('user'));
 
     useEffect(() => {
+        dispatch(userInfos.getInfo());
         dispatch(userInfos.getUserProjects(user.id));
         dispatch(eventsInfos.getUserEvents(user.id));
         dispatch(notesInfos.getUserNotes(user.id));

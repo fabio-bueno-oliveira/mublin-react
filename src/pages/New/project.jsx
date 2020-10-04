@@ -120,7 +120,7 @@ function NewProjectPage () {
             dispatch(userInfos.getUserProjects(user.id))
             setIsLoading(false)
             history.push({
-                pathname: '/project/'+projectUserName+'/admin',
+                pathname: '/backstage/'+projectUserName,
                 search: '?new=true'
             })
         }).catch(err => {

@@ -176,6 +176,9 @@ body, html {
 
   div:last-child {
     height: fit-content;
-    cursor: pointer;
   }
+}
+
+.cpointer {
+  cursor: pointer!important;
 }

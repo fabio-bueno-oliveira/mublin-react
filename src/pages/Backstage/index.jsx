@@ -88,7 +88,7 @@ function BackstageMainPage () {
                         <Header as='h2'>
                             <Header.Content>
                                 Meu Backstage
-                            <Header.Subheader>{userProjects.length+' projetos encontrados'}</Header.Subheader>
+                                <Header.Subheader>{userProjects.length+' projetos encontrados'}</Header.Subheader>
                             </Header.Content>
                         </Header>
                         <Form style={{width:'260px'}}>
@@ -106,10 +106,12 @@ function BackstageMainPage () {
                 <Grid.Row>
                     <Grid.Column width={8}>
                         <Header as='h3'>Principais</Header>
+                        {!!myProjects(0).length && <p>Selecione para gerenciar</p>}
                         {myProjects(0).length ? myProjects(0) : <p>Nenhum projeto principal encontrado</p>}
                     </Grid.Column>
                     <Grid.Column width={8}>
                         <Header as='h3'>Portfolio</Header>
+                        {!!myProjects(1).length && <p>Selecione para gerenciar</p>}
                         {myProjects(1).length ? myProjects(1) : <p>Nenhum projeto portfolio encontrado</p>}
                     </Grid.Column>
                 </Grid.Row>

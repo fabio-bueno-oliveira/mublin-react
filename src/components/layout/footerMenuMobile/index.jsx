@@ -9,6 +9,10 @@ const FooterMenuMobile = () => {
 
     let currentPath = window.location.pathname
 
+    const goToSearchPage = () => {
+        history.push("/search")
+    }
+
     return (
         <>
             <footer className="menuMobile d-lg-none">

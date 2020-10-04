@@ -47,12 +47,12 @@ const Notes = (props) => {
 
     return (
         <>
-            <Card id="notes" style={{width:'100%',backgroundColor:'transparent',boxShadow:'none'}} className='mb-5 mb-md-0'>
+            <Card id="notes" style={{width:'100%',backgroundColor:'transparent',boxShadow:'none'}}>
                 <Card.Content style={{paddingTop:'0px'}}>
                     <Image src='https://ik.imagekit.io/mublin/tr:r-8,w-300,h-80,c-maintain_ratio/misc/music/home-banners/music-notes_fbRjZcNpeR.jpg' fluid className="mb-3" />
                     <Card.Header className="ui mt-0 mb-3">Notas</Card.Header>
                     <Card.Description className="mb-3 mb-md-5">
-                        { notes.list.length ? (
+                        { notes.list[0].id ? (
                             <span style={{fontWeight:'500',fontSize:'13px'}}>Você tem {notes.list.length === 1 ? notes.list.length+' nota salva' : notes.list.length+' notas salvas'}</span>
                         ) : (
                             <span style={{fontWeight:'500',fontSize:'13px'}}>Você não tem notas salvas</span>
@@ -75,27 +75,29 @@ const Notes = (props) => {
                             </Header>
                         ) : (
                             <List relaxed>
-                            {notes.list.map((note, key) =>
-                                <List.Item key={key}>
-                                    <Segment.Group>
-                                        <Segment className='py-2'>
-                                            <Header as='h5'>
-                                                <Header.Content>
-                                                    {note.noteTitle}
-                                                </Header.Content>
-                                            </Header>
-                                            <p style={{fontSize:'12px',fontWeight:'500'}} className='mt-2'>{note.noteDescription}</p>
-                                            <Icon name='attach' style={{fontSize:'11px',opacity:'0.5'}} /> <Icon name='volume up' style={{fontSize:'11px',opacity:'0.5'}} />
-                                        </Segment>
-                                        <Segment style={{fontSize:'11px',color:'#949494'}}  className='py-2'>
-                                            criada há {formatDistance(new Date(note.created * 1000), new Date(), {locale:pt})}
-                                            <div className="right floated">
-                                                <Icon name='trash alternate outline' style={{fontSize:'12px',color:'#949494',cursor:'pointer'}} />
-                                            </div>
-                                        </Segment>
-                                    </Segment.Group>
-                                </List.Item>
-                            )}
+                            { notes.list[0].noteId &&
+                                notes.list.map((note, key) =>
+                                    <List.Item key={key}>
+                                        <Segment.Group>
+                                            <Segment className='py-2'>
+                                                <Header as='h5'>
+                                                    <Header.Content>
+                                                        {note.noteTitle+' '+note.noteId}
+                                                    </Header.Content>
+                                                </Header>
+                                                <p style={{fontSize:'12px',fontWeight:'500'}} className='mt-2'>{note.noteDescription}</p>
+                                                <Icon name='attach' style={{fontSize:'11px',opacity:'0.5'}} /> <Icon name='volume up' style={{fontSize:'11px',opacity:'0.5'}} />
+                                            </Segment>
+                                            <Segment style={{fontSize:'11px',color:'#949494'}}  className='py-2'>
+                                                criada há {formatDistance(new Date(note.created * 1000), new Date(), {locale:pt})}
+                                                <div className="right floated">
+                                                    <Icon name='trash alternate outline' style={{fontSize:'12px',color:'#949494',cursor:'pointer'}} />
+                                                </div>
+                                            </Segment>
+                                        </Segment.Group>
+                                    </List.Item>
+                                )
+                            }
                             </List>
                         )}
                         <Modal

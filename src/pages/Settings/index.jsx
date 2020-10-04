@@ -85,6 +85,7 @@ function SettingsPage () {
     const [errorEmail, setErrorEmail] = useState('')
     const [errorEmailIsTheSame, setErrorEmailIsTheSame] = useState(false)
     const [emailChangedSuccess, setEmailChangedSuccess] = useState(false)
+
     const handleChangeEmail = (value) => {
         setNewEmail(value)
         if (!value.length) {
@@ -95,6 +96,7 @@ function SettingsPage () {
             setErrorEmail('')
         }
     }
+
     const [checkEmail] = useDebouncedCallback((string) => {
         if (string !== userInfo.email) {
             dispatch(emailCheckInfos.checkEmailByString(string));
@@ -103,6 +105,7 @@ function SettingsPage () {
             setErrorEmailIsTheSame(true)
         }
     },900)
+
     const emailAvailability = useSelector(state => state.emailCheck);
 
     const handleSubmitEmailChange = () => {

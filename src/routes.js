@@ -26,6 +26,7 @@ import MySubscription from './pages/Settings/Subscription';
 import SettingsPreferences from './pages/Settings/Preferences';
 import SettingsProfile from './pages/Settings/Profile';
 import SettingsProfilePicture from './pages/Settings/Profile/picture';
+import AdminPage from './pages/Admin'
 
 function Routes () {
 
@@ -68,6 +69,7 @@ function Routes () {
                 <PrivateRoute authed={loggedIn} path="/settings/preferences" component={SettingsPreferences} />
                 <PrivateRoute authed={loggedIn} path="/settings/subscription" component={MySubscription} />
                 <PrivateRoute authed={loggedIn} path="/settings" component={Settings} />
+                <PrivateRoute authed={loggedIn} path="/admin" component={AdminPage} />
                 <PrivateRoute authed={loggedIn} path="/:username" component={ProfilePage} />
             </Switch>
         </BrowserRouter>

@@ -144,7 +144,7 @@ function HomePage () {
                                         projectsPortfolio.length ? (
                                             projectsPortfolio.map((project, key) =>
                                                 <div className="carousel-cell" key={key}>
-                                                    <a href="/music/projectusername">
+                                                    <Link to={{ pathname: '/project/'+project.username }}>
                                                         <div className="floating ui mini black label" style={{top: '0', left: '76%'}}>{project.joined_in}</div>
                                                         {project.picture ? (
                                                             <Image src={'https://ik.imagekit.io/mublin/projects/tr:h-200,w-200,c-maintain_ratio/'+project.projectid+'/'+project.picture} height='85' width='85' rounded />
@@ -164,7 +164,7 @@ function HomePage () {
                                                                 <Icon name='clock outline' />Aguardando
                                                             </div>
                                                         )}
-                                                    </a>
+                                                    </Link>
                                                 </div>
                                             )
                                         ) : (

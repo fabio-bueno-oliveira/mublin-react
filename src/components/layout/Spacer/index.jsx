@@ -1,10 +1,13 @@
 import React from 'react';
 import './styles.scss';
 
-const Spacer = () => {
+const Spacer = (props) => {
 
     return (
-        <div className='spacer'></div>
+        <div 
+            className={`spacer` + (props.compact ? ' compact' : '')}
+        >
+        </div>
     );
 };
 

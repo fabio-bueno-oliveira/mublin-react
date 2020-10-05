@@ -1,12 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { Menu, Container, Image, Icon, Modal } from 'semantic-ui-react';
-import { useHistory } from 'react-router-dom';
+import { useHistory, Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { userInfos } from '../../../store/actions/user';
 import { userActions } from '../../../store/actions/authentication';
 import MublinLogo from '../../../assets/img/logos/mublin-logo-text-white.png';
 
-const HeaderMobile = () => {
+const HeaderMobile = (props) => {
+
+    // Gets URL string after domain (will be used if it is a ProfilePage)
+    const usernameUrl = window.location.pathname + window.location.search + window.location.hash;
 
     let history = useHistory();
 
@@ -49,8 +52,11 @@ const HeaderMobile = () => {
             <Menu id='headerMobile' fixed='top' inverted size='mini' borderless>
                 <Container>
                     <Menu.Item header onClick={() => history.push("/home")}>
-                        <Image size='tiny' src={MublinLogo} style={{ marginRight: '1.5em' }} alt="Logo do Mublin" />
-                        {/* <Link to={{ pathname: "/usuario" }} style={{fontFamily:'Baloo',fontSize:'19px',fontWeight:'400',color:'white'}}><Icon name='arrow left' size='small' /> fabio</Link> */}
+                        { !props.profile ? (
+                            <Image size='tiny' src={MublinLogo} style={{ marginRight: '1.5em' }} alt="Logo do Mublin" />
+                        ) : (
+                            <Link onClick={() => history.goBack()} style={{fontFamily:'Baloo',fontSize:'19px',fontWeight:'400',color:'white'}}><Icon name='arrow left' size='small' /> {usernameUrl.replace(/^\//,'')}</Link>
+                        )}
                     </Menu.Item>
                     <Menu.Menu position='right'>
                         <Menu.Item

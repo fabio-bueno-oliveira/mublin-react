@@ -1,3 +1,21 @@
+.desktopAction {
+  text-align: right;
+  position: absolute;
+  top: 14px;
+  right: 24px;
+}
+
+@media only screen and (max-width:767px) {
+  #artistHero {
+    padding: 0px!important;
+    margin-bottom: 18px!important;
+
+    >div {
+      border-radius: 0px!important;
+    }
+  }
+}
+
 .member-card {
   width: 220px!important;
   height: 159px!important;

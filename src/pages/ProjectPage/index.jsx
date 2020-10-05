@@ -5,9 +5,10 @@ import { projectInfos } from '../../store/actions/project';
 import HeaderDesktop from '../../components/layout/headerDesktop';
 import HeaderMobile from '../../components/layout/headerMobile';
 import FooterMenuMobile from '../../components/layout/footerMenuMobile';
-import { Header, Placeholder, Grid, Card, Image, Icon, Button, Label } from 'semantic-ui-react';
+import { Header, Placeholder, Segment, Grid, Card, Image, Icon, Button, Label } from 'semantic-ui-react';
 import Flickity from 'react-flickity-component';
 import Loader from 'react-loader-spinner';
+import Spacer from '../../components/layout/Spacer'
 import './styles.scss';
 
 function ProjectPage (props) {
@@ -40,10 +41,25 @@ function ProjectPage (props) {
         contain: true
     }
 
+    const artistHeroImage = 'https://ik.imagekit.io/mublin/projects/tr:h-300,w-1000,bl-12/'+project.id+'/'+project.picture
+
+    const defaultHeroImage = 'https://ik.imagekit.io/mublin/sample-folder/tr:h-300,w-1000,bl-12/avatar-undefined_-dv9U6dcv3.jpg'
+
+    const artistHeroStyles = {
+        backgroundImage: `url(${project.picture ? artistHeroImage : defaultHeroImage})`, 
+        backgroundRepeat:'no-repeat', 
+        backgroundSize:'cover', 
+        backgroundPosition:'center', 
+        backgroundBlendMode:'soft-light',
+        position: 'relative',
+        marginBottom: '12px'
+    }
+
     return (
         <>
         <HeaderDesktop />
         <HeaderMobile />
+        <Spacer compact />
         { project.requesting ? (
             <Loader
                 className="appLoadingIcon"
@@ -55,35 +71,38 @@ function ProjectPage (props) {
             />
         ) : (
             <>
-            <Grid columns={2} stackable className="container mb-2 mt-4 mt-md-5 pt-5">
+            <Grid columns={2} stackable className="container">
                 <Grid.Row>
-                    <Grid.Column>
-                        <section id="title">
-                            <h1 className="ui large header d-flex pt-3 pt-md-0">
-                                {project.picture ? (
-                                    <Image src={'https://ik.imagekit.io/mublin/projects/tr:h-200,w-200,c-maintain_ratio/'+project.id+'/'+project.picture} className="ui rounded image" style={{ width: '110px', height: '110px' }} />
-                                ) : (
-                                    <Image src='https://ik.imagekit.io/mublin/sample-folder/avatar-undefined_-dv9U6dcv3.jpg' className="ui rounded image" style={{ width: '110px', height: '110px' }} />
-                                )}
-                                <div className="content pt-1" style={{ alignItems: 'flex-start', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+                    <Grid.Column width={16} style={{paddingLeft:'0px!important'}} id='artistHero'>
+                        <Segment 
+                            inverted
+                            style={artistHeroStyles}
+                        >
+                            {project.picture ? (
+                                <Image src={'https://ik.imagekit.io/mublin/projects/tr:h-200,w-200,c-maintain_ratio/'+project.id+'/'+project.picture} circular centered size='tiny' />
+                            ) : (
+                                <Image src='https://ik.imagekit.io/mublin/sample-folder/tr:h-200,w-200,c-maintain_ratio/avatar-undefined_-dv9U6dcv3.jpg' circular centered size='tiny' />
+                            )}
+                            <Header as='h2' textAlign='center' inverted className='mt-2 mb-2'>
+                                <Header.Content>
                                     {project.name}
-                                    <div className="sub header mt-1" style={{ fontSize: '14px' }}><strong>{project.typeName}</strong></div>
+                                    <Header.Subheader className="mt-2">
+                                        {project.typeName}
+                                    </Header.Subheader>
                                     { project.city && 
-                                        <div className="sub header mt-2" style={{ fontSize: '12px' }}>
+                                        <Header.Subheader className="mt-1" style={{ fontSize: '11px' }}>
                                             <Icon name='map marker alternate' className="mr-0" /> {project.city+', '+project.region}
-                                        </div>
+                                        </Header.Subheader>
                                     }
-                                    { project.labelShow === 1 && 
-                                        <div id="featuredLabel" className="mt-1 pl-2">
-                                            <Label tag color={project.labelColor} size="tiny" className="ml-0" style={{ fontWeight: 'normal' }}>{project.labelText}</Label>
-                                        </div>
-                                    }
+                                </Header.Content>
+                            </Header>
+                            { project.labelShow === 1 && 
+                                <div id="featuredTag" className="pl-1 textCenter">
+                                    <Label tag color={project.labelColor} size="tiny" className="ml-0" style={{ fontWeight: 'normal' }}>{project.labelText}</Label>
                                 </div>
-                            </h1>
-                        </section>
-                    </Grid.Column>
-                    <Grid.Column className='d-none d-lg-block'>
-                        <section id="options" style={{ textAlign: 'right' }}>
+                            }
+                        </Segment>
+                        <section className="desktopAction d-none d-lg-block">
                             <Button size='tiny' onClick={() => history.push('/backstage/'+props.match.params.username)}><Icon name='warehouse' /> Ir para o Backstage deste projeto</Button>
                         </section>
                     </Grid.Column>

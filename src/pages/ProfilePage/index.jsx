@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import HeaderDesktop from '../../components/layout/headerDesktop';
 import HeaderMobile from '../../components/layout/headerMobile';
 import FooterMenuMobile from '../../components/layout/footerMenuMobile';
+import Spacer from '../../components/layout/Spacer';
 import { profileInfos } from '../../store/actions/profile';
 import { followInfos } from '../../store/actions/follow';
 import { Header, Tab, Card, Grid, Image, Button, Label, Dimmer, Icon, Modal, List, Confirm, Placeholder, Popup, Feed} from 'semantic-ui-react';
@@ -129,7 +130,8 @@ function ProfilePage (props) {
     return (
         <>
         <HeaderDesktop />
-        <HeaderMobile />
+        <HeaderMobile profile={true} />
+        <Spacer compact />
         { profile.requesting ? (
             <Loader
                 className="appLoadingIcon"
@@ -141,10 +143,15 @@ function ProfilePage (props) {
             />
         ) : (
             <>
-            <Grid id="info" columns={2} stackable className="container mb-2 mt-4 mt-md-5 pt-5">
+            {/* <Grid centered columns={1} className="container mt-0" style={{backgroundColor:'white'}}>
+                <Grid.Column width={16}>
+                    <p>adsadad</p>
+                </Grid.Column>
+            </Grid> */}
+            <Grid id="info" columns={2} stackable className="container pb-4 pb-md-0 mb-5 mb-md-0">
                 <Grid.Row>
                     <Grid.Column width={4}>
-                        <Card id="card" style={{ width: "100%" }}>
+                        <Card id="card" style={{width:"100%"}}>
                             <Card.Content>
                                 <div className="center aligned mb-3 mt-2 mt-md-2">
                                     { profile.picture ? (
@@ -160,23 +167,23 @@ function ProfilePage (props) {
                                             {profile.name} <nobr>{profile.lastname} {!!profile.verified && <Icon name='check circle' color='blue' className='verifiedIcon' title='Verificado' />}</nobr>
                                         </Header>
                                         <Header className='my-0'>{profile.plan === 'Pro' && <Label size="tiny" className="ml-1 p-1" style={{cursor:"default"}}>Pro</Label>}</Header>
-                                        <p className="mb-1" style={{ fontSize: "13px" }}>
+                                        <p className="mt-2 mb-0" style={{ fontSize: "13.5px" }}>
                                             {profile.roles.map((role, key) =>
                                                 <span key={key}>{role.name}{key < (profile.roles.length-1) && ', '}</span>
                                             )}
                                         </p>
                                         { profile.city &&
-                                            <p className="mb-1" style={{ fontSize: "11px" }}>
+                                            <p className="mb-0" style={{ fontSize: "12px" }}>
                                                 {profile.city+', '+profile.region}
                                             </p>
                                         }
                                     </>
                                     }
-                                    <Button.Group fluid color="black" size="mini" className="mt-3">
+                                    <Button.Group fluid color="black" size="small" className="mt-3">
                                         { user.id !== profile.id ? (
                                             <Button icon={followedByMe.following === 'true' ? 'checkmark' : 'add user'} content={followedByMe.following === 'true' ? 'Seguindo' : 'Seguir'} loading={loadingFollow} onClick={() => followUnfollow()} />
                                         ) : (
-                                            <Button icon='pencil' content='Editar perfil' onClick={() => history.push("/settings/profile")} />
+                                            <Button icon='pencil' content='Editar' onClick={() => history.push("/settings/profile")} />
                                         )}
                                         <Button icon='envelope outline' content='Mensagem' />
                                     </Button.Group>

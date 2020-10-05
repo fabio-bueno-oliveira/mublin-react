@@ -44,6 +44,10 @@ const initialState = {
       labelShow: '',
       labelText: '',
       labelColor: '',
+      foundationYear: '',
+      endYear: '',
+      participationStatus: '',
+      participationId: '',
       members: [
         { id: '', name: '', lastname: '', username: '', picture: '' }
       ]

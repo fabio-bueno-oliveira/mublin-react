@@ -32,8 +32,8 @@ function HomePage () {
     const userInfo = useSelector(state => state.user)
 
     const userProjects = useSelector(state => state.user.projects)
-    const projectsMain = userProjects.filter((project) => { return project.portfolio === 0 })
-    const projectsPortfolio = userProjects.filter((project) => { return project.portfolio === 1 })
+    const projectsMain = userProjects.filter((project) => { return project.portfolio === 0 && project.confirmed !== 0 })
+    const projectsPortfolio = userProjects.filter((project) => { return project.portfolio === 1 && project.confirmed !== 0 })
 
     const events = useSelector(state => state.events)
     const allEvents = events.list
@@ -86,7 +86,7 @@ function HomePage () {
                                     { !userInfo.requesting ? (
                                         projectsMain.length ? (
                                             projectsMain.map((project, key) =>
-                                                <div className="carousel-cell" key={key}>
+                                                <div className="carousel-cell" key={key} style={project.confirmed === 2 ? {opacity:'0.6'} : {}}>
                                                     <Link to={{ pathname: '/project/'+project.username }}>
                                                         {project.picture ? (
                                                             <Image src={'https://ik.imagekit.io/mublin/projects/tr:h-85,w-95,c-maintain_ratio/'+project.projectid+'/'+project.picture} rounded />
@@ -101,9 +101,15 @@ function HomePage () {
                                                                 </Header.Subheader>
                                                             </Header.Content>
                                                         </Header>
-                                                        <div className="mt-2" style={{fontWeight: '400',fontSize: '11px', color: 'black', opacity: '0.8'}}>
-                                                            <Icon name={project.workIcon} />{project.workTitle}
-                                                        </div>
+                                                        { project.confirmed === 1 ? (
+                                                            <div className="mt-2" style={{fontWeight: '400',fontSize: '11px', color: 'black', opacity: '0.8'}}>
+                                                                <Icon name={project.workIcon} />{project.workTitle}
+                                                            </div>
+                                                        ) : (
+                                                            <div className="mt-2" style={{fontWeight: '400',fontSize: '11px', color: 'black', opacity: '0.8'}}>
+                                                                <Icon name='clock outline' />Aguardando
+                                                            </div>
+                                                        )}
                                                     </Link>
                                                 </div>
                                             )
@@ -149,9 +155,15 @@ function HomePage () {
                                                             {project.name}
                                                             <div className="sub header mt-1">{project.ptname}</div>
                                                         </h5>
-                                                        <div className="mt-2" style={{fontWeight: '400',fontSize: '11px', color: 'black', opacity: '0.8'}}>
-                                                            <Icon name={project.workIcon} /> {project.workTitle}
-                                                        </div>
+                                                        { project.confirmed === 1 ? (
+                                                            <div className="mt-2" style={{fontWeight: '400',fontSize: '11px', color: 'black', opacity: '0.8'}}>
+                                                                <Icon name={project.workIcon} />{project.workTitle}
+                                                            </div>
+                                                        ) : (
+                                                            <div className="mt-2" style={{fontWeight: '400',fontSize: '11px', color: 'black', opacity: '0.8'}}>
+                                                                <Icon name='clock outline' />Aguardando
+                                                            </div>
+                                                        )}
                                                     </a>
                                                 </div>
                                             )
@@ -171,79 +183,79 @@ function HomePage () {
                                 </Flickity>
                             </Tab.Pane>,
                         },
-                        {
-                        menuItem: (
-                            <Menu.Item key='new'>
-                                <Icon name='plus' className="mr-2" /> Novo
-                            </Menu.Item>
-                            ),
-                        render: () => 
-                            <Tab.Pane attached={false} as="div">
-                                <Flickity
-                                    className={'carousel'} // default ''
-                                    elementType={'div'} // default 'div'
-                                    options={sliderOptions} // takes flickity options {}
-                                    disableImagesLoaded={false} // default false
-                                    reloadOnUpdate // default false
-                                >
-                                    <div className="carousel-cell pt-2" style={{textAlign: 'center'}}>
-                                        <Link to={{pathname:"/new/project", search:"?type=new", state:{type:'new'}}} style={{color:'gray'}}>
-                                            <Button circular color='black' icon='plus' size='massive' />
-                                        </Link>
-                                        <Link to={{pathname:"/new/project"}} style={{color:'gray'}}>
-                                            <Header as='h5' className='mt-2 mb-1'>Novo</Header>
-                                            <h6 className="mt-0" style={{fontWeight: '400',fontSize: '11px', color: 'black', opacity: '0.8'}}>
-                                                Criar projeto <nobr>do zero</nobr>
-                                            </h6>
-                                        </Link>
-                                    </div>
-                                    <div className="carousel-cell pt-2" style={{textAlign: 'center'}}>
-                                        <Link to={{pathname:"/new/project", search:"?type=idea", state:{type:'idea'}}} style={{color:'gray'}}>
-                                            <Button circular color='black' icon='lightbulb outline' size='massive' />
-                                        </Link>
-                                        <Link to={{pathname:"/new/project", search:"?type=idea", state:{type:'idea'}}} style={{color:'gray'}}>
-                                            <Header as='h5' className='mt-2 mb-1'>Ideia</Header>
-                                            <h6 className="mt-0" style={{fontWeight: '400',fontSize: '11px', color: 'black', opacity: '0.8'}}>
-                                                Criar uma proposta para atrair outros músicos
-                                            </h6>
-                                        </Link>
-                                    </div>
-                                    <div className="carousel-cell pt-2" style={{textAlign: 'center'}}>
-                                        <Link to={{pathname:"/project/new/?type=join", search:"?type=join", state:{type:'join'}}} style={{color:'gray'}}>
-                                            <Button circular color='black' icon='user plus' size='massive' />
-                                        </Link>
-                                        <a href="/project/new/?type=join">
-                                            <h5 className="ui header mt-2 mb-1">
-                                                Ingressar
-                                            </h5>
-                                            <h6 className="mt-0" style={{fontWeight: '400',fontSize: '11px', color: 'black', opacity: '0.8'}}>Entrar em um projeto já cadastrado</h6>
-                                        </a>
-                                    </div>
-                                    <div className="carousel-cell pt-2" style={{textAlign: 'center'}}>
-                                        <Link to={{pathname:"/invite"}} style={{color:'gray'}}>
-                                            <Button circular color='black' icon='envelope open outline' size='massive' />
-                                        </Link>
-                                        <a href="/invite">
-                                            <h5 className="ui header mt-2 mb-1">
-                                                Convidar
-                                            </h5>
-                                            <h6 className="mt-0" style={{fontWeight: '400',fontSize: '11px', color: 'black', opacity: '0.8'}}>Convidar alguém para um projeto que você faz parte</h6>
-                                        </a>
-                                    </div>
-                                    <div className="carousel-cell pt-2" style={{textAlign: 'center'}}>
-                                        <Link to={{pathname:"/search?type=projects&status=hiring"}} style={{color:'gray'}}>
-                                            <Button circular color='black' icon='crosshairs' size='massive' />
-                                        </Link>
-                                        <a href="/search?type=projects&status=hiring">
-                                            <h5 className="ui header mt-2 mb-1">
-                                                Buscar
-                                            </h5>
-                                            <h6 className="mt-0" style={{fontWeight: '400',fontSize: '11px', color: 'black', opacity: '0.8'}}>Encontrar projetos à procura de músicos</h6>
-                                        </a>
-                                    </div>
-                                </Flickity>
-                            </Tab.Pane>,
-                        },
+                        // {
+                        // menuItem: (
+                        //     <Menu.Item key='new'>
+                        //         <Icon name='plus' className="mr-2" /> Novo
+                        //     </Menu.Item>
+                        //     ),
+                        // render: () => 
+                        //     <Tab.Pane attached={false} as="div">
+                        //         <Flickity
+                        //             className={'carousel'} // default ''
+                        //             elementType={'div'} // default 'div'
+                        //             options={sliderOptions} // takes flickity options {}
+                        //             disableImagesLoaded={false} // default false
+                        //             reloadOnUpdate // default false
+                        //         >
+                        //             <div className="carousel-cell pt-2" style={{textAlign: 'center'}}>
+                        //                 <Link to={{pathname:"/new/project", search:"?type=new", state:{type:'new'}}} style={{color:'gray'}}>
+                        //                     <Button circular color='black' icon='plus' size='massive' />
+                        //                 </Link>
+                        //                 <Link to={{pathname:"/new/project"}} style={{color:'gray'}}>
+                        //                     <Header as='h5' className='mt-2 mb-1'>Novo</Header>
+                        //                     <h6 className="mt-0" style={{fontWeight: '400',fontSize: '11px', color: 'black', opacity: '0.8'}}>
+                        //                         Criar projeto <nobr>do zero</nobr>
+                        //                     </h6>
+                        //                 </Link>
+                        //             </div>
+                        //             <div className="carousel-cell pt-2" style={{textAlign: 'center'}}>
+                        //                 <Link to={{pathname:"/new/project", search:"?type=idea", state:{type:'idea'}}} style={{color:'gray'}}>
+                        //                     <Button circular color='black' icon='lightbulb outline' size='massive' />
+                        //                 </Link>
+                        //                 <Link to={{pathname:"/new/project", search:"?type=idea", state:{type:'idea'}}} style={{color:'gray'}}>
+                        //                     <Header as='h5' className='mt-2 mb-1'>Ideia</Header>
+                        //                     <h6 className="mt-0" style={{fontWeight: '400',fontSize: '11px', color: 'black', opacity: '0.8'}}>
+                        //                         Criar uma proposta para atrair outros músicos
+                        //                     </h6>
+                        //                 </Link>
+                        //             </div>
+                        //             <div className="carousel-cell pt-2" style={{textAlign: 'center'}}>
+                        //                 <Link to={{pathname:"/project/new/?type=join", search:"?type=join", state:{type:'join'}}} style={{color:'gray'}}>
+                        //                     <Button circular color='black' icon='user plus' size='massive' />
+                        //                 </Link>
+                        //                 <a href="/project/new/?type=join">
+                        //                     <h5 className="ui header mt-2 mb-1">
+                        //                         Ingressar
+                        //                     </h5>
+                        //                     <h6 className="mt-0" style={{fontWeight: '400',fontSize: '11px', color: 'black', opacity: '0.8'}}>Entrar em um projeto já cadastrado</h6>
+                        //                 </a>
+                        //             </div>
+                        //             <div className="carousel-cell pt-2" style={{textAlign: 'center'}}>
+                        //                 <Link to={{pathname:"/invite"}} style={{color:'gray'}}>
+                        //                     <Button circular color='black' icon='envelope open outline' size='massive' />
+                        //                 </Link>
+                        //                 <a href="/invite">
+                        //                     <h5 className="ui header mt-2 mb-1">
+                        //                         Convidar
+                        //                     </h5>
+                        //                     <h6 className="mt-0" style={{fontWeight: '400',fontSize: '11px', color: 'black', opacity: '0.8'}}>Convidar alguém para um projeto que você faz parte</h6>
+                        //                 </a>
+                        //             </div>
+                        //             <div className="carousel-cell pt-2" style={{textAlign: 'center'}}>
+                        //                 <Link to={{pathname:"/search?type=projects&status=hiring"}} style={{color:'gray'}}>
+                        //                     <Button circular color='black' icon='crosshairs' size='massive' />
+                        //                 </Link>
+                        //                 <a href="/search?type=projects&status=hiring">
+                        //                     <h5 className="ui header mt-2 mb-1">
+                        //                         Buscar
+                        //                     </h5>
+                        //                     <h6 className="mt-0" style={{fontWeight: '400',fontSize: '11px', color: 'black', opacity: '0.8'}}>Encontrar projetos à procura de músicos</h6>
+                        //                 </a>
+                        //             </div>
+                        //         </Flickity>
+                        //     </Tab.Pane>,
+                        // },
                     ]
                 }
                 />

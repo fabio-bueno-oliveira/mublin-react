@@ -179,7 +179,7 @@ function StartStep3Page () {
                 'Content-Type': 'application/json',
                 'Authorization': 'Bearer ' + user.token
             },
-            body: JSON.stringify({ userId: user.id, projectId: projectId, active: active, status: status, main_role_fk: main_role_fk, joined_in: joined_in, left_in: left_in, leader: '0', confirmed: '2' })
+            body: JSON.stringify({ userId: user.id, projectId: projectId, active: active, status: status, main_role_fk: main_role_fk, joined_in: joined_in, left_in: left_in, leader: '0', confirmed: '2', admin: '0' })
         }).then((response) => {
             //console.log(153, response)
             dispatch(userInfos.getUserProjects(user.id))
@@ -225,7 +225,7 @@ function StartStep3Page () {
                 'Content-Type': 'application/json',
                 'Authorization': 'Bearer ' + user.token
             },
-            body: JSON.stringify({ userId: newProjectUserId, projectId: newProjectProjectId, active: '1', status: newProjectUserStatus, main_role_fk: newProjectMain_role_fk, joined_in: currentYear, left_in: null, leader: '1', confirmed: '1' })
+            body: JSON.stringify({ userId: newProjectUserId, projectId: newProjectProjectId, active: '1', status: newProjectUserStatus, main_role_fk: newProjectMain_role_fk, joined_in: currentYear, left_in: null, leader: '1', confirmed: '1', admin: '1' })
         }).then((response) => {
             // console.log(214, response)
             dispatch(userInfos.getUserProjects(user.id))

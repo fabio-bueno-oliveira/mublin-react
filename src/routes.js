@@ -15,6 +15,8 @@ import Feed from './pages/Feed';
 import New from './pages/New';
 import ProfilePage from './pages/ProfilePage';
 import NewProject from './pages/New/project';
+import NewProjectIdea from './pages/New/idea';
+import JoinProject from './pages/New/join';
 import ProjectPage from './pages/ProjectPage';
 import ProjectBackstagePage from './pages/Backstage/Project';
 import BackstageMainPage from './pages/Backstage';
@@ -57,6 +59,8 @@ function Routes () {
                 <PrivateRoute authed={loggedIn} path="/home" component={HomePage} />
                 <PrivateRoute authed={loggedIn} path="/feed" component={Feed} />
                 <PrivateRoute authed={loggedIn} path="/new/project" component={NewProject} />
+                <PrivateRoute authed={loggedIn} path="/new/idea" component={NewProjectIdea} />
+                <PrivateRoute authed={loggedIn} path="/new/join" component={JoinProject} />
                 <PrivateRoute authed={loggedIn} path="/new" component={New} />
                 <PrivateRoute authed={loggedIn} path="/backstage/:username" component={ProjectBackstagePage} />
                 <PrivateRoute authed={loggedIn} path="/backstage" component={BackstageMainPage} />

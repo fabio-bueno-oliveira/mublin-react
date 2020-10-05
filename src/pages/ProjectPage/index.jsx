@@ -23,7 +23,7 @@ function ProjectPage (props) {
     }, []);
 
     const project = useSelector(state => state.project);
-    const members = project.members;
+    const members = project.members.filter((member) => { return member.confirmed === 1 });
     const opportunities = project.opportunities;
 
     document.title = project.name+' | Mublin'

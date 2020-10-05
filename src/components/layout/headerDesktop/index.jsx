@@ -102,6 +102,27 @@ const HeaderDesktop = () => {
                     </Menu.Item>
                     <Dropdown item simple text='Novo' icon='caret down'  key='new'>
                         <Dropdown.Menu>
+                            <Dropdown.Item>
+                                <i className='dropdown icon' />
+                                <i className="text fas fa-music mr-1"></i> Projeto
+                                <Dropdown.Menu>
+                                    <Dropdown.Item onClick={() => history.push("/new/project")}>
+                                        <i className="fas fa-plus fa-fw"></i> Criar do zero
+                                    </Dropdown.Item>
+                                    <Dropdown.Item onClick={() => history.push("/new/idea")}>
+                                        <i className="far fa-lightbulb fa-fw"></i> Nova ideia de projeto
+                                    </Dropdown.Item>
+                                    <Dropdown.Item onClick={() => history.push("/new/join")}>
+                                        <i className="fas fa-user-plus fa-fw"></i> Ingressar em um projeto
+                                    </Dropdown.Item>
+                                    <Dropdown.Item onClick={() => history.push("/home")}>
+                                        <i className="fas fa-envelope-open-text fa-fw"></i> Convidar alguém para um projeto
+                                    </Dropdown.Item>
+                                    <Dropdown.Item onClick={() => history.push("/home")}>
+                                        <i className="fas fa-crosshairs fa-fw"></i> Buscar projetos que estão contratando
+                                    </Dropdown.Item>
+                                </Dropdown.Menu>
+                            </Dropdown.Item>
                             <Dropdown.Item onClick={() => history.push("/home")}>
                                 <i className="fas fa-pencil-alt mr-1"></i> Composição
                             </Dropdown.Item>
@@ -113,27 +134,6 @@ const HeaderDesktop = () => {
                             </Dropdown.Item>
                             <Dropdown.Item onClick={() => history.push("/home")}>
                                 <i className="fas fa-road mr-1"></i> Turnê
-                            </Dropdown.Item>
-                            <Dropdown.Item>
-                                <i className='dropdown icon' />
-                                <i className="text fas fa-music mr-1"></i> Projeto
-                                <Dropdown.Menu>
-                                    <Dropdown.Item onClick={() => history.push("/new/project")}>
-                                        <i className="fas fa-plus fa-fw"></i> Criar do zero
-                                    </Dropdown.Item>
-                                    <Dropdown.Item onClick={() => history.push("/home")}>
-                                        <i className="far fa-lightbulb fa-fw"></i> Nova ideia de projeto
-                                    </Dropdown.Item>
-                                    <Dropdown.Item onClick={() => history.push("/home")}>
-                                        <i className="fas fa-user-plus fa-fw"></i> Ingressar em um projeto
-                                    </Dropdown.Item>
-                                    <Dropdown.Item onClick={() => history.push("/home")}>
-                                        <i className="fas fa-envelope-open-text fa-fw"></i> Convidar alguém para um projeto
-                                    </Dropdown.Item>
-                                    <Dropdown.Item onClick={() => history.push("/home")}>
-                                        <i className="fas fa-crosshairs fa-fw"></i> Buscar projetos que estão contratando
-                                    </Dropdown.Item>
-                                </Dropdown.Menu>
                             </Dropdown.Item>
                         </Dropdown.Menu>
                     </Dropdown >

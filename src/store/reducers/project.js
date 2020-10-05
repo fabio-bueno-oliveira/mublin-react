@@ -30,6 +30,7 @@ const initialState = {
     {
       id: '',
       joinedIn: '',
+      leftIn: '',
       name: '',
       lastname: '',
       username: '',
@@ -46,7 +47,8 @@ const initialState = {
       statusIcon: '',
       admin: '',
       leader: '',
-      touring: ''
+      touring: '',
+      confirmed: ''
     }
   ],
   opportunities: [

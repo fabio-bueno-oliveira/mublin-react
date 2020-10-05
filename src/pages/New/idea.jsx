@@ -11,9 +11,9 @@ import HeaderMobile from '../../components/layout/headerMobile';
 import FooterMenuMobile from '../../components/layout/footerMenuMobile';
 import Spacer from '../../components/layout/Spacer'
 
-function NewProjectPage () {
+function NewProjectIdeaPage () {
     
-    document.title = 'Criar novo projeto | Mublin'
+    document.title = 'Nova ideia de projeto | Mublin'
     
     let user = JSON.parse(localStorage.getItem('user'));
 
@@ -37,7 +37,7 @@ function NewProjectPage () {
     const [checkboxProjectActive, setCheckboxProjectActive] = useState(true)
     const [end_year, setEndYear] = useState(null)
     const [bio, setBio] = useState('')
-    const [type, setType] = useState('2')
+    const [type, setType] = useState('7')
     const [kind, setKind] = useState('1')
     const [npMain_role_fk, setNpMain_role_fk] = useState('')
     const [publicProject, setPublicProject] = useState('1')
@@ -138,14 +138,14 @@ function NewProjectPage () {
             <Grid as='main' centered columns={1} className="container">
                 <Grid.Row>
                     <Grid.Column width={16}>
-                        <Header as='h2'>Criar novo projeto</Header>
+                        <Header as='h2'>Criar nova ideia de projeto</Header>
                     </Grid.Column>
                 </Grid.Row>
                 <Grid.Row>
                     <Grid.Column mobile={16} computer={10}>
                         <Form>
                             <Form.Field>
-                                <Form.Input name="projectName" fluid placeholder="Nome do projeto ou banda" onChange={(e, { value }) => setProjectName(value)} />
+                                <Form.Input name="projectName" fluid placeholder="Nome da ideia do projeto ou banda" onChange={(e, { value }) => setProjectName(value)} />
                             </Form.Field>
                             <Form.Field>
                                 <Input 
@@ -203,12 +203,7 @@ function NewProjectPage () {
                                     onChange={(e) => handleTypeChange(e.target.options[e.target.selectedIndex].value)}
                                     value={type}
                                 >
-                                    <option value='2'>Banda</option>
-                                    <option value='3'>Projeto</option>
-                                    <option value='1'>Artista Solo</option>
-                                    <option value='8'>DJ</option>
-                                    <option value='4'>Duo</option>
-                                    <option value='5'>Trio</option>
+                                    <option value='7'>Ideia de projeto</option>
                                 </Form.Field>
                                 <Form.Field 
                                     label='Conteúdo principal' 
@@ -257,4 +252,4 @@ function NewProjectPage () {
     )
 }
 
-export default NewProjectPage;
+export default NewProjectIdeaPage;

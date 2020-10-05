@@ -258,7 +258,9 @@ function ProjectBackstagePage (props) {
                                                 <Image src='https://ik.imagekit.io/mublin/sample-folder/avatar-undefined_Kblh5CBKPp.jpg' width="25" height="25" circular alt={'Foto de '+member.name} />
                                             )}
                                             <List.Content>
-                                                <List.Header as='a'>{member.name+' '+member.lastname} ({member.statusName})</List.Header>
+                                                <List.Header as='a'>
+                                                    {member.name+' '+member.lastname} ({member.statusName}) {member.confirmed === 2 && <Label size='tiny' className='ml-2'><Icon name='clock outline' />Solicitado</Label>}
+                                                </List.Header>
                                                 <span style={{fontSize:'11px'}}><Icon name={member.statusIcon} />{member.role1}{member.role2 && ', '+member.role2}{member.role3 && ', '+member.role3}</span>
                                             </List.Content>
                                         </List.Item>

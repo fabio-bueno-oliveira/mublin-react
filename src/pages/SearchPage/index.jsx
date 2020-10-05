@@ -27,8 +27,6 @@ function SearchPage (props) {
 
     const searchResults = useSelector(state => state.search);
 
-    console.log(28, searchResults)
-
     let totalProjects
     if (searchResults.projects[0].id) {
         totalProjects = searchResults.projects.length

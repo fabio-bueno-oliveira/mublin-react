@@ -20,6 +20,7 @@ export const searchService = {
     getSearchProjectsResults,
     getSearchResults,
     getSearchProjectResults,
+    getSuggestedUsersResults,
     logout
 };
 
@@ -53,6 +54,14 @@ function getSearchProjectResults(query) {
         headers: authHeader()
     };
     return fetch(`${BASE_URL}/semanticSearch/project/${query}`, requestOptions).then(handleResponse);
+}
+
+function getSuggestedUsersResults(query) {
+    const requestOptions = {
+        method: 'GET',
+        headers: authHeader()
+    };
+    return fetch(`${BASE_URL}/search/explore/suggestedUsers`, requestOptions).then(handleResponse);
 }
 
 function logout() {

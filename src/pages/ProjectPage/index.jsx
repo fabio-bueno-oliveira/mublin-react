@@ -59,7 +59,6 @@ function ProjectPage (props) {
         <>
         <HeaderDesktop />
         <HeaderMobile />
-        <Spacer compact />
         { project.requesting ? (
             <Loader
                 className="appLoadingIcon"
@@ -71,6 +70,7 @@ function ProjectPage (props) {
             />
         ) : (
             <>
+            <Spacer compact />
             <Grid columns={2} stackable className="container">
                 <Grid.Row>
                     <Grid.Column width={16} style={{paddingLeft:'0px!important'}} id='artistHero'>

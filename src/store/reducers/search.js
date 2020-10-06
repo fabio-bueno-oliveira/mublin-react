@@ -14,6 +14,7 @@ const initialState = {
       status: '',
       city: '',
       region: '',
+      verified: '',
       country: '',
       roleName: '',
       mainRole: '',
@@ -22,6 +23,8 @@ const initialState = {
       availabilityStatus: '',
       availability_color: '',
       legend: '',
+      totalProjects: '',
+      instrumentalist: '',
       projects: [
         { id: '', name: '', username: '', picture: '' }
       ]
@@ -51,6 +54,27 @@ const initialState = {
       members: [
         { id: '', name: '', lastname: '', username: '', picture: '' }
       ]
+    }
+  ],
+  suggestedUsers: [
+    {
+      id: '',
+      name: '',
+      lastname: '',
+      username: '',
+      picture: '',
+      roleName: '',
+      mainRole: '',
+      instrumentalist: '',
+      city: '',
+      region: '',
+      country: '',
+      plan: '',
+      availabilityId: '',
+      availabilityTitle: '',
+      availabilityColor: '',
+      totalProjects: '',
+      verified: ''
     }
   ]
 }
@@ -107,6 +131,24 @@ export function search(state = initialState, action) {
         ],
         requesting: false,
         error: 'Nenhum projeto encontrado'
+      };
+    // SUGGESTED USERS
+    case searchTypes.GET_SUGGESTEDUSERS_REQUEST:
+      return {
+        ...state,
+        requesting: true
+      };
+    case searchTypes.GET_SUGGESTEDUSERS_SUCCESS:
+      return {
+        ...state,
+        suggestedUsers: action.results,
+        requesting: false
+      };
+    case searchTypes.GET_SUGGESTEDUSERS_FAILURE:
+      return {
+        ...state,
+        requesting: false,
+        error: 'Nenhum usuário sugerido encontrado'
       };
     default:
       return state

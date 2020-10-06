@@ -131,7 +131,6 @@ function ProfilePage (props) {
         <>
         <HeaderDesktop />
         <HeaderMobile profile={true} />
-        <Spacer compact />
         { profile.requesting ? (
             <Loader
                 className="appLoadingIcon"
@@ -143,21 +142,22 @@ function ProfilePage (props) {
             />
         ) : (
             <>
+            <Spacer compact />
             {/* <Grid centered columns={1} className="container mt-0" style={{backgroundColor:'white'}}>
                 <Grid.Column width={16}>
                     <p>adsadad</p>
                 </Grid.Column>
             </Grid> */}
-            <Grid id="info" columns={2} stackable className="container pb-4 pb-md-0 mb-5 mb-md-0">
+            <Grid id="info" columns={2} stackable className="container pb-5 pb-md-0 mb-5 mb-md-0">
                 <Grid.Row>
-                    <Grid.Column width={4}>
+                    <Grid.Column width={4} className='noPaddingForMobile main'>
                         <Card id="card" style={{width:"100%"}}>
                             <Card.Content>
                                 <div className="center aligned mb-3 mt-2 mt-md-2">
                                     { profile.picture ? (
-                                        <Image src={profile.picture} size="tiny" circular alt={'Foto de '+profile.name} />
+                                        <Image src={profile.picture} size="small" circular />
                                     ) : (
-                                        <Image src='https://ik.imagekit.io/mublin/sample-folder/avatar-undefined_Kblh5CBKPp.jpg' size="tiny" circular alt={'Foto de '+profile.name} />
+                                        <Image src='https://ik.imagekit.io/mublin/sample-folder/tr:h-200,w-200,c-maintain_ratio/avatar-undefined_Kblh5CBKPp.jpg' size="tiny" circular />
                                     )}
                                 </div>
                                 <div className="center aligned">
@@ -185,51 +185,53 @@ function ProfilePage (props) {
                                         ) : (
                                             <Button icon='pencil' content='Editar' onClick={() => history.push("/settings/profile")} />
                                         )}
-                                        <Button icon='envelope outline' content='Mensagem' />
+                                        <Button icon='envelope outline' />
                                     </Button.Group>
                                 </div>
                                 <Card.Description className="center aligned mt-3" style={{ fontSize: "13px" }}>
                                     {profile.bio}
                                 </Card.Description>
                             </Card.Content>
-                            <Card.Content textAlign='center' style={{ fontSize: "13px" }}>
-                                <Label circular size='mini' color={profile.availabilityColor} empty key={profile.availabilityColor} /> {profile.availabilityTitle}
-                                { (profile.availabilityId === 1 || profile.availabilityId === 2) &&
-                                <>
-                                <p className='mt-1'>
-                                    { profile.availabilityItems[0].id && profile.availabilityItems.map((item, key) =>
-                                        <Label size='mini' className='mr-1' style={{cursor:"default"}}>{item.itemName}</Label>
-                                    )}  
-                                </p>
-                                <p style={{ fontSize: "11px" }}>
-                                    {profile.availabilityFocus === 1 || profile.availabilityFocus === 3 && <span className='mr-2'><Icon name='checkmark' size='small' />Projetos próprios</span>} {profile.availabilityFocus === 2 || profile.availabilityFocus === 3 && <span className='mr-2'><Icon name='checkmark' size='small' />Outros projetos</span>}
-                                </p>
-                                </>
-                                }
-                            </Card.Content>
+                            { profile.availabilityId && 
+                                <Card.Content textAlign='center' style={{ fontSize: "13px" }}>
+                                    <Label circular size='mini' color={profile.availabilityColor} empty key={profile.availabilityColor} /> {profile.availabilityTitle}
+                                    { (profile.availabilityId === 1 || profile.availabilityId === 2) &&
+                                    <>
+                                        <p style={{ fontSize: "11px" }}>
+                                            {profile.availabilityFocus && 'Para projetos:'} {profile.availabilityFocus === 1 || profile.availabilityFocus === 3 && <span className='ml-2 mr-2'><Icon name='checkmark' size='small' />Próprios</span>} {profile.availabilityFocus === 2 || profile.availabilityFocus === 3 && <span className='mr-2'><Icon name='checkmark' size='small' />Outros (convidado)</span>}
+                                        </p>
+                                        <p className='mt-1'>
+                                            { profile.availabilityItems[0].id && profile.availabilityItems.map((item, key) =>
+                                                <Label basic size='mini' className='mr-1' style={{cursor:'default',fontWeight:'500'}}>{item.itemName}</Label>
+                                            )}  
+                                        </p>
+                                    </>
+                                    }
+                                </Card.Content>
+                            }
                             <div className="content">
                                 { profile.following.length ? (
-                                    <span className="right floated" style={{ fontSize: '13px', cursor: 'pointer' }} onClick={() => setModalFollowingOpen(true)}>
+                                    <span className="right floated" style={{fontSize:'13px',cursor:'pointer',fontWeight:'500',}} onClick={() => setModalFollowingOpen(true)}>
                                         {profile.following.length} seguindo
                                     </span>
                                 ) : (
-                                    <span className="right floated" style={{fontSize: '13px',opacity:'0.6',cursor:'default'}}>
+                                    <span className="right floated" style={{fontSize:'13px',fontWeight:'500',opacity:'0.6',cursor:'default'}}>
                                         {profile.following.length} seguindo
                                     </span>
                                 )}
                                 { profile.followers.length ? (
-                                    <span style={{ fontSize: '13px', cursor: 'pointer' }} onClick={() => setModalFollowersOpen(true)}>
+                                    <span style={{fontSize: '13px',fontWeight:'500',cursor:'pointer'}} onClick={() => setModalFollowersOpen(true)}>
                                         {profile.followers.length} seguidores
                                     </span>
                                 ) : (
-                                    <span style={{fontSize: '13px',opacity:'0.6',cursor:'default'}}>
+                                    <span style={{fontSize: '13px',fontWeight:'500',cursor:'default'}}>
                                         {profile.followers.length} seguidores
                                     </span>
                                 )}
                             </div>
                         </Card>
                     </Grid.Column>
-                    <Grid.Column width={12}>
+                    <Grid.Column width={12}  className='noPaddingForMobile'>
                         <Card id="projects" style={{ width: "100%" }}>
                             <Card.Content>
                                 <Header as='h3'>Projetos</Header>
@@ -502,20 +504,12 @@ function ProfilePage (props) {
                             </List.Content>
                             <Image avatar src={follower.picture ? follower.picture : 'https://ik.imagekit.io/mublin/sample-folder/avatar-undefined_Kblh5CBKPp.jpg'} onClick={() => goToProfile(follower.username)} style={{cursor:'pointer'}} />
                             <List.Content onClick={() => goToProfile(follower.username)}>
-                                <List.Header style={{cursor:'pointer'}}>{follower.name}</List.Header>
-                                <List.Description style={{cursor:'pointer'}}>
-                                    {'@'+follower.username}
-                                </List.Description>
+                                <List.Header style={{cursor:'pointer'}}>{follower.name}<br/><span style={{fontWeight:'400'}}>{'@'+follower.username}</span></List.Header>
                             </List.Content>
                         </List.Item>
                     </List>
                 )}
             </Modal.Content>
-            {/* <Modal.Actions>
-                <Button size='medium' onClick={() => setModalFollowersOpen(false)}>
-                    Fechar
-                </Button>
-            </Modal.Actions> */}
         </Modal>
         <Modal
             size='mini'
@@ -533,20 +527,12 @@ function ProfilePage (props) {
                             </List.Content>
                             <Image avatar src={following.picture ? following.picture : 'https://ik.imagekit.io/mublin/sample-folder/avatar-undefined_Kblh5CBKPp.jpg'} onClick={() => goToProfile(following.username)} style={{cursor:'pointer'}} />
                             <List.Content onClick={() => goToProfile(following.username)}>
-                                <List.Header style={{cursor:'pointer'}}>{following.name}</List.Header>
-                                <List.Description style={{cursor:'pointer'}}>
-                                    {'@'+following.username}
-                                </List.Description>
+                                <List.Header style={{cursor:'pointer'}}>{following.name}<br/><span style={{fontWeight:'400'}}>{'@'+following.username}</span></List.Header>
                             </List.Content>
                         </List.Item>
                     </List>
                 )}
             </Modal.Content>
-            {/* <Modal.Actions>
-                <Button size='medium' onClick={() => setModalFollowingOpen(false)}>
-                    Fechar
-                </Button>
-            </Modal.Actions> */}
         </Modal>
         </>
     );

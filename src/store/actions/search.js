@@ -5,7 +5,8 @@ export const searchInfos = {
     getSearchUsersResults: getSearchUsersResults,
     getSearchProjectsResults: getSearchProjectsResults,
     getSearchResults: getSearchResults,
-    getSearchProjectResults: getSearchProjectResults
+    getSearchProjectResults: getSearchProjectResults,
+    getSuggestedUsersResults: getSuggestedUsersResults
 };
 
 function getSearchUsersResults(query) {
@@ -70,4 +71,20 @@ function getSearchProjectResults(query) {
     function request(query) { return { type: searchTypes.GET_SEARCHPROJECT_RESULTS_REQUEST, query } }
     function success(results) { return { type: searchTypes.GET_SEARCHPROJECT_RESULTS_SUCCESS, results } }
     function failure(error) { return { type: searchTypes.GET_SEARCHPROJECT_RESULTS_FAILURE, error } }
+}
+
+function getSuggestedUsersResults() {
+    return dispatch => {
+        dispatch(request());
+
+        searchService.getSuggestedUsersResults()
+            .then(
+                results => dispatch(success(results)),
+                error => dispatch(failure(error.toString()))
+            );
+        };
+
+    function request(query) { return { type: searchTypes.GET_SUGGESTEDUSERS_REQUEST } }
+    function success(results) { return { type: searchTypes.GET_SUGGESTEDUSERS_SUCCESS, results } }
+    function failure(error) { return { type: searchTypes.GET_SUGGESTEDUSERS_FAILURE, error } }
 }

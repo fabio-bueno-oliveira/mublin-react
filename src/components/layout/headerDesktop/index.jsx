@@ -76,10 +76,17 @@ const HeaderDesktop = () => {
     }
 
     const handleSearch = (query) => {
-        history.push({
-            pathname: '/search',
-            search: '?keywords='+query
-        })
+        if (query) {
+            history.push({
+                pathname: '/search',
+                search: '?keywords='+query
+            })
+        } else {
+            history.push({
+                pathname: '/search',
+                search: '?keywords='
+            })
+        }
     }
 
     const [searchQuery, setSearchQuery] = useState(searchedKeywords)

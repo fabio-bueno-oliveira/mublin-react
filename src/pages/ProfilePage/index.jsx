@@ -181,16 +181,18 @@ function ProfilePage (props) {
                                     }
                                     <Button.Group fluid color="black" size="small" className="mt-3">
                                         { user.id !== profile.id ? (
-                                            <Button icon={followedByMe.following === 'true' ? 'checkmark' : 'add user'} content={followedByMe.following === 'true' ? 'Seguindo' : 'Seguir'} loading={loadingFollow} onClick={() => followUnfollow()} />
+                                            <Button content={followedByMe.following === 'true' ? 'Seguindo' : 'Seguir'} loading={loadingFollow} onClick={() => followUnfollow()} />
                                         ) : (
-                                            <Button icon='pencil' content='Editar' onClick={() => history.push("/settings/profile")} />
+                                            <Button content='Editar' onClick={() => history.push("/settings/profile")} />
                                         )}
-                                        <Button icon='envelope outline' />
+                                        <Button content='Mensagem' />
                                     </Button.Group>
                                 </div>
-                                <Card.Description className="center aligned mt-3" style={{ fontSize: "13px" }}>
-                                    {profile.bio}
-                                </Card.Description>
+                                { profile.bio && 
+                                    <Card.Description className="center aligned mt-3" style={{ fontSize: "13px" }}>
+                                        {profile.bio}
+                                    </Card.Description>
+                                }
                             </Card.Content>
                             { profile.availabilityId && 
                                 <Card.Content textAlign='center' style={{ fontSize: "13px" }}>
@@ -198,7 +200,7 @@ function ProfilePage (props) {
                                     { (profile.availabilityId === 1 || profile.availabilityId === 2) &&
                                     <>
                                         <p style={{ fontSize: "11px" }}>
-                                            {profile.availabilityFocus && 'Para projetos:'} {profile.availabilityFocus === 1 || profile.availabilityFocus === 3 && <span className='ml-2 mr-2'><Icon name='checkmark' size='small' />Próprios</span>} {profile.availabilityFocus === 2 || profile.availabilityFocus === 3 && <span className='mr-2'><Icon name='checkmark' size='small' />Outros (convidado)</span>}
+                                            {profile.availabilityFocus && 'Para projetos:'} {profile.availabilityFocus === 1 || profile.availabilityFocus === 3 && <span className='ml-2 mr-2'><Icon name='checkmark' size='small' />Próprios</span>} {profile.availabilityFocus === 2 || profile.availabilityFocus === 3 && <span className='mr-2'><Icon name='checkmark' size='small' />Outros</span>}
                                         </p>
                                         <p className='mt-1'>
                                             { profile.availabilityItems[0].id && profile.availabilityItems.map((item, key) =>
@@ -336,6 +338,7 @@ function ProfilePage (props) {
                                 />
                             </Card.Content>
                         </Card>
+                        { profile.recentActivity[0].id && 
                         <Card id="posts" style={{ width: "100%" }}>
                             <Card.Content>
                                 <Header as='h3' className='mb-3'>Atividades recentes</Header>
@@ -376,6 +379,7 @@ function ProfilePage (props) {
                                 )}
                             </Card.Content>
                         </Card>
+                        }
                         <Card id="strengths" style={{ width: "100%" }}>
                             <Card.Content>
                                 <Header as='h3' className='mb-3'>Pontos Fortes</Header>

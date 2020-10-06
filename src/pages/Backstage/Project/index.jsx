@@ -6,6 +6,7 @@ import { projectInfos } from '../../../store/actions/project';
 import HeaderDesktop from '../../../components/layout/headerDesktop';
 import HeaderMobile from '../../../components/layout/headerMobile';
 import FooterMenuMobile from '../../../components/layout/footerMenuMobile';
+import Spacer from '../../../components/layout/Spacer';
 import Loader from 'react-loader-spinner';
 import { Formik } from 'formik';
 import { formatDistance } from 'date-fns';
@@ -215,18 +216,14 @@ function ProjectBackstagePage (props) {
                                     <p>Nenhum aviso cadastrado no momento</p>
                                 )}
                             </Segment>
-                            <Segment className='mb-5'>
+                            <Segment>
                                 <Header as='h4'>
                                     Estatísticas
                                 </Header>
                                 <Statistic.Group horizontal size='mini'>
                                     <Statistic>
                                         <Statistic.Value>2,204</Statistic.Value>
-                                        <Statistic.Label>eventos públicos</Statistic.Label>
-                                    </Statistic>
-                                    <Statistic>
-                                        <Statistic.Value>3,322</Statistic.Value>
-                                        <Statistic.Label>eventos privados</Statistic.Label>
+                                        <Statistic.Label>eventos</Statistic.Label>
                                     </Statistic>
                                     <Statistic>
                                         <Statistic.Value>R$ 1.950,00</Statistic.Value>
@@ -236,12 +233,12 @@ function ProjectBackstagePage (props) {
                             </Segment>
                         </Grid.Column>
                         <Grid.Column mobile={16} computer={8}>
-                            <Segment attached='top'>
+                            <Segment>
                                 <div className='cardTitle'>
                                     <Header as='h4'>
                                         <Header.Content>
                                             Membros
-                                            <Header.Subheader>{members.length} {members.length !== 1 ? 'usuários' : 'usuário'} relacionados</Header.Subheader>
+                                            <Header.Subheader>{members.length} relacionados</Header.Subheader>
                                         </Header.Content>
                                     </Header>
                                     <Label size='small' content='Convidar novo' icon='user plus' className='cpointer' />
@@ -249,9 +246,11 @@ function ProjectBackstagePage (props) {
                                 <List relaxed divided verticalAlign='middle'>
                                     {members.map((member, key) =>
                                         <List.Item key={key}>
-                                            <List.Content floated='right'>
-                                                <Button size='mini' icon='cog' />
-                                            </List.Content>
+                                            { member.confirmed === 1 && 
+                                                <List.Content floated='right'>
+                                                    <Button size='mini' icon='cog' />
+                                                </List.Content>
+                                            }
                                             { member.picture ? (
                                                 <Image src={'https://ik.imagekit.io/mublin/users/avatars/tr:h-200,w-200,c-maintain_ratio/'+member.id+'/'+member.picture} width="25" height="25" circular alt={'Foto de '+member.name} />
                                             ) : (
@@ -259,17 +258,23 @@ function ProjectBackstagePage (props) {
                                             )}
                                             <List.Content>
                                                 <List.Header as='a'>
-                                                    {member.name+' '+member.lastname} ({member.statusName}) {member.confirmed === 2 && <Label size='tiny' className='ml-2'><Icon name='clock outline' />Solicitado</Label>}
+                                                    {member.name+' '+member.lastname} {member.confirmed === 2 && <Icon name='clock outline' />}
                                                 </List.Header>
-                                                <span style={{fontSize:'11px'}}><Icon name={member.statusIcon} />{member.role1}{member.role2 && ', '+member.role2}{member.role3 && ', '+member.role3}</span>
+                                                <span style={{fontSize:'11px'}}><Icon name={member.statusIcon} />{member.statusName} · {member.role1}{member.role2 && ', '+member.role2}{member.role3 && ', '+member.role3}</span>
                                             </List.Content>
+                                            {member.confirmed === 2 && 
+                                                <div className='mt-1'>
+                                                    <p style={{fontSize:'11px',textAlign:'left'}}>{member.name} solicitou participação</p>
+                                                    <Button.Group size='mini' fluid>
+                                                        <Button positive>aceitar</Button>
+                                                        <Button.Or text='ou' />
+                                                        <Button negative>recusar</Button>
+                                                    </Button.Group>
+                                                </div>
+                                            }
                                         </List.Item>
                                     )}
                                 </List>
-                            </Segment>
-                            <Segment secondary attached='bottom'>
-                                <p style={{fontSize:'11px'}}>Administradores podem editar toda a página, incluindo foto de perfil do projeto e excluir membros</p>
-                                <p style={{fontSize:'11px'}}>Líderes podem adicionar e editar eventos</p>
                             </Segment>
                             <Segment>
                                 <Header as='h4'>
@@ -279,22 +284,22 @@ function ProjectBackstagePage (props) {
                                     <List.Item>
                                         <List.Icon name='calendar outline' size='large' verticalAlign='middle' />
                                         <List.Content>
-                                            <List.Header as='a'>Semantic-Org/Semantic-UI</List.Header>
-                                            <List.Description as='a'>Updated 10 mins ago</List.Description>
+                                            <List.Header as='a'>Nome do Evento</List.Header>
+                                            <List.Description as='a'>06/10/2020</List.Description>
                                         </List.Content>
                                     </List.Item>
                                     <List.Item>
                                         <List.Icon name='calendar outline' size='large' verticalAlign='middle' />
                                         <List.Content>
-                                            <List.Header as='a'>Semantic-Org/Semantic-UI-Docs</List.Header>
-                                            <List.Description as='a'>Updated 22 mins ago</List.Description>
+                                            <List.Header as='a'>Nome do Evento</List.Header>
+                                            <List.Description as='a'>06/10/2020</List.Description>
                                         </List.Content>
                                     </List.Item>
                                     <List.Item>
                                         <List.Icon name='calendar outline' size='large' verticalAlign='middle' />
                                         <List.Content>
-                                            <List.Header as='a'>Semantic-Org/Semantic-UI-Meteor</List.Header>
-                                            <List.Description as='a'>Updated 34 mins ago</List.Description>
+                                            <List.Header as='a'>Nome do Evento</List.Header>
+                                            <List.Description as='a'>06/10/2020</List.Description>
                                         </List.Content>
                                     </List.Item>
                                 </List>
@@ -440,21 +445,21 @@ function ProjectBackstagePage (props) {
                                 <div className='cardTitle'>
                                     <Header as='h4'>
                                         <Header.Content>
-                                        Tag
+                                            Tag
                                         </Header.Content>
                                     </Header>
                                     <Label size='small' content='Editar' icon='pencil' onClick={() => setModalTagIsOpen(true)} />
                                 </div>
                                 { project.labelText ? (
                                     <>
-                                        { project.labelShow ? (
-                                            <Icon name='eye' />
-                                        ) : (
-                                            <Icon name='eye slash' />
-                                        )}
-                                        <Label color={project.labelColor} size='tiny' style={{fontWeight:'500'}}>
+                                        <Label tag color={project.labelColor} size='tiny' style={{fontWeight:'500'}} className='mr-2'>
                                             {project.labelText}
                                         </Label>
+                                        { project.labelShow ? (
+                                            <><Icon name='eye' /><span>Visível</span></>
+                                        ) : (
+                                            <><Icon name='eye slash' /><span>Oculta</span></>
+                                        )}
                                     </>
                                 ) : (
                                     <p>Nenhuma tag definida</p>
@@ -585,6 +590,7 @@ function ProjectBackstagePage (props) {
                                     </Formik>
                                 </Modal>
                             </Segment>
+                            <Spacer compact />
                         </Grid.Column>
                     </Grid.Row>
                 </Grid>

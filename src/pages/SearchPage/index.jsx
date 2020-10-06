@@ -138,7 +138,7 @@ function SearchPage (props) {
                                                     {searchResults.projects[0].id ? (
                                                     <Card.Group itemsPerRow={screenSize.matches ? 6 : 2} className='px-3 pb-5' style={{maxWidth:'100%'}}>
                                                         { searchResults.projects.map((project, key) =>
-                                                            <Card key={key} onClick={() => history.push('/'+project.username)}>
+                                                            <Card key={key} onClick={() => history.push('/project/'+project.username)}>
                                                                 { project.picture ? (
                                                                     <Image rounded src={project.picture} onClick={() => history.push('/project/'+project.username)} wrapped ui={false} />
                                                                 ) : (

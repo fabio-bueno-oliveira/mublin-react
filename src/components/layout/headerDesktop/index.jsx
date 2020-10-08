@@ -107,7 +107,7 @@ const HeaderDesktop = () => {
                     <Menu.Item onClick={() => history.push("/backstage")} active={window.location.pathname.includes("/backstage")}>
                         <i className="fas fa-warehouse mr-2"></i> Backstage
                     </Menu.Item>
-                    <Dropdown item simple text='Novo' icon='caret down'  key='new'>
+                    <Dropdown item simple text='Novo' icon='caret down' key='new'>
                         <Dropdown.Menu>
                             <Dropdown.Item>
                                 <i className='dropdown icon' />
@@ -197,7 +197,7 @@ const HeaderDesktop = () => {
                                     transformation={[{ "height": "200", "width": "200", "r": "max" }]} 
                                 />
                             )}
-                            {userInfo.plan === 'Pro' && <Label size='mini' content='PRO' />} <i className='dropdown icon' />
+                            {userInfo.plan === 'Pro' && <Label size='mini' content='PRO' />}<i className='dropdown icon' />
                             <Dropdown.Menu>
                                 <Dropdown.Item icon='user circle' text='Meu perfil' onClick={() => history.push('/'+userInfo.username)} />
                                 <Dropdown.Item icon='setting' text='Configurações' onClick={() => history.push('/settings')} />

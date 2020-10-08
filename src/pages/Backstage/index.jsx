@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { userInfos } from '../../store/actions/user';
 import { useHistory } from 'react-router-dom';
-import { Grid, Header, Segment, Form, Image, Icon, Message, Label, Button } from 'semantic-ui-react';
+import { Grid, Header, Segment, Form, Image, Icon, Message, Label } from 'semantic-ui-react';
 import HeaderDesktop from '../../components/layout/headerDesktop';
 import HeaderMobile from '../../components/layout/headerMobile';
 import FooterMenuMobile from '../../components/layout/footerMenuMobile';

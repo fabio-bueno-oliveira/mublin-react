@@ -68,8 +68,8 @@ const PublicEvents = (props) => {
                         </div>
                     </Card.Description>
                     <Card.Description>
-                        {privateEvents.requesting ? (
-                            <Header textAlign='center'>
+                        { props.requesting ? (
+                            <Header textAlign='center' className='mt-5'>
                                 <Icon loading name='spinner' size='large' />
                             </Header>
                         ) : (

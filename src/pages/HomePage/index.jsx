@@ -264,10 +264,10 @@ function HomePage () {
             <Container>
             <Grid stackable columns={3} className='mt-1 mt-md-2 mb-5 mb-md-0 pb-5 pb-md-0'>
                 <Grid.Column>
-                    <PublicEvents publicEvents={publicEvents} />
+                    <PublicEvents publicEvents={publicEvents} requesting={events.requesting} />
                 </Grid.Column>
                 <Grid.Column>
-                    <PrivateEvents privateEvents={privateEvents} />
+                    <PrivateEvents privateEvents={privateEvents} requesting={events.requesting} />
                 </Grid.Column>
                 <Grid.Column>
                     <Notes notes={notes} user={user} projectsList={projectsList} members={members} />

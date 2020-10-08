@@ -1,7 +1,7 @@
 import React, { useState, useSelector } from 'react';
 import { useDispatch } from 'react-redux';
 import { Link, useHistory } from 'react-router-dom';
-import { Header, Modal, Card, List, Image, Label, Icon, Button, Form, Radio, Dropdown, Segment } from 'semantic-ui-react';
+import { Header, Modal, Card, List, Image, Label, Icon, Button, Form, Radio, Dropdown, Segment, Loader } from 'semantic-ui-react';
 import { projectInfos } from '../../store/actions/project';
 import { formatDistance } from 'date-fns';
 import pt from 'date-fns/locale/pt-BR';

@@ -95,9 +95,8 @@ function SearchPage (props) {
                                                                     <Image src='https://ik.imagekit.io/mublin/sample-folder/avatar-undefined_Kblh5CBKPp.jpg' wrapped ui={false} />
                                                                 )}
                                                                 <Card.Content>
-                                                                    {user.id === userSession.id && <div className='meta mb-1' style={{fontSize:'10px',fontWeight:'500',position:'absolute',top:'51%',backgroundColor:'white',borderRadius:'3px',padding:'3px'}}>VOCÊ</div>}
                                                                     <Card.Header style={{fontSize:'14.4px',width:'100%',whiteSpace:'nowrap',overflow:'hidden',textOverflow:'ellipsis'}} title={user.name+' '+user.lastname}>
-                                                                        {!!user.verified && <Icon name='check circle' color='blue' className='verifiedIcon' title='Verificado' />} {user.name+' '+user.lastname}
+                                                                        {!!user.verified && <Icon name='check circle' color='blue' className='verifiedIcon' title='Verificado' />} {user.name} {user.id !== userSession.id ? user.lastname : '(Você)'}
                                                                     </Card.Header>
                                                                     { user.instrumentalist && 
                                                                         <Card.Meta style={{fontSize:'12.4px'}}>

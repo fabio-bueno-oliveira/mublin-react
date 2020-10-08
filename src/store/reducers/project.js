@@ -3,6 +3,7 @@ import { projectTypes } from '../types/project';
 const initialState = {
   requesting: false,
   adminAccess: 0,
+  confirmed: '',
   id: '',
   name: '',
   oldName: '',
@@ -123,7 +124,8 @@ export function project(state = initialState, action) {
       return {
         ...state,
         requesting: false,
-        adminAccess: action.info.accessible
+        adminAccess: action.info.admin,
+        confirmed: action.info.confirmed
       };
     case projectTypes.GET_PROJECT_ADMINACCESS_FAILURE:
       return {

@@ -49,6 +49,8 @@ function SearchPage (props) {
     const handler = e => setScreenSize({matches: e.matches});
     window.matchMedia("(min-width: 768px)").addEventListener('change',handler);
 
+    const [showMobileMenu, setShowMobileMenu] = useState(true)
+
     return (
         <>
             <HeaderDesktop />
@@ -63,6 +65,8 @@ function SearchPage (props) {
                                     setSearchQuery(searchQuery);
                                 }
                             }}
+                            onFocus={() => setShowMobileMenu(false)}
+                            onBlur={() => setShowMobileMenu(true)}
                         >
                             <Input 
                                 fluid
@@ -222,7 +226,9 @@ function SearchPage (props) {
                     </Grid.Row>
                 )}
             </Grid>
-            <FooterMenuMobile />
+            { showMobileMenu && 
+                <FooterMenuMobile />
+            }
         </>
     )
 }

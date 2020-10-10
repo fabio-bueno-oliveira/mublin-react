@@ -1,10 +1,13 @@
 import React, { useState } from 'react';
-import { useHistory } from 'react-router-dom';
+import { useHistory, Redirect } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { Container, Grid, Form, Button, Input, Header } from 'semantic-ui-react';
 import './styles.scss';
 
 function LandingPage () {
+
+    const loggedIn = useSelector(state => state.authentication.loggedIn);
 
     let history = useHistory();
 
@@ -20,6 +23,9 @@ function LandingPage () {
 
     return (
         <>
+        { loggedIn &&
+            <Redirect to={{ pathname: '/home' }} />
+        }
         <main className="landingPage">
             <Container>
                 <Grid padded as='header'>
@@ -75,6 +81,13 @@ function LandingPage () {
                                 value={email}
                             />
                         </Form>
+                        <div style={{marginTop:'40px'}}>
+                            <Link inverted to={{ pathname: "/about" }}>
+                                <span style={{fontSize:'12px',fontWeight:'400',color:'#759b9c'}}>
+                                    Sobre o Mublin
+                                </span>
+                            </Link>
+                        </div>
                     </Grid.Column>
                     <Grid.Column width={16} textAlign='center' only='mobile'>
                         <Header as='h2' inverted>Informações das suas bandas,<br/> <nobr>centralizadas em um só lugar.</nobr></Header>
@@ -101,6 +114,13 @@ function LandingPage () {
                                 Cadastro
                             </Button>
                         </Grid.Column>
+                        <div style={{marginTop:'26px',textAlign:'center',width:'100%'}}>
+                            <Link inverted to={{ pathname: "/about" }}>
+                                <span style={{fontSize:'12px',fontWeight:'400',color:'#759b9c'}}>
+                                    Sobre o Mublin
+                                </span>
+                            </Link>
+                        </div>
                     </Grid.Row>
                     {/* <Grid.Row columns={1}>
                         <Grid.Column width={16} textAlign='center'>

@@ -48,7 +48,10 @@ const PublicEvents = (props) => {
         <>
             <Card id="publicEvents" style={{width:'100%',backgroundColor:'transparent',boxShadow:'none'}}>
                 <Card.Content style={{paddingTop:'0px'}}>
-                    <Image src='https://ik.imagekit.io/mublin/tr:r-8,w-300,h-80,c-maintain_ratio,fo-top/misc/music/home-banners/concertd2_f1sBM5Uzc.jpg' fluid className="mb-3" />
+                    {/* <Segment inverted color='violet'>
+                        <i className="fas fa-ticket-alt mr-1"></i> Apresentações e Eventos
+                    </Segment> */}
+                    <Image src='https://ik.imagekit.io/mublin/tr:r-8,w-400,h-95,c-maintain_ratio,fo-top/misc/music/home-banners/mic-blk_GMKT2Fvsn.jpg' fluid className="mb-3" />
                     <Card.Header className="ui mt-0 mb-3">Apresentações e Eventos</Card.Header>
                     <Card.Description className="mb-3">
                         { publicEvents.length ? (

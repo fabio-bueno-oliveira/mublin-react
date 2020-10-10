@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, Redirect } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { userActions } from '../../store/actions/authentication';
 import { Formik } from 'formik';
-import ValidateUtils from '../../utils/ValidateUtils';
+// import ValidateUtils from '../../utils/ValidateUtils';
 import { Button, Input, Header, Form, Message } from 'semantic-ui-react';
 import logo from '../../assets/img/logos/logo-mublin-circle-black.png';
 import Loader from 'react-loader-spinner';
@@ -12,6 +12,8 @@ import "react-loader-spinner/dist/loader/css/react-spinner-loader.css";
 import './styles.scss';
 
 function LoginPage (props) {
+
+    const loggedIn = useSelector(state => state.authentication.loggedIn);
 
     const query = new URLSearchParams(props.location.search);
     const urlInfo = query.get('info')
@@ -24,7 +26,7 @@ function LoginPage (props) {
 
     // reset login status
     useEffect(() => { 
-        dispatch(userActions.logout()); 
+        // dispatch(userActions.logout()); 
     }, [dispatch]);
 
     const validate = values => {
@@ -46,6 +48,9 @@ function LoginPage (props) {
 
     return (
         <>
+        { loggedIn &&
+            <Redirect to={{ pathname: '/home' }} />
+        }
         { (loading && !error) && 
             <Loader
                 className="appLoadingIcon"

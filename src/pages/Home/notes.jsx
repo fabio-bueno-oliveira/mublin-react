@@ -49,7 +49,7 @@ const Notes = (props) => {
         <>
             <Card id="notes" style={{width:'100%',backgroundColor:'transparent',boxShadow:'none'}}>
                 <Card.Content style={{paddingTop:'0px'}}>
-                    <Image src='https://ik.imagekit.io/mublin/tr:r-8,w-300,h-80,c-maintain_ratio/misc/music/home-banners/music-notes_fbRjZcNpeR.jpg' fluid className="mb-3" />
+                    <Image src='https://ik.imagekit.io/mublin/tr:r-8,w-400,h-95,c-maintain_ratio,fo-top/misc/music/home-banners/note-and-coffee_7eYOoAm8f.jpg' fluid className="mb-3" />
                     <Card.Header className="ui mt-0 mb-3">Notas</Card.Header>
                     <Card.Description className="mb-3 mb-md-5">
                         { notes.list[0].id ? (

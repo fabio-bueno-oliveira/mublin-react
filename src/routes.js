@@ -3,6 +3,7 @@ import { BrowserRouter, Switch, Route, Redirect } from 'react-router-dom'
 import { history } from './utils/history';
 import { useSelector } from 'react-redux';
 import LandingPage from './pages/LandingPage';
+import About from './pages/About';
 import LoginPage from './pages/LoginPage';
 import SignupPage from './pages/SignupPage';
 import StartIntroPage from './pages/StartPages/Intro';
@@ -10,7 +11,7 @@ import StartStep1Page from './pages/StartPages/Step1';
 import StartStep2Page from './pages/StartPages/Step2';
 import StartStep3Page from './pages/StartPages/Step3';
 import StartStep4Page from './pages/StartPages/Step4';
-import HomePage from './pages/HomePage';
+import Home from './pages/Home';
 import Feed from './pages/Feed';
 import New from './pages/New';
 import ProfilePage from './pages/ProfilePage';
@@ -40,7 +41,7 @@ function Routes () {
             {...rest}
             render={(props) => authed === true
               ? <Component {...props} />
-              : <Redirect to={{pathname: '/login', state: { errorMsg: "É necessário fazer o login" }}} />}
+              : <Redirect to={{pathname: '/', state: { errorMsg: "É necessário fazer o login" }}} />}
           />
         )
     }
@@ -49,6 +50,7 @@ function Routes () {
         <BrowserRouter history={history}>
             <Switch>
                 <Route path="/" exact component={LandingPage} />
+                <Route path="/about" exact component={About} />
                 <Route path="/login" component={LoginPage} />
                 <Route path="/signup" component={SignupPage} />
                 <PrivateRoute authed={loggedIn} path="/start/intro" component={StartIntroPage} />
@@ -56,7 +58,7 @@ function Routes () {
                 <PrivateRoute authed={loggedIn} path="/start/step2" component={StartStep2Page} />
                 <PrivateRoute authed={loggedIn} path="/start/step3" component={StartStep3Page} />
                 <PrivateRoute authed={loggedIn} path="/start/step4" component={StartStep4Page} />
-                <PrivateRoute authed={loggedIn} path="/home" component={HomePage} />
+                <PrivateRoute authed={loggedIn} path="/home" component={Home} />
                 <PrivateRoute authed={loggedIn} path="/feed" component={Feed} />
                 <PrivateRoute authed={loggedIn} path="/new/project" component={NewProject} />
                 <PrivateRoute authed={loggedIn} path="/new/idea" component={NewProjectIdea} />

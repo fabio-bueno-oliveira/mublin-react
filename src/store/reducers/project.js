@@ -4,6 +4,8 @@ const initialState = {
   requesting: false,
   adminAccess: 0,
   confirmed: '',
+  active: '',
+  leader: '',
   id: '',
   name: '',
   oldName: '',
@@ -47,6 +49,7 @@ const initialState = {
       statusName: '',
       statusIcon: '',
       admin: '',
+      active: '',
       leader: '',
       touring: '',
       confirmed: ''
@@ -125,7 +128,9 @@ export function project(state = initialState, action) {
         ...state,
         requesting: false,
         adminAccess: action.info.admin,
-        confirmed: action.info.confirmed
+        confirmed: action.info.confirmed,
+        active: action.info.active,
+        leader: action.info.leader
       };
     case projectTypes.GET_PROJECT_ADMINACCESS_FAILURE:
       return {

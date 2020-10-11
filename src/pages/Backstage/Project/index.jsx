@@ -32,6 +32,7 @@ function ProjectBackstagePage (props) {
 
     const project = useSelector(state => state.project);
     const members = project.members;
+    const membersAdmin = members.filter((member) => { return member.admin === 1 })
 
     document.title = 'Backstage ' + project.name + ' | Mublin'
 
@@ -164,6 +165,50 @@ function ProjectBackstagePage (props) {
         })
     }
 
+    // Modal de gerenciamento de membro do projeto
+    const [modalMemberManagement, setModalMemberManagementOpen] = useState(false)
+    const [modalMemberManagementUserId, setModalMemberManagementUserId] = useState(null)
+
+    const memberInfo = members.filter((member) => { return member.id === modalMemberManagementUserId })
+
+    const [manageUserId, setManageUserId] = useState('')
+    const [manageUserAdmin, setManageUserAdmin] = useState('')
+    const [manageUserActive, setManageUserActive] = useState('')
+    const [manageUserLeader, setManageUserLeader] = useState('')
+
+    const openModalMemberManagement = (userId, admin, active, leader) => {
+        setManageUserId(userId)
+        setManageUserAdmin(admin)
+        setManageUserActive(active)
+        setManageUserLeader(leader)
+        setModalMemberManagementUserId(userId)
+        setModalMemberManagementOpen(true)
+    }
+
+    const updateMemberSettings = (userId) => {
+        setIsLoading(true)
+        fetch('https://mublin.herokuapp.com/project/'+project.id+'/updateMemberDetails', {
+            method: 'PUT',
+            headers: {
+                'Accept': 'application/json, text/plain, */*',
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + user.token
+            },
+            body: JSON.stringify({userId: user.id, projectId: project.id, admin: manageUserAdmin, active: manageUserActive, leader: manageUserLeader})
+        }).then((response) => {
+            response.json().then((response) => {
+                dispatch(projectInfos.getProjectMembers(props.match.params.username))
+                setIsLoading(false)
+                setModalMemberManagementOpen(false)
+            })
+        }).catch(err => {
+                setIsLoading(false)
+                console.error(err)
+                alert('Ocorreu um erro ao tentar alterar os detalhes do integrante. Tente novamente em instantes')
+                setModalMemberManagementOpen(false)
+            })
+    }
+
     return (
         <>
         <HeaderDesktop />
@@ -266,31 +311,31 @@ function ProjectBackstagePage (props) {
                                 <div className='cardTitle'>
                                     <Header as='h4'>
                                         <Header.Content>
-                                            Membros
+                                            Integrantes
                                             <Header.Subheader>{members.length} relacionados</Header.Subheader>
                                         </Header.Content>
                                     </Header>
                                     <Label size='small' content='Convidar novo' icon='user plus' className='cpointer' />
                                 </div>
-                                <Table columns={3} unstackable size='small' compact='very'>
-                                    <Table.Header>
+                                <Table columns={3} unstackable compact='very' basic='very'>
+                                    {/* <Table.Header>
                                         <Table.Row>
                                             <Table.HeaderCell width={14}>Nome</Table.HeaderCell>
                                             <Table.HeaderCell width={2}></Table.HeaderCell>
                                         </Table.Row>
-                                    </Table.Header>
+                                    </Table.Header> */}
                                     <Table.Body>
                                         {members.map((member, key) =>
                                             <Table.Row key={key}>
-                                                <Table.Cell>
+                                                <Table.Cell width={14}>
                                                     { member.picture ? (
-                                                        <Image src={'https://ik.imagekit.io/mublin/users/avatars/tr:h-200,w-200,c-maintain_ratio/'+member.id+'/'+member.picture} avatar />
+                                                        <Image src={'https://ik.imagekit.io/mublin/users/avatars/tr:h-200,w-200,c-maintain_ratio/'+member.id+'/'+member.picture} avatar onClick={() => history.push('/'+member.username)} style={{cursor:'pointer'}} />
                                                     ) : (
-                                                        <Image src='https://ik.imagekit.io/mublin/sample-folder/avatar-undefined_Kblh5CBKPp.jpg' avatar />
+                                                        <Image src='https://ik.imagekit.io/mublin/sample-folder/avatar-undefined_Kblh5CBKPp.jpg' avatar onClick={() => history.push('/'+member.username)} style={{cursor:'pointer'}} />
                                                     )}
                                                     {member.confirmed === 1 ? ( 
                                                         <>
-                                                            <span style={{fontWeight:'500'}} className='mr-2'>{member.name} {member.lastname}</span>
+                                                            <span style={{fontWeight:'500'}} className='mr-1'>{member.name} {member.lastname}</span>
                                                             {!!member.admin && 
                                                                 <Popup 
                                                                     trigger={<Icon name='key' />}
@@ -298,24 +343,40 @@ function ProjectBackstagePage (props) {
                                                                     inverted
                                                                     size='mini'
                                                                 />
-                                                            }<br/>
+                                                            }
+                                                            {member.active ? (
+                                                                <Popup 
+                                                                    trigger={<Icon color='green' name='power' />}
+                                                                    content='Ativo atualmente no projeto'
+                                                                    inverted
+                                                                    size='mini'
+                                                                />
+                                                            ) : (
+                                                                <Popup 
+                                                                    trigger={<Icon color='red' name='power' />}
+                                                                    content='Inativo'
+                                                                    inverted
+                                                                    size='mini'
+                                                                />
+                                                            )}
+                                                            <br/>
                                                             <span style={{fontSize:'11px'}}>{member.role1}{member.role2 && ', '+member.role2}{member.role3 && ', '+member.role3}</span><br/>
                                                             <span style={{fontSize:'10px'}}>
-                                                                <Icon name={member.statusIcon} /> {member.statusName}
+                                                                <Icon name={member.statusIcon} />{member.statusName}{member.statusId === 2 && '/sideman'}{member.joinedIn && ', de '+member.joinedIn+' até '}{member.leftIn ? member.leftIn : 'atualmente'}
                                                             </span>
                                                         </>
                                                     ) : (
                                                         <>
-                                                        <span style={{fontSize:'11px', fontWeight:'500'}}>{member.name+' '+member.lastname}</span>
-                                                        <div className='mt-1'>
-                                                            <span style={{fontSize:'11px', fontWeight:'500'}}>solicitou participação como {member.role1}{member.role2 && ', '+member.role2}{member.role3 && ', '+member.role3}<br/>({member.statusName}{member.joinedIn && ', de '+member.joinedIn+' a '}{member.leftIn ? member.leftIn : 'atualmente'})</span>
-                                                        </div>
+                                                            <span style={{fontWeight:'500'}}>{member.name+' '+member.lastname}</span>
+                                                            <div className='mt-1'>
+                                                                <span style={{fontSize:'11px', fontWeight:'500'}}>solicitou participação como {member.role1}{member.role2 && ', '+member.role2}{member.role3 && ', '+member.role3}<br/>({member.statusName}{member.statusId === 2 && '/sideman'}{member.joinedIn && ', de '+member.joinedIn+' até '}{member.leftIn ? member.leftIn : 'atualmente'})</span>
+                                                            </div>
                                                         </>
                                                     )}
                                                 </Table.Cell>
-                                                <Table.Cell textAlign='right'>
+                                                <Table.Cell width={2} textAlign='right'>
                                                     {member.confirmed === 1 ? ( 
-                                                        <Button size='mini' icon='cog' />
+                                                        <Button size='mini' icon='cog' onClick={() => openModalMemberManagement(member.id, member.admin, member.active, member.leader)} />
                                                     ) :(
                                                         <Button.Group size='mini'>
                                                             <Button positive className='pr-2'><Icon name='thumbs up outline' /></Button>
@@ -327,34 +388,114 @@ function ProjectBackstagePage (props) {
                                         )}
                                     </Table.Body>
                                 </Table>
+                                <Modal
+                                    size='mini'
+                                    open={modalMemberManagement}
+                                    onClose={() => setModalMemberManagementOpen()}
+                                >
+                                    <Modal.Header>Gerenciar membro do projeto</Modal.Header>
+                                    <Modal.Content>
+                                        { memberInfo.map((memberToManage, key) => 
+                                        <>
+                                            <p style={{fontSize:'11px'}} className='mb-4'>Apenas administradores podem editar estas opções</p>
+                                            <div className='mb-4'>
+                                                { memberToManage.picture ? (
+                                                    <Image src={'https://ik.imagekit.io/mublin/users/avatars/tr:h-200,w-200,c-maintain_ratio/'+memberToManage.id+'/'+memberToManage.picture} avatar />
+                                                ) : (
+                                                    <Image src='https://ik.imagekit.io/mublin/sample-folder/avatar-undefined_Kblh5CBKPp.jpg' avatar />
+                                                )}
+                                                <span>{memberToManage.name+' '+memberToManage.lastname} {!!memberToManage.admin && '(Administrador)'}</span>
+                                            </div>
+                                            <Form>
+                                                <Form.Field 
+                                                    label='Administrador' 
+                                                    control='select' 
+                                                    disabled={(!project.adminAccess ? true : false || (membersAdmin.length < 2 && memberToManage.id === user.id))}
+                                                    onChange={(e) => setManageUserAdmin(e.target.options[e.target.selectedIndex].value)}
+                                                    value={manageUserAdmin}
+                                                >
+                                                    <option value='1' selected={memberToManage.admin ? true : false}>Sim</option>
+                                                    <option value='0' selected={!memberToManage.admin ? true : false}>Não</option>
+                                                </Form.Field>
+                                                { !!(membersAdmin.length === 1 && project.adminAccess && user.id === memberToManage.id) && 
+                                                    <p style={{fontSize:'11px'}}>É necessário ao menos um administrador por projeto</p>
+                                                }
+                                                <Form.Field 
+                                                    label='Ativo no projeto atualmente' 
+                                                    control='select' 
+                                                    disabled={!project.adminAccess ? true : false}
+                                                    onChange={(e) => setManageUserActive(e.target.options[e.target.selectedIndex].value)}
+                                                    value={manageUserActive}
+                                                >
+                                                    <option value='1' selected={memberToManage.active ? true : false}>Sim</option>
+                                                    <option value='0' selected={!memberToManage.active ? true : false}>Ñão</option>
+                                                </Form.Field>
+                                                <Form.Field 
+                                                    label='Líder' 
+                                                    control='select' 
+                                                    disabled={!project.adminAccess ? true : false}
+                                                    onChange={(e) => setManageUserLeader(e.target.options[e.target.selectedIndex].value)}
+                                                    value={manageUserLeader}
+                                                >
+                                                    <option value='1'>Sim</option>
+                                                    <option value='0'>Ñão</option>
+                                                </Form.Field>
+                                            </Form>
+                                            <Button secondary fluid size='small' className='mt-4' onClick={() => updateMemberSettings(memberToManage.id)} disabled={project.adminAccess ? false : true} loading={isLoading}>
+                                                Salvar
+                                            </Button>
+                                            <Button fluid className='mt-2' size='small' onClick={() => setModalMemberManagementOpen(false)}>
+                                                Voltar
+                                            </Button>
+                                            { (memberToManage.id === user.id) && 
+                                                <Button fluid basic size='small' color='red' className='mt-2' disabled={(membersAdmin.length === 1 && project.adminAccess) ? true : false}>
+                                                    Sair deste projeto (me desassociar)
+                                                </Button>
+                                            }
+                                            { !!(membersAdmin.length === 1 && project.adminAccess && memberToManage.id === user.id) && 
+                                                <p style={{fontSize:'11px'}} className='mt-2'>É necessário que outro usuário seja administrador para que você possa se desassociar deste projeto</p>
+                                            }
+                                            { memberToManage.id !== user.id && 
+                                                <Button fluid basic size='small' color='red' className='mt-2' disabled={project.adminAccess ? false : true}>
+                                                    Desassociar este integrante
+                                                </Button>
+                                            }
+                                        </>
+                                        )}
+                                    </Modal.Content>
+                                </Modal>
                             </Segment>
                             <Segment>
                                 <Header as='h4'>
                                     Eventos
                                 </Header>
-                                <List divided relaxed>
-                                    <List.Item>
-                                        <List.Icon name='calendar outline' size='large' verticalAlign='middle' />
-                                        <List.Content>
-                                            <List.Header as='a'>Nome do Evento</List.Header>
-                                            <List.Description as='a'>06/10/2020</List.Description>
-                                        </List.Content>
-                                    </List.Item>
-                                    <List.Item>
-                                        <List.Icon name='calendar outline' size='large' verticalAlign='middle' />
-                                        <List.Content>
-                                            <List.Header as='a'>Nome do Evento</List.Header>
-                                            <List.Description as='a'>06/10/2020</List.Description>
-                                        </List.Content>
-                                    </List.Item>
-                                    <List.Item>
-                                        <List.Icon name='calendar outline' size='large' verticalAlign='middle' />
-                                        <List.Content>
-                                            <List.Header as='a'>Nome do Evento</List.Header>
-                                            <List.Description as='a'>06/10/2020</List.Description>
-                                        </List.Content>
-                                    </List.Item>
-                                </List>
+                                { project.active === 1 ? ( 
+                                    <List divided relaxed>
+                                        <List.Item>
+                                            <List.Icon name='calendar outline' size='large' verticalAlign='middle' />
+                                            <List.Content>
+                                                <List.Header as='a'>Nome do Evento</List.Header>
+                                                <List.Description as='a'>06/10/2020</List.Description>
+                                            </List.Content>
+                                        </List.Item>
+                                        <List.Item>
+                                            <List.Icon name='calendar outline' size='large' verticalAlign='middle' />
+                                            <List.Content>
+                                                <List.Header as='a'>Nome do Evento</List.Header>
+                                                <List.Description as='a'>06/10/2020</List.Description>
+                                            </List.Content>
+                                        </List.Item>
+                                        <List.Item>
+                                            <List.Icon name='calendar outline' size='large' verticalAlign='middle' />
+                                            <List.Content>
+                                                <List.Header as='a'>Nome do Evento</List.Header>
+                                                <List.Description as='a'>06/10/2020</List.Description>
+                                            </List.Content>
+                                        </List.Item>
+                                    </List>
+                                ) : (
+                                    <p>Apenas usuários ativos no projeto podem visualizar detalhes dos eventos</p>
+                                )}
                             </Segment>
                         </Grid.Column>
                         <Grid.Column mobile={16} computer={4}>
@@ -364,8 +505,8 @@ function ProjectBackstagePage (props) {
                                         <Header.Content>Funções administrativas</Header.Content>
                                     </Header>
                                 </Segment>
-                                { project.adminAccess === 1 ? (
-                                    <>
+                                
+
                                     <Segment textAlign='left'>
                                         <Header as='h4'>
                                             Foto
@@ -375,8 +516,8 @@ function ProjectBackstagePage (props) {
                                             ) : (
                                                 <Image centered bordered src={'https://ik.imagekit.io/mublin/sample-folder/tr:h-400,w-400,c-maintain_ratio/avatar-undefined_-dv9U6dcv3.jpg'} rounded size='small' />
                                         )}
-                                        <Button fluid size='tiny' className='mt-3' onClick={() => setModalNewProjectPictureOpen(true)}>
-                                            <Icon name='pencil' /> Alterar
+                                        <Button fluid size='tiny' className='mt-3' onClick={() => setModalNewProjectPictureOpen(true)} disabled={project.adminAccess === 1 ? false : true}>
+                                            <Icon name={project.adminAccess === 1 ? 'pencil' : 'lock'}/> Alterar
                                         </Button>
                                         <Modal
                                             id="newProjectPicture"
@@ -420,8 +561,9 @@ function ProjectBackstagePage (props) {
                                             size='tiny' 
                                             className='mt-3' 
                                             onClick={() => setModalBioIsOpen(true)}
+                                            disabled={project.adminAccess === 1 ? false : true}
                                         >
-                                            <Icon name='pencil' /> Alterar
+                                            <Icon name={project.adminAccess === 1 ? 'pencil' : 'lock'}/> Alterar
                                         </Button>
                                         <Modal
                                             size='mini'
@@ -507,8 +649,9 @@ function ProjectBackstagePage (props) {
                                             size='tiny' 
                                             className='mt-3' 
                                             onClick={() => setModalTagIsOpen(true)}
+                                            disabled={project.adminAccess === 1 ? false : true}
                                         >
-                                            <Icon name='pencil' /> Alterar
+                                            <Icon name={project.adminAccess === 1 ? 'pencil' : 'lock'}/> Alterar
                                         </Button>
                                         <Modal
                                             size='mini'
@@ -609,8 +752,9 @@ function ProjectBackstagePage (props) {
                                             size='tiny' 
                                             className='mt-3' 
                                             onClick={() => setModalAlertDeleteProjectOpen(true)}
+                                            disabled={project.adminAccess === 1 ? false : true}
                                         >
-                                            <Icon name='pencil' /> Deletar página
+                                            <Icon name={project.adminAccess === 1 ? 'trash alternate outline' : 'lock'} /> Deletar página
                                         </Button>
                                         <Modal
                                             basic
@@ -642,12 +786,7 @@ function ProjectBackstagePage (props) {
                                             </Modal.Actions>
                                         </Modal>
                                     </Segment>
-                                    </>
-                                ) : (
-                                    <Segment>
-                                        Você não tem acesso às funções administrativas
-                                    </Segment>
-                                )}
+
                             </Segment.Group>
                             <Spacer compact />
                         </Grid.Column>

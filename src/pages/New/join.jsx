@@ -94,6 +94,7 @@ function JoinPage () {
     const [main_role_fk, setMain_role_fk] = useState('')
     const [joined_in, setJoined_in] = useState('')
     const [left_in, setLeft_in] = useState(null)
+    const [portfolio, setPortfolio] = useState('0')
 
     const handleSubmitParticipation = () => {
         setIsLoading(true)
@@ -104,7 +105,7 @@ function JoinPage () {
                 'Content-Type': 'application/json',
                 'Authorization': 'Bearer ' + userSession.token
             },
-            body: JSON.stringify({ userId: userSession.id, projectId: projectId, active: active, status: status, main_role_fk: main_role_fk, joined_in: joined_in, left_in: left_in, leader: '0', confirmed: '2', admin: '0' })
+            body: JSON.stringify({ userId: userSession.id, projectId: projectId, active: active, status: status, main_role_fk: main_role_fk, joined_in: joined_in, left_in: left_in, leader: '0', confirmed: '2', admin: '0', portfolio: portfolio })
         }).then((response) => {
             dispatch(searchInfos.getSearchProjectsResults(keyword))
             setIsLoading(false)
@@ -289,6 +290,27 @@ function JoinPage () {
                                             )}
                                         </Form.Group>
                                         <Form.Checkbox name="active" checked={checkbox} label={modalProjectEndYear ? 'Estive ativo até o final do projeto' : 'Estou ativo atualmente neste projeto'} onChange={() => handleCheckbox(checkbox)} />
+                                        <label style={{fontWeight: '600', fontSize: '.92857143em'}}>Categorizar projeto como:</label>
+                                        <Form.Field>
+                                            <Radio
+                                                className="mt-3"
+                                                label='Principal'
+                                                name='radioGroup2'
+                                                value='0'
+                                                checked={portfolio === '0'}
+                                                onChange={() => setPortfolio('0')}
+                                            />
+                                        </Form.Field>
+                                        <Form.Field>
+                                            <Radio
+                                                className="mt-0"
+                                                label='Portfolio'
+                                                name='radioGroup2'
+                                                value='1'
+                                                checked={portfolio === '1'}
+                                                onChange={() => setPortfolio('1')}
+                                            />
+                                        </Form.Field>
                                     </Form>
                                     <Message size='tiny' warning>
                                         <p>*sua participação ficará pendente até que o(s) líder(es) deste projeto aprovem sua solicitação</p>

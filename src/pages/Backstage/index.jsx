@@ -43,7 +43,7 @@ function BackstageMainPage () {
                     <Image src={'https://ik.imagekit.io/mublin/sample-folder/tr:h-200,w-200,c-maintain_ratio/avatar-undefined_-dv9U6dcv3.jpg'} rounded />
                 )}
                 <Header.Content>
-                    {project.name}
+                    {project.name} {!!project.featured && <Icon name='star' color='grey' title='Definido como destaque' />}
                     <Header.Subheader style={{fontSize:'12px',width:'240px',whiteSpace:'nowrap',overflow:'hidden',textOverflow:'ellipsis'}}>{project.ptname} {project.genre1 && '('+project.genre1}{project.genre2 && ', '+project.genre2}{project.genre3 && ', '+project.genre3}{project.genre1 && ')'}</Header.Subheader>
                 </Header.Content>
             </Header>

@@ -1,0 +1,28 @@
+.eventTitle {
+  width: 100px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-weight: 600;
+}
+
+@media screen and (min-width: 601px) {
+  .eventTitle {
+    width: 300px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}
+
+.eventDescription {
+  width: 100px;
+  font-size: 12px;
+  font-weight: 400;
+}
+
+@media screen and (min-width: 601px) {
+  .eventDescription {
+    width: 300px;
+  }
+}

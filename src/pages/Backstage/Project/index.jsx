@@ -12,6 +12,10 @@ import { Formik } from 'formik';
 import { formatDistance } from 'date-fns';
 import pt from 'date-fns/locale/pt-BR';
 import {IKUpload} from "imagekitio-react";
+import './styles.scss'
+// import {
+//     BarChart, Bar, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend,
+//   } from 'recharts';
 
 function ProjectBackstagePage (props) {
 
@@ -28,6 +32,7 @@ function ProjectBackstagePage (props) {
         dispatch(projectInfos.getProjectInfo(props.match.params.username));
         dispatch(projectInfos.getProjectMembers(props.match.params.username));
         dispatch(projectInfos.getProjectNotes(props.match.params.username));
+        dispatch(projectInfos.getProjectEvents(props.match.params.username));
     }, []);
 
     const project = useSelector(state => state.project);
@@ -37,6 +42,13 @@ function ProjectBackstagePage (props) {
     document.title = 'Backstage ' + project.name + ' | Mublin'
 
     const [isLoading, setIsLoading] = useState(false)
+
+    // current timedate
+    var today = new Date();
+    var currentTime_year = today.getFullYear();
+    var currentTime_date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
+    var currentTime_time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+    var currentTimeDate = currentTime_date+' '+currentTime_time;
 
     // modal bio
     const [modalBioIsOpen, setModalBioIsOpen] = useState(false)
@@ -185,7 +197,7 @@ function ProjectBackstagePage (props) {
         setModalMemberManagementOpen(true)
     }
 
-    const updateMemberSettings = (userId) => {
+    const updateMemberSettings = (memberId) => {
         setIsLoading(true)
         fetch('https://mublin.herokuapp.com/project/'+project.id+'/updateMemberDetails', {
             method: 'PUT',
@@ -194,7 +206,7 @@ function ProjectBackstagePage (props) {
                 'Content-Type': 'application/json',
                 'Authorization': 'Bearer ' + user.token
             },
-            body: JSON.stringify({userId: user.id, projectId: project.id, admin: manageUserAdmin, active: manageUserActive, leader: manageUserLeader})
+            body: JSON.stringify({userId: memberId, projectId: project.id, admin: manageUserAdmin, active: manageUserActive, leader: manageUserLeader})
         }).then((response) => {
             response.json().then((response) => {
                 dispatch(projectInfos.getProjectMembers(props.match.params.username))
@@ -208,6 +220,43 @@ function ProjectBackstagePage (props) {
                 setModalMemberManagementOpen(false)
             })
     }
+
+    const updateMemberRequest = (memberId, responseToRequest) => {
+        setIsLoading(true)
+        fetch('https://mublin.herokuapp.com/project/'+project.id+'/updateMemberRequest', {
+            method: 'PUT',
+            headers: {
+                'Accept': 'application/json, text/plain, */*',
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + user.token
+            },
+            body: JSON.stringify({userId: memberId, requestResponse: responseToRequest})
+        }).then((response) => {
+            response.json().then((response) => {
+                dispatch(projectInfos.getProjectMembers(props.match.params.username))
+                setIsLoading(false)
+            })
+        }).catch(err => {
+                setIsLoading(false)
+                console.error(err)
+                alert('Ocorreu um erro ao tentar responder a solicitação do integrante. Tente novamente em instantes')
+            })
+    }
+
+    const data = [
+        {
+            Mês: 'Jul', Públicos: 0, Privados: 2,
+        },
+        {
+            Mês: 'Ago', Públicos: 0, Privados: 4,
+        },
+        {
+            Mês: 'Set', Públicos: 4, Privados: 2,
+        },
+        {
+            Mês: 'Out', Públicos: 6, Privados: 14,
+        }
+    ];
 
     return (
         <>
@@ -267,7 +316,24 @@ function ProjectBackstagePage (props) {
                     </Grid.Row>
                     <Grid.Row stretched>
                         <Grid.Column mobile={16} computer={4}>
-                            <Button fluid size='small' onClick={() => history.push('/project/'+project.username)}>Ir para a página do projeto</Button>
+                            <Button 
+                                fluid 
+                                size='small' 
+                                onClick={() => history.push('/project/'+project.username)}
+                                className='mb-3'
+                            >
+                                Ir para a página do projeto
+                            </Button>
+                            <Segment textAlign='left'>
+                                <Header as='h4'>
+                                    Tempo em atividade
+                                </Header>
+                                { !project.endDate ? (
+                                    <p>{project.foundationYear} - atualmente ({currentTime_year-project.foundationYear} anos)</p>
+                                ) : (
+                                    <p>{project.foundationYear} - {project.endDate} ({project.endDate-project.foundationYear} anos)</p>
+                                )}
+                            </Segment>
                             <Segment textAlign='left'>
                                 <Header as='h4'>
                                     Quadro de avisos
@@ -290,21 +356,28 @@ function ProjectBackstagePage (props) {
                                     <p>Nenhum aviso cadastrado no momento</p>
                                 )}
                             </Segment>
-                            <Segment>
+                            {/* <Segment>
                                 <Header as='h4'>
                                     Estatísticas
+                                    <Header.Subheader>Eventos em 2020</Header.Subheader>
                                 </Header>
-                                <Statistic.Group horizontal size='mini'>
-                                    <Statistic>
-                                        <Statistic.Value>2,204</Statistic.Value>
-                                        <Statistic.Label>eventos</Statistic.Label>
-                                    </Statistic>
-                                    <Statistic>
-                                        <Statistic.Value>R$ 1.950,00</Statistic.Value>
-                                        <Statistic.Label>faturado</Statistic.Label>
-                                    </Statistic>
-                                </Statistic.Group>
-                            </Segment>
+                                <BarChart
+                                    width={232}
+                                    height={200}
+                                    data={data}
+                                    margin={{
+                                    top: 20, right: 30, left: 20, bottom: 5,
+                                    }}
+                                >
+                                    <CartesianGrid strokeDasharray="3 3" />
+                                    <XAxis dataKey="Mês" tick={{fontSize: 11}} />
+                                    <YAxis tick={{fontSize: 11}} />
+                                    <Tooltip />
+                                    <Legend />
+                                    <Bar dataKey="Públicos" stackId="a" fill="#6435c9" />
+                                    <Bar dataKey="Privados" stackId="a" fill="#2185d0" />
+                                </BarChart>
+                            </Segment> */}
                         </Grid.Column>
                         <Grid.Column mobile={16} computer={8}>
                             <Segment>
@@ -336,6 +409,12 @@ function ProjectBackstagePage (props) {
                                                     {member.confirmed === 1 ? ( 
                                                         <>
                                                             <span style={{fontWeight:'500'}} className='mr-1'>{member.name} {member.lastname}</span>
+                                                            <Popup 
+                                                                trigger={<Icon name={member.statusIcon} />}
+                                                                content={member.statusId === 1 ? 'Membro oficial' : 'Convidado/Sideman'}
+                                                                inverted
+                                                                size='mini'
+                                                            />
                                                             {!!member.admin && 
                                                                 <Popup 
                                                                     trigger={<Icon name='key' />}
@@ -353,16 +432,24 @@ function ProjectBackstagePage (props) {
                                                                 />
                                                             ) : (
                                                                 <Popup 
-                                                                    trigger={<Icon color='red' name='power' />}
+                                                                    trigger={<Icon color='grey' name='power' />}
                                                                     content='Inativo'
                                                                     inverted
                                                                     size='mini'
                                                                 />
                                                             )}
                                                             <br/>
-                                                            <span style={{fontSize:'11px'}}>{member.role1}{member.role2 && ', '+member.role2}{member.role3 && ', '+member.role3}</span><br/>
+                                                            <span style={{fontSize:'12px'}}>{member.role1}{member.role2 && ', '+member.role2}{member.role3 && ', '+member.role3}</span><br/>
                                                             <span style={{fontSize:'10px'}}>
-                                                                <Icon name={member.statusIcon} />{member.statusName}{member.statusId === 2 && '/sideman'}{member.joinedIn && ', de '+member.joinedIn+' até '}{member.leftIn ? member.leftIn : 'atualmente'}
+                                                                {(member.joinedIn && (member.joinedIn !== member.leftIn)) ? ( 
+                                                                    <>
+                                                                        {member.joinedIn +' até '}{member.leftIn ? member.leftIn : 'atualmente'}
+                                                                    </>
+                                                                ) : (
+                                                                    <>
+                                                                        {member.joinedIn}
+                                                                    </>
+                                                                )}
                                                             </span>
                                                         </>
                                                     ) : (
@@ -375,14 +462,15 @@ function ProjectBackstagePage (props) {
                                                     )}
                                                 </Table.Cell>
                                                 <Table.Cell width={2} textAlign='right'>
-                                                    {member.confirmed === 1 ? ( 
+                                                    {member.confirmed === 1 && 
                                                         <Button size='mini' icon='cog' onClick={() => openModalMemberManagement(member.id, member.admin, member.active, member.leader)} />
-                                                    ) :(
+                                                    }
+                                                    {member.confirmed === 2 && 
                                                         <Button.Group size='mini'>
-                                                            <Button positive className='pr-2'><Icon name='thumbs up outline' /></Button>
-                                                            <Button negative className='pr-2'><Icon name='thumbs down outline' /></Button>
+                                                            <Button className='pr-2' disabled={!project.adminAccess ? true : false} onClick={() => updateMemberRequest(member.id, 1)} loading={isLoading}><Icon name='thumbs up outline' /></Button>
+                                                            <Button negative className='pr-2' disabled={!project.adminAccess ? true : false} onClick={() => updateMemberRequest(member.id, 0)} loading={isLoading}><Icon name='thumbs down outline' /></Button>
                                                         </Button.Group>
-                                                    )}
+                                                    }
                                                 </Table.Cell>
                                             </Table.Row>
                                         )}
@@ -469,32 +557,39 @@ function ProjectBackstagePage (props) {
                                 <Header as='h4'>
                                     Eventos
                                 </Header>
-                                { project.active === 1 ? ( 
-                                    <List divided relaxed>
-                                        <List.Item>
-                                            <List.Icon name='calendar outline' size='large' verticalAlign='middle' />
-                                            <List.Content>
-                                                <List.Header as='a'>Nome do Evento</List.Header>
-                                                <List.Description as='a'>06/10/2020</List.Description>
-                                            </List.Content>
-                                        </List.Item>
-                                        <List.Item>
-                                            <List.Icon name='calendar outline' size='large' verticalAlign='middle' />
-                                            <List.Content>
-                                                <List.Header as='a'>Nome do Evento</List.Header>
-                                                <List.Description as='a'>06/10/2020</List.Description>
-                                            </List.Content>
-                                        </List.Item>
-                                        <List.Item>
-                                            <List.Icon name='calendar outline' size='large' verticalAlign='middle' />
-                                            <List.Content>
-                                                <List.Header as='a'>Nome do Evento</List.Header>
-                                                <List.Description as='a'>06/10/2020</List.Description>
-                                            </List.Content>
-                                        </List.Item>
-                                    </List>
+                                { project.events[0].id ? (
+                                    project.active === 1 ? ( 
+                                        <Table singleLine size unstackable compact='very' basic='very'>
+                                            <Table.Body>
+                                                {project.events.map((event, key) =>
+                                                    <Table.Row key={key}>
+                                                        <Table.Cell collapsing>
+                                                            {event.dateOpening}<br/>
+                                                            <span style={{fontSize:'12px'}}>{event.eventHourStart}</span><br/>
+                                                            <span style={{fontSize:'11px',opacity:'0.8'}}>{event.method}</span>
+                                                        </Table.Cell>
+                                                        <Table.Cell>
+                                                            <div className='eventTitle'>{event.title}</div>
+                                                            <div className='eventDescription'>
+                                                                {event.type+' · '+event.city+'/'+event.region} {(event.placeName && event.method === 'Presencial') && <><Icon name='map pin' />{event.placeName}</>}
+                                                            </div>
+                                                            <div>
+                                                                <Image src={event.authorPicture} avatar style={{width:'16px',height:'16px',cursor:'pointer'}} onClick={() => history.push('/'+event.authorUsername)} />
+                                                                <span style={{fontSize:'11px',opacity:'0.8'}}>criado por {event.authorName}</span>
+                                                            </div>
+                                                        </Table.Cell>
+                                                        <Table.Cell collapsing>
+                                                            <Button size='mini' basic>Detalhes</Button>
+                                                        </Table.Cell>
+                                                    </Table.Row>
+                                                )}
+                                            </Table.Body>
+                                        </Table>
+                                    ) : (
+                                        <p>Apenas usuários ativos no projeto podem visualizar eventos detalhados</p>
+                                    )
                                 ) : (
-                                    <p>Apenas usuários ativos no projeto podem visualizar detalhes dos eventos</p>
+                                    <p>Nenhum evento cadastrado para este projeto</p>
                                 )}
                             </Segment>
                         </Grid.Column>
@@ -636,9 +731,9 @@ function ProjectBackstagePage (props) {
                                                     {project.labelText}
                                                 </Label>
                                                 { project.labelShow ? (
-                                                    <><Icon name='eye' /><span>Visível</span></>
+                                                    <Icon name='eye' title='Visível' />
                                                 ) : (
-                                                    <><Icon name='eye slash' /><span>Oculta</span></>
+                                                    <Icon name='eye slash' title='Oculta' />
                                                 )}
                                             </>
                                         ) : (
@@ -745,7 +840,7 @@ function ProjectBackstagePage (props) {
                                         </Modal>
                                     </Segment>
                                     <Segment>
-                                        <Header as='h4'>Encerrar projeto</Header>
+                                        <Header as='h4'>Encerrar projeto no Mublin</Header>
                                         <Button 
                                             fluid 
                                             negative

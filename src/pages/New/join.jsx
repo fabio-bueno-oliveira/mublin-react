@@ -221,16 +221,6 @@ function JoinPage () {
                                                     >
                                                         <Icon name='clock outline' /> Participação solicitada
                                                     </Button>,
-                                                0: 
-                                                    // Request denied
-                                                    <><Button 
-                                                        disabled
-                                                        icon
-                                                        color='red'
-                                                        size='mini'
-                                                    >
-                                                        <Icon name='close' /> Participação recusada
-                                                    </Button> <p style={{fontSize:'11px',marginTop:'6px'}}>Será possível solicitar novamente daqui a 3 meses</p></>,
                                             }[project.participationStatus]
                                         }
                                     </Segment>

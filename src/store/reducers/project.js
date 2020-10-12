@@ -75,6 +75,31 @@ const initialState = {
       authorPicture: ''
     }
   ],
+  events: [
+    {
+      id: '',
+      title: '',
+      description: '',
+      dateOpening: '',
+      eventHourStart: '',
+      dateEnd: '',
+      eventHourEnd: '',
+      picture: '',
+      authorName: '',
+      authorLastname: '',
+      authorUsername: '',
+      authorPicture: '',
+      city: '',
+      region: '',
+      typeId: '',
+      type: '',
+      placeId: '',
+      placeName: '',
+      purpose: '',
+      method: '',
+      price: ''
+    }
+  ]
 }
 
 export function project(state = initialState, action) {
@@ -197,6 +222,59 @@ export function project(state = initialState, action) {
       return {
         ...state,
         requesting: false,
+        error: "A solicitação falhou",
+        notes: [
+          {
+            id: '',
+            note: '',
+            created: '',
+            authorUsername: '',
+            authorName: '',
+            authorLastname: '',
+            authorPicture: ''
+          }
+        ]
+      };
+    case projectTypes.GET_PROJECT_EVENTS_REQUEST:
+      return {
+        ...state,
+        requesting: true
+      };
+    case projectTypes.GET_PROJECT_EVENTS_SUCCESS:
+      return {
+        ...state,
+        requesting: false,
+        events: action.list,
+      };
+    case projectTypes.GET_PROJECT_EVENTS_FAILURE:
+      return {
+        ...state,
+        requesting: false,
+        events: [
+          {
+            id: '',
+            title: '',
+            description: '',
+            dateOpening: '',
+            eventHourStart: '',
+            dateEnd: '',
+            eventHourEnd: '',
+            picture: '',
+            authorName: '',
+            authorLastname: '',
+            authorUsername: '',
+            authorPicture: '',
+            city: '',
+            region: '',
+            typeId: '',
+            type: '',
+            placeId: '',
+            placeName: '',
+            purpose: '',
+            method: '',
+            price: ''
+          }
+        ],
         error: "A solicitação falhou"
       };
     default:

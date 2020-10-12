@@ -7,7 +7,7 @@ import FooterMenuMobile from '../../components/layout/footerMenuMobile';
 import { userInfos } from '../../store/actions/user';
 import { eventsInfos } from '../../store/actions/events';
 import { notesInfos } from '../../store/actions/notes';
-import { Container, Header, Tab, Grid, Image, Icon, Menu, Button } from 'semantic-ui-react';
+import { Container, Header, Tab, Grid, Image, Icon, Label } from 'semantic-ui-react';
 import Notes from './notes';
 import PublicEvents from './publicEvents';
 import PrivateEvents from './privateEvents';
@@ -145,7 +145,11 @@ function HomePage () {
                                             projectsPortfolio.map((project, key) =>
                                                 <div className="carousel-cell" key={key}>
                                                     <Link to={{ pathname: '/project/'+project.username }}>
-                                                        <div className="floating ui mini black label" style={{top: '0', left: '76%'}}>{project.joined_in}</div>
+                                                        { project.yearLeftTheProject && 
+                                                            <Label color='black' floating size='mini' style={{top: '0', left: '50%',width:'fit-content'}}>
+                                                                {project.joined_in+'-'+project.yearLeftTheProject}
+                                                            </Label>
+                                                        }
                                                         {project.picture ? (
                                                             <Image src={'https://ik.imagekit.io/mublin/projects/tr:h-200,w-200,c-maintain_ratio/'+project.projectid+'/'+project.picture} height='85' width='85' rounded />
                                                         ) : (

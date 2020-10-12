@@ -47,7 +47,8 @@ function StartStep3Page () {
     }));
 
     const userProjects = userInfo.projects.map((project, key) =>
-        <Label color="blue" key={key} className="mb-2" style={{ fontWeight: 'normal' }}>
+        <Label color="blue" key={key} className="mb-2 mr-2" style={{ fontWeight: 'normal' }} image>
+            <img src={'https://ik.imagekit.io/mublin/projects/tr:h-200,w-200,c-maintain_ratio/'+project.projectid+'/'+project.picture} />
             {project.role1+" em "+project.name}
             <Icon name='delete' onClick={() => deleteProject(project.id)} />
         </Label>
@@ -336,6 +337,15 @@ function StartStep3Page () {
                             </Segment>
                             <Segment basic textAlign='center'>
                                 <label style={{fontWeight: '500'}}>De quais projetos ou bandas você participa ou já participou?</label>
+                                { userInfo.requesting ? ( 
+                                    <Dimmer active inverted>
+                                        <UiLoader inverted content='Carregando...' />
+                                    </Dimmer>
+                                ) : (
+                                    <Segment basic textAlign='center'>
+                                        {userInfo.projects[0].id && userProjects}
+                                    </Segment>
+                                )}
                                 <p style={{fontWeight: '300'}} className="my-3">Pesquise abaixo ou  <Button basic size="mini" onClick={() => setModalNewProjectOpen(true)} className="ml-1">cadastre um novo projeto</Button></p>
                                 <Search
                                     fluid
@@ -593,15 +603,6 @@ function StartStep3Page () {
                                     </Modal.Actions>
                                 </Modal>
                             </Segment>
-                            { userInfo.requesting ? ( 
-                                <Dimmer active inverted>
-                                    <UiLoader inverted content='Carregando...' />
-                                </Dimmer>
-                            ) : (
-                                <Segment basic textAlign='center'>
-                                    {userInfo.projects[0].id && userProjects}
-                                </Segment>
-                            )}
                             <Segment basic textAlign='center' >
                                 <Link to={{ pathname: "/start/step3" }} className="mr-2">
                                     <Button size="large">Voltar</Button>

@@ -225,16 +225,17 @@ function MyGearPage () {
                                             <Header as='h5'>
                                                 <Image src={item.picture} />
                                                 <Header.Content className='gear itemTitle'>
-                                                    {item.productName}
                                                     <Header.Subheader className='mb-1'>{item.brandName}</Header.Subheader>
+                                                    {item.productName}
                                                     <Header.Subheader>
                                                         <Icon name={item.featured ? 'toggle on' : 'toggle off'} color={item.featured ? 'green' : null} className='mr-1' />Em destaque
                                                     </Header.Subheader>
                                                     <Header.Subheader>
-                                                        <Icon name={item.currentlyUsing ? 'toggle on' : 'toggle off'} color={item.currentlyUsing ? 'green' : null} className='mr-1' />Usando atualmente
+                                                        <Icon name={item.currentlyUsing ? 'toggle on' : 'toggle off'} color={item.currentlyUsing ? 'green' : null} className='mr-1' />Em uso
                                                     </Header.Subheader>
                                                     <Header.Subheader>
-                                                        <Icon name={item.forSale ? 'toggle on' : 'toggle off'} color={item.forSale ? 'green' : null} className='mr-1' />À venda {!!item.forSale && '('+item.price.toLocaleString('pt-br',{style: 'currency', currency: 'BRL'})+')'}
+                                                        <Icon name={item.forSale ? 'toggle on' : 'toggle off'} color={item.forSale ? 'green' : null} className='mr-1' />À venda<br/>
+                                                        {!!item.forSale && '('+item.price.toLocaleString('pt-br',{style: 'currency', currency: 'BRL'})+')'}
                                                     </Header.Subheader>
                                                 </Header.Content>
                                             </Header>
@@ -323,11 +324,11 @@ function MyGearPage () {
                     </div> */}
                 </Modal.Content>
                 <Modal.Actions>
-                    <Button size='mini' onClick={() => setModalAddNewProductOpen(false)}>
+                    <Button size='tiny' onClick={() => setModalAddNewProductOpen(false)}>
                         Cancelar
                     </Button>
-                    <Button size='mini' secondary onClick={() => addProductToGear(productSelected, 0, 0, null, 1)} disabled={!productSelected ? true : false} loading={!isLoaded}>
-                        Adicionar ao meu equipamento
+                    <Button size='tiny' secondary onClick={() => addProductToGear(productSelected, 0, 0, null, 1)} disabled={!productSelected ? true : false} loading={!isLoaded}>
+                        Adicionar
                     </Button>
                 </Modal.Actions>
             </Modal>
@@ -385,7 +386,7 @@ function MyGearPage () {
                                         <option value='0'>Não</option>
                                     </Form.Field>
                                     <Form.Field
-                                        disabled={for_sale === '1' ? false : true}
+                                        disabled={(for_sale === '1' || for_sale === 1) ? false : true}
                                         label='Preço de venda'
                                         id='price'
                                         name='price'
@@ -402,10 +403,10 @@ function MyGearPage () {
                     </Form>
                 </Modal.Content>
                 <Modal.Actions>
-                    <Button size='mini' onClick={() => setModalEditItemOpen(false)}>
+                    <Button size='tiny' onClick={() => setModalEditItemOpen(false)}>
                         Cancelar
                     </Button>
-                    <Button size='mini' secondary onClick={() => editGearItem(itemIdToEdit, modalItemManagementProductId, featured, for_sale, price, currently_using)} loading={!isLoaded}>
+                    <Button size='tiny' secondary onClick={() => editGearItem(itemIdToEdit, modalItemManagementProductId, featured, for_sale, price, currently_using)} loading={!isLoaded}>
                         Salvar
                     </Button>
                 </Modal.Actions>

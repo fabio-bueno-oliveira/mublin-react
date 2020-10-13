@@ -36,7 +36,6 @@ function PreferencesPage () {
         dispatch(userInfos.getInfo());
         dispatch(userInfos.getUserGenresInfoById(user.id));
         dispatch(userInfos.getUserRolesInfoById(user.id));
-        dispatch(userInfos.getUserGearInfoById(user.id));
         dispatch(userInfos.getUserAvailabilityItemsById(user.id));
         dispatch(miscInfos.getMusicGenres());
         dispatch(miscInfos.getRoles());
@@ -258,13 +257,6 @@ function PreferencesPage () {
         }, 400);
     }
 
-    const myGearList = userInfo.gear.map(product => ({ 
-        text: product.brandName+' '+product.productName,
-        value: product.id,
-        key: product.id,
-        image: { avatar: true, src: product.picture }
-    }));
-
     return (
         <>
         <HeaderDesktop />
@@ -426,23 +418,6 @@ function PreferencesPage () {
                                                     />
                                                 </Form.Group>
                                             </div>
-                                        </Segment>
-                                        <Segment as='section' className='mb-2'>
-                                            <Header sub className='mb-2' style={{opacity:'0.5'}}>Meu equipamento:</Header>
-                                            { !userInfo.requesting &&
-                                                <Dropdown
-                                                    selection
-                                                    fluid
-                                                    text='Selecione'
-                                                >
-                                                    <Dropdown.Menu>
-                                                        <Dropdown.Header content='Meus equipamentos' />
-                                                        {myGearList.map((option) => (
-                                                            <Dropdown.Item key={option.value} {...option} />
-                                                        ))}
-                                                    </Dropdown.Menu>
-                                                </Dropdown>
-                                            }
                                         </Segment>
                                     </>
                                 )}

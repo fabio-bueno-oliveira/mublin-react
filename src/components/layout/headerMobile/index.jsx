@@ -28,6 +28,11 @@ const HeaderMobile = (props) => {
         history.push('/'+userInfo.username)
     }
 
+    const goToGear = () => {
+        setMobileMenuOpen(false)
+        history.push('/gear')
+    }
+
     const goToSettings = () => {
         setMobileMenuOpen(false)
         history.push('/settings')
@@ -101,6 +106,12 @@ const HeaderMobile = (props) => {
                             onClick={goToProfile}
                         >
                             <Icon name='user circle' /> Ver meu perfil
+                        </Menu.Item>
+                        <Menu.Item
+                            key='gear'
+                            onClick={goToGear}
+                        >
+                            <Icon name='box' /> Meu equipamento
                         </Menu.Item>
                         <Menu.Item
                             key='settings'

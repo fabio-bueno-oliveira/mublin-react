@@ -423,15 +423,15 @@ function ProfilePage (props) {
                                                 <div className='carousel-cell' key={key}>
                                                     {product.picture ? (
                                                         product.featured ? (
-                                                            <Image src={product.picture} rounded label={{ as: 'div', corner: 'left', icon: 'heart', size: 'mini' }} />
+                                                            <Image src={product.picture} rounded label={{ as: 'div', corner: 'left', icon: 'heart', size: 'mini' }} as='a' href={'/gear/product/'+product.productId} className='cpointer' />
                                                         ) : (
-                                                            <Image src={product.picture} rounded />
+                                                            <Image src={product.picture} rounded as='a' href={'/gear/product/'+product.productId} />
                                                         )
                                                     ) : (
-                                                        <Image src={'https://ik.imagekit.io/mublin/misc/tr:h-200,w-200,c-maintain_ratio/no-picture_pKZ8CRarWks.jpg'} height='85' width='85' rounded label={{ as: 'a', corner: 'left', icon: 'heart' }} />
+                                                        <Image src={'https://ik.imagekit.io/mublin/misc/tr:h-200,w-200,c-maintain_ratio/no-picture_pKZ8CRarWks.jpg'} height='85' width='85' rounded label={{ as: 'a', corner: 'left', icon: 'heart' }} as='a' href={'/gear/product/'+product.productId} />
                                                     )}
-                                                    <Popup inverted size='mini' content={product.category+' '+product.brandName+' '+product.productName} trigger={<Header as='h5' className='mt-2 mb-0' style={{cursor:'default'}}><Header.Content>{product.productName}</Header.Content></Header>} />
-                                                    <Header.Subheader style={{fontWeight: '500',fontSize: '11px'}}><Link to={{pathname: "/brands", search: "?id="+product.brandId, state: { fromProfile: true } }} style={{color:'gray'}}>{product.brandName}</Link></Header.Subheader>
+                                                    <Popup inverted size='mini' content={product.category+' '+product.brandName+' '+product.productName} trigger={<Header as='h5' className='mt-2 mb-0' style={{cursor:'default'}}><Header.Content><Link to={{pathname: '/gear/product/'+product.productId}} style={{color:'gray'}}>{product.productName}</Link></Header.Content></Header>} />
+                                                    <Header.Subheader style={{fontWeight: '500',fontSize: '11px'}}><Link to={{pathname: '/gear/brand/'+product.productId}} style={{color:'gray'}}>{product.brandName}</Link></Header.Subheader>
                                                     { product.forSale ? (
                                                         <Popup inverted size='mini' content='À venda' trigger={<Label tag content={product.price.toLocaleString('pt-br',{style: 'currency', currency: 'BRL'})} size='mini' style={{fontWeight: '500',fontSize: '9px',cursor:'default'}} className='mt-1' color='green' />} />
                                                     ) : (

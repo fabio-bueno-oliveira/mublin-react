@@ -29,6 +29,9 @@ import MySubscription from './pages/Settings/Subscription';
 import SettingsPreferences from './pages/Settings/Preferences';
 import SettingsProfile from './pages/Settings/Profile';
 import SettingsProfilePicture from './pages/Settings/Profile/picture';
+import ProductPage from './pages/Gear/product'
+import SubmitNewProduct from './pages/Gear/submitNewProduct'
+import MyGearPage from './pages/Gear/myGear'
 import AdminPage from './pages/Admin'
 
 function Routes () {
@@ -75,6 +78,9 @@ function Routes () {
                 <PrivateRoute authed={loggedIn} path="/settings/preferences" component={SettingsPreferences} />
                 <PrivateRoute authed={loggedIn} path="/settings/subscription" component={MySubscription} />
                 <PrivateRoute authed={loggedIn} path="/settings" component={Settings} />
+                <PrivateRoute authed={loggedIn} path="/gear/product/:productId" component={ProductPage} />
+                <PrivateRoute authed={loggedIn} path="/gear/submit/product" component={SubmitNewProduct} />
+                <PrivateRoute authed={loggedIn} path="/gear" component={MyGearPage} />
                 <PrivateRoute authed={loggedIn} path="/admin" component={AdminPage} />
                 <PrivateRoute authed={loggedIn} path="/:username" component={ProfilePage} />
             </Switch>

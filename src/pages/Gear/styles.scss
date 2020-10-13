@@ -1,0 +1,36 @@
+.gear.itemDescriptionColumn {
+  width: 70%!important;
+}
+.gear.itemActionColumn {
+  width: 30%!important;
+  text-align: center;
+  align-items: center;
+  display: flex;
+  justify-content: center;
+}
+
+@media screen and (min-width: 601px) {
+  .gear.itemDescriptionColumn {
+    width: 82%!important;
+  }
+  .gear.itemActionColumn {
+    width: 18%!important;
+  }
+}
+
+.gear.itemTitle {
+  width: 140px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-weight: 600;
+}
+
+@media screen and (min-width: 601px) {
+  .gear.itemTitle {
+    width: 340px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}

@@ -30,17 +30,17 @@ function AboutPage () {
             </Container>
         </Menu>
 
-        <Container text style={{ marginTop: '7em' }}>
-            <Header as='h1'>Sobre o Mublin</Header>
+        <Container text style={{ marginTop: '6em' }} className='p-4 p-md-0'>
+            <Header as='h2'>Sobre o Mublin</Header>
             {/* <Image avatar src='https://ik.imagekit.io/mublin/users/avatars/1/avatar_G9yZJeskZZY.jpg' size='small' floated='left' /> */}
             <p className='mb-2'>
                 Olá! Meu nome é Fabio Bueno.
             </p>
             <p className='mb-2'>
-                Eu comecei a desenvolver o Mublin em 2019. Além de programador, participo de alguns projetos de música, e percebi uma dificuldade em organizar e centraliar as informações relacionadas às bandas. Então tive esta ideia e decidi criar o Mublin como uma ferramenta que facilitasse e tornasse mais dinâmica a rotina de artistas que trabalham com música. 
+                Eu comecei a desenvolver o Mublin em 2019. Além de programador, participo de alguns projetos de música e percebi uma certa dificuldade em organizar e centralizar informações relacionadas às bandas. Então tive a ideia de criar o Mublin como uma ferramenta que tornaria mais dinâmica a rotina de artistas que trabalham com música. 
             </p>
             <p className='mb-2'>
-                O Mublin está em versão Beta, onde feedbacks são fundamentais para melhorar e expandir. Esperamos no início de 2021 contar com mais de 10 mil usuários na plataforma, sendo eles músicos, produtores, artistas e ouvintes.
+                O Mublin está em versão Beta, onde feedbacks são fundamentais para melhorar e expandir.
             </p>
             <Header>Missão</Header>
             <p>

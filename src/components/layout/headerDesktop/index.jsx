@@ -200,6 +200,7 @@ const HeaderDesktop = () => {
                             {userInfo.plan === 'Pro' && <Label size='mini' content='PRO' />}<i className='dropdown icon' />
                             <Dropdown.Menu>
                                 <Dropdown.Item icon='user circle' text='Meu perfil' onClick={() => history.push('/'+userInfo.username)} />
+                                <Dropdown.Item icon='box' text='Meu equipamento' onClick={() => history.push('/gear')} />
                                 <Dropdown.Item icon='setting' text='Configurações' onClick={() => history.push('/settings')} />
                                 <Dropdown.Divider />
                                 { userInfo.level === 1 &&

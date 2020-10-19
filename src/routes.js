@@ -13,10 +13,11 @@ import StartStep3Page from './pages/StartPages/Step3';
 import StartStep4Page from './pages/StartPages/Step4';
 import Home from './pages/Home';
 import Feed from './pages/Feed';
-import New from './pages/New';
 import ProfilePage from './pages/ProfilePage';
+import New from './pages/New';
 import NewProject from './pages/New/project';
 import NewProjectIdea from './pages/New/idea';
+import NewEvent from './pages/New/event';
 import JoinProject from './pages/New/join';
 import ProjectPage from './pages/ProjectPage';
 import ProjectBackstagePage from './pages/Backstage/Project';
@@ -63,6 +64,7 @@ function Routes () {
                 <PrivateRoute authed={loggedIn} path="/start/step4" component={StartStep4Page} />
                 <PrivateRoute authed={loggedIn} path="/home" component={Home} />
                 <PrivateRoute authed={loggedIn} path="/feed" component={Feed} />
+                <PrivateRoute authed={loggedIn} path="/new/event" component={NewEvent} />
                 <PrivateRoute authed={loggedIn} path="/new/project" component={NewProject} />
                 <PrivateRoute authed={loggedIn} path="/new/idea" component={NewProjectIdea} />
                 <PrivateRoute authed={loggedIn} path="/new/join" component={JoinProject} />

@@ -9,9 +9,11 @@
     "@testing-library/user-event": "^7.1.2",
     "axios": "^0.19.2",
     "date-fns": "^2.16.1",
+    "firebase": "^7.23.0",
     "flickity": "^2.2.1",
     "formik": "^2.1.4",
     "history": "^5.0.0",
+    "html2canvas": "^1.0.0-rc.7",
     "imagekitio-react": "^1.0.6",
     "moment": "^2.27.0",
     "node-sass": "^4.14.1",
@@ -49,5 +51,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "react-intl-currency-input": "^0.2.5"
   }
 }

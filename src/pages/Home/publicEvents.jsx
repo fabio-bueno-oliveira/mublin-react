@@ -60,7 +60,7 @@ const PublicEvents = (props) => {
                             <span style={{fontWeight:'500',fontSize:'13px'}}>Nenhum evento público próximo</span>
                         )}
                         <div className="right floated">
-                            <Link to={{ pathname: '/tbd' }}>
+                            <Link to={{ pathname: '/new/event/?type=public' }}>
                                 <Label size='small' style={{fontWeight:'500'}}><Icon name='plus' /> Criar novo</Label>
                             </Link>
                             { publicEvents.length > 6 &&

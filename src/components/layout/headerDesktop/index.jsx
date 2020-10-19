@@ -133,10 +133,10 @@ const HeaderDesktop = () => {
                             <Dropdown.Item onClick={() => history.push("/home")}>
                                 <i className="fas fa-pencil-alt mr-1"></i> Composição
                             </Dropdown.Item>
-                            <Dropdown.Item onClick={() => history.push("/home")}>
+                            <Dropdown.Item onClick={() => history.push("/new/event/?type=private")}>
                                 <i className="fas fa-drum mr-1"></i> Ensaio
                             </Dropdown.Item>
-                            <Dropdown.Item onClick={() => history.push("/home")}>
+                            <Dropdown.Item onClick={() => history.push("/new/event/?type=public")}>
                                 <i className="fas fa-ticket-alt mr-1"></i> Show
                             </Dropdown.Item>
                             <Dropdown.Item onClick={() => history.push("/home")}>

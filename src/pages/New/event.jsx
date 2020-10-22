@@ -31,6 +31,7 @@ function CreateNewEventPage () {
     const userSession = JSON.parse(localStorage.getItem('user'));
 
     useEffect(() => {
+        window.scrollTo(0, 0)
         dispatch(userInfos.getUserProjects(userSession.id));
     }, [userSession.id, dispatch]);
 
@@ -94,6 +95,12 @@ function CreateNewEventPage () {
     const selectCity = (cityId, cityName) => {
         setEventCityId(cityId)
         setSelectedCityName(cityName)
+    }
+    const [eventPlaceId, setEventPlaceId] = useState('')
+    const [selectedPlaceName, setSelectedPlaceName] = useState('')
+    const selectPlace = (placeId, placeName) => {
+        setEventPlaceId(placeId)
+        setSelectedPlaceName(placeName.split('(')[0])
     }
     const [eventPurpose, setEventPurpose] = useState('')
     const [eventFeeTotal, setEventFeeTotal] = useState(null)
@@ -222,6 +229,33 @@ function CreateNewEventPage () {
         },800
     );
 
+    const [queryPlaces, setQueryPlaces] = useState([]);
+    const [placeSearchIsLoading, setPlaceSearchIsLoading] = useState(false)
+
+    const [searchPlace] = useDebouncedCallback((keyword) => {
+        if (keyword.length > 1) {
+            setPlaceSearchIsLoading(true)
+            fetch('https://mublin.herokuapp.com/search/places/minimalResult/'+keyword, {
+                method: 'GET'
+            })
+                .then(res => res.json())
+                .then(
+                    (result) => {
+                        if (result.length) {
+                            setQueryPlaces(result);
+                        }
+                        setPlaceSearchIsLoading(false)
+                    },
+                    (error) => {
+                        setPlaceSearchIsLoading(false)
+                        alert("Ocorreu um erro ao pesquisar o local")
+                })
+            }
+        },800
+    );
+
+    const [showMobileMenu, setShowMobileMenu] = useState(true)
+
     return (
         <>
             <HeaderDesktop />
@@ -229,7 +263,7 @@ function CreateNewEventPage () {
             <Spacer />
             <Grid as='main' centered columns={2} className="container">
                 <Grid.Row>
-                    <Grid.Column computer={8} mobile={16}>
+                    <Grid.Column computer={9} mobile={16}>
                         <Header as='h2' className='mb-4'>
                             Criar novo evento
                         </Header>
@@ -239,7 +273,11 @@ function CreateNewEventPage () {
                                 menuItem: 'Informações gerais',
                                 render: () => 
                                     <Tab.Pane attached={false} as="div">
-                                        <Form className='pt-2'>
+                                        <Form 
+                                            className='pt-2'
+                                            onFocus={() => setShowMobileMenu(false)}
+                                            onBlur={() => setShowMobileMenu(true)}
+                                        >
                                             <Form.Group inline>
                                                 <label>Privacidade</label>
                                                 <Form.Radio
@@ -296,7 +334,7 @@ function CreateNewEventPage () {
                                                         </>
                                                     ) : ( 
                                                         <>
-                                                            <option value='2'>Show</option>
+                                                            <option value='2'>Apresentação</option>
                                                             <option value='5'>Entrevista</option>
                                                             <option value='6'>Workshop</option>
                                                         </>
@@ -346,6 +384,7 @@ function CreateNewEventPage () {
                                             />
                                             <Form.Group widths='equal'>
                                                 <Form.Field 
+                                                    required
                                                     type='date'
                                                     id='eventOpeningDate'
                                                     label='Data de início do evento' 
@@ -355,6 +394,7 @@ function CreateNewEventPage () {
                                                     style={{textAlign:'center'}}
                                                 />
                                                 <Form.Field 
+                                                    required
                                                     type='date'
                                                     id='eventEndingDate'
                                                     label='Data de encerramento do evento' 
@@ -366,6 +406,7 @@ function CreateNewEventPage () {
                                             </Form.Group>
                                             <Form.Group widths='equal'>
                                                 <Form.Field 
+                                                    required
                                                     id='eventOpeningHour'
                                                     label='Hora de abertura do evento' 
                                                     control='input' 
@@ -386,6 +427,7 @@ function CreateNewEventPage () {
                                             </Form.Group>
                                             <Form.Group widths='equal'>
                                                 <Form.Field
+                                                    required
                                                     control='select'
                                                     id='eventRegionId'
                                                     name='eventRegionId'
@@ -422,24 +464,24 @@ function CreateNewEventPage () {
                                                     />
                                                 </Form.Field>
                                             </Form.Group>
-                                            <Form.Field className='mb-0'>
-                                                <label for='eventPicture'>Arte do evento</label>
-                                            </Form.Field>
-                                            <div className={eventImage ? 'd-none' : ''}>
-                                                <IKUpload 
-                                                    id='eventPicture'
-                                                    fileName="avatar.jpg"
-                                                    folder={userAvatarPath}
-                                                    tags={["tag1"]}
-                                                    useUniqueFileName={true}
-                                                    isPrivateFile= {false}
-                                                    onError={onUploadError}
-                                                    onSuccess={onUploadSuccess}
+                                            <Form.Field>
+                                                <label>Local (estabelecimento, estúdio, etc) (opcional)</label>
+                                                <Dropdown 
+                                                    id='eventPlaceId'
+                                                    name='eventPlaceId'
+                                                    placeholder='Digite e escolha o local'
+                                                    fluid
+                                                    search
+                                                    selection
+                                                    options={queryPlaces}
+                                                    onChange={(e, { value }) => selectPlace(value, e.target.textContent)}
+                                                    onSearchChange={e => {
+                                                        searchPlace(e.target.value);
+                                                    }}
+                                                    noResultsMessage="Nenhum resultado"
+                                                    loading={placeSearchIsLoading}
                                                 />
-                                            </div>
-                                            { eventImage && 
-                                                <Image centered src={'https://ik.imagekit.io/mublin/tr:h-200,w-200/events/'+eventImage} size='small' className="mt-4 mb-1" />
-                                            }
+                                            </Form.Field>
                                             <Form.Group widths='equal'>
                                                 <Form.Field className='mb-0 mt-3'>
                                                     <label for='eventTicketPrice'>Preço do ingresso/entrada</label>
@@ -456,6 +498,7 @@ function CreateNewEventPage () {
                                                 <Form.Field className='mb-0 mt-3'>
                                                     <Form.Input 
                                                         label='URL para mais informações'
+                                                        placeholder='http://'
                                                         id='urlMoreInfo' 
                                                         name='urlMoreInfo' 
                                                         fluid 
@@ -463,7 +506,26 @@ function CreateNewEventPage () {
                                                         onChange={(e, { value }) => setEventUrlMoreInfo(value)} 
                                                     />
                                                 </Form.Field>
-                                                </Form.Group>
+                                            </Form.Group>
+                                            <Form.Field className='mb-0'>
+                                                <label for='eventPicture'>Arte do evento</label>
+                                            </Form.Field>
+                                            <div className={eventImage ? 'd-none' : ''}>
+                                                <IKUpload 
+                                                    id='eventPicture'
+                                                    fileName="avatar.jpg"
+                                                    folder={userAvatarPath}
+                                                    tags={["tag1"]}
+                                                    useUniqueFileName={true}
+                                                    isPrivateFile= {false}
+                                                    onError={onUploadError}
+                                                    onSuccess={onUploadSuccess}
+                                                    accept="image/x-png,image/gif,image/jpeg" 
+                                                />
+                                            </div>
+                                            { eventImage && 
+                                                <Image centered src={'https://ik.imagekit.io/mublin/tr:h-200,w-200/events/'+eventImage} size='small' className="mt-4 mb-1" />
+                                            }
                                         </Form>
                                     </Tab.Pane>
                                 }, 
@@ -471,7 +533,10 @@ function CreateNewEventPage () {
                                 menuItem: 'Informações internas',
                                 render: () => 
                                         <Tab.Pane attached={false} as="div">
-                                            <Form>
+                                            <Form
+                                                onFocus={() => setShowMobileMenu(false)}
+                                                onBlur={() => setShowMobileMenu(true)}
+                                            >
                                                 <Form.Field 
                                                     className='mt-3'
                                                     label='Propósito do evento' 
@@ -481,12 +546,13 @@ function CreateNewEventPage () {
                                                     onChange={(e) => setEventPurpose(e.target.options[e.target.selectedIndex].value)}
                                                 >
                                                     <option value='1'>Divulgar e promover</option>
-                                                    <option value='2'>Planejar</option>
+                                                    <option value='2'>Planejamento</option>
                                                     <option value='3'>Registro/Gravação</option>
                                                     <option value='4'>Evoluir/Aperfeiçoar</option>
+                                                    <option value='5'>Outros</option>
                                                 </Form.Field>
                                                 <Form.Field className='mb-0'>
-                                                    <label for='eventFeeTotal'>Cachê da apresentação</label>
+                                                    <label for='eventFeeTotal'>Cachê (total)</label>
                                                 </Form.Field>
                                                 <IntlCurrencyInput 
                                                     currency='BRL' 
@@ -498,7 +564,7 @@ function CreateNewEventPage () {
                                                     className='mb-3'
                                                 />
                                                 <Form.Field className='mb-0'>
-                                                    <label for='eventFeePerMember'>Cachê por membro</label>
+                                                    <label for='eventFeePerMember'>Cachê (por integrante)</label>
                                                 </Form.Field>
                                                 <IntlCurrencyInput 
                                                     currency='BRL'
@@ -510,7 +576,8 @@ function CreateNewEventPage () {
                                                     className='mb-3'
                                                 />
                                                 <Form.Field className='mb-0'>
-                                                    <label for='eventCostPerMember'>Custo do evento por integrante</label>
+                                                    <label for='eventCostPerMember'>Custos do evento (por integrante)</label>
+                                                    <span>Ex.: Custos com viagem, etc</span>
                                                 </Form.Field>
                                                 <IntlCurrencyInput 
                                                     currency='BRL' 
@@ -520,6 +587,11 @@ function CreateNewEventPage () {
                                                     value={eventCostPerMember}
                                                     onChange={handleChangeEventCostPerMember} 
                                                     className='mb-3'
+                                                />
+                                                <Form.TextArea 
+                                                    name='leaderCommentsBefore'
+                                                    label='Comentários anteriores ao evento' 
+                                                    placeholder='Ex.: Esta apresentação será focada em divulgar as novas músicas' 
                                                 />
                                             </Form>
                                         </Tab.Pane>
@@ -531,10 +603,10 @@ function CreateNewEventPage () {
                             Enviar
                         </Button>
                     </Grid.Column>
-                    <Grid.Column computer={6} mobile={16}>
-                        <p className='textCenter'>Amostra da comunicação do evento</p>
+                    <Grid.Column computer={5} mobile={16}>
+                        <p className='textCenter mt-4 mt-md-0'>Amostra da comunicação do evento</p>
                         { !eventProjectId ? (
-                            <Segment secondary textAlign='center' style={{height:'300px',alignItems:'center',display:'flex',justifyContent:'center',color:'#CECECE'}}>
+                            <Segment secondary textAlign='center' className='mb-5 mb-md-0' style={{height:'300px',alignItems:'center',display:'flex',justifyContent:'center',color:'#CECECE'}}>
                                 <span>Selecione o projeto para visualizar</span>
                             </Segment>
                         ) : (
@@ -549,24 +621,27 @@ function CreateNewEventPage () {
                                 {/* <p className='mb-3' style={{fontSize:'11px'}}>Evento {eventMethod === 1 ? 'Presencial' : 'Online'}</p> */}
                                 <Header as='h5' className='mt-0 mb-3' inverted color={sampleColor}>Evento {eventMethod === 1 ? 'Presencial' : 'Online'}</Header>
                                 { (!project.requesting && eventProjectId && project.picture) &&
-                                    <Image centered rounded src={'https://ik.imagekit.io/mublin/projects/tr:h-200,w-200,c-maintain_ratio/'+project.id+'/'+project.picture} size='small' />
+                                    <Image centered rounded src={'https://ik.imagekit.io/mublin/projects/tr:h-500,w-500,c-maintain_ratio/'+project.id+'/'+project.picture} size='small' />
                                 }
-                                <Header as='h1' className='mt-3 mb-0' inverted color={sampleColor}>{project.name}</Header>
                                 {
                                     {
-                                        1: <p>Ensaio</p>,
-                                        3: <p>Reunião</p>,
-                                        4: <p>Gravação</p>,
-                                        2: <p>Show</p>,
-                                        5: <p>Entrevista</p>,
-                                        6: <p>Workshop</p>
+                                        1: <p className='mt-3 mb-0'>Ensaio</p>,
+                                        3: <p className='mt-3 mb-0'>Reunião</p>,
+                                        4: <p className='mt-3 mb-0'>Gravação</p>,
+                                        2: <p className='mt-3 mb-0'>Apresentação</p>,
+                                        5: <p className='mt-3 mb-0'>Entrevista</p>,
+                                        6: <p className='mt-3 mb-0'>Workshop</p>
                                     }[eventType]
                                 }
+                                <Header as='h1' className='mt-0 mb-0' inverted color={sampleColor}>{project.name}</Header>
                                 { eventName && 
                                     <Header as='h3' className='mt-3 mb-1' inverted color={sampleColor}>{eventName}</Header>
                                 }
                                 { eventDescription && 
                                     <p className='mb-3'>{eventDescription}</p>
+                                }
+                                { selectedPlaceName && 
+                                    <p style={{fontSize:'11.5px'}}>{selectedPlaceName}</p>
                                 }
                                 { selectedCityName && 
                                     <p style={{fontSize:'11px'}}>{selectedCityName}, {selectedRegionName}</p>
@@ -580,7 +655,7 @@ function CreateNewEventPage () {
                                     </Header>
                                 }
                             </Segment>
-                            <p className='textCenter'>
+                            <p className='textCenter mb-5 mb-md-0'>
                                 <Button size='tiny' onClick={() => takeScreenshot()}><Icon name='cloud download' /> Baixar</Button>
                             </p>
                             </>
@@ -588,7 +663,9 @@ function CreateNewEventPage () {
                     </Grid.Column>
                 </Grid.Row>
             </Grid>
-            <FooterMenuMobile />
+            { showMobileMenu && 
+                <FooterMenuMobile />
+            }
         </>
     )
 }

@@ -42,3 +42,37 @@ main.landingPage {
     width: 100%;
   }
 }
+
+.landingPageFooter {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  padding: 14px 14px 10px 14px;
+  background-color: rgba(0, 0, 0, 0.2);
+  text-align: left;
+  font-size: 12px;
+  display: flex;
+  justify-content: space-between;
+
+  @media only screen and (min-width: 600px) {
+    padding: 24px 24px 20px 24px;
+    font-size: 16px;
+  }
+
+  span {
+    color: #FFF;
+  }
+
+  a {
+    color: #FFFFFF;
+
+    &:first-child {
+      margin-right: 10px;
+    }
+
+    &:hover {
+      color: #48b0ff;
+    }
+  }
+}

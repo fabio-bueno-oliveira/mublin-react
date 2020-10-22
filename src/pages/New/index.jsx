@@ -65,7 +65,7 @@ function CreateNewItemPage () {
             <Grid as='main' columns={1} className="container">
                 <Grid.Row>
                     <Grid.Column width={16}>
-                        <div>
+                        {/* <div>
                             <progress value={progress} max="100" />
                             <br />
                             <br />
@@ -75,16 +75,26 @@ function CreateNewItemPage () {
                             {url}
                             <br />
                             <img src={url || "http://via.placeholder.com/300"} alt="firebase-image" />
-                        </div>
+                        </div> */}
                         {/* <Header as='h2'>Criar</Header> */}
                         <Menu vertical fluid>
+                            <Menu.Item
+                                name='event'
+                                onClick={() => history.push('/new/event/?type=public')}
+                            >
+                                <Header as='h4'>
+                                    <Icon name='plus' />
+                                    <Header.Content>Novo Evento</Header.Content>
+                                </Header>
+                                <p>Criar evento de um dos meus projetos</p>
+                            </Menu.Item>
                             <Menu.Item
                                 name='new'
                                 onClick={() => history.push('/new')}
                             >
                                 <Header as='h4'>
                                     <Icon name='plus' />
-                                    <Header.Content>Novo</Header.Content>
+                                    <Header.Content>Novo Projeto</Header.Content>
                                 </Header>
                                 <p>Criar projeto do zero</p>
                             </Menu.Item>
@@ -94,7 +104,7 @@ function CreateNewItemPage () {
                             >
                                 <Header as='h4'>
                                     <Icon name='lightbulb outline' />
-                                    <Header.Content>Ideia</Header.Content>
+                                    <Header.Content>Ideia de Projeto</Header.Content>
                                 </Header>
                                 <p>Criar uma proposta para atrair outros integrantes</p>
                             </Menu.Item>

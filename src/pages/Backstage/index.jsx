@@ -38,7 +38,7 @@ function BackstageMainPage () {
         <Segment key={key} color={(project.yearEnd && project.yearEnd <= currentYear) ? 'red' : 'green'} attached='top' className='mb-4'>
             <Header as='h4' onClick={() => history.push('/backstage/'+project.username)} style={{cursor:'pointer'}}>
                 {project.picture ? (
-                    <Image src={'https://ik.imagekit.io/mublin/projects/tr:h-200,w-200,c-maintain_ratio/'+project.projectid+'/'+project.picture} rounded />
+                    <Image src={'https://ik.imagekit.io/mublin/projects/tr:h-200,w-200,c-maintain_ratio/'+project.picture} rounded />
                 ) : (
                     <Image src={'https://ik.imagekit.io/mublin/sample-folder/tr:h-200,w-200,c-maintain_ratio/avatar-undefined_-dv9U6dcv3.jpg'} rounded />
                 )}

@@ -41,7 +41,7 @@ function ProjectPage (props) {
         contain: true
     }
 
-    const artistHeroImage = 'https://ik.imagekit.io/mublin/projects/tr:h-300,w-1000,bl-12/'+project.id+'/'+project.picture
+    const artistHeroImage = 'https://ik.imagekit.io/mublin/projects/tr:h-300,w-1000,bl-12/'+project.picture
 
     const defaultHeroImage = 'https://ik.imagekit.io/mublin/sample-folder/tr:h-300,w-1000,bl-12/avatar-undefined_-dv9U6dcv3.jpg'
 
@@ -79,7 +79,7 @@ function ProjectPage (props) {
                             style={artistHeroStyles}
                         >
                             {project.picture ? (
-                                <Image src={'https://ik.imagekit.io/mublin/projects/tr:h-200,w-200,c-maintain_ratio/'+project.id+'/'+project.picture} circular centered size='tiny' />
+                                <Image src={'https://ik.imagekit.io/mublin/projects/tr:h-200,w-200,c-maintain_ratio/'+project.picture} circular centered size='tiny' />
                             ) : (
                                 <Image src='https://ik.imagekit.io/mublin/sample-folder/tr:h-200,w-200,c-maintain_ratio/avatar-undefined_-dv9U6dcv3.jpg' circular centered size='tiny' />
                             )}

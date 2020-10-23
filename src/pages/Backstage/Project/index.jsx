@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import { Grid, Segment, Header, Icon, Button, Message, Image, Label, List, Form, Table, Modal, Container, Statistic, Loader as UiLoader, Popup } from 'semantic-ui-react';
+import { miscInfos } from '../../../store/actions/misc';
+import { Grid, Segment, Header, Icon, Button, Message, Image, Label, Form, Table, Modal, Container, Loader as UiLoader, Popup, Divider, Select } from 'semantic-ui-react';
 import { projectInfos } from '../../../store/actions/project';
 import HeaderDesktop from '../../../components/layout/headerDesktop';
 import HeaderMobile from '../../../components/layout/headerMobile';
@@ -13,9 +14,6 @@ import { formatDistance } from 'date-fns';
 import pt from 'date-fns/locale/pt-BR';
 import {IKUpload} from "imagekitio-react";
 import './styles.scss'
-// import {
-//     BarChart, Bar, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend,
-//   } from 'recharts';
 
 function ProjectBackstagePage (props) {
 
@@ -33,11 +31,13 @@ function ProjectBackstagePage (props) {
         dispatch(projectInfos.getProjectMembers(props.match.params.username));
         dispatch(projectInfos.getProjectNotes(props.match.params.username));
         dispatch(projectInfos.getProjectEvents(props.match.params.username));
+        dispatch(miscInfos.getRoles());
     }, []);
 
     const project = useSelector(state => state.project);
     const members = project.members;
     const membersAdmin = members.filter((member) => { return member.admin === 1 })
+    const roles = useSelector(state => state.roles);
 
     document.title = 'Backstage ' + project.name + ' | Mublin'
 
@@ -115,7 +115,7 @@ function ProjectBackstagePage (props) {
     const [pictureIsLoading, SetPictureIsLoading] = useState(false)
     const [newProjectPicture, setNewProjectPicture] = useState('')
 
-    const userAvatarPath = "/projects/"+project.id+"/"
+    const userAvatarPath = "/projects/"
     const [pictureFilename, setPictureFilename] = useState('')
 
     const onUploadError = err => {
@@ -258,12 +258,26 @@ function ProjectBackstagePage (props) {
         }
     ];
 
+    const projectAge = currentTime_year - project.foundationYear
+
+    // Create New Opportunity
+    const [openModalNewOpportunity, setOpenModalNewOpportunity] = useState(false)
+    const [newOpportunityExperience ,setNewOpportunityExperience] = useState('2')
+
+    const rolesList = roles.list.filter((role) => { return role.id !== 30 && role.id !== 29 && role.id !== 31 }).map(role => ({ 
+        text: role.description,
+        value: role.id,
+        key: role.id
+    }));
+
     return (
         <>
         <HeaderDesktop />
         <HeaderMobile />
         { (!project.requesting && project.confirmed !== 1 ) ? (
-            <Container className='mt-5 pt-5'>
+            <>
+            <Spacer />
+            <Container>
                 { project.confirmed === 2 ? (
                     <Message
                         warning
@@ -280,6 +294,7 @@ function ProjectBackstagePage (props) {
                     />
                 )}
             </Container>
+            </>
         ) : (
             project.requesting ? (
                 <Loader
@@ -292,18 +307,19 @@ function ProjectBackstagePage (props) {
                 />
             ) : (
                 <>
-                <Grid stackable centered verticalAlign='middle' columns={1} verticalAlign='top' className="container mb-2 mt-4 mt-md-5 pt-5">
+                <Spacer />
+                <Grid stackable centered verticalAlign='middle' columns={1} verticalAlign='top' className="container mb-2">
                     <Grid.Row>
                         <Grid.Column mobile={16} computer={16}>
                             { newProject === 'true' &&
-                                <Message positive>
+                                <Message color='green' size='tiny'>
                                     <Message.Header>{project.name} criado com sucesso!</Message.Header>
                                 </Message>
                             }
                             <span style={{fontSize:'12px'}}><Icon name='warehouse' /> Backstage</span>
                             <Header as='h3' style={{marginTop:'5px',marginBottom:'0px'}}>
                                 {project.picture ? (
-                                    <Image src={'https://ik.imagekit.io/mublin/projects/tr:h-200,w-200,c-maintain_ratio/'+project.id+'/'+project.picture} rounded />
+                                    <Image src={'https://ik.imagekit.io/mublin/projects/tr:h-200,w-200,c-maintain_ratio/'+project.picture} rounded />
                                 ) : (
                                     <Image src={'https://ik.imagekit.io/mublin/sample-folder/tr:h-200,w-200,c-maintain_ratio/avatar-undefined_-dv9U6dcv3.jpg'} rounded />
                                 )}
@@ -317,6 +333,7 @@ function ProjectBackstagePage (props) {
                     <Grid.Row stretched>
                         <Grid.Column mobile={16} computer={4}>
                             <Button 
+                                primary
                                 fluid 
                                 size='small' 
                                 onClick={() => history.push('/project/'+project.username)}
@@ -324,16 +341,24 @@ function ProjectBackstagePage (props) {
                             >
                                 Ir para a página do projeto
                             </Button>
-                            <Segment textAlign='left'>
-                                <Header as='h4'>
-                                    Tempo em atividade
-                                </Header>
-                                { !project.endDate ? (
-                                    <p>{project.foundationYear} - atualmente ({currentTime_year-project.foundationYear} anos)</p>
-                                ) : (
-                                    <p>{project.foundationYear} - {project.endDate} ({project.endDate-project.foundationYear} anos)</p>
-                                )}
-                            </Segment>
+                            <Segment.Group>
+                                <Segment>
+                                    <Header as='h4'>
+                                        <Header.Content>Informações gerais do projeto</Header.Content>
+                                    </Header>
+                                </Segment>
+                                <Segment textAlign='left'>
+                                    <span style={{fontWeight:'500'}}>Tempo em atividade</span>
+                                    { !project.endDate ? (
+                                        <p>{project.foundationYear} - atualmente {projectAge > 0 && '('+projectAge+' anos)'}</p>
+                                    ) : (
+                                        <p>{project.foundationYear} - {project.endDate} {projectAge > 0 && '('+projectAge+' anos)'}</p>
+                                    )}
+                                    <Divider />
+                                    <span style={{fontWeight:'500'}}>Turnê atual</span>
+                                    <p>Nenhuma</p>
+                                </Segment>
+                            </Segment.Group>
                             <Segment textAlign='left'>
                                 <Header as='h4'>
                                     Quadro de avisos
@@ -356,28 +381,6 @@ function ProjectBackstagePage (props) {
                                     <p>Nenhum aviso cadastrado no momento</p>
                                 )}
                             </Segment>
-                            {/* <Segment>
-                                <Header as='h4'>
-                                    Estatísticas
-                                    <Header.Subheader>Eventos em 2020</Header.Subheader>
-                                </Header>
-                                <BarChart
-                                    width={232}
-                                    height={200}
-                                    data={data}
-                                    margin={{
-                                    top: 20, right: 30, left: 20, bottom: 5,
-                                    }}
-                                >
-                                    <CartesianGrid strokeDasharray="3 3" />
-                                    <XAxis dataKey="Mês" tick={{fontSize: 11}} />
-                                    <YAxis tick={{fontSize: 11}} />
-                                    <Tooltip />
-                                    <Legend />
-                                    <Bar dataKey="Públicos" stackId="a" fill="#6435c9" />
-                                    <Bar dataKey="Privados" stackId="a" fill="#2185d0" />
-                                </BarChart>
-                            </Segment> */}
                         </Grid.Column>
                         <Grid.Column mobile={16} computer={8}>
                             <Segment>
@@ -388,7 +391,10 @@ function ProjectBackstagePage (props) {
                                             <Header.Subheader>{members.length} relacionados</Header.Subheader>
                                         </Header.Content>
                                     </Header>
-                                    <Label size='small' content='Convidar novo' icon='user plus' className='cpointer' />
+                                    <Button.Group size='mini'>
+                                        <Button><Icon name='user plus' />Convidar</Button>
+                                        <Button onClick={() => setOpenModalNewOpportunity(true)}><Icon name='bullhorn' />Abrir vaga</Button>
+                                    </Button.Group>
                                 </div>
                                 <Table columns={3} unstackable compact='very' basic='very'>
                                     {/* <Table.Header>
@@ -600,293 +606,346 @@ function ProjectBackstagePage (props) {
                                         <Header.Content>Funções administrativas</Header.Content>
                                     </Header>
                                 </Segment>
-                                
-
-                                    <Segment textAlign='left'>
-                                        <Header as='h4'>
-                                            Foto
-                                        </Header>
-                                        {project.picture ? (
-                                                <Image centered bordered src={'https://ik.imagekit.io/mublin/projects/tr:h-400,w-400,c-maintain_ratio/'+project.id+'/'+project.picture} rounded size='small' />
-                                            ) : (
-                                                <Image centered bordered src={'https://ik.imagekit.io/mublin/sample-folder/tr:h-400,w-400,c-maintain_ratio/avatar-undefined_-dv9U6dcv3.jpg'} rounded size='small' />
-                                        )}
-                                        <Button fluid size='tiny' className='mt-3' onClick={() => setModalNewProjectPictureOpen(true)} disabled={project.adminAccess === 1 ? false : true}>
-                                            <Icon name={project.adminAccess === 1 ? 'pencil' : 'lock'}/> Alterar
-                                        </Button>
-                                        <Modal
-                                            id="newProjectPicture"
-                                            size='mini'
-                                            onClose={() => setModalNewProjectPictureOpen(false)}
-                                            onOpen={() => setModalNewProjectPictureOpen(true)}
-                                            open={modalNewProjectPictureOpen}
-                                            closeIcon
-                                        >
-                                            <Modal.Header>Alterar foto de {project.name}</Modal.Header>
-                                            <Modal.Content>
-                                                { !project.picture ? (
-                                                    <>
-                                                        {/* <Image centered rounded src='https://ik.imagekit.io/mublin/tr:h-200,w-200/sample-folder/avatar-undefined_-dv9U6dcv3.jpg' size='small' className="mb-3" /> */}
-                                                    </>
-                                                ) : (
-                                                    <Image centered rounded src={'https://ik.imagekit.io/mublin/tr:h-200,w-200,c-maintain_ratio/projects/'+project.id+'/'+project.picture} size='small' className="mb-4" />
-                                                )}
-                                                <div className="customFileUpload">
-                                                    <IKUpload 
-                                                        fileName="avatar.jpg"
-                                                        folder={userAvatarPath}
-                                                        tags={["avatar"]}
-                                                        useUniqueFileName={true}
-                                                        isPrivateFile= {false}
-                                                        onError={onUploadError}
-                                                        onSuccess={onUploadSuccess}
-                                                    />
-                                                </div>
-                                                { pictureIsLoading &&
-                                                    <UiLoader active inline='centered' />
-                                                }
-                                            </Modal.Content>
-                                        </Modal>
-                                    </Segment>
-                                    <Segment>
-                                        <Header as='h4'>Bio</Header>
-                                        <p>{project.bio ? project.bio : 'Este projeto não possui descrição'}</p>
-                                        <Button 
-                                            fluid 
-                                            size='tiny' 
-                                            className='mt-3' 
-                                            onClick={() => setModalBioIsOpen(true)}
-                                            disabled={project.adminAccess === 1 ? false : true}
-                                        >
-                                            <Icon name={project.adminAccess === 1 ? 'pencil' : 'lock'}/> Alterar
-                                        </Button>
-                                        <Modal
-                                            size='mini'
-                                            onClose={() => setModalBioIsOpen(false)}
-                                            onOpen={() => setModalBioIsOpen(true)}
-                                            open={modalBioIsOpen}
-                                        >
-                                            <Formik
-                                                initialValues={{ 
-                                                    bio: project.bio
-                                                }}
-                                                validate={false}
-                                                validateOnMount={true}
-                                                validateOnBlur={true}
-                                                onSubmit={(values, { setSubmitting }) => {
-                                                setTimeout(() => {
-                                                    setSubmitting(false);
-                                                    handleSubmitBio(values.bio)
-                                                }, 400);
-                                                }}
-                                            >
-                                            {({
-                                                values, handleChange, handleSubmit, handleBlur, isSubmitting
-                                            }) => (
-                                                <>
-                                                <Modal.Content>
-                                                    <Form loading={isSubmitting}>
-                                                        <Form.TextArea 
-                                                            name='bio'
-                                                            label='Bio' 
-                                                            value={values.bio}
-                                                            onChange={e => {
-                                                                handleChange(e);
-                                                            }}
-                                                            onBlur={handleBlur}
-                                                            maxLength="200"
-                                                        />
-                                                        { values.bio && 
-                                                            <Label size='tiny' content={values.bio.length+'/200'} color={values.bio.length  > 199 ? 'red' : ''} />
-                                                        }
-                                                    </Form>
-                                                </Modal.Content>
-                                                <Modal.Actions>
-                                                    <Button
-                                                        size='small'
-                                                        onClick={() => setModalBioIsOpen(false)} 
-                                                    >
-                                                        Cancelar
-                                                    </Button>
-                                                    <Button
-                                                        size='small' 
-                                                        color='black'
-                                                        type="submit" 
-                                                        onClick={handleSubmit}
-                                                        disabled={values.bio === project.bio ? true : false}
-                                                    >
-                                                        Salvar
-                                                    </Button>
-                                                </Modal.Actions>
-                                                </>
-                                                )}
-                                            </Formik>
-                                        </Modal>
-                                    </Segment>
-                                    <Segment>
-                                        <Header as='h4'>Tag</Header>
-                                        { project.labelText ? (
-                                            <>
-                                                <Label tag color={project.labelColor} size='tiny' style={{fontWeight:'500'}} className='mr-2'>
-                                                    {project.labelText}
-                                                </Label>
-                                                { project.labelShow ? (
-                                                    <Icon name='eye' title='Visível' />
-                                                ) : (
-                                                    <Icon name='eye slash' title='Oculta' />
-                                                )}
-                                            </>
+                                <Segment textAlign='left'>
+                                    <Header as='h4'>
+                                        Foto
+                                    </Header>
+                                    {project.picture ? (
+                                            <Image centered bordered src={'https://ik.imagekit.io/mublin/projects/tr:h-400,w-400,c-maintain_ratio/'+project.picture} rounded size='small' />
                                         ) : (
-                                            <p>Nenhuma tag definida</p>
-                                        )}
-                                        <Button 
-                                            fluid 
-                                            size='tiny' 
-                                            className='mt-3' 
-                                            onClick={() => setModalTagIsOpen(true)}
-                                            disabled={project.adminAccess === 1 ? false : true}
-                                        >
-                                            <Icon name={project.adminAccess === 1 ? 'pencil' : 'lock'}/> Alterar
-                                        </Button>
-                                        <Modal
-                                            size='mini'
-                                            onClose={() => setModalTagIsOpen(false)}
-                                            onOpen={() => setModalTagIsOpen(true)}
-                                            open={modalTagIsOpen}
-                                        >
-                                            <Formik
-                                                initialValues={{ 
-                                                    label_show: String(project.labelShow),
-                                                    label_text: project.labelText
-                                                }}
-                                                validate={false}
-                                                validateOnMount={true}
-                                                validateOnBlur={true}
-                                                onSubmit={(values, { setSubmitting }) => {
-                                                    // alert(JSON.stringify(values, null, 2))
-                                                    setTimeout(() => {
-                                                        setSubmitting(false);
-                                                        handleSubmitTag(values.label_show, values.label_text)
-                                                    }, 400);
-                                                }}
-                                            >
-                                            {({
-                                                values, handleChange, handleSubmit, handleBlur, isSubmitting
-                                            }) => (
+                                            <Image centered bordered src={'https://ik.imagekit.io/mublin/sample-folder/tr:h-400,w-400,c-maintain_ratio/avatar-undefined_-dv9U6dcv3.jpg'} rounded size='small' />
+                                    )}
+                                    <Button fluid size='tiny' className='mt-3' onClick={() => setModalNewProjectPictureOpen(true)} disabled={project.adminAccess === 1 ? false : true}>
+                                        <Icon name={project.adminAccess === 1 ? 'pencil' : 'lock'}/> Alterar
+                                    </Button>
+                                    <Modal
+                                        id="newProjectPicture"
+                                        size='mini'
+                                        onClose={() => setModalNewProjectPictureOpen(false)}
+                                        onOpen={() => setModalNewProjectPictureOpen(true)}
+                                        open={modalNewProjectPictureOpen}
+                                        closeIcon
+                                    >
+                                        <Modal.Header>Alterar foto de {project.name}</Modal.Header>
+                                        <Modal.Content>
+                                            { !project.picture ? (
                                                 <>
-                                                <Modal.Content>
-                                                    <Form loading={isSubmitting}>
-                                                        <Form.Field
-                                                            label='Texto da tag'
-                                                            id='label_text'
-                                                            name='label_text'
-                                                            control='input'
-                                                            value={values.label_text}
-                                                            onChange={e => {
-                                                                handleChange(e);
-                                                            }}
-                                                            onBlur={handleBlur}
-                                                            maxLength="30"
-                                                        />
-                                                        { values.label_text && 
-                                                            <Label size='tiny' content={values.label_text.length+'/30'} color={values.label_text.length  > 29 ? 'red' : ''} />
-                                                        }
-                                                        <Form.Group inline>
-                                                            <Form.Radio
-                                                                id="label_show1"
-                                                                name="label_show"
-                                                                label='Exibir tag'
-                                                                value={1}
-                                                                checked={values.label_show === '1' ? true : false}
-                                                                onChange={e => {
-                                                                    handleChange(e);
-                                                                }}
-                                                                onBlur={handleBlur}
-                                                            />
-                                                            <Form.Radio
-                                                                id="label_show2"
-                                                                name="label_show"
-                                                                label='Ocultar tag'
-                                                                value={0}
-                                                                checked={values.label_show === '0' ? true : false}
-                                                                onChange={e => {
-                                                                    handleChange(e);
-                                                                }}
-                                                                onBlur={handleBlur}
-                                                            />
-                                                        </Form.Group>
-                                                    </Form>
-                                                </Modal.Content>
-                                                <Modal.Actions>
-                                                    <Button
-                                                        size='small'
-                                                        onClick={() => setModalTagIsOpen(false)} 
-                                                    >
-                                                        Cancelar
-                                                    </Button>
-                                                    <Button
-                                                        size='small' 
-                                                        color='black'
-                                                        type="submit" 
-                                                        onClick={handleSubmit}
-                                                        disabled={values.bio === project.bio ? true : false}
-                                                    >
-                                                        Salvar
-                                                    </Button>
-                                                </Modal.Actions>
+                                                    {/* <Image centered rounded src='https://ik.imagekit.io/mublin/tr:h-200,w-200/sample-folder/avatar-undefined_-dv9U6dcv3.jpg' size='small' className="mb-3" /> */}
                                                 </>
-                                                )}
-                                            </Formik>
-                                        </Modal>
-                                    </Segment>
-                                    <Segment>
-                                        <Header as='h4'>Encerrar projeto no Mublin</Header>
-                                        <Button 
-                                            fluid 
-                                            negative
-                                            size='tiny' 
-                                            className='mt-3' 
-                                            onClick={() => setModalAlertDeleteProjectOpen(true)}
-                                            disabled={project.adminAccess === 1 ? false : true}
+                                            ) : (
+                                                <Image centered rounded src={'https://ik.imagekit.io/mublin/tr:h-200,w-200,c-maintain_ratio/projects/'+project.picture} size='small' className="mb-4" />
+                                            )}
+                                            <div className="customFileUpload">
+                                                <IKUpload 
+                                                    fileName="avatar.jpg"
+                                                    folder={userAvatarPath}
+                                                    tags={["avatar"]}
+                                                    useUniqueFileName={true}
+                                                    isPrivateFile= {false}
+                                                    onError={onUploadError}
+                                                    onSuccess={onUploadSuccess}
+                                                />
+                                            </div>
+                                            { pictureIsLoading &&
+                                                <UiLoader active inline='centered' />
+                                            }
+                                        </Modal.Content>
+                                    </Modal>
+                                </Segment>
+                                <Segment>
+                                    <Header as='h4'>Bio</Header>
+                                    <p>{project.bio ? project.bio : 'Este projeto não possui descrição'}</p>
+                                    <Button 
+                                        fluid 
+                                        size='tiny' 
+                                        className='mt-3' 
+                                        onClick={() => setModalBioIsOpen(true)}
+                                        disabled={project.adminAccess === 1 ? false : true}
+                                    >
+                                        <Icon name={project.adminAccess === 1 ? 'pencil' : 'lock'}/> Alterar
+                                    </Button>
+                                    <Modal
+                                        size='mini'
+                                        onClose={() => setModalBioIsOpen(false)}
+                                        onOpen={() => setModalBioIsOpen(true)}
+                                        open={modalBioIsOpen}
+                                    >
+                                        <Formik
+                                            initialValues={{ 
+                                                bio: project.bio
+                                            }}
+                                            validate={false}
+                                            validateOnMount={true}
+                                            validateOnBlur={true}
+                                            onSubmit={(values, { setSubmitting }) => {
+                                            setTimeout(() => {
+                                                setSubmitting(false);
+                                                handleSubmitBio(values.bio)
+                                            }, 400);
+                                            }}
                                         >
-                                            <Icon name={project.adminAccess === 1 ? 'trash alternate outline' : 'lock'} /> Deletar página
-                                        </Button>
-                                        <Modal
-                                            basic
-                                            onClose={() => setModalAlertDeleteProjectOpen(false)}
-                                            onOpen={() => setModalAlertDeleteProjectOpen(true)}
-                                            open={modalAlertDeleteProjectOpen}
-                                            size='mini'
-                                        >
-                                            <Header icon>
-                                                <Icon name='exclamation triangle' />
-                                                Deletar este projeto?
-                                            </Header>
+                                        {({
+                                            values, handleChange, handleSubmit, handleBlur, isSubmitting
+                                        }) => (
+                                            <>
                                             <Modal.Content>
-                                                <p>Esta ação não poderá ser desfeita. Você perderá todos os dados do projeto, além de imagens e eventos relacionados. O projeto irá desaparecer pra você e para os demais membros.</p>
+                                                <Form loading={isSubmitting}>
+                                                    <Form.TextArea 
+                                                        name='bio'
+                                                        label='Bio' 
+                                                        value={values.bio}
+                                                        onChange={e => {
+                                                            handleChange(e);
+                                                        }}
+                                                        onBlur={handleBlur}
+                                                        maxLength="200"
+                                                    />
+                                                    { values.bio && 
+                                                        <Label size='tiny' content={values.bio.length+'/200'} color={values.bio.length  > 199 ? 'red' : ''} />
+                                                    }
+                                                </Form>
                                             </Modal.Content>
                                             <Modal.Actions>
-                                                <Button basic color='red' inverted 
-                                                    onClick={() => setModalAlertDeleteProjectOpen(false)}
-                                                    loading={isLoading}
+                                                <Button
+                                                    size='small'
+                                                    onClick={() => setModalBioIsOpen(false)} 
                                                 >
                                                     Cancelar
                                                 </Button>
-                                                <Button color='red' inverted 
-                                                    onClick={() => handleDeleteProject()}
-                                                    loading={isLoading}
+                                                <Button
+                                                    size='small' 
+                                                    color='black'
+                                                    type="submit" 
+                                                    onClick={handleSubmit}
+                                                    disabled={values.bio === project.bio ? true : false}
                                                 >
-                                                    Deletar
+                                                    Salvar
                                                 </Button>
                                             </Modal.Actions>
-                                        </Modal>
-                                    </Segment>
-
+                                            </>
+                                            )}
+                                        </Formik>
+                                    </Modal>
+                                </Segment>
+                                <Segment>
+                                    <Header as='h4'>Tag</Header>
+                                    { project.labelText ? (
+                                        <>
+                                            <Label tag color={project.labelColor} size='tiny' style={{fontWeight:'500'}} className='mr-2'>
+                                                {project.labelText}
+                                            </Label>
+                                            { project.labelShow ? (
+                                                <Icon name='eye' title='Visível' />
+                                            ) : (
+                                                <Icon name='eye slash' title='Oculta' />
+                                            )}
+                                        </>
+                                    ) : (
+                                        <p>Nenhuma tag definida</p>
+                                    )}
+                                    <Button 
+                                        fluid 
+                                        size='tiny' 
+                                        className='mt-3' 
+                                        onClick={() => setModalTagIsOpen(true)}
+                                        disabled={project.adminAccess === 1 ? false : true}
+                                    >
+                                        <Icon name={project.adminAccess === 1 ? 'pencil' : 'lock'}/> Alterar
+                                    </Button>
+                                    <Modal
+                                        size='mini'
+                                        onClose={() => setModalTagIsOpen(false)}
+                                        onOpen={() => setModalTagIsOpen(true)}
+                                        open={modalTagIsOpen}
+                                    >
+                                        <Formik
+                                            initialValues={{ 
+                                                label_show: String(project.labelShow),
+                                                label_text: project.labelText
+                                            }}
+                                            validate={false}
+                                            validateOnMount={true}
+                                            validateOnBlur={true}
+                                            onSubmit={(values, { setSubmitting }) => {
+                                                // alert(JSON.stringify(values, null, 2))
+                                                setTimeout(() => {
+                                                    setSubmitting(false);
+                                                    handleSubmitTag(values.label_show, values.label_text)
+                                                }, 400);
+                                            }}
+                                        >
+                                        {({
+                                            values, handleChange, handleSubmit, handleBlur, isSubmitting
+                                        }) => (
+                                            <>
+                                            <Modal.Content>
+                                                <Form loading={isSubmitting}>
+                                                    <Form.Field
+                                                        label='Texto da tag'
+                                                        id='label_text'
+                                                        name='label_text'
+                                                        control='input'
+                                                        value={values.label_text}
+                                                        onChange={e => {
+                                                            handleChange(e);
+                                                        }}
+                                                        onBlur={handleBlur}
+                                                        maxLength="30"
+                                                    />
+                                                    { values.label_text && 
+                                                        <Label size='tiny' content={values.label_text.length+'/30'} color={values.label_text.length  > 29 ? 'red' : ''} />
+                                                    }
+                                                    <Form.Group inline>
+                                                        <Form.Radio
+                                                            id="label_show1"
+                                                            name="label_show"
+                                                            label='Exibir tag'
+                                                            value={1}
+                                                            checked={values.label_show === '1' ? true : false}
+                                                            onChange={e => {
+                                                                handleChange(e);
+                                                            }}
+                                                            onBlur={handleBlur}
+                                                        />
+                                                        <Form.Radio
+                                                            id="label_show2"
+                                                            name="label_show"
+                                                            label='Ocultar tag'
+                                                            value={0}
+                                                            checked={values.label_show === '0' ? true : false}
+                                                            onChange={e => {
+                                                                handleChange(e);
+                                                            }}
+                                                            onBlur={handleBlur}
+                                                        />
+                                                    </Form.Group>
+                                                </Form>
+                                            </Modal.Content>
+                                            <Modal.Actions>
+                                                <Button
+                                                    size='small'
+                                                    onClick={() => setModalTagIsOpen(false)} 
+                                                >
+                                                    Cancelar
+                                                </Button>
+                                                <Button
+                                                    size='small' 
+                                                    color='black'
+                                                    type="submit" 
+                                                    onClick={handleSubmit}
+                                                    disabled={values.bio === project.bio ? true : false}
+                                                >
+                                                    Salvar
+                                                </Button>
+                                            </Modal.Actions>
+                                            </>
+                                            )}
+                                        </Formik>
+                                    </Modal>
+                                </Segment>
+                                <Segment>
+                                    <Header as='h4'>Encerrar projeto no Mublin</Header>
+                                    <Button 
+                                        fluid 
+                                        negative
+                                        size='tiny' 
+                                        className='mt-3' 
+                                        onClick={() => setModalAlertDeleteProjectOpen(true)}
+                                        disabled={project.adminAccess === 1 ? false : true}
+                                    >
+                                        <Icon name={project.adminAccess === 1 ? 'trash alternate outline' : 'lock'} /> Deletar página
+                                    </Button>
+                                    <Modal
+                                        basic
+                                        onClose={() => setModalAlertDeleteProjectOpen(false)}
+                                        onOpen={() => setModalAlertDeleteProjectOpen(true)}
+                                        open={modalAlertDeleteProjectOpen}
+                                        size='mini'
+                                    >
+                                        <Header icon>
+                                            <Icon name='exclamation triangle' />
+                                            Deletar este projeto?
+                                        </Header>
+                                        <Modal.Content>
+                                            <p>Esta ação não poderá ser desfeita. Você perderá todos os dados do projeto, além de imagens e eventos relacionados. O projeto irá desaparecer pra você e para os demais membros.</p>
+                                        </Modal.Content>
+                                        <Modal.Actions>
+                                            <Button basic color='red' inverted 
+                                                onClick={() => setModalAlertDeleteProjectOpen(false)}
+                                                loading={isLoading}
+                                            >
+                                                Cancelar
+                                            </Button>
+                                            <Button color='red' inverted 
+                                                onClick={() => handleDeleteProject()}
+                                                loading={isLoading}
+                                            >
+                                                Deletar
+                                            </Button>
+                                        </Modal.Actions>
+                                    </Modal>
+                                </Segment>
                             </Segment.Group>
                             <Spacer compact />
                         </Grid.Column>
                     </Grid.Row>
                 </Grid>
+                <Modal
+                    size='mini'
+                    onClose={() => setOpenModalNewOpportunity(false)}
+                    onOpen={() => setOpenModalNewOpportunity(true)}
+                    open={openModalNewOpportunity}
+                >
+                    <Modal.Header>Abrir vaga</Modal.Header>
+                    <Modal.Content>
+                        <Form>
+                            <Form.Field
+                                id="role"
+                                name="role"
+                                control={Select}
+                                label="Função"
+                                options={rolesList}
+                                placeholder="Selecione ou digite"
+                                // onChange={(e, { value }) => addRole(value)}
+                                search
+                            />
+                            <div className='mb-3'>
+                                {
+                                    {
+                                        1: <div>Nível de experiência: Iniciante</div>,
+                                        2: <div>Nível de experiência: Intermediário</div>,
+                                        3: <div>Nível de experiência: Avançado (experiente)</div>
+                                    }[newOpportunityExperience]
+                                }
+                                <input
+                                    type='range'
+                                    min={1}
+                                    max={3}
+                                    value={newOpportunityExperience}
+                                    onChange={(e) => setNewOpportunityExperience(e.target.value)}
+                                />
+                            </div>
+                            <Form.TextArea 
+                                label='Informações' 
+                                maxLength='200' 
+                            />
+                        </Form>
+                    </Modal.Content>
+                    <Modal.Actions>
+                        <Button  
+                            onClick={() => setOpenModalNewOpportunity(false)}
+                            loading={isLoading}
+                        >
+                            Cancelar
+                        </Button>
+                        <Button secondary 
+                            onClick={() => setOpenModalNewOpportunity(false)}
+                            loading={isLoading}
+                        >
+                            Enviar
+                        </Button>
+                    </Modal.Actions>
+                </Modal>
                 </>
             )
         )}

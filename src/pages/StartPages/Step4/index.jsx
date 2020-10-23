@@ -48,7 +48,7 @@ function StartStep3Page () {
 
     const userProjects = userInfo.projects.map((project, key) =>
         <Label color="blue" key={key} className="mb-2 mr-2" style={{ fontWeight: 'normal' }} image>
-            <img src={'https://ik.imagekit.io/mublin/projects/tr:h-200,w-200,c-maintain_ratio/'+project.projectid+'/'+project.picture} />
+            <img src={'https://ik.imagekit.io/mublin/projects/tr:h-200,w-200,c-maintain_ratio/'+project.picture} />
             {project.role1+" em "+project.name}
             <Icon name='delete' onClick={() => deleteProject(project.id)} />
         </Label>
@@ -272,7 +272,7 @@ function StartStep3Page () {
     }
 
     // Image Upload to ImageKit.io
-    const userAvatarPath = "/projects/"+idNewProject+"/"
+    const userAvatarPath = "/projects/"
     const [pictureFilename, setPictureFilename] = useState('')
 
     const onUploadError = err => {
@@ -568,7 +568,7 @@ function StartStep3Page () {
                                                 {/* <Image centered rounded src='https://ik.imagekit.io/mublin/tr:h-200,w-200/sample-folder/avatar-undefined_-dv9U6dcv3.jpg' size='small' className="mb-3" /> */}
                                             </>
                                         ) : (
-                                            <Image centered rounded src={'https://ik.imagekit.io/mublin/tr:h-200,w-200,c-maintain_ratio/projects/'+idNewProject+'/'+newProjectPicture} size='small' className="mb-4" />
+                                            <Image centered rounded src={'https://ik.imagekit.io/mublin/tr:h-200,w-200,c-maintain_ratio/projects/'+newProjectPicture} size='small' className="mb-4" />
                                         )}
                                         <div className="customFileUpload">
                                             <IKUpload 

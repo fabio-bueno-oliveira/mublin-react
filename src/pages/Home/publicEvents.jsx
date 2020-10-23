@@ -111,7 +111,7 @@ const PublicEvents = (props) => {
                                                         </Header.Subheader>
                                                     </Header.Content>
                                                 </Header>
-                                                <p style={{fontSize:'12px',fontWeight:'500'}} className='mt-2'>{event.description}</p>
+                                                <p style={{fontSize:'12px',fontWeight:'500'}} className='mt-2'>{event.description} <Link to={{ pathname: '/event/?id='+event.eventId }}><nobr>(+ detalhes)</nobr></Link></p>
                                                 <div style={{fontSize:'11px',color:'grey'}}  className='py-0'>
                                                     { event.authorPicture ? (
                                                         <Image as='a' avatar src={event.authorPicture} onClick={() => history.push('/'+event.authorUsername)} />

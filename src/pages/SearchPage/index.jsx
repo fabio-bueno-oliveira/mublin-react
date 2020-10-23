@@ -90,7 +90,7 @@ function SearchPage (props) {
                                             render: () => 
                                                 <Tab.Pane basic attached={false} loading={searchResults.requesting}>
                                                     { searchResults.users[0].id ? (
-                                                    <Card.Group itemsPerRow={screenSize.matches ? 6 : 2} className='px-3 pb-5' style={{maxWidth:'100%'}}>
+                                                    <Card.Group itemsPerRow={screenSize.matches ? 6 : 2} className='px-0 px-md-0 pb-5'>
                                                         { searchResults.users.map((user, key) =>
                                                             <Card key={key} onClick={() => history.push('/'+user.username)}>
                                                                 { user.picture ? (
@@ -139,7 +139,7 @@ function SearchPage (props) {
                                             render: () => 
                                                 <Tab.Pane basic attached={false} loading={searchResults.requesting}>
                                                     {searchResults.projects[0].id ? (
-                                                    <Card.Group itemsPerRow={screenSize.matches ? 6 : 2} className='px-3 pb-5' style={{maxWidth:'100%'}}>
+                                                    <Card.Group itemsPerRow={screenSize.matches ? 6 : 2} className='px-0 px-md-0 pb-5' style={{maxWidth:'100%'}}>
                                                         { searchResults.projects.map((project, key) =>
                                                             <Card key={key} onClick={() => history.push('/project/'+project.username)}>
                                                                 { project.picture ? (
@@ -187,7 +187,7 @@ function SearchPage (props) {
                         ) : (
                         <>
                         <Header>Sugestões para você seguir</Header>
-                        <Card.Group itemsPerRow={screenSize.matches ? 6 : 2} className='px-3 pb-5 mt-1' style={{maxWidth:'100%'}}>
+                        <Card.Group itemsPerRow={screenSize.matches ? 6 : 2} className='px-0 px-md-0 pb-5 mt-1' style={{maxWidth:'100%'}}>
                             { suggestedUsers.map((user, key) =>
                                 <Card key={key} onClick={() => history.push('/'+user.username)}>
                                     { user.picture ? (

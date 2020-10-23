@@ -58,7 +58,7 @@ function HomePage () {
         text: project.name,
         value: project.projectid,
         key: project.projectid,
-        image: { avatar: true, src: 'https://ik.imagekit.io/mublin/tr:h-200,w-200,r-max/projects/'+project.projectid+'/'+project.picture+'' }
+        image: { avatar: true, src: 'https://ik.imagekit.io/mublin/tr:h-200,w-200,r-max/projects/'+project.picture+'' }
     }));
     const members = useSelector(state => state.project.members);
     //// END NOTES SECTION ////
@@ -89,7 +89,7 @@ function HomePage () {
                                                 <div className="carousel-cell" key={key} style={project.confirmed === 2 ? {opacity:'0.6'} : {}}>
                                                     <Link to={{ pathname: '/project/'+project.username }}>
                                                         {project.picture ? (
-                                                            <Image src={'https://ik.imagekit.io/mublin/projects/tr:h-85,w-95,c-maintain_ratio/'+project.projectid+'/'+project.picture} rounded />
+                                                            <Image src={'https://ik.imagekit.io/mublin/projects/tr:h-85,w-95,c-maintain_ratio/'+project.picture} rounded />
                                                         ) : (
                                                             <Image src={'https://ik.imagekit.io/mublin/sample-folder/avatar-undefined_-dv9U6dcv3.jpg'} height='85' width='85' rounded />
                                                         )}
@@ -151,7 +151,7 @@ function HomePage () {
                                                             </Label>
                                                         }
                                                         {project.picture ? (
-                                                            <Image src={'https://ik.imagekit.io/mublin/projects/tr:h-200,w-200,c-maintain_ratio/'+project.projectid+'/'+project.picture} height='85' width='85' rounded />
+                                                            <Image src={'https://ik.imagekit.io/mublin/projects/tr:h-200,w-200,c-maintain_ratio/'+project.picture} height='85' width='85' rounded />
                                                         ) : (
                                                             <Image src={'https://ik.imagekit.io/mublin/sample-folder/avatar-undefined_-dv9U6dcv3.jpg'} height='85' width='85' rounded />
                                                         )}

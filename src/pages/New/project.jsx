@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useDebouncedCallback } from 'use-debounce';
 import { useHistory } from 'react-router-dom';
-import { Grid, Header, Form, Input, Radio, Select, Button, Label, Icon } from 'semantic-ui-react';
+import { Grid, Header, Form, Input, Radio, Select, Button, Label, Icon, Image } from 'semantic-ui-react';
 import { userInfos } from '../../store/actions/user';
 import { miscInfos } from '../../store/actions/misc';
 import { usernameCheckInfos } from '../../store/actions/usernameCheck';
@@ -10,6 +10,7 @@ import HeaderDesktop from '../../components/layout/headerDesktop';
 import HeaderMobile from '../../components/layout/headerMobile';
 import FooterMenuMobile from '../../components/layout/footerMenuMobile';
 import Spacer from '../../components/layout/Spacer'
+import {IKUpload} from "imagekitio-react";
 
 function NewProjectPage () {
     
@@ -33,6 +34,7 @@ function NewProjectPage () {
     const projectUsernameAvailability = useSelector(state => state.projectUsernameCheck);
     const [projectName, setProjectName] = useState('')
     const [projectUserName, setProjectUserName] = useState('')
+    const [projectImage, setProjectImage] = useState('')
     const [foundation_year, setFoundationYear] = useState(currentYear)
     const [checkboxProjectActive, setCheckboxProjectActive] = useState(true)
     const [end_year, setEndYear] = useState(null)
@@ -41,6 +43,7 @@ function NewProjectPage () {
     const [kind, setKind] = useState('1')
     const [npMain_role_fk, setNpMain_role_fk] = useState('')
     const [publicProject, setPublicProject] = useState('1')
+    const [projectCategory, setProjectCategory] = useState('0')
     const [userStatus, setUserStatus] = useState('1')
     const [idNewProject, setIdNewProject] = useState('')
 
@@ -94,7 +97,7 @@ function NewProjectPage () {
                 'Content-Type': 'application/json',
                 'Authorization': 'Bearer ' + user.token
             },
-            body: JSON.stringify({ id_user_creator_fk: user.id, projectName: projectName, projectUserName: projectUserName, foundation_year: foundation_year, end_year: end_year, bio: bio, type: type, kind: kind, public: publicProject })
+            body: JSON.stringify({ id_user_creator_fk: user.id, projectName: projectName, projectUserName: projectUserName, projectImage: projectImage, foundation_year: foundation_year, end_year: end_year, bio: bio, type: type, kind: kind, public: publicProject })
         })
         .then(response => {
             return response.json();
@@ -116,7 +119,7 @@ function NewProjectPage () {
                 'Content-Type': 'application/json',
                 'Authorization': 'Bearer ' + user.token
             },
-            body: JSON.stringify({ userId: newProjectUserId, projectId: newProjectProjectId, active: '1', status: newProjectUserStatus, main_role_fk: newProjectMain_role_fk, joined_in: currentYear, left_in: null, leader: '1', confirmed: '1', admin: '1' })
+            body: JSON.stringify({ userId: newProjectUserId, projectId: newProjectProjectId, active: '1', status: newProjectUserStatus, main_role_fk: newProjectMain_role_fk, joined_in: currentYear, left_in: null, leader: '1', confirmed: '1', admin: '1', portfolio: projectCategory })
         }).then((response) => {
             dispatch(userInfos.getUserProjects(user.id))
             setIsLoading(false)
@@ -130,6 +133,17 @@ function NewProjectPage () {
         })
     }
 
+    // Image Upload to ImageKit.io
+    const userAvatarPath = "/projects/"
+    const onUploadError = err => {
+        alert("Ocorreu um erro. Tente novamente em alguns minutos.");
+    };
+    const onUploadSuccess = res => {
+        let n = res.filePath.lastIndexOf('/');
+        let fileName = res.filePath.substring(n + 1);
+        setProjectImage(fileName)
+    };
+
     return (
         <>
             <HeaderDesktop />
@@ -137,12 +151,10 @@ function NewProjectPage () {
             <Spacer />
             <Grid as='main' centered columns={1} className="container">
                 <Grid.Row>
-                    <Grid.Column width={16}>
-                        <Header as='h2'>Criar novo projeto</Header>
-                    </Grid.Column>
-                </Grid.Row>
-                <Grid.Row>
                     <Grid.Column mobile={16} computer={10}>
+                        <Header as='h2' className='mb-4'>
+                            Criar novo projeto
+                        </Header>
                         <Form>
                             <Form.Field>
                                 <Form.Input name="projectName" fluid placeholder="Nome do projeto ou banda" onChange={(e, { value }) => setProjectName(value)} />
@@ -170,7 +182,43 @@ function NewProjectPage () {
                                     mublin.com/project/{projectUserName}
                                 </Label>
                             </Form.Field>
-                            <Form.Group widths='equal'>
+                            <Form.Group inline className="mb-2">
+                                <label>Salvar em</label>
+                                <Form.Field
+                                    control={Radio}
+                                    label='Projetos principais'
+                                    value='0'
+                                    checked={projectCategory === '0'}
+                                    onChange={() => setProjectCategory('0')}
+                                />
+                                <Form.Field
+                                    control={Radio}
+                                    label='Portfolio'
+                                    value='1'
+                                    checked={projectCategory === '1'}
+                                    onChange={() => setProjectCategory('1')}
+                                />
+                            </Form.Group>
+                            <Form.Field className='mb-0'>
+                                <label for='projectImage'>Foto</label>
+                            </Form.Field>
+                            <div className={projectImage ? 'd-none' : ''}>
+                                <IKUpload 
+                                    id='projectImage'
+                                    fileName="projectPicture.jpg"
+                                    folder={userAvatarPath}
+                                    tags={["tag1"]}
+                                    useUniqueFileName={true}
+                                    isPrivateFile= {false}
+                                    onError={onUploadError}
+                                    onSuccess={onUploadSuccess}
+                                    accept="image/x-png,image/gif,image/jpeg" 
+                                />
+                            </div>
+                            { projectImage && 
+                                <Image src={'https://ik.imagekit.io/mublin/tr:h-200,w-200/projects/'+projectImage} size='tiny' rounded className="mt-2 mb-2" />
+                            }
+                            <Form.Group widths='equal' className='mt-3'>
                                 <Form.Input name="foundation_year" type="number" fluid label="Ano de formação" error={foundation_year > currentYear && {content: 'O ano deve ser inferior ao atual' }} min="1900" max={currentYear} onChange={(e, { value }) => setFoundationYear(value)} value={foundation_year} />
                                 <Form.Input name="end_year" type="number" fluid label="Ano de encerramento" error={end_year > currentYear && {content: 'O ano deve ser inferior ao atual' }} min={foundation_year} max={currentYear} onChange={(e, { value }) => setEndYear(value)} value={end_year} disabled={checkboxProjectActive} />
                             </Form.Group>

@@ -621,7 +621,7 @@ function CreateNewEventPage () {
                                 {/* <p className='mb-3' style={{fontSize:'11px'}}>Evento {eventMethod === 1 ? 'Presencial' : 'Online'}</p> */}
                                 <Header as='h5' className='mt-0 mb-3' inverted color={sampleColor}>Evento {eventMethod === 1 ? 'Presencial' : 'Online'}</Header>
                                 { (!project.requesting && eventProjectId && project.picture) &&
-                                    <Image centered rounded src={'https://ik.imagekit.io/mublin/projects/tr:h-500,w-500,c-maintain_ratio/'+project.id+'/'+project.picture} size='small' />
+                                    <Image centered rounded src={'https://ik.imagekit.io/mublin/projects/tr:h-500,w-500,c-maintain_ratio/'+project.picture} size='small' />
                                 }
                                 {
                                     {

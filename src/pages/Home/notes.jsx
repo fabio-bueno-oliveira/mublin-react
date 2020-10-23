@@ -45,25 +45,39 @@ const Notes = (props) => {
 
     const [modalViewNoteOpen, setModalViewNoteOpen] = useState(false)
 
+    const boxTitle = {
+        backgroundImage:'url(https://ik.imagekit.io/mublin/tr:w-400,h-95,fo-top,c-maintain_ratio/misc/music/home-banners/note-and-coffee_7eYOoAm8f.jpg)',
+        backgroundPosition:'top',
+    }
+
     return (
         <>
             <Card id="notes" style={{width:'100%',backgroundColor:'transparent',boxShadow:'none'}}>
                 <Card.Content style={{paddingTop:'0px'}}>
-                    <Image src='https://ik.imagekit.io/mublin/tr:r-8,w-400,h-95,c-maintain_ratio,fo-top/misc/music/home-banners/note-and-coffee_7eYOoAm8f.jpg' fluid className="mb-3" />
-                    <Card.Header className="ui mt-0 mb-3">Notas</Card.Header>
-                    <Card.Description className="mb-3 mb-md-5">
-                        { notes.list[0].id ? (
-                            <span style={{fontWeight:'500',fontSize:'13px'}}>Você tem {notes.list.length === 1 ? notes.list.length+' nota salva' : notes.list.length+' notas salvas'}</span>
+                    <Segment inverted style={boxTitle} className='py-4'>
+                        <Header as='h3' inverted className='py-2'>
+                            <Header.Content>
+                                Notas
+                                <Header.Subheader>Anotações e gravações</Header.Subheader>
+                            </Header.Content>
+                        </Header>
+                    </Segment>
+                    <Card.Description className="mb-3">
+                        { notes.list[0].noteId ? (
+                            <div className="left floated">
+                                <span style={{fontWeight:'500',fontSize:'13px'}}>{notes.list.length === 1 ? notes.list.length+' nota salva' : notes.list.length+' notas salvas'}</span>
+                                <h4 className='ui sub header mt-1 mb-3' style={{color:'#f7f7f7'}}>Minhas notas:</h4>
+                            </div>
                         ) : (
-                            <span style={{fontWeight:'500',fontSize:'13px'}}>Você não tem notas salvas</span>
+                            <span style={{fontWeight:'500',fontSize:'13px'}}>Nenhuma nota salva</span>
                         )}
                         <div className="right floated">
                             <Link to={{ pathname: '/tbd' }}>
-                                <Label size='small' style={{fontWeight:'500'}}><Icon name='plus' /> Criar novo</Label>
+                                <Button size='mini' style={{fontWeight:'500'}}><Icon name='plus' /> Criar novo</Button>
                             </Link>
                             { notes.list.length > 6 &&
                                 <Link to={{ pathname: '/tbd' }} className='mr-3'>
-                                    <Label size='small' style={{fontWeight:'500'}}><Icon name='history' /></Label>
+                                    <Button size='mini' style={{fontWeight:'500'}}><Icon name='history' /></Button>
                                 </Link>
                             }
                         </div>

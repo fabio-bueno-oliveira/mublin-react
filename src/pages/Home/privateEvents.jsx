@@ -44,25 +44,39 @@ const PublicEvents = (props) => {
         }, 400);
     }
 
+    const boxTitle = {
+        backgroundImage:'url(https://ik.imagekit.io/mublin/tr:w-400,h-95,fo-top,c-maintain_ratio/misc/music/home-banners/drum-sticks-b_floYtp_US.jpg)',
+        backgroundPosition:'top left',
+    }
+
     return (
         <>
             <Card id="privateEvents" style={{width:'100%',backgroundColor:'transparent',boxShadow:'none'}}>
                 <Card.Content style={{paddingTop:'0px'}}>
-                    <Image src='https://ik.imagekit.io/mublin/tr:r-8,w-400,h-95,fo-top,c-maintain_ratio/misc/music/home-banners/drum-sticks-b_floYtp_US.jpg' fluid className="mb-3" />
-                    <Card.Header className="ui mt-0 mb-3">Ensaios, Reuniões e Gravações</Card.Header>
+                    <Segment inverted style={boxTitle} className='py-4'>
+                        <Header as='h3' inverted className='py-2'>
+                            <Header.Content>
+                                Eventos privados
+                                <Header.Subheader>Ensaios, Reuniões e Gravações</Header.Subheader>
+                            </Header.Content>
+                        </Header>
+                    </Segment>
                     <Card.Description className="mb-3">
                         { privateEvents.length ? (
-                            <span style={{fontWeight:'500',fontSize:'13px'}}>{privateEvents.length} agendados</span>
+                            <div className="left floated">
+                                <span style={{fontWeight:'500',fontSize:'13px'}}>{privateEvents.length} agendados</span>
+                                <h4 className='ui sub header mt-1 mb-3'>Próximos:</h4>
+                            </div>
                         ) : (
                             <span style={{fontWeight:'500',fontSize:'13px'}}>Nenhum evento privado próximo</span>
                         )}
                         <div className="right floated">
                             <Link to={{ pathname: '/new/event/?type=private' }}>
-                                <Label size='small' style={{fontWeight:'500'}}><Icon name='plus' /> Criar novo</Label>
+                                <Button size='mini' style={{fontWeight:'500'}}><Icon name='plus' /> Novo</Button>
                             </Link>
                             { privateEvents.length > 6 &&
                                 <Link to={{ pathname: '/tbd' }} className='mr-3'>
-                                    <Label size='small' style={{fontWeight:'500'}}><Icon name='history' /></Label>
+                                    <Button size='mini' style={{fontWeight:'500'}}><Icon name='history' /></Button>
                                 </Link>
                             }
                         </div>
@@ -76,7 +90,6 @@ const PublicEvents = (props) => {
                             <>
                             { !!privateEvents.length &&
                                 <>
-                                <h4 className='ui sub header mt-1 mb-3'>Próximos:</h4>
                                 <List relaxed>
                                 {privateEvents.map((event, key) =>
                                     <List.Item key={key}>

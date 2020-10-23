@@ -44,28 +44,39 @@ const PublicEvents = (props) => {
         }, 400);
     }
 
+    const boxTitle = {
+        backgroundImage:'url(https://ik.imagekit.io/mublin/tr:w-400,h-95,c-maintain_ratio,fo-top/misc/music/home-banners/mic-blk_GMKT2Fvsn.jpg)',
+        backgroundPosition:'top left'
+    }
+
     return (
         <>
             <Card id="publicEvents" style={{width:'100%',backgroundColor:'transparent',boxShadow:'none'}}>
                 <Card.Content style={{paddingTop:'0px'}}>
-                    {/* <Segment inverted color='violet'>
-                        <i className="fas fa-ticket-alt mr-1"></i> Apresentações e Eventos
-                    </Segment> */}
-                    <Image src='https://ik.imagekit.io/mublin/tr:r-8,w-400,h-95,c-maintain_ratio,fo-top/misc/music/home-banners/mic-blk_GMKT2Fvsn.jpg' fluid className="mb-3" />
-                    <Card.Header className="ui mt-0 mb-3">Apresentações e Eventos</Card.Header>
+                    <Segment inverted style={boxTitle} className='py-4'>
+                        <Header as='h3' inverted className='py-2'>
+                            <Header.Content>
+                                Eventos públicos
+                                <Header.Subheader>Apresentações e shows</Header.Subheader>
+                            </Header.Content>
+                        </Header>
+                    </Segment>
                     <Card.Description className="mb-3">
                         { publicEvents.length ? (
-                            <span style={{fontWeight:'500',fontSize:'13px'}}>{publicEvents.length} agendados</span>
+                            <div className="left floated">
+                                <span style={{fontWeight:'500',fontSize:'13px'}}>{publicEvents.length} agendados</span>
+                                <h4 className='ui sub header mt-1 mb-3'>Próximos:</h4>
+                            </div>
                         ) : (
                             <span style={{fontWeight:'500',fontSize:'13px'}}>Nenhum evento público próximo</span>
                         )}
                         <div className="right floated">
                             <Link to={{ pathname: '/new/event/?type=public' }}>
-                                <Label size='small' style={{fontWeight:'500'}}><Icon name='plus' /> Criar novo</Label>
+                                <Button size='mini' style={{fontWeight:'500'}}><Icon name='plus' /> Novo</Button>
                             </Link>
                             { publicEvents.length > 6 &&
                                 <Link to={{ pathname: '/tbd' }} className='mr-3'>
-                                    <Label size='small' style={{fontWeight:'500'}}><Icon name='history' /></Label>
+                                    <Button size='mini' style={{fontWeight:'500'}}><Icon name='history' /></Button>
                                 </Link>
                             }
                         </div>
@@ -79,7 +90,6 @@ const PublicEvents = (props) => {
                             <>
                             { !!publicEvents.length &&
                                 <>
-                                <h4 className='ui sub header mt-1 mb-3'>Próximos:</h4>
                                 <List relaxed>
                                 {publicEvents.map((event, key) =>
                                     <List.Item key={key}>

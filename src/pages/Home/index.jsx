@@ -37,8 +37,8 @@ function HomePage () {
 
     const events = useSelector(state => state.events)
     const allEvents = events.list
-    const publicEvents = allEvents.filter((evento) => { return evento.eventType === 'Show' || evento.eventType === 'Entrevista' || evento.eventType === 'Workshop' })
-    const privateEvents = allEvents.filter((evento) => { return evento.eventType === 'Ensaio' || evento.eventType === 'Reunião' || evento.eventType === 'Gravação' })
+    const publicEvents = allEvents.filter((evento) => { return evento.eventTypeId === 2 || evento.eventTypeId === 5 || evento.eventTypeId === 6 })
+    const privateEvents = allEvents.filter((evento) => { return evento.eventTypeId === 1 || evento.eventTypeId === 3 || evento.eventTypeId === 4 })
 
     const sliderOptions = {
         autoPlay: false,

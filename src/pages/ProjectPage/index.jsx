@@ -5,7 +5,7 @@ import { projectInfos } from '../../store/actions/project';
 import HeaderDesktop from '../../components/layout/headerDesktop';
 import HeaderMobile from '../../components/layout/headerMobile';
 import FooterMenuMobile from '../../components/layout/footerMenuMobile';
-import { Header, Placeholder, Segment, Grid, Card, Image, Icon, Button, Label } from 'semantic-ui-react';
+import { Header, Popup, Segment, Grid, Card, Image, Icon, Button, Label } from 'semantic-ui-react';
 import Flickity from 'react-flickity-component';
 import Loader from 'react-loader-spinner';
 import Spacer from '../../components/layout/Spacer'
@@ -87,10 +87,10 @@ function ProjectPage (props) {
                                 <Header.Content>
                                     {project.name}
                                     <Header.Subheader className="mt-2">
-                                        {project.typeName}
+                                        {project.typeName} {project.genre1 && ' · '+project.genre1} {project.genre2 && ' · '+project.genre2} {project.genre3 && ' · '+project.genre3}
                                     </Header.Subheader>
                                     { project.city && 
-                                        <Header.Subheader className="mt-1" style={{ fontSize: '11px' }}>
+                                        <Header.Subheader className="mt-2">
                                             <Icon name='map marker alternate' className="mr-0" /> {project.city+', '+project.region}
                                         </Header.Subheader>
                                     }
@@ -108,16 +108,44 @@ function ProjectPage (props) {
                     </Grid.Column>
                 </Grid.Row>
             </Grid>
-            <Grid id="events" className="container mt-0">
-                <Grid.Column width={16}>
-                    <Button fluid className='mb-3 d-block d-sm-none' size='mini' onClick={() => history.push('/backstage/'+props.match.params.username)}>
-                        <Icon name='warehouse' /> Ir para o Backstage deste projeto
-                    </Button>
-                    <p style={{fontSize:'11.5px',opacity:'0.5'}} className='mb-2'>{project.genre1 && project.genre1} {project.genre2 && ' · '+project.genre2} {project.genre3 && ' · '+project.genre3}</p>
-                    <p>{project.bio}</p>
-                </Grid.Column>
-            </Grid>
-            <Grid id="members" className="container mt-3 mb-5">
+            <div className='container'>
+                <Button fluid className='mb-3 d-block d-sm-none' size='mini' onClick={() => history.push('/backstage/'+props.match.params.username)}>
+                    <Icon name='warehouse' /> Ir para o Backstage deste projeto
+                </Button>
+            </div>
+            {project.bio && 
+                <>
+                    <Grid stackable columns={2} className="container mt-0">
+                        <Grid.Column computer={8} mobile={16}>
+                            <p>{project.bio}</p>
+                        </Grid.Column>
+                        <Grid.Column width={8} only='computer' textAlign='right'>
+                            <p className='mb-2'>Projetos relacionados:</p>
+                            <Image.Group size='tiny'>
+                                <Popup
+                                    content='Nome do Projeto'
+                                    position='bottom center'
+                                    size='tiny'
+                                    trigger={<Image src='https://ik.imagekit.io/mublin/projects/tr:h-200,w-200,c-maintain_ratio/giancarllo_4eNxddfnH.png' circular size='tiny' />}
+                                />
+                                <Popup
+                                    content='Nome do Projeto'
+                                    position='bottom center'
+                                    size='tiny'
+                                    trigger={<Image src='https://ik.imagekit.io/mublin/projects/tr:h-200,w-200,c-maintain_ratio/fabio-bueno_Cyjy882zm.jpg' circular size='tiny' />}
+                                />
+                                <Popup
+                                    content='Nome do Projeto'
+                                    position='bottom center'
+                                    size='tiny'
+                                    trigger={<Image src='https://ik.imagekit.io/mublin/projects/tr:h-200,w-200,c-maintain_ratio/oeste-suez_uxpc9DEAu.jpg' circular size='tiny' />}
+                                />
+                            </Image.Group>
+                        </Grid.Column>
+                    </Grid>
+                </>
+            }
+            <Grid className="container mt-0 mb-5">
                 <Grid.Column width={16}>
                     <Header as="h3" className="mb-2">Integrantes</Header>
                     <Flickity

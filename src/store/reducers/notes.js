@@ -11,7 +11,6 @@ const initialState = {
       projectId: '',
       noteTitle: '',
       noteDescription: '',
-      noteTargetDate: '',
       ownerName: '',
       ownerPicture: '',
       ownerUsername: '',

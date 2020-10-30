@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useHistory, Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { miscInfos } from '../../store/actions/misc';
-import { Grid, Feed, Icon, Label, Header } from 'semantic-ui-react';
+import { Grid, Feed, Button, Label, Header } from 'semantic-ui-react';
 import HeaderDesktop from '../../components/layout/headerDesktop';
 import HeaderMobile from '../../components/layout/headerMobile';
 import FooterMenuMobile from '../../components/layout/footerMenuMobile';
@@ -56,23 +56,25 @@ function NotificationsPage () {
                                         </Feed.Label>
                                         <Feed.Content className='mt-1'>
                                             <Feed.Date style={{fontSize:'12px',fontWeight:'500'}}>
-                                                {item.relatedUserPlan === 'Pro' && <Label size="mini" className="mr-1 p-1">Pro</Label>} há {formatDistance(new Date(item.created * 1000), new Date(), {locale:pt})}
+                                                {item.relatedUserPlan === 'Pro' && <Label size="mini" className="mr-1 p-1">Pro</Label>} há {formatDistance(new Date(item.createdAlternativeFormat * 1000), new Date(), {locale:pt})}
                                             </Feed.Date>
                                             <Feed.Summary>
                                                 <Feed.User style={{fontWeight:'600'}} onClick={() => history.push('/'+item.relatedUserUsername)}>{item.relatedUserName+' '+item.relatedUserLastname}</Feed.User> <span style={{fontWeight:'500'}}>{item.action} {item.category === 'project' ? item.relatedProjectName+' ('+item.relatedProjectType+')' : (<a>{item.relatedEventTitle}</a>)}</span>
                                             </Feed.Summary>
-                                            { (item.categoryId === 8) && 
-                                                <Feed.Extra text content={item.extraText} />
-                                            }
-                                            { item.category === 'project' &&
-                                                <Feed.Extra images>
-                                                    <Link as='a' to={{ pathname: '/project/'+item.relatedProjectUsername }}>
-                                                        { item.relatedProjectPicture ? (
-                                                            <img src={item.relatedProjectPicture} />
-                                                        ) : (
-                                                            <img src='https://ik.imagekit.io/mublin/sample-folder/avatar-undefined_-dv9U6dcv3.jpg' alt={'Foto de '+item.relatedUserName} />
-                                                        )}
-                                                    </Link>
+                                            <Feed.Extra images>
+                                                <Link as='a' to={{ pathname: '/project/'+item.relatedProjectUsername }}>
+                                                    { item.relatedProjectPicture ? (
+                                                        <img src={item.relatedProjectPicture} />
+                                                    ) : (
+                                                        <img src='https://ik.imagekit.io/mublin/sample-folder/avatar-undefined_-dv9U6dcv3.jpg' alt={'Foto de '+item.relatedUserName} />
+                                                    )}
+                                                </Link>
+                                            </Feed.Extra>
+                                            { item.id_feed_type_fk === 9 &&
+                                                <Feed.Extra>
+                                                    <Button size='mini'>
+                                                        Responder a esta solicitação
+                                                    </Button>
                                                 </Feed.Extra>
                                             }
                                         </Feed.Content>

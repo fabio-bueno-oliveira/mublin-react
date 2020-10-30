@@ -58,7 +58,7 @@ const Notes = (props) => {
                         <Header as='h3' inverted className='py-2'>
                             <Header.Content>
                                 Notas
-                                <Header.Subheader>Anotações e gravações</Header.Subheader>
+                                <Header.Subheader>Anotações úteis</Header.Subheader>
                             </Header.Content>
                         </Header>
                     </Segment>
@@ -96,11 +96,10 @@ const Notes = (props) => {
                                             <Segment className='py-2'>
                                                 <Header as='h5'>
                                                     <Header.Content>
-                                                        {note.noteTitle+' '+note.noteId}
+                                                        {note.noteTitle}
                                                     </Header.Content>
                                                 </Header>
                                                 <p style={{fontSize:'12px',fontWeight:'500'}} className='mt-2'>{note.noteDescription}</p>
-                                                <Icon name='attach' style={{fontSize:'11px',opacity:'0.5'}} /> <Icon name='volume up' style={{fontSize:'11px',opacity:'0.5'}} />
                                             </Segment>
                                             <Segment style={{fontSize:'11px',color:'#949494'}}  className='py-2'>
                                                 criada há {formatDistance(new Date(note.created * 1000), new Date(), {locale:pt})}

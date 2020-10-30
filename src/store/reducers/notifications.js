@@ -5,11 +5,13 @@ const initialState = {
   list: [
     { 
       id: '',
+      id_feed_type_fk: '',
       seen: '',
       relatedItemId: '',
       extraText: '',
       extraInfo: '',
       created: '',
+      createdAlternativeFormat: '',
       relatedUserName: '',
       relatedUserLastname: '',
       relatedUserPicture: '',
@@ -23,9 +25,7 @@ const initialState = {
       category: '',
       categoryId: '',
       relatedEventId: '',
-      relatedEventTitle: '',
-      likes: '',
-      likedByMe: ''
+      relatedEventTitle: ''
     }
   ]
 }
@@ -49,10 +49,13 @@ export function notifications(state = initialState, action) {
         list: [
           { 
             id: '',
-            itemId: '',
+            id_feed_type_fk: '',
+            seen: '',
+            relatedItemId: '',
             extraText: '',
             extraInfo: '',
             created: '',
+            createdAlternativeFormat: '',
             relatedUserName: '',
             relatedUserLastname: '',
             relatedUserPicture: '',
@@ -62,7 +65,11 @@ export function notifications(state = initialState, action) {
             relatedProjectUsername: '',
             relatedProjectPicture: '',
             relatedProjectType: '',
-            action: ''
+            action: '',
+            category: '',
+            categoryId: '',
+            relatedEventId: '',
+            relatedEventTitle: ''
           }
         ],
         requesting: false,

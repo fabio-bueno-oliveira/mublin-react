@@ -1,17 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { Link, Redirect } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { userActions } from '../../store/actions/authentication';
+import { userActions } from '../../../store/actions/authentication';
 import { Formik } from 'formik';
-// import ValidateUtils from '../../utils/ValidateUtils';
+// import ValidateUtils from '../../../utils/ValidateUtils';
 import { Button, Input, Header, Form, Message } from 'semantic-ui-react';
-import logo from '../../assets/img/logos/logo-mublin-circle-black.png';
+import logo from '../../../assets/img/logos/logo-mublin-circle-black.png';
 import Loader from 'react-loader-spinner';
 import "react-loader-spinner/dist/loader/css/react-spinner-loader.css";
 
-import './styles.scss';
+import '../styles.scss';
 
-function LoginPage (props) {
+function RedefinePasswordPage (props) {
 
     const loggedIn = useSelector(state => state.authentication.loggedIn);
 
@@ -83,7 +83,7 @@ function LoginPage (props) {
                         </Link>
                     </div>
                 </Header>
-                <Header as='h2' className='mt-0'>Iniciar Sessão</Header>
+                <Header as='h2' className='mt-0'>Redefinir sua senha</Header>
                 <div className="ui segment">
                     <Formik
                         initialValues={{ email: '', password: '' }}
@@ -160,7 +160,7 @@ function LoginPage (props) {
                                         >
                                             Entrar
                                         </Button>
-                                        <Link to={{ pathname: "/forgot-password" }}>
+                                        <Link to={{ pathname: "/soon" }}>
                                             Esqueci minha senha
                                         </Link>
                                     </div>
@@ -184,4 +184,4 @@ function LoginPage (props) {
     );
 };
 
-export default LoginPage
+export default RedefinePasswordPage

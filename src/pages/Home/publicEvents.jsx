@@ -45,7 +45,7 @@ const PublicEvents = (props) => {
     }
 
     const boxTitle = {
-        backgroundImage:'url(https://ik.imagekit.io/mublin/tr:w-400,h-95,c-maintain_ratio,fo-top/misc/music/home-banners/mic-blk_GMKT2Fvsn.jpg)',
+        backgroundImage:'url(https://ik.imagekit.io/mublin/tr:w-522,h-95,c-maintain_ratio,fo-top/misc/music/home-banners/mic-blk_GMKT2Fvsn.jpg)',
         backgroundPosition:'top left'
     }
 

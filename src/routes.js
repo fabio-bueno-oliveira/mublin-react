@@ -6,6 +6,8 @@ import LandingPage from './pages/LandingPage';
 import About from './pages/About';
 import LoginPage from './pages/LoginPage';
 import SignupPage from './pages/SignupPage';
+import ForgotPasswordPage from './pages/LoginPage/Forgot';
+import RedefinePasswordPage from './pages/LoginPage/Forgot/redefine';
 import StartIntroPage from './pages/StartPages/Intro';
 import StartStep1Page from './pages/StartPages/Step1';
 import StartStep2Page from './pages/StartPages/Step2';
@@ -57,6 +59,8 @@ function Routes () {
                 <Route path="/about" exact component={About} />
                 <Route path="/login" component={LoginPage} />
                 <Route path="/signup" component={SignupPage} />
+                <Route path="/forgot-password" component={ForgotPasswordPage} />
+                <Route path="/redefine-password" component={RedefinePasswordPage} />
                 <PrivateRoute authed={loggedIn} path="/start/intro" component={StartIntroPage} />
                 <PrivateRoute authed={loggedIn} path="/start/step1" component={StartStep1Page} />
                 <PrivateRoute authed={loggedIn} path="/start/step2" component={StartStep2Page} />

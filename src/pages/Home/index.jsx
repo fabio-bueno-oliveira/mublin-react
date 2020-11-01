@@ -186,96 +186,23 @@ function HomePage () {
                                     )}
                                 </Flickity>
                             </Tab.Pane>,
-                        },
-                        // {
-                        // menuItem: (
-                        //     <Menu.Item key='new'>
-                        //         <Icon name='plus' className="mr-2" /> Novo
-                        //     </Menu.Item>
-                        //     ),
-                        // render: () => 
-                        //     <Tab.Pane attached={false} as="div">
-                        //         <Flickity
-                        //             className={'carousel'} // default ''
-                        //             elementType={'div'} // default 'div'
-                        //             options={sliderOptions} // takes flickity options {}
-                        //             disableImagesLoaded={false} // default false
-                        //             reloadOnUpdate // default false
-                        //         >
-                        //             <div className="carousel-cell pt-2" style={{textAlign: 'center'}}>
-                        //                 <Link to={{pathname:"/new/project", search:"?type=new", state:{type:'new'}}} style={{color:'gray'}}>
-                        //                     <Button circular color='black' icon='plus' size='massive' />
-                        //                 </Link>
-                        //                 <Link to={{pathname:"/new/project"}} style={{color:'gray'}}>
-                        //                     <Header as='h5' className='mt-2 mb-1'>Novo</Header>
-                        //                     <h6 className="mt-0" style={{fontWeight: '400',fontSize: '11px', color: 'black', opacity: '0.8'}}>
-                        //                         Criar projeto <nobr>do zero</nobr>
-                        //                     </h6>
-                        //                 </Link>
-                        //             </div>
-                        //             <div className="carousel-cell pt-2" style={{textAlign: 'center'}}>
-                        //                 <Link to={{pathname:"/new/project", search:"?type=idea", state:{type:'idea'}}} style={{color:'gray'}}>
-                        //                     <Button circular color='black' icon='lightbulb outline' size='massive' />
-                        //                 </Link>
-                        //                 <Link to={{pathname:"/new/project", search:"?type=idea", state:{type:'idea'}}} style={{color:'gray'}}>
-                        //                     <Header as='h5' className='mt-2 mb-1'>Ideia</Header>
-                        //                     <h6 className="mt-0" style={{fontWeight: '400',fontSize: '11px', color: 'black', opacity: '0.8'}}>
-                        //                         Criar uma proposta para atrair outros músicos
-                        //                     </h6>
-                        //                 </Link>
-                        //             </div>
-                        //             <div className="carousel-cell pt-2" style={{textAlign: 'center'}}>
-                        //                 <Link to={{pathname:"/project/new/?type=join", search:"?type=join", state:{type:'join'}}} style={{color:'gray'}}>
-                        //                     <Button circular color='black' icon='user plus' size='massive' />
-                        //                 </Link>
-                        //                 <a href="/project/new/?type=join">
-                        //                     <h5 className="ui header mt-2 mb-1">
-                        //                         Ingressar
-                        //                     </h5>
-                        //                     <h6 className="mt-0" style={{fontWeight: '400',fontSize: '11px', color: 'black', opacity: '0.8'}}>Entrar em um projeto já cadastrado</h6>
-                        //                 </a>
-                        //             </div>
-                        //             <div className="carousel-cell pt-2" style={{textAlign: 'center'}}>
-                        //                 <Link to={{pathname:"/invite"}} style={{color:'gray'}}>
-                        //                     <Button circular color='black' icon='envelope open outline' size='massive' />
-                        //                 </Link>
-                        //                 <a href="/invite">
-                        //                     <h5 className="ui header mt-2 mb-1">
-                        //                         Convidar
-                        //                     </h5>
-                        //                     <h6 className="mt-0" style={{fontWeight: '400',fontSize: '11px', color: 'black', opacity: '0.8'}}>Convidar alguém para um projeto que você faz parte</h6>
-                        //                 </a>
-                        //             </div>
-                        //             <div className="carousel-cell pt-2" style={{textAlign: 'center'}}>
-                        //                 <Link to={{pathname:"/search?type=projects&status=hiring"}} style={{color:'gray'}}>
-                        //                     <Button circular color='black' icon='crosshairs' size='massive' />
-                        //                 </Link>
-                        //                 <a href="/search?type=projects&status=hiring">
-                        //                     <h5 className="ui header mt-2 mb-1">
-                        //                         Buscar
-                        //                     </h5>
-                        //                     <h6 className="mt-0" style={{fontWeight: '400',fontSize: '11px', color: 'black', opacity: '0.8'}}>Encontrar projetos à procura de músicos</h6>
-                        //                 </a>
-                        //             </div>
-                        //         </Flickity>
-                        //     </Tab.Pane>,
-                        // },
+                        }
                     ]
                 }
                 />
             </section>
 
             <Container>
-            <Grid stackable columns={3} className='mt-1 mt-md-2 mb-5 mb-md-0 pb-5 pb-md-0'>
+            <Grid stackable columns={2} className='mt-1 mt-md-2 mb-5 mb-md-0 pb-5 pb-md-0'>
                 <Grid.Column>
                     <PublicEvents publicEvents={publicEvents} requesting={events.requesting} />
                 </Grid.Column>
                 <Grid.Column>
                     <PrivateEvents privateEvents={privateEvents} requesting={events.requesting} />
                 </Grid.Column>
-                <Grid.Column>
+                {/* <Grid.Column>
                     <Notes notes={notes} user={user} projectsList={projectsList} members={members} />
-                </Grid.Column>
+                </Grid.Column> */}
             </Grid>
             </Container>
         </main>

@@ -45,7 +45,7 @@ const PublicEvents = (props) => {
     }
 
     const boxTitle = {
-        backgroundImage:'url(https://ik.imagekit.io/mublin/tr:w-400,h-95,fo-top,c-maintain_ratio/misc/music/home-banners/drum-sticks-b_floYtp_US.jpg)',
+        backgroundImage:'url(https://ik.imagekit.io/mublin/tr:w-522,h-95,fo-top,c-maintain_ratio/misc/music/home-banners/drum-sticks-b_floYtp_US.jpg)',
         backgroundPosition:'top left',
     }
 

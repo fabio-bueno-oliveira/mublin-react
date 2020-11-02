@@ -69,11 +69,11 @@ function StartStep2Page () {
     const [id_city_fk, setId_city_fk] = useState('')
 
     const countries = countryOptions.map((country, key) =>
-        <option key={key} value={country.value} selected={userInfo.country == country.value ? "selected" : ""} onChange={() => setId_country_fk(country.value)}>{country.text}</option>
+        <option key={key} value={country.value} selected={userInfo.country === country.value ? "selected" : ""} onChange={() => setId_country_fk(country.value)}>{country.text}</option>
     );
 
     const regions = regionOptions.map((region, key) =>
-        <option key={key} value={region.value} selected={userInfo.region == region.value ? "selected" : ""}>{region.text}</option>
+        <option key={key} value={region.value} selected={userInfo.region === region.value ? "selected" : ""}>{region.text}</option>
     );
 
     const checkLength = (value, maxLength) => {

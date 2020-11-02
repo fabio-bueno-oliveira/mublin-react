@@ -8,7 +8,7 @@ import { userInfos } from '../../store/actions/user';
 import { eventsInfos } from '../../store/actions/events';
 import { notesInfos } from '../../store/actions/notes';
 import { Container, Header, Tab, Grid, Image, Icon, Label } from 'semantic-ui-react';
-import Notes from './notes';
+// import Notes from './notes';
 import PublicEvents from './publicEvents';
 import PrivateEvents from './privateEvents';
 import Flickity from 'react-flickity-component';

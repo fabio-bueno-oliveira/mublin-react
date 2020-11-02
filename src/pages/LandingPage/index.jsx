@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useHistory, Redirect } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { Container, Grid, Form, Button, Input, Header, Icon } from 'semantic-ui-react';
+import { Grid, Form, Button, Input, Header, Icon } from 'semantic-ui-react';
 import './styles.scss';
 
 function LandingPage () {

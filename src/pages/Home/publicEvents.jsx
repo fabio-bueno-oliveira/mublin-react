@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useHistory, Link } from 'react-router-dom';
 import { eventsInfos } from '../../store/actions/events';
-import { Header, Card, List, Image, Icon, Button, Label, Segment, Form, Modal, Message } from 'semantic-ui-react';
+import { Header, Card, List, Image, Icon, Button, Segment, Form, Modal, Message } from 'semantic-ui-react';
 
 const PublicEvents = (props) => {
 
@@ -44,35 +44,34 @@ const PublicEvents = (props) => {
         }, 400);
     }
 
-    const boxTitle = {
-        backgroundImage:'url(https://ik.imagekit.io/mublin/tr:w-522,h-95,c-maintain_ratio,fo-top/misc/music/home-banners/mic-blk_GMKT2Fvsn.jpg)',
-        backgroundPosition:'top left'
-    }
+    // const boxTitle = {
+    //     backgroundImage:'url(https://ik.imagekit.io/mublin/tr:w-522,h-95,c-maintain_ratio,fo-top/misc/music/home-banners/mic-blk_GMKT2Fvsn.jpg)',
+    //     backgroundPosition:'top left'
+    // }
 
     return (
         <>
             <Card id="publicEvents" style={{width:'100%',backgroundColor:'transparent',boxShadow:'none'}}>
                 <Card.Content style={{paddingTop:'0px'}}>
-                    <Segment inverted style={boxTitle} className='py-4'>
+                    <Segment inverted className='py-4'>
                         <Header as='h3' inverted className='py-2'>
                             <Header.Content>
-                                Eventos públicos
+                                Próximos eventos públicos
                                 <Header.Subheader>Apresentações e shows</Header.Subheader>
                             </Header.Content>
                         </Header>
                     </Segment>
-                    <Card.Description className="mb-3">
+                    <Card.Description className="mb-4 pb-4">
                         { publicEvents.length ? (
                             <div className="left floated">
                                 <span style={{fontWeight:'500',fontSize:'13px'}}>{publicEvents.length} agendados</span>
-                                <h4 className='ui sub header mt-1 mb-3'>Próximos:</h4>
                             </div>
                         ) : (
                             <span style={{fontWeight:'500',fontSize:'13px'}}>Nenhum evento público próximo</span>
                         )}
                         <div className="right floated">
                             <Link to={{ pathname: '/new/event/?type=public' }}>
-                                <Button size='mini' style={{fontWeight:'500'}}><Icon name='plus' /> Novo</Button>
+                                <Button size='mini' style={{fontWeight:'500'}} primary className='mr-0'><Icon name='plus' /> Novo</Button>
                             </Link>
                             { publicEvents.length > 6 &&
                                 <Link to={{ pathname: '/tbd' }} className='mr-3'>
@@ -144,8 +143,8 @@ const PublicEvents = (props) => {
                                                         <Button size='small' onClick={() => setModalDeclineShow(false)}>
                                                             Cancelar
                                                         </Button>
-                                                        <Button size='small' color='black' onClick={() => submitInvitationResponse(key, event.invitationId, 0, currentDate, declineComment)} loading={isLoading === key && true}>
-                                                            Enviar
+                                                        <Button size='small' negative onClick={() => submitInvitationResponse(key, event.invitationId, 0, currentDate, declineComment)} loading={isLoading === key && true}>
+                                                            Declinar
                                                         </Button>
                                                     </Modal.Actions>
                                                 </Modal>
@@ -154,12 +153,12 @@ const PublicEvents = (props) => {
                                                 2:
                                                     <>
                                                         { isLoading !== key ? (
-                                                            <Button.Group attached='bottom' size='mini'>
-                                                                <Button positive icon onClick={() => submitInvitationResponse(key, event.invitationId, 1, currentDate, '')}>
-                                                                    <Icon name='thumbs up outline' /> Confirmar participação
+                                                            <Button.Group attached='bottom' size='mini' widths='2'>
+                                                                <Button icon onClick={() => submitInvitationResponse(key, event.invitationId, 1, currentDate, '')}>
+                                                                    <Icon name='thumbs up outline' color='green' /> Confirmar participação
                                                                 </Button>
-                                                                <Button negative icon onClick={() => setModalDeclineShow(key)}>
-                                                                    <Icon name='thumbs down outline' /> Declinar
+                                                                <Button icon onClick={() => setModalDeclineShow(key)}>
+                                                                    <Icon name='thumbs down outline' color='red' /> Declinar
                                                                 </Button>
                                                             </Button.Group>
                                                         ) : (

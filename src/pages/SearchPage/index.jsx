@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { searchInfos } from '../../store/actions/search';
-import { Grid, Form, Loader, Header, Input, Tab, Image, List, Label, Icon, Card } from 'semantic-ui-react'
+import { Grid, Form, Loader, Header, Input, Tab, Image, Label, Icon, Card } from 'semantic-ui-react'
 import HeaderDesktop from '../../components/layout/headerDesktop';
 import HeaderMobile from '../../components/layout/headerMobile';
 import FooterMenuMobile from '../../components/layout/footerMenuMobile';
@@ -29,11 +29,6 @@ function SearchPage (props) {
 
     const searchResults = useSelector(state => state.search);
     const suggestedUsers = useSelector(state => state.search.suggestedUsers)
-
-    let totalProjects
-    if (searchResults.projects[0].id) {
-        totalProjects = searchResults.projects.length
-    }
 
     const handleSearch = (query) => {
         history.push({

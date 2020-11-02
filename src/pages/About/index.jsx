@@ -48,7 +48,7 @@ function AboutPage () {
             </p>
             <Header as='h3'>Mublin nas redes sociais</Header>
             <div>
-                <a href='https://instagram.com/mublin' target='_blank'>
+                <a href='https://instagram.com/mublin' target='_blank' rel='noopener noreferrer'>
                     <Button color='instagram' size='small'>
                         <Icon name='instagram' /> Instagram
                     </Button>
@@ -66,7 +66,7 @@ function AboutPage () {
                     Fabio Bueno
                     <Header.Subheader>Founder and Developer</Header.Subheader>
                     <Header.Subheader>
-                        <a href='https://instagram.com/buenofabio' target='_blank'>Instagram</a> | <a href='https://twitter.com/fabiobueno' target='_blank'>Twitter</a> | <a href='https://github.com/fabio-bueno-oliveira' target='_blank'>Github</a> | <a href='mailto:fabiobueno@outlook.com' target='_blank'>Email</a>
+                        <a href='https://instagram.com/buenofabio' target='_blank' rel='noopener noreferrer'>Instagram</a> | <a href='https://twitter.com/fabiobueno' target='_blank' rel='noopener noreferrer'>Twitter</a> | <a href='https://github.com/fabio-bueno-oliveira' target='_blank' rel='noopener noreferrer'>Github</a> | <a href='mailto:fabiobueno@outlook.com' target='_blank' rel='noopener noreferrer'>Email</a>
                     </Header.Subheader>
                 </Header.Content>
             </Header>

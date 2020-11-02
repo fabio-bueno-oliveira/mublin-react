@@ -44,43 +44,47 @@ function NotificationsPage () {
                     <Grid.Row>
                         <Grid.Column width={16}>
                             <Header className='mb-4'>Notificações</Header>
-                            <Feed>
-                                { notifications.list.map((item, key) =>
-                                    <Feed.Event key={key} className='mb-3'>
-                                        <Feed.Label style={{cursor:'pointer'}} onClick={() => history.push('/'+item.relatedUserUsername)}>
-                                            { item.relatedUserPicture ? (
-                                                <img src={item.relatedUserPicture} alt={'Foto de '+item.relatedUserName} />
-                                            ) : (
-                                                <img src='https://ik.imagekit.io/mublin/sample-folder/tr:h-200,w-200,c-maintain_ratio/avatar-undefined_Kblh5CBKPp.jpg' />
-                                            )}
-                                        </Feed.Label>
-                                        <Feed.Content className='mt-1'>
-                                            <Feed.Date style={{fontSize:'12px',fontWeight:'500'}}>
-                                                {item.relatedUserPlan === 'Pro' && <Label size="mini" className="mr-1 p-1">Pro</Label>} há {formatDistance(new Date(item.createdAlternativeFormat * 1000), new Date(), {locale:pt})}
-                                            </Feed.Date>
-                                            <Feed.Summary>
-                                                <Feed.User style={{fontWeight:'600'}} onClick={() => history.push('/'+item.relatedUserUsername)}>{item.relatedUserName+' '+item.relatedUserLastname}</Feed.User> <span style={{fontWeight:'500'}}>{item.action} {item.category === 'project' ? item.relatedProjectName+' ('+item.relatedProjectType+')' : (<a>{item.relatedEventTitle}</a>)}</span>
-                                            </Feed.Summary>
-                                            <Feed.Extra images>
-                                                <Link as='a' to={{ pathname: '/project/'+item.relatedProjectUsername }}>
-                                                    { item.relatedProjectPicture ? (
-                                                        <img src={item.relatedProjectPicture} />
-                                                    ) : (
-                                                        <img src='https://ik.imagekit.io/mublin/sample-folder/avatar-undefined_-dv9U6dcv3.jpg' alt={'Foto de '+item.relatedUserName} />
-                                                    )}
-                                                </Link>
-                                            </Feed.Extra>
-                                            { item.id_feed_type_fk === 9 &&
-                                                <Feed.Extra>
-                                                    <Button size='mini'>
-                                                        Responder a esta solicitação
-                                                    </Button>
+                            { notifications.list[0].id ? ( 
+                                <Feed>
+                                    { notifications.list.map((item, key) =>
+                                        <Feed.Event key={key} className='mb-3'>
+                                            <Feed.Label style={{cursor:'pointer'}} onClick={() => history.push('/'+item.relatedUserUsername)}>
+                                                { item.relatedUserPicture ? (
+                                                    <img src={item.relatedUserPicture} alt={'Foto de '+item.relatedUserName} />
+                                                ) : (
+                                                    <img src='https://ik.imagekit.io/mublin/sample-folder/tr:h-200,w-200,c-maintain_ratio/avatar-undefined_Kblh5CBKPp.jpg' />
+                                                )}
+                                            </Feed.Label>
+                                            <Feed.Content className='mt-1'>
+                                                <Feed.Date style={{fontSize:'12px',fontWeight:'500'}}>
+                                                    {item.relatedUserPlan === 'Pro' && <Label size="mini" className="mr-1 p-1">Pro</Label>} há {formatDistance(new Date(item.createdAlternativeFormat * 1000), new Date(), {locale:pt})}
+                                                </Feed.Date>
+                                                <Feed.Summary>
+                                                    <Feed.User style={{fontWeight:'600'}} onClick={() => history.push('/'+item.relatedUserUsername)}>{item.relatedUserName+' '+item.relatedUserLastname}</Feed.User> <span style={{fontWeight:'500'}}>{item.action} {item.category === 'project' ? item.relatedProjectName+' ('+item.relatedProjectType+')' : (<a>{item.relatedEventTitle}</a>)}</span>
+                                                </Feed.Summary>
+                                                <Feed.Extra images>
+                                                    <Link as='a' to={{ pathname: '/project/'+item.relatedProjectUsername }}>
+                                                        { item.relatedProjectPicture ? (
+                                                            <img src={item.relatedProjectPicture} />
+                                                        ) : (
+                                                            <img src='https://ik.imagekit.io/mublin/sample-folder/avatar-undefined_-dv9U6dcv3.jpg' alt={'Foto de '+item.relatedUserName} />
+                                                        )}
+                                                    </Link>
                                                 </Feed.Extra>
-                                            }
-                                        </Feed.Content>
-                                    </Feed.Event>
-                                )}
-                            </Feed>
+                                                { item.id_feed_type_fk === 9 &&
+                                                    <Feed.Extra>
+                                                        <Button size='mini'>
+                                                            Responder a esta solicitação
+                                                        </Button>
+                                                    </Feed.Extra>
+                                                }
+                                            </Feed.Content>
+                                        </Feed.Event>
+                                    )}
+                                </Feed>
+                            ) : (
+                                <p>Ops! Nenhuma notificação pra você no momento.</p>
+                            )}
                         </Grid.Column>
                     </Grid.Row>
                 </Grid>

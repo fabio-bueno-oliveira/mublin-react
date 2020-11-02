@@ -4,10 +4,11 @@ import { Link } from 'react-router-dom';
 import HeaderDesktop from '../../components/layout/headerDesktop';
 import HeaderMobile from '../../components/layout/headerMobile';
 import FooterMenuMobile from '../../components/layout/footerMenuMobile';
+import Spacer from '../../components/layout/Spacer';
 import { userInfos } from '../../store/actions/user';
 import { eventsInfos } from '../../store/actions/events';
 import { notesInfos } from '../../store/actions/notes';
-import { Container, Header, Tab, Grid, Image, Icon, Label } from 'semantic-ui-react';
+import { Container, Header, Tab, Grid, Image, Icon, Label, Menu } from 'semantic-ui-react';
 // import Notes from './notes';
 import PublicEvents from './publicEvents';
 import PrivateEvents from './privateEvents';
@@ -67,8 +68,9 @@ function HomePage () {
         <>
         <HeaderDesktop />
         <HeaderMobile />
-        <main className="home mt-5 pt-4 pt-md-5">
-            <section id="carousels" className="ui container px-3 pt-3 pt-md-0">
+        <Spacer />
+        <main className="home">
+            <section id="carousels" className="ui container px-3">
                 <Header as='h2'>Meus projetos</Header>
                 <Tab menu={{ secondary: true }} defaultActiveIndex={0} panes={
                     [
@@ -130,7 +132,11 @@ function HomePage () {
                             </Tab.Pane>,
                         }, 
                         {
-                        menuItem: 'Portfolio ('+projectsPortfolio.length+')',
+                        menuItem: (
+                            <Menu.Item key='new'>
+                                <Icon name='tags' className="mr-2" /> Portfolio ({projectsPortfolio.length})
+                            </Menu.Item>
+                            ),
                         render: () => 
                             <Tab.Pane loading={userInfo.requesting} attached={false} as="div">
                                 <Flickity

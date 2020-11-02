@@ -6,6 +6,7 @@ import { Grid, Feed, Icon, Label, Header } from 'semantic-ui-react';
 import HeaderDesktop from '../../components/layout/headerDesktop';
 import HeaderMobile from '../../components/layout/headerMobile';
 import FooterMenuMobile from '../../components/layout/footerMenuMobile';
+import Spacer from '../../components/layout/Spacer';
 import Loader from 'react-loader-spinner';
 import { formatDistance } from 'date-fns';
 import pt from 'date-fns/locale/pt-BR';
@@ -73,10 +74,11 @@ function FeedPage () {
         <>
             <HeaderDesktop />
             <HeaderMobile />
-            <Grid as='main' columns={1} className="container mb-2 mt-4 mt-md-5 pt-5">
+            <Spacer />
+            <Grid as='main' columns={1} className="container mb-2 px-1 px-md-3">
                 <Grid.Row>
                     <Grid.Column width={16}>
-                        <Header className='mb-4'>Acontecendo em sua rede</Header>
+                        <Header as='h2' className='mb-4'>Acontecendo em sua rede</Header>
                         <Feed>
                             { feed.list.map((item, key) =>
                                 <Feed.Event key={key} className='mb-3'>

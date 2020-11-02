@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { useHistory, Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { miscInfos } from '../../store/actions/misc';
@@ -6,6 +6,7 @@ import { Grid, Feed, Button, Label, Header } from 'semantic-ui-react';
 import HeaderDesktop from '../../components/layout/headerDesktop';
 import HeaderMobile from '../../components/layout/headerMobile';
 import FooterMenuMobile from '../../components/layout/footerMenuMobile';
+import Spacer from '../../components/layout/Spacer';
 import Loader from 'react-loader-spinner';
 import { formatDistance } from 'date-fns';
 import pt from 'date-fns/locale/pt-BR';
@@ -40,10 +41,22 @@ function NotificationsPage () {
                     timeout={30000} //30 secs
                 />
             ) : (
-                <Grid as='main' columns={1} className="container mb-2 mt-4 mt-md-5 pt-5">
+                <>
+                <Spacer />
+                <Grid as='main' columns={1} className="container mb-2 px-1 px-md-3">
                     <Grid.Row>
                         <Grid.Column width={16}>
-                            <Header className='mb-4'>Notificações</Header>
+                            {/* <Menu secondary size='large'>
+                                <Menu.Item
+                                    name='Notificações'
+                                    active
+                                />
+                                <Menu.Item
+                                    name='Feed'
+                                    onClick={() => history.push('/feed')}
+                                />
+                            </Menu> */}
+                            <Header as='h2' className='mb-4'>Notificações</Header>
                             { notifications.list[0].id ? ( 
                                 <Feed>
                                     { notifications.list.map((item, key) =>
@@ -88,6 +101,7 @@ function NotificationsPage () {
                         </Grid.Column>
                     </Grid.Row>
                 </Grid>
+                </>
             )}
             <FooterMenuMobile />
         </>

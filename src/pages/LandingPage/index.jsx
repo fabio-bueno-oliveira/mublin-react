@@ -7,6 +7,8 @@ import './styles.scss';
 
 function LandingPage () {
 
+    document.title = 'Otimize sua vida de músico';
+
     const loggedIn = useSelector(state => state.authentication.loggedIn);
 
     let history = useHistory();
@@ -52,7 +54,7 @@ function LandingPage () {
                             </Button>
                             <Button 
                                 inverted 
-                                color='blue' 
+                                primary
                                 size='large'
                                 className="mt-2"
                                 onClick={() => history.push("/signup")}
@@ -65,8 +67,8 @@ function LandingPage () {
                 <Grid centered columns={1} as='section' id="cta" className="mr-0">
                     <Grid.Column width={8} textAlign='center' only='computer'>
                         <Header as='h1' inverted>Seus projetos de música, <br/>centralizados em um só lugar</Header>
-                        <Header as='h3' inverted>Não possui uma conta?<br />Cadastre-se gratuitamente</Header>
-                        <Form style={{ display: "flex", justifyContent: "center" }}>
+                        {/* <Header as='h3' inverted>Não possui uma conta?</Header> */}
+                        {/* <Form style={{ display: "flex", justifyContent: "center" }}>
                             <Input 
                                 style={{ width: "70%" }}
                                 type='email'
@@ -80,7 +82,19 @@ function LandingPage () {
                                 onChange={e => setEmail(e.target.value)}
                                 value={email}
                             />
-                        </Form>
+                        </Form> */}
+                        <Button
+                            primary
+                            size='huge'
+                            onClick={() => history.push("/signup")}
+                        >
+                            Cadastre-se gratuitamente
+                        </Button>
+                        <p className='mt-4'>
+                            <Link style={{color:'white'}} to={{ pathname: "/login" }}>
+                                Já tem uma conta? Entrar
+                            </Link>
+                        </p>
                     </Grid.Column>
                     <Grid.Column width={16} textAlign='center' only='mobile tablet'>
                         <Header as='h2' inverted>Seus projetos de música, <br/><nobr>centralizados em um só lugar</nobr></Header>

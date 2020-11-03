@@ -549,7 +549,7 @@ function StartStep3Page () {
                                                     <option value='3'>Autoral + Cover</option>
                                                 </Form.Field>
                                             </Form.Group>
-                                            <Form.Group inline className="mb-0">
+                                            <Form.Group inline className="mb-3">
                                                 <label>Visibilidade</label>
                                                 <Form.Field
                                                     control={Radio}

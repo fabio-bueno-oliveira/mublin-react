@@ -143,12 +143,8 @@ function JoinPage () {
             <Spacer />
             <Grid as='main' centered columns={1} className="container">
                 <Grid.Row>
-                        <Grid.Column width={16}>
-                            <Header as='h2'>Ingressar em um projeto</Header>
-                        </Grid.Column>
-                </Grid.Row>
-                <Grid.Row>
                     <Grid.Column mobile={16} computer={10}>
+                        <Header as='h2' className='mb-4'>Ingressar em um projeto</Header>
                         <Segment basic textAlign='center'>
                             <label style={{fontWeight: '500'}}>Digite abaixo o nome do projeto que deseja ingressar</label>
                             <p style={{fontWeight: '300'}} className="my-3">Sua solicitação ficará pendente até a aprovação de um dos líderes do projeto</p>

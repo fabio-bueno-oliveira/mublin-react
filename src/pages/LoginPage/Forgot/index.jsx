@@ -1,34 +1,34 @@
 import React, { useState } from 'react';
 import { useHistory, Link, Redirect } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
-import { userActions } from '../../../store/actions/authentication';
+import { useSelector } from 'react-redux';
 import { Formik } from 'formik';
 import ValidateUtils from '../../../utils/ValidateUtils';
 import { Button, Input, Header, Form, Message, Segment } from 'semantic-ui-react';
 import logo from '../../../assets/img/logos/logo-mublin-circle-black.png';
-import Loader from 'react-loader-spinner';
 import "react-loader-spinner/dist/loader/css/react-spinner-loader.css";
 
 import '../styles.scss';
 
-function ForgotPasswordPage (props) {
+function ForgotPasswordPage () {
+
+    document.title = 'Esqueci minha senha | Mublin';
 
     let history = useHistory();
 
     const loggedIn = useSelector(state => state.authentication.loggedIn);
 
     const [loading, setLoading] = useState(false);
-    const error = useSelector(state => state.authentication.error);
-    const dispatch = useDispatch();
+    const [showMsgSuccess, setShowMsgSuccess] = useState(false);
+    const [showMsgError, setShowMsgError] = useState(false);
 
     const validate = values => {
         const errors = {};
   
         if (!values.email) {
-            errors.email = 'Informe seu email ou username!';
+            errors.email = 'Informe seu email';
         } 
         else if (!ValidateUtils.email(values.email)) {
-            errors.email = 'Email inválido!'
+            errors.email = 'Email inválido'
         }
   
         return errors;
@@ -44,15 +44,22 @@ function ForgotPasswordPage (props) {
             },
             body: JSON.stringify({email: email})
         })
-        .then((response) => {
+        .then(res => res.json())
+        .then((result) => {
             setLoading(false)
-            history.push({
-                pathname: '/redefine-password'
-            })
+            if (result.message.includes('No user found with email')) {
+                setShowMsgError(true)
+                setShowMsgSuccess(false)
+            } else {
+                setShowMsgSuccess(true)
+                setShowMsgError(false)
+            }
         }).catch(err => {
-            setLoading(false)
             console.error(err)
-            alert("Ocorreu um erro ao enviar o link de redefinição de senha. Tente novamente em instantes")
+            setLoading(false)
+            setShowMsgError(false)
+            setShowMsgSuccess(false)
+            alert('Ocorreu um erro inesperado. Tente novamente em instantes.')
         })
     }
 
@@ -60,16 +67,6 @@ function ForgotPasswordPage (props) {
         <>
         { loggedIn &&
             <Redirect to={{ pathname: '/home' }} />
-        }
-        { (loading && !error) && 
-            <Loader
-                className="appLoadingIcon"
-                type="Audio"
-                color="#ffffff"
-                height={100}
-                width={100}
-                timeout={30000} //30 secs
-            />
         }
         <main className="loginPage ui middle aligned center aligned grid m-0">
             <div className="column">
@@ -94,11 +91,11 @@ function ForgotPasswordPage (props) {
                     validateOnMount={true}
                     validateOnBlur={true}
                     onSubmit={(values, { setSubmitting }) => {
-                    setLoading(true);
-                    setTimeout(() => {
-                        setSubmitting(false);
-                        sendEmail(values.email)
-                    }, 400);
+                        setLoading(true);
+                        setTimeout(() => {
+                            setSubmitting(false);
+                            sendEmail(values.email)
+                        }, 400);
                     }}
                 >
                     {({
@@ -126,7 +123,6 @@ function ForgotPasswordPage (props) {
                                 value={values.email}
                                 error={touched.email && errors.email ? ( {
                                     content: touched.email ? errors.email : null,
-                                    pointing: 'below',
                                     size: 'tiny',
                                 }) : null }
                             />
@@ -134,8 +130,9 @@ function ForgotPasswordPage (props) {
                                 type="submit" 
                                 secondary fluid 
                                 className="mb-3" 
-                                disabled={(!values.email || isSubmitting) ? true : false}
+                                disabled={(!values.email || isSubmitting || errors.email) ? true : false}
                                 onClick={handleSubmit}
+                                loading={loading}
                             >
                                 Enviar
                             </Button>
@@ -145,6 +142,16 @@ function ForgotPasswordPage (props) {
                         </Form>
                     )}
                 </Formik>
+                { showMsgSuccess && 
+                    <Message positive size='small'>
+                        Sucesso! Enviamos em seu email as informações para a redefinição de sua senha
+                    </Message>
+                }
+                { showMsgError &&
+                    <Message negative size='small'>
+                        Ocorreu um erro. Parece que este email não está cadastrado em nossa base.
+                    </Message>
+                }
             </div>
         </main>
         </>

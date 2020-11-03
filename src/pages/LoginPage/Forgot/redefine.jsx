@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from 'react';
-import { Link, Redirect } from 'react-router-dom';
+import React, { useState } from 'react';
+import { useHistory, Link, Redirect } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { userActions } from '../../../store/actions/authentication';
 import { Formik } from 'formik';
-// import ValidateUtils from '../../../utils/ValidateUtils';
-import { Button, Input, Header, Form, Message } from 'semantic-ui-react';
+import ValidateUtils from '../../../utils/ValidateUtils';
+import { Button, Input, Header, Form, Message, Segment } from 'semantic-ui-react';
 import logo from '../../../assets/img/logos/logo-mublin-circle-black.png';
 import Loader from 'react-loader-spinner';
 import "react-loader-spinner/dist/loader/css/react-spinner-loader.css";
@@ -13,38 +13,50 @@ import '../styles.scss';
 
 function RedefinePasswordPage (props) {
 
-    const loggedIn = useSelector(state => state.authentication.loggedIn);
+    document.title = 'Esqueci minha senha | Mublin';
 
-    const query = new URLSearchParams(props.location.search);
-    const urlInfo = query.get('info')
+    let history = useHistory();
+
+    const loggedIn = useSelector(state => state.authentication.loggedIn);
 
     const [loading, setLoading] = useState(false);
     const error = useSelector(state => state.authentication.error);
     const dispatch = useDispatch();
 
-    const [hidePassword, setHidePassword] = useState(true)
-
-    // reset login status
-    useEffect(() => { 
-        // dispatch(userActions.logout()); 
-    }, [dispatch]);
-
     const validate = values => {
         const errors = {};
   
-        // if (!values.email) {
-        //     errors.email = 'Informe seu email ou username!';
-        // } 
-        // else if (!ValidateUtils.email(values.email)) {
-        //     errors.email = 'Email inválido!'
-        // }
-  
-        // if (!values.password) {
-        //   errors.password = 'Informe sua senha!';
-        // }
+        if (!values.email) {
+            errors.email = 'Informe seu email';
+        } 
+        else if (!ValidateUtils.email(values.email)) {
+            errors.email = 'Email inválido'
+        }
   
         return errors;
     };
+
+    const sendEmail = (email) => {
+        setLoading(true)
+        fetch('https://mublin.herokuapp.com/forgotPassword', {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json, text/plain, */*',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({email: email})
+        })
+        .then((response) => {
+            setLoading(false)
+            history.push({
+                pathname: '/redefine-password'
+            })
+        }).catch(err => {
+            setLoading(false)
+            console.error(err)
+            alert("Ocorreu um erro ao enviar o link de redefinição de senha. Tente novamente em instantes")
+        })
+    }
 
     return (
         <>
@@ -63,17 +75,11 @@ function RedefinePasswordPage (props) {
         }
         <main className="loginPage ui middle aligned center aligned grid m-0">
             <div className="column">
-                { urlInfo === "firstAccess" &&
-                    <Message
-                        success
-                        header='Cadastro efetuado com sucesso!'
-                        content='Para acessar, digite abaixo os dados de login'
-                    />
-                }
-                {error && 
-                    <Message negative>
-                        <Message.Header>{error}</Message.Header>
-                        <p>Verifique os dados e tente novamente</p>
+
+                {1===2 && 
+                    <Message positive>
+                        <Message.Header>Email enviado</Message.Header>
+                        <p>Email de refinição de senha enviado com sucesso</p>
                     </Message>
                 }
                 <Header as='h2'>
@@ -83,26 +89,24 @@ function RedefinePasswordPage (props) {
                         </Link>
                     </div>
                 </Header>
-                <Header as='h2' className='mt-0'>Redefinir sua senha</Header>
-                <div className="ui segment">
-                    <Formik
-                        initialValues={{ email: '', password: '' }}
-                        validate={validate}
-                        validateOnMount={true}
-                        validateOnBlur={true}
-                        onSubmit={(values, { setSubmitting }) => {
-                        setLoading(true);
-                        setTimeout(() => {
-                            setSubmitting(false);
-                            dispatch(userActions.login(values.email, values.password));
-                        }, 400);
-                        }}
-                    >
+                <Header as='h2' className='mt-0'>Redefinir minha senha</Header>
+                <Formik
+                    initialValues={{ email: '' }}
+                    validate={validate}
+                    validateOnMount={true}
+                    validateOnBlur={true}
+                    onSubmit={(values, { setSubmitting }) => {
+                    setLoading(true);
+                    setTimeout(() => {
+                        setSubmitting(false);
+                        sendEmail(values.email)
+                    }, 400);
+                    }}
+                >
                     {({
-                    values, errors, touched, handleChange, handleSubmit, handleBlur, isValid, isSubmitting
+                        values, errors, touched, handleChange, handleSubmit, handleBlur, isValid, isSubmitting
                     }) => (
-
-                        <form 
+                        <Form
                             onSubmit={handleSubmit}
                             onKeyDown={(e) => {
                                 if (e.key === 'Enter') {
@@ -110,78 +114,42 @@ function RedefinePasswordPage (props) {
                                 }
                             }}
                         >
-                            <div className="ui two column very relaxed stackable grid">
-                                <div className="column">
-                                    <div className="ui form">
-                                        <Form.Field
-                                            type="email"
-                                            id='email'
-                                            name="email" 
-                                            control={Input}
-                                            label='Nome de usuário ou email'
-                                            onChange={e => {
-                                                handleChange(e);
-                                            }}
-                                            onBlur={handleBlur}
-                                            value={values.email}
-                                            error={touched.email && errors.email ? ( {
-                                                content: touched.email ? errors.email : null,
-                                                pointing: 'below',
-                                                size: 'tiny',
-                                            }) : null }
-                                        />
-                                        <Form.Field
-                                            type={hidePassword ? 'password' : 'text'}
-                                            id='password'
-                                            name="password" 
-                                            control={Input}
-                                            label='Senha'
-                                            onChange={e => {
-                                                handleChange(e);
-                                            }}
-                                            onBlur={handleBlur}
-                                            value={values.password}
-                                            error={touched.password && errors.password ? ( {
-                                                content: touched.password ? errors.password : null,
-                                                pointing: 'below',
-                                                size: 'tiny',
-                                            }) : null }
-                                            icon={{ name: hidePassword?'eye':'eye slash', link: true, onClick:() => setHidePassword(value => !value) }}
-                                        />
-                                        {/* <Form.Field>
-                                            <Checkbox label='Lembrar meus dados' />
-                                        </Form.Field> */}
-                                        <Button 
-                                            type="submit" 
-                                            secondary fluid 
-                                            className="mb-3" 
-                                            disabled={(!values.email || !values.password || isSubmitting) ? true : false}
-                                            onClick={handleSubmit}
-                                        >
-                                            Entrar
-                                        </Button>
-                                        <Link to={{ pathname: "/soon" }}>
-                                            Esqueci minha senha
-                                        </Link>
-                                    </div>
-                                </div>
-                                <div className="middle aligned column">
-                                    <Link to={{ pathname: "/signup" }}>
-                                        <Button size="big" primary>Inscrever-se grátis</Button>
-                                    </Link>
-                                </div>
-                            </div>
-                        </form>
+                            <Form.Field
+                                fluid
+                                type="email"
+                                id='email'
+                                name="email" 
+                                control={Input}
+                                label='Digite seu email de cadastro e enviaremos um link pra você redefinir sua senha'
+                                onChange={e => {
+                                    handleChange(e);
+                                }}
+                                onBlur={handleBlur}
+                                value={values.email}
+                                error={touched.email && errors.email ? ( {
+                                    content: touched.email ? errors.email : null,
+                                    size: 'tiny',
+                                }) : null }
+                            />
+                            <Button 
+                                type="submit" 
+                                secondary fluid 
+                                className="mb-3" 
+                                disabled={(!values.email || isSubmitting) ? true : false}
+                                onClick={handleSubmit}
+                            >
+                                Enviar
+                            </Button>
+                            {/* <Link to={{ pathname: "/soon" }}>
+                                Não sei meu email cadastrado
+                            </Link> */}
+                        </Form>
                     )}
-                    </Formik>
-                    <div className="ui vertical divider d-none d-lg-block">
-                        ou
-                    </div>
-                </div>
+                </Formik>
             </div>
         </main>
         </>
     );
 };
 
-export default RedefinePasswordPage
+export default RedefinePasswordPage;

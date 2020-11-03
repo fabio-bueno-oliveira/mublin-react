@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory, Link } from 'react-router-dom';
 import { miscInfos } from '../../../store/actions/misc';
-import { Grid, Segment, Header, Icon, Button, Message, Image, Label, Form, Table, Modal, Container, Loader as UiLoader, Select } from 'semantic-ui-react';
+import { Grid, Segment, Header, Icon, Button, Message, Image, Label, Form, Table, Modal, Container, Loader as UiLoader, Select, Menu, Tab } from 'semantic-ui-react';
 import { projectInfos } from '../../../store/actions/project';
 import HeaderDesktop from '../../../components/layout/headerDesktop';
 import HeaderMobile from '../../../components/layout/headerMobile';
@@ -277,20 +277,20 @@ function ProjectBackstagePage (props) {
         { (!project.requesting && project.confirmed !== 1 ) ? (
             <>
             <Spacer />
-            <Container>
+            <Container className='px-3'>
                 { project.confirmed === 2 ? (
                     <Message
                         warning
                         icon='clock outline'
                         header='Aguardando'
-                        content='Aguardando aprovação'
+                        content={'Aguardando aprovação de algum administrador de '+project.name}
                     />
                 ) : (
                     <Message
                         error
                         icon='frown outline'
                         header='Solicitação recusada'
-                        content='Sua solicitação foi recusada'
+                        content={'Sua solicitação foi recusada por algum administrador de '+project.name}
                     />
                 )}
             </Container>
@@ -328,6 +328,162 @@ function ProjectBackstagePage (props) {
                                     <Header.Subheader>{project.typeName}</Header.Subheader>
                                 </Header.Content>
                             </Header>
+                        </Grid.Column>
+                    </Grid.Row>
+                    <Grid.Row>
+                        <Grid.Column mobile={16} computer={16}>
+                            <Tab menu={{ secondary: true }} defaultActiveIndex={0} panes={
+                                [
+                                    {
+                                        menuItem: (
+                                            <Menu.Item key='portfolio'>
+                                                <Icon name='block layout' className="mr-2" /> Resumo
+                                            </Menu.Item>
+                                            ),
+                                        render: () => 
+                                            <Tab.Pane attached={false} as="div">
+                                                asd
+                                            </Tab.Pane>,
+                                    }, 
+                                    {
+                                        menuItem: (
+                                            <Menu.Item key='portfolio'>
+                                                <Icon name='pencil' className="mr-2" /> Editar dados do projeto
+                                            </Menu.Item>
+                                            ),
+                                        render: () => 
+                                            <Tab.Pane attached={false} as="div">
+                                                <Grid columns={2}>
+                                                    <Grid.Row stretched>
+                                                        <Grid.Column width={4}>
+                                                            <Segment attached textAlign='left'>
+                                                                <Header as='h4'>Foto</Header>
+                                                                {project.picture ? (
+                                                                        <Image centered bordered src={'https://ik.imagekit.io/mublin/projects/tr:h-400,w-400,c-maintain_ratio/'+project.picture} rounded size='small' />
+                                                                    ) : (
+                                                                        <Image centered bordered src={'https://ik.imagekit.io/mublin/sample-folder/tr:h-400,w-400,c-maintain_ratio/avatar-undefined_-dv9U6dcv3.jpg'} rounded size='small' />
+                                                                )}
+                                                                <Modal
+                                                                    id="newProjectPicture"
+                                                                    size='mini'
+                                                                    onClose={() => setModalNewProjectPictureOpen(false)}
+                                                                    onOpen={() => setModalNewProjectPictureOpen(true)}
+                                                                    open={modalNewProjectPictureOpen}
+                                                                    closeIcon
+                                                                >
+                                                                    <Modal.Header>Alterar foto de {project.name}</Modal.Header>
+                                                                    <Modal.Content>
+                                                                        { !project.picture ? (
+                                                                            <>
+                                                                                {/* <Image centered rounded src='https://ik.imagekit.io/mublin/tr:h-200,w-200/sample-folder/avatar-undefined_-dv9U6dcv3.jpg' size='small' className="mb-3" /> */}
+                                                                            </>
+                                                                        ) : (
+                                                                            <Image centered rounded src={'https://ik.imagekit.io/mublin/tr:h-200,w-200,c-maintain_ratio/projects/'+project.picture} size='small' className="mb-4" />
+                                                                        )}
+                                                                        <div className="customFileUpload">
+                                                                            <IKUpload 
+                                                                                fileName="avatar.jpg"
+                                                                                folder={userAvatarPath}
+                                                                                tags={["avatar"]}
+                                                                                useUniqueFileName={true}
+                                                                                isPrivateFile= {false}
+                                                                                onError={onUploadError}
+                                                                                onSuccess={onUploadSuccess}
+                                                                            />
+                                                                        </div>
+                                                                        { pictureIsLoading &&
+                                                                            <UiLoader active inline='centered' />
+                                                                        }
+                                                                    </Modal.Content>
+                                                                </Modal>
+                                                            </Segment>
+                                                            <Button size='tiny' attached='bottom' onClick={() => setModalNewProjectPictureOpen(true)} disabled={project.adminAccess === 1 ? false : true}>
+                                                                <Icon name={project.adminAccess === 1 ? 'pencil' : 'lock'}/> Alterar
+                                                            </Button>
+                                                        </Grid.Column>
+                                                        <Grid.Column width={12}>
+                                                            <Segment textAlign='left'>
+                                                                <Header as='h4'>Bio</Header>
+                                                                <p>{project.bio ? project.bio : 'Este projeto não possui descrição'}</p>
+                                                                <Button  
+                                                                    size='tiny' 
+                                                                    className='mt-3' 
+                                                                    onClick={() => setModalBioIsOpen(true)}
+                                                                    disabled={project.adminAccess === 1 ? false : true}
+                                                                >
+                                                                    <Icon name={project.adminAccess === 1 ? 'pencil' : 'lock'}/> Alterar
+                                                                </Button>
+                                                                <Modal
+                                                                    size='mini'
+                                                                    onClose={() => setModalBioIsOpen(false)}
+                                                                    onOpen={() => setModalBioIsOpen(true)}
+                                                                    open={modalBioIsOpen}
+                                                                >
+                                                                    <Formik
+                                                                        initialValues={{ 
+                                                                            bio: project.bio
+                                                                        }}
+                                                                        validate={false}
+                                                                        validateOnMount={true}
+                                                                        validateOnBlur={true}
+                                                                        onSubmit={(values, { setSubmitting }) => {
+                                                                        setTimeout(() => {
+                                                                            setSubmitting(false);
+                                                                            handleSubmitBio(values.bio)
+                                                                        }, 400);
+                                                                        }}
+                                                                    >
+                                                                    {({
+                                                                        values, handleChange, handleSubmit, handleBlur, isSubmitting
+                                                                    }) => (
+                                                                        <>
+                                                                        <Modal.Content>
+                                                                            <Form loading={isSubmitting}>
+                                                                                <Form.TextArea 
+                                                                                    name='bio'
+                                                                                    label='Bio' 
+                                                                                    value={values.bio}
+                                                                                    onChange={e => {
+                                                                                        handleChange(e);
+                                                                                    }}
+                                                                                    onBlur={handleBlur}
+                                                                                    maxLength="200"
+                                                                                />
+                                                                                { values.bio && 
+                                                                                    <Label size='tiny' content={values.bio.length+'/200'} color={values.bio.length  > 199 ? 'red' : ''} />
+                                                                                }
+                                                                            </Form>
+                                                                        </Modal.Content>
+                                                                        <Modal.Actions>
+                                                                            <Button
+                                                                                size='small'
+                                                                                onClick={() => setModalBioIsOpen(false)} 
+                                                                            >
+                                                                                Cancelar
+                                                                            </Button>
+                                                                            <Button
+                                                                                size='small' 
+                                                                                color='black'
+                                                                                type="submit" 
+                                                                                onClick={handleSubmit}
+                                                                                disabled={values.bio === project.bio ? true : false}
+                                                                            >
+                                                                                Salvar
+                                                                            </Button>
+                                                                        </Modal.Actions>
+                                                                        </>
+                                                                        )}
+                                                                    </Formik>
+                                                                </Modal>
+                                                            </Segment>
+                                                        </Grid.Column>
+                                                    </Grid.Row>
+                                                </Grid>
+                                            </Tab.Pane>,
+                                    }
+                                ]
+                            }
+                        />
                         </Grid.Column>
                     </Grid.Row>
                     <Grid.Row stretched>

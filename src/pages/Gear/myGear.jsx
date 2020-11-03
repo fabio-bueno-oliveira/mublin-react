@@ -201,13 +201,9 @@ function MyGearPage () {
             <HeaderMobile />
             <Spacer />
             <Grid as='main' centered columns={1} className="container">
-                <Grid.Row className='pb-0'>
-                    <Grid.Column width={16}>
-                        <Header as='h2'>Meu equipamento</Header>
-                    </Grid.Column>
-                </Grid.Row>
                 <Grid.Row>
                     <Grid.Column mobile={16} computer={10}>
+                        <Header as='h2' className='mb-4'>Meu equipamento</Header>
                         <Segment color='green' className='cpointer' onClick={() => setModalAddNewProductOpen(true)}>
                             <Header as='h5'>
                                 <Icon name='plus' />
@@ -220,6 +216,7 @@ function MyGearPage () {
                         { !userInfo.requesting ? (
                             userInfo.gear.map((item, key) => (
                                 <>
+                                    { item.id && 
                                     <Segment.Group horizontal key={key}>
                                         <Segment className='gear itemDescriptionColumn'>
                                             <Header as='h5'>
@@ -249,6 +246,7 @@ function MyGearPage () {
                                             </Button>
                                         </Segment>
                                     </Segment.Group>
+                                    }
                                 </>
                             ))
                         ) : (
@@ -317,11 +315,11 @@ function MyGearPage () {
                             <Image src={productInfo[0].picture} size='small' centered className='mb-1' />
                         }
                     </Form>
-                    {/* <div style={{fontSize:'12px',width:'100%',textAlign:"right"}}>
+                    <div style={{fontSize:'12px',width:'100%',textAlign:"right"}}>
                         <Link as='a' to={{ pathname: '/gear/submit/product' }}>
                             Não encontrei meu produto na lista
                         </Link>
-                    </div> */}
+                    </div>
                 </Modal.Content>
                 <Modal.Actions>
                     <Button size='tiny' onClick={() => setModalAddNewProductOpen(false)}>

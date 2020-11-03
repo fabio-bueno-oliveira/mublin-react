@@ -8,7 +8,7 @@ import FooterMenuMobile from '../../components/layout/footerMenuMobile';
 import Spacer from '../../components/layout/Spacer';
 import { profileInfos } from '../../store/actions/profile';
 import { followInfos } from '../../store/actions/follow';
-import { Header, Tab, Card, Grid, Image, Button, Label, Dimmer, Icon, Modal, List, Confirm, Placeholder, Popup, Feed} from 'semantic-ui-react';
+import { Header, Tab, Card, Grid, Image, Button, Label, Menu, Icon, Modal, List, Popup, Feed} from 'semantic-ui-react';
 import Loader from 'react-loader-spinner';
 import Flickity from 'react-flickity-component';
 import { formatDistance } from 'date-fns';
@@ -188,7 +188,7 @@ function ProfilePage (props) {
                                         <Button content='Mensagem' />
                                     </Button.Group>
                                 </div>
-                                { profile.bio && 
+                                { (profile.bio && profile.bio !== 'null') && 
                                     <Card.Description className="center aligned mt-3" style={{ fontSize: "13px" }}>
                                         {profile.bio}
                                     </Card.Description>
@@ -258,12 +258,16 @@ function ProfilePage (props) {
                                                                         {projeto.picture ? (
                                                                             <Image src={projeto.picture} rounded />
                                                                         ) : (
-                                                                            <Image src={'https://ik.imagekit.io/mublin/sample-folder/avatar-undefined_-dv9U6dcv3.jpg'} height='85' width='85' rounded />
+                                                                            <Image src={'https://ik.imagekit.io/mublin/sample-folder/avatar-undefined_-dv9U6dcv3.jpg'} height='85' width='95' rounded />
                                                                         )}
-                                                                        <h5 className="ui header mt-2 mb-0">
-                                                                            {projeto.name}
-                                                                            <div className="sub header mt-1">{projeto.type}</div>
-                                                                        </h5>
+                                                                        <Header as='h5' className='mt-2 mb-0'>
+                                                                            <Header.Content>
+                                                                                {projeto.name}
+                                                                                <Header.Subheader style={{fontSize:'11.5px'}}>
+                                                                                    {projeto.type}
+                                                                                </Header.Subheader>
+                                                                            </Header.Content>
+                                                                        </Header>
                                                                         <div className="mt-2" style={{fontWeight: '400',fontSize: '11px', color: 'black', opacity: '0.8'}}>
                                                                             <Icon name={projeto.workIcon} /> {projeto.workTitle}
                                                                         </div>
@@ -287,7 +291,11 @@ function ProfilePage (props) {
                                             </Tab.Pane>,
                                         }, 
                                         {
-                                            menuItem: 'Portfolio ('+portfolioProjects.length+')',
+                                            menuItem: (
+                                                <Menu.Item key='portfolio'>
+                                                    <Icon name='tags' className="mr-2" /> Portfolio ({portfolioProjects.length})
+                                                </Menu.Item>
+                                                ),
                                             render: () => 
                                                 <Tab.Pane attached={false} as="div">
                                                     <Flickity
@@ -305,12 +313,16 @@ function ProfilePage (props) {
                                                                             {projeto.picture ? (
                                                                                 <Image src={projeto.picture} rounded />
                                                                             ) : (
-                                                                                <Image src={'https://ik.imagekit.io/mublin/sample-folder/avatar-undefined_-dv9U6dcv3.jpg'} height='85' width='85' rounded />
+                                                                                <Image src={'https://ik.imagekit.io/mublin/sample-folder/avatar-undefined_-dv9U6dcv3.jpg'} height='85' width='95' rounded />
                                                                             )}
-                                                                            <h5 className="ui header mt-2 mb-0">
-                                                                                {projeto.name}
-                                                                                <div className="sub header mt-1">{projeto.type}</div>
-                                                                            </h5>
+                                                                            <Header as='h5' className='mt-2 mb-0'>
+                                                                                <Header.Content>
+                                                                                    {projeto.name}
+                                                                                    <Header.Subheader style={{fontSize:'11.5px'}}>
+                                                                                        {projeto.type}
+                                                                                    </Header.Subheader>
+                                                                                </Header.Content>
+                                                                            </Header>
                                                                             <div className="mt-2" style={{fontWeight: '400',fontSize: '11px', color: 'black', opacity: '0.8'}}>
                                                                                 <Icon name={projeto.workIcon} /> {projeto.workTitle}
                                                                             </div>
@@ -386,22 +398,28 @@ function ProfilePage (props) {
                                 { profile.requesting ? (
                                     <Icon loading name='spinner' size='large' />
                                 ) : ( 
-                                    <Flickity
-                                        className={'carousel'}
-                                        elementType={'div'}
-                                        options={sliderOptions}
-                                        disableImagesLoaded={false}
-                                        reloadOnUpdate
-                                    >
-                                        {profile.strengths.map((strength, key) =>
-                                            <div key={key} class="center aligned mr-4" style={{height:'63px', listStyle:'none'}}>
-                                                <Header as='h3' className='my-0'><i className={strength.icon}></i></Header>
-                                                <Header as='h5' className='my-0'><nobr>{strength.strengthTitle}</nobr></Header>
-                                                {/* <Header sub className='my-0' style={{color:'grey',fontSize:'11px',fontWeight:'300'}}><nobr>{strength.percent} dos votos</nobr></Header> */}
-                                                <Label size='mini'>{strength.percent}</Label>
-                                            </div>
-                                        )}
-                                    </Flickity>
+                                    (profile.strengths[0].id && profile.strengths[0].idUserTo === profile.id) ? (
+                                        <Flickity
+                                            className={'carousel'}
+                                            elementType={'div'}
+                                            options={sliderOptions}
+                                            disableImagesLoaded={false}
+                                            reloadOnUpdate
+                                        >
+                                            {profile.strengths.map((strength, key) =>
+                                                <div key={key} class="center aligned mr-4" style={{height:'63px', listStyle:'none'}}>
+                                                    <Header as='h3' className='my-0'><i className={strength.icon}></i></Header>
+                                                    <Header as='h5' className='my-0'><nobr>{strength.strengthTitle}</nobr></Header>
+                                                    {/* <Header sub className='my-0' style={{color:'grey',fontSize:'11px',fontWeight:'300'}}><nobr>{strength.percent} dos votos</nobr></Header> */}
+                                                    <Label size='mini'>{strength.percent}</Label>
+                                                </div>
+                                            )}
+                                        </Flickity>
+                                    ) : (
+                                        <Card.Description className={profile.id !== user.id ? 'mt-0' : 'mt-3'} style={{ fontSize: "13px" }}>
+                                            Nenhum depoimento para {profile.name} até o momento
+                                        </Card.Description>
+                                    )
                                 )}
                             </Card.Content>
                         </Card>
@@ -423,15 +441,22 @@ function ProfilePage (props) {
                                                 <div className='carousel-cell' key={key}>
                                                     {product.picture ? (
                                                         product.featured ? (
-                                                            <Image src={product.picture} rounded label={{ as: 'div', corner: 'left', icon: 'heart', size: 'mini' }} as='a' href={'/gear/product/'+product.productId} className='cpointer' />
+                                                            <Image 
+                                                                src={product.picture} 
+                                                                rounded 
+                                                                // label={{ as: 'div', corner: 'left', icon: 'heart', size: 'mini' }} 
+                                                                as='a' 
+                                                                href={'/gear/product/'+product.productId}
+                                                                className='cpointer' 
+                                                            />
                                                         ) : (
                                                             <Image src={product.picture} rounded as='a' href={'/gear/product/'+product.productId} />
                                                         )
                                                     ) : (
                                                         <Image src={'https://ik.imagekit.io/mublin/misc/tr:h-200,w-200,c-maintain_ratio/no-picture_pKZ8CRarWks.jpg'} height='85' width='85' rounded label={{ as: 'a', corner: 'left', icon: 'heart' }} as='a' href={'/gear/product/'+product.productId} />
                                                     )}
-                                                    <Popup inverted size='mini' content={product.category+' '+product.brandName+' '+product.productName} trigger={<Header as='h5' className='mt-2 mb-0' style={{cursor:'default'}}><Header.Content><Link to={{pathname: '/gear/product/'+product.productId}} style={{color:'gray'}}>{product.productName}</Link></Header.Content></Header>} />
-                                                    <Header.Subheader style={{fontWeight: '500',fontSize: '11px'}}><Link to={{pathname: '/gear/brand/'+product.productId}} style={{color:'gray'}}>{product.brandName}</Link></Header.Subheader>
+                                                    <Popup inverted size='mini' content={product.category+' '+product.brandName+' '+product.productName} trigger={<Header as='h5' className='mt-2 mb-0' style={{cursor:'default'}}><Header.Content><Link to={{pathname: '/gear/product/'+product.productId}} style={{color:'black'}}>{product.productName}</Link></Header.Content></Header>} />
+                                                    <Header.Subheader style={{fontWeight: '500',fontSize: '11px',whiteSpace:'nowrap',overflow:'hidden',textOverflow:'ellipsis',width:'99%'}}><Link to={{pathname: '/gear/product/'+product.productId}} style={{color:'gray'}}>{product.brandName}</Link></Header.Subheader>
                                                     { product.forSale ? (
                                                         <Popup inverted size='mini' content='À venda' trigger={<Label tag content={product.price.toLocaleString('pt-br',{style: 'currency', currency: 'BRL'})} size='mini' style={{fontWeight: '500',fontSize: '9px',cursor:'default'}} className='mt-1' color='green' />} />
                                                     ) : (

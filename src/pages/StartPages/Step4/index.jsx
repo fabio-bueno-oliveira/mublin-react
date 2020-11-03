@@ -48,7 +48,11 @@ function StartStep3Page () {
 
     const userProjects = userInfo.projects.map((project, key) =>
         <Label color="blue" key={key} className="mb-2 mr-2" style={{ fontWeight: 'normal' }} image>
-            <img src={'https://ik.imagekit.io/mublin/projects/tr:h-200,w-200,c-maintain_ratio/'+project.picture} />
+            {project.picture ? (
+                <img src={'https://ik.imagekit.io/mublin/projects/tr:h-200,w-200,c-maintain_ratio/'+project.picture} />
+            ) : (
+                <img src={'https://ik.imagekit.io/mublin/sample-folder/tr:h-200,w-200,c-maintain_ratio/avatar-undefined_-dv9U6dcv3.jpg'} />
+            )}
             {project.role1+" em "+project.name}
             <Icon name='delete' onClick={() => deleteProject(project.id)} />
         </Label>
@@ -75,6 +79,7 @@ function StartStep3Page () {
     const [main_role_fk, setMain_role_fk] = useState('')
     const [joined_in, setJoined_in] = useState('')
     const [left_in, setLeft_in] = useState(null)
+    const [portfolio, setPortfolio] = useState('0')
 
     const handleCheckbox = (x) => {
         setCheckbox(value => !value)
@@ -100,6 +105,7 @@ function StartStep3Page () {
     const [kind, setKind] = useState('1')
     const [npMain_role_fk, setNpMain_role_fk] = useState('')
     const [publicProject, setPublicProject] = useState('1')
+    const [portfolioNewProject, setPortfolioNewProject] = useState('0')
     const [userStatus, setUserStatus] = useState('1')
     const [idNewProject, setIdNewProject] = useState('')
 
@@ -180,7 +186,7 @@ function StartStep3Page () {
                 'Content-Type': 'application/json',
                 'Authorization': 'Bearer ' + user.token
             },
-            body: JSON.stringify({ userId: user.id, projectId: projectId, active: active, status: status, main_role_fk: main_role_fk, joined_in: joined_in, left_in: left_in, leader: '0', confirmed: '2', admin: '0' })
+            body: JSON.stringify({ userId: user.id, projectId: projectId, active: active, status: status, main_role_fk: main_role_fk, joined_in: joined_in, left_in: left_in, leader: '0', confirmed: '2', admin: '0', portfolio: portfolio })
         }).then((response) => {
             //console.log(153, response)
             dispatch(userInfos.getUserProjects(user.id))
@@ -226,7 +232,7 @@ function StartStep3Page () {
                 'Content-Type': 'application/json',
                 'Authorization': 'Bearer ' + user.token
             },
-            body: JSON.stringify({ userId: newProjectUserId, projectId: newProjectProjectId, active: '1', status: newProjectUserStatus, main_role_fk: newProjectMain_role_fk, joined_in: currentYear, left_in: null, leader: '1', confirmed: '1', admin: '1' })
+            body: JSON.stringify({ userId: newProjectUserId, projectId: newProjectProjectId, active: '1', status: newProjectUserStatus, main_role_fk: newProjectMain_role_fk, joined_in: currentYear, left_in: null, leader: '1', confirmed: '1', admin: '1', portfolio: portfolioNewProject })
         }).then((response) => {
             // console.log(214, response)
             dispatch(userInfos.getUserProjects(user.id))
@@ -414,6 +420,27 @@ function StartStep3Page () {
                                                 )}
                                             </Form.Group>
                                             <Form.Checkbox name="active" checked={checkbox} label={modalProjectEndYear ? 'Estive ativo até o final do projeto' : 'Estou ativo atualmente neste projeto'} onChange={() => handleCheckbox(checkbox)} />
+                                            <label style={{fontWeight: '600', fontSize: '.92857143em'}}>Categorizar projeto em:</label>
+                                            <Form.Field>
+                                                <Radio
+                                                    className="mt-3"
+                                                    label='Projetos principais'
+                                                    name='radioGroup2'
+                                                    value='0'
+                                                    checked={portfolio === '0'}
+                                                    onChange={() => setPortfolio('0')}
+                                                />
+                                            </Form.Field>
+                                            <Form.Field>
+                                                <Radio
+                                                    className="mt-0"
+                                                    label='Portfolio'
+                                                    name='radioGroup2'
+                                                    value='1'
+                                                    checked={portfolio === '1'}
+                                                    onChange={() => setPortfolio('1')}
+                                                />
+                                            </Form.Field>
                                         </Form>
                                         <Message size='tiny' warning>
                                             <p>*sua participação ficará pendente até que o(s) líder(es) deste projeto aprovem sua solicitação</p>
@@ -539,6 +566,27 @@ function StartStep3Page () {
                                                     onChange={() => setPublicProject('0')}
                                                 />
                                             </Form.Group>
+                                            <label style={{fontWeight: '600', fontSize: '.92857143em'}}>Categorizar projeto em:</label>
+                                            <Form.Field>
+                                                <Radio
+                                                    className="mt-3"
+                                                    label='Projetos principais'
+                                                    name='radioGroup3'
+                                                    value='0'
+                                                    checked={portfolioNewProject === '0'}
+                                                    onChange={() => setPortfolioNewProject('0')}
+                                                />
+                                            </Form.Field>
+                                            <Form.Field>
+                                                <Radio
+                                                    className="mt-0"
+                                                    label='Portfolio'
+                                                    name='radioGroup3'
+                                                    value='1'
+                                                    checked={portfolioNewProject === '1'}
+                                                    onChange={() => setPortfolioNewProject('1')}
+                                                />
+                                            </Form.Field>
                                         </Form>
                                     </Modal.Content>
                                     <Modal.Actions>
@@ -572,7 +620,7 @@ function StartStep3Page () {
                                         )}
                                         <div className="customFileUpload">
                                             <IKUpload 
-                                                fileName="avatar.jpg"
+                                                fileName={projectUserName+'_avatar.jpg'}
                                                 folder={userAvatarPath}
                                                 tags={["avatar"]}
                                                 useUniqueFileName={true}
@@ -596,7 +644,10 @@ function StartStep3Page () {
                                     <Button 
                                         color="black" 
                                         disabled={!pictureFilename}
-                                        onClick={() => setModalNewProjectPictureOpen(false)}
+                                        onClick={() => { 
+                                            dispatch(userInfos.getUserProjects(user.id));
+                                            setModalNewProjectPictureOpen(false);
+                                        }}
                                     >
                                         Concluir
                                     </Button>

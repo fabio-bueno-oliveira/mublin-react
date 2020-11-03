@@ -2,6 +2,7 @@ import { notificationsTypes } from '../types/notifications';
 import { feedTypes } from '../types/feed';
 import { musicGenresTypes } from '../types/musicGenres';
 import { rolesTypes } from '../types/roles';
+import { gearTypes } from '../types/gear';
 import { availabilityOptionsTypes } from '../types/availabilityOptions';
 import { miscService } from '../../api/misc';
 
@@ -10,6 +11,7 @@ export const miscInfos = {
     getFeed: getFeed,
     getMusicGenres: getMusicGenres,
     getRoles: getRoles,
+    getGearBrands: getGearBrands,
     getAvailabilityStatuses: getAvailabilityStatuses,
     getAvailabilityItems: getAvailabilityItems,
     getAvailabilityFocuses: getAvailabilityFocuses
@@ -77,6 +79,22 @@ function getRoles() {
     function request() { return { type: rolesTypes.GET_ROLES_REQUEST} }
     function success(list) { return { type: rolesTypes.GET_ROLES_SUCCESS, list } }
     function failure(error) { return { type: rolesTypes.GET_ROLES_FAILURE, error } }
+}
+
+function getGearBrands() {
+    return dispatch => {
+        dispatch(request());
+  
+        miscService.getAllGearBrands()
+            .then(
+                list => dispatch(success(list)),
+                error => dispatch(failure(error.toString()))
+            );
+        };
+  
+    function request() { return { type: gearTypes.GET_GEAR_BRANDS_REQUEST} }
+    function success(list) { return { type: gearTypes.GET_GEAR_BRANDS_SUCCESS, list } }
+    function failure(error) { return { type: gearTypes.GET_GEAR_BRANDS_FAILURE, error } }
 }
 
 function getAvailabilityStatuses() {

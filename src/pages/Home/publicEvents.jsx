@@ -153,7 +153,7 @@ const PublicEvents = (props) => {
                                                 2:
                                                     <>
                                                         { isLoading !== key ? (
-                                                            <Button.Group attached='bottom' size='mini' widths='2'>
+                                                            <Button.Group attached='bottom' size='mini'>
                                                                 <Button icon onClick={() => submitInvitationResponse(key, event.invitationId, 1, currentDate, '')}>
                                                                     <Icon name='thumbs up outline' color='green' /> Confirmar participação
                                                                 </Button>

@@ -79,9 +79,9 @@ function ProjectPage (props) {
                             style={artistHeroStyles}
                         >
                             {project.picture ? (
-                                <Image src={'https://ik.imagekit.io/mublin/projects/tr:h-200,w-200,c-maintain_ratio/'+project.picture} circular centered size='tiny' />
+                                <Image src={'https://ik.imagekit.io/mublin/projects/tr:h-200,w-200,c-maintain_ratio/'+project.picture} circular centered size='small' />
                             ) : (
-                                <Image src='https://ik.imagekit.io/mublin/sample-folder/tr:h-200,w-200,c-maintain_ratio/avatar-undefined_-dv9U6dcv3.jpg' circular centered size='tiny' />
+                                <Image src='https://ik.imagekit.io/mublin/sample-folder/tr:h-200,w-200,c-maintain_ratio/avatar-undefined_-dv9U6dcv3.jpg' circular centered size='small' />
                             )}
                             <Header as='h2' textAlign='center' inverted className='mt-2 mb-2'>
                                 <Header.Content>

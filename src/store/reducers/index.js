@@ -15,6 +15,7 @@ import { events } from './events';
 import { notes } from './notes';
 import { musicGenres } from './musicGenres';
 import { roles } from './roles';
+import { gear } from './gear';
 import { availabilityOptions } from './availabilityOptions';
 
 const rootReducer = combineReducers({
@@ -34,6 +35,7 @@ const rootReducer = combineReducers({
   notes,
   musicGenres,
   roles,
+  gear,
   availabilityOptions
 });
 

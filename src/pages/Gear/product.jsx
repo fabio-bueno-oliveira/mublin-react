@@ -17,7 +17,23 @@ function ProductPage (props) {
     const [error, setError] = useState(null);
     const [isLoaded, setIsLoaded] = useState(false);
     const [product, setProduct] = useState([]);
-    const [owners, setOwners] = useState([]);
+    const [owners, setOwners] = useState([
+        { city: '',
+        country: '',
+        created: '',
+        currentlyUsing: '',
+        featured: '',
+        forSale: '',
+        id: '',
+        lastname: '',
+        name: '',
+        photo: '',
+        picture: '',
+        price: '',
+        productId: '',
+        region: '',
+        username: '' }
+    ]);
 
     useEffect(() => {
         fetch("https://mublin.herokuapp.com/gear/product/"+props.match.params.productId+"/productInfo")
@@ -58,8 +74,8 @@ function ProductPage (props) {
                         <Segment>
                             <Header as='h2'>
                                 <Header.Content>
-                                    {!isLoaded ? 'Carregando...' : product.name}
                                     <Header.Subheader>{product.brandName}</Header.Subheader>
+                                    {!isLoaded ? 'Carregando...' : product.name}
                                 </Header.Content>
                             </Header>
                             <Image src={product.picture} rounded fluid />
@@ -67,22 +83,26 @@ function ProductPage (props) {
 
                         <Segment>
                             <Header as='h3'>
-                                Quem utiliza {owners.length && '('+owners.length+')'}
+                                Quem possui {owners.length && '('+owners.length+')'}
                             </Header>
                             <Item.Group link>
-                                {owners.map((owner,key) =>
-                                    <Item onClick={() => history.push('/'+owner.username)}>
-                                        <Item.Image size='tiny' src={owner.picture} />
-                                        <Item.Content>
-                                            <Item.Header>{owner.name+' '+owner.lastname}</Item.Header>
-                                            <Item.Description>
-                                                {!!owner.currentlyUsing && <Label content='Em uso' icon='checkmark' size='mini' style={{fontWeight:'500'}} />} {!!owner.forSale && <Label content='À venda' color='blue' size='mini' style={{fontWeight:'500'}} />} {!!owner.price && <span>{owner.price.toLocaleString('pt-br',{style: 'currency', currency: 'BRL'})}</span>}
-                                            </Item.Description>
-                                            <Item.Description>
-                                                {owner.city && <span>{owner.city}/{owner.region}</span>}
-                                            </Item.Description>
-                                        </Item.Content>
-                                    </Item>
+                                { owners.length ? (
+                                    owners.map((owner,key) =>
+                                        <Item onClick={() => history.push('/'+owner.username)}>
+                                            <Item.Image size='tiny' circular src={owner.picture} />
+                                            <Item.Content>
+                                                <Item.Header>{owner.name+' '+owner.lastname}</Item.Header>
+                                                <Item.Description>
+                                                    {!!owner.currentlyUsing && <Label content='Em uso' icon='checkmark' size='mini' style={{fontWeight:'500'}} />} {!!owner.forSale && <Label content='À venda' color='blue' size='mini' style={{fontWeight:'500'}} />} {!!owner.price && <span>{owner.price.toLocaleString('pt-br',{style: 'currency', currency: 'BRL'})}</span>}
+                                                </Item.Description>
+                                                <Item.Description>
+                                                    {owner.city && <span>{owner.city}/{owner.region}</span>}
+                                                </Item.Description>
+                                            </Item.Content>
+                                        </Item>
+                                    )
+                                ) : (
+                                    <p>Nenhum usuário do Mublin possui este equipamento</p>
                                 )}
                             </Item.Group>
                         </Segment>

@@ -90,6 +90,11 @@ function HomePage () {
                                             projectsMain.map((project, key) =>
                                                 <div className="carousel-cell" key={key} style={project.confirmed === 2 ? {opacity:'0.6'} : {}}>
                                                     <Link to={{ pathname: '/project/'+project.username }}>
+                                                        { !!project.featured && 
+                                                            <Label color='black' floating size='mini' style={{top: '0', left: '20%',width:'fit-content'}}>
+                                                                <Icon name='star' color='yellow' className='mr-0' />
+                                                            </Label>
+                                                        }
                                                         {project.picture ? (
                                                             <Image src={'https://ik.imagekit.io/mublin/projects/tr:h-85,w-95,c-maintain_ratio/'+project.picture} rounded />
                                                         ) : (
@@ -119,7 +124,7 @@ function HomePage () {
                                             <div className="carousel-cell">
                                                 <Image src={'https://ik.imagekit.io/mublin/misc/square-sad-music_SeGz8vs_2A.jpg'} height='85' width='85' rounded />
                                                 <h5 className="ui header mt-2 mb-0">
-                                                    <div className="sub header mt-1">Sem projetos</div>
+                                                    <div className="sub header mt-1">Sem principais</div>
                                                 </h5>
                                             </div> 
                                         )
@@ -133,7 +138,7 @@ function HomePage () {
                         }, 
                         {
                         menuItem: (
-                            <Menu.Item key='new'>
+                            <Menu.Item key='portfolio'>
                                 <Icon name='tags' className="mr-2" /> Portfolio ({projectsPortfolio.length})
                             </Menu.Item>
                             ),
@@ -152,19 +157,23 @@ function HomePage () {
                                                 <div className="carousel-cell" key={key}>
                                                     <Link to={{ pathname: '/project/'+project.username }}>
                                                         { project.yearLeftTheProject && 
-                                                            <Label color='black' floating size='mini' style={{top: '0', left: '50%',width:'fit-content'}}>
-                                                                {project.joined_in+'-'+project.yearLeftTheProject}
+                                                            <Label color='black' floating size='mini' style={{top: '0', left: '20%',width:'fit-content'}}>
+                                                                {project.joined_in+' a '+project.yearLeftTheProject}
                                                             </Label>
                                                         }
                                                         {project.picture ? (
-                                                            <Image src={'https://ik.imagekit.io/mublin/projects/tr:h-200,w-200,c-maintain_ratio/'+project.picture} height='85' width='85' rounded />
+                                                            <Image src={'https://ik.imagekit.io/mublin/projects/tr:h-85,w-95,c-maintain_ratio/'+project.picture} rounded />
                                                         ) : (
                                                             <Image src={'https://ik.imagekit.io/mublin/sample-folder/avatar-undefined_-dv9U6dcv3.jpg'} height='85' width='85' rounded />
                                                         )}
-                                                        <h5 className="ui header mt-2 mb-0">
-                                                            {project.name}
-                                                            <div className="sub header mt-1">{project.ptname}</div>
-                                                        </h5>
+                                                        <Header as='h5' className='mt-2 mb-0'>
+                                                            <Header.Content>
+                                                                {project.name}
+                                                                <Header.Subheader style={{fontSize:'11.5px'}}>
+                                                                    {project.ptname}
+                                                                </Header.Subheader>
+                                                            </Header.Content>
+                                                        </Header>
                                                         { project.confirmed === 1 ? (
                                                             <div className="mt-2" style={{fontWeight: '400',fontSize: '11px', color: 'black', opacity: '0.8'}}>
                                                                 <Icon name={project.workIcon} />{project.workTitle}
@@ -181,7 +190,7 @@ function HomePage () {
                                             <div className="carousel-cell">
                                                 <Image src={'https://ik.imagekit.io/mublin/misc/square-sad-music_SeGz8vs_2A.jpg'} height='85' width='85' rounded />
                                                 <h5 className="ui header mt-2 mb-0">
-                                                    <div className="sub header mt-1">Sem projetos</div>
+                                                    <div className="sub header mt-1">Sem portfolios</div>
                                                 </h5>
                                             </div> 
                                         )

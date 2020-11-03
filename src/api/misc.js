@@ -20,6 +20,7 @@ export const miscService = {
     getFeed,
     getAllMusicGenres,
     getAllRoles,
+    getAllGearBrands,
     getAvailabilityStatuses,
     getAvailabilityItems,
     getAvailabilityFocuses,
@@ -56,6 +57,14 @@ function getAllRoles() {
         headers: authHeader()
     };
     return fetch(`${BASE_URL}/music/roles`, requestOptions).then(handleResponse);
+}
+
+function getAllGearBrands() {
+    const requestOptions = {
+        method: 'GET',
+        headers: authHeader()
+    };
+    return fetch(`${BASE_URL}/gear/allBrands`, requestOptions).then(handleResponse);
 }
 
 function getAvailabilityStatuses() {

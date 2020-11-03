@@ -162,14 +162,41 @@ function SearchPage (props) {
                                                     <p>Nenhum projeto encontrado</p>
                                                     )}
                                                 </Tab.Pane>,
-                                        }
-                                        // {
-                                        //     menuItem: 'Eventos',
-                                        //     render: () => 
-                                        //         <Tab.Pane loading={searchResults.requesting}>
-                                        //             asd
-                                        //         </Tab.Pane>,
-                                        // },
+                                        },
+                                        {
+                                            menuItem: 'Equipamentos (0)',
+                                            render: () => 
+                                                <Tab.Pane basic attached={false} loading={searchResults.requesting}>
+                                                    {searchResults.projects[0].id ? (
+                                                    <Card.Group itemsPerRow={screenSize.matches ? 6 : 2} className='px-0 px-md-0 pb-5' style={{maxWidth:'100%'}}>
+                                                        { searchResults.projects.map((project, key) =>
+                                                            <Card key={key} onClick={() => history.push('/project/'+project.username)}>
+                                                                { project.picture ? (
+                                                                    <Image rounded src={project.picture} onClick={() => history.push('/project/'+project.username)} wrapped ui={false} />
+                                                                ) : (
+                                                                    <Image rounded src='https://ik.imagekit.io/mublin/sample-folder/tr:h-200,w-200,c-maintain_ratio/avatar-undefined_Kblh5CBKPp.jpg' onClick={() => history.push('/project/'+project.username)} wrapped ui={false} /> 
+                                                                )}
+                                                                <Card.Content>
+                                                                    <Card.Header style={{fontSize:'14.4px',width:'100%',whiteSpace:'nowrap',overflow:'hidden',textOverflow:'ellipsis'}}>
+                                                                        {project.name}
+                                                                    </Card.Header>
+                                                                    <Card.Meta style={{fontSize:'12.4px'}}>
+                                                                        <span style={{color:'darkgray '}}>{project.type} {project.mainGenre && '・ '+project.mainGenre}</span>
+                                                                    </Card.Meta>
+                                                                    {project.city &&
+                                                                        <Card.Meta style={{fontSize:'11px',width:'100%',whiteSpace:'nowrap',overflow:'hidden',textOverflow:'ellipsis'}}>
+                                                                            {project.city && project.city+', '+project.region}
+                                                                        </Card.Meta>
+                                                                    }
+                                                                </Card.Content>
+                                                            </Card>
+                                                        )}
+                                                    </Card.Group>
+                                                    ) : (
+                                                    <p>Nenhum projeto encontrado</p>
+                                                    )}
+                                                </Tab.Pane>,
+                                        },
                                     ]
                                 }/>
                             }

@@ -8,7 +8,7 @@ import FooterMenuMobile from '../../components/layout/footerMenuMobile';
 import Spacer from '../../components/layout/Spacer';
 import { profileInfos } from '../../store/actions/profile';
 import { followInfos } from '../../store/actions/follow';
-import { Header, Tab, Card, Grid, Image, Button, Label, Menu, Icon, Modal, List, Popup, Feed} from 'semantic-ui-react';
+import { Header, Tab, Card, Grid, Image, Button, Label, Menu, Icon, Modal, List, Popup, Feed, Form, Radio} from 'semantic-ui-react';
 import Loader from 'react-loader-spinner';
 import Flickity from 'react-flickity-component';
 import { formatDistance } from 'date-fns';
@@ -47,7 +47,7 @@ function ProfilePage (props) {
         id: testimonial.id
     }))
 
-    document.title = profile.name+' '+profile.lastname+' | Mublin'
+    document.title = profile.requesting ? 'Carregando...' : profile.name+' '+profile.lastname+' | Mublin'
 
     const mainProjects = profile.projects.filter((project) => { return project.portfolio === 0 })
     const portfolioProjects = profile.projects.filter((project) => { return project.portfolio === 1 })
@@ -126,6 +126,82 @@ function ProfilePage (props) {
     const [modalFollowersOpen, setModalFollowersOpen] = useState(false)
     // Modal Following
     const [modalFollowingOpen, setModalFollowingOpen] = useState(false)
+
+    // Strengths (Pontos Fortes)
+    const [modalStrengthsOpen, setModalStrengthsOpen] = useState(false);
+    const [strengthsLoaded, setStrengthsLoaded] = useState(false);
+    const [error, setError] = useState(null);
+    const [strengths, setStrengths] = useState([]);
+    const [strengthVoted, setStrengthVoted] = useState(null);
+
+    const myVotes = profile.strengths.filter((x) => { return x.idUserFrom === user.id}).map(x => ({ 
+        id: x.id,
+        idUserTo: x.idUserTo,
+        idUserFrom: x.idUserFrom,
+        strengthId: x.strengthId,
+        percent: x.percent,
+        icon: x.icon,
+        strengthTitle: x.strengthTitle
+    }))
+
+    useEffect(() => {
+        fetch('https://mublin.herokuapp.com/strengths/getAllStrengths', {
+            method: 'GET',
+            headers: new Headers({
+                'Authorization': 'Bearer '+user.token
+            }),
+        })
+          .then(res => res.json())
+          .then(
+            (result) => {
+                setStrengthsLoaded(true);
+                setStrengths(result);
+            },
+            (error) => {
+                setStrengthsLoaded(true);
+                setError(error);
+            }
+          )
+    }, [])
+
+    const voteProfileStrength = (strengthId) => {
+        setStrengthsLoaded(false)
+        fetch('https://mublin.herokuapp.com/profile/voteStrength', {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json, text/plain, */*',
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + user.token
+            },
+            body: JSON.stringify({strengthId: strengthId, profileId: profile.id})
+        })
+        .then((response) => {
+            dispatch(profileInfos.getProfileStrengths(username));
+            setStrengthsLoaded(true)
+        }).catch(err => {
+            console.error(err)
+            alert("Ocorreu um erro. Tente novamente em instantes")
+        })
+    }
+
+    const unVoteProfileStrength = (voteId) => {
+        setStrengthsLoaded(false)
+        fetch('https://mublin.herokuapp.com/profile/'+voteId+'/unvoteStrength', {
+            method: 'DELETE',
+            headers: {
+                'Accept': 'application/json, text/plain, */*',
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + user.token
+            }
+        })
+        .then((response) => {
+            dispatch(profileInfos.getProfileStrengths(username));
+            setStrengthsLoaded(true)
+        }).catch(err => {
+            console.error(err)
+            alert("Ocorreu um erro ao remover o voto. Tente novamente em instantes")
+        })
+    }
 
     return (
         <>
@@ -394,7 +470,12 @@ function ProfilePage (props) {
                         }
                         <Card id="strengths" style={{ width: "100%" }}>
                             <Card.Content>
-                                <Header as='h3' className='mb-3'>Pontos Fortes</Header>
+                                <div className='cardTitle'>
+                                    <Header as='h3'>Pontos Fortes {profile.strengths[0].id && <span className='ml-2' style={{opacity:'0.4'}}>{profile.strengths.length+' votos'}</span>}</Header>
+                                    { profile.id !== user.id &&
+                                        <Label as='a' size='small' content='Votar' icon={!myTestimonial.length ? 'plus' : 'pencil'} style={{height:'fit-content'}} onClick={() => setModalStrengthsOpen(true)} />
+                                    }
+                                </div>
                                 { profile.requesting ? (
                                     <Icon loading name='spinner' size='large' />
                                 ) : ( 
@@ -417,7 +498,7 @@ function ProfilePage (props) {
                                         </Flickity>
                                     ) : (
                                         <Card.Description className={profile.id !== user.id ? 'mt-0' : 'mt-3'} style={{ fontSize: "13px" }}>
-                                            Nenhum depoimento para {profile.name} até o momento
+                                            Nenhum ponto forte votado para {profile.name} até o momento
                                         </Card.Description>
                                     )
                                 )}
@@ -517,6 +598,44 @@ function ProfilePage (props) {
         <FooterMenuMobile />
         </>
         )}
+        <Modal
+            size='mini'
+            open={modalStrengthsOpen}
+            onClose={() => setModalStrengthsOpen(false)}
+        >
+            <Modal.Header>Votar ponto forte de {profile.name+' '+profile.lastname}</Modal.Header>
+            <Modal.Content>
+                <Form>
+                    { strengths.map((strength,key) =>
+                        <Form.Field key={key}>
+                            <div className={myVotes.filter((x) => { return x.strengthId === strength.id}).length ? 'ui radio checkbox voted' : 'ui radio checkbox' }>
+                                <input 
+                                    disabled={myVotes.filter((x) => { return x.strengthId === strength.id}).length}
+                                    id={'strengthsGroup_'+strength.id}
+                                    name={!myVotes.filter((x) => { return x.strengthId === strength.id}).length ? 'strengthsGroup' : ''} 
+                                    type="radio" 
+                                    className="hidden" 
+                                    value={strength.id}
+                                    checked={(strength.id === strengthVoted || myVotes.filter((x) => { return x.strengthId === strength.id}).length) ? true : false}
+                                    onChange={() => setStrengthVoted(strength.id)}
+                                />
+                                <label for={'strengthsGroup_'+strength.id} className={myVotes.filter((x) => { return x.strengthId === strength.id}).length && 'voted'}>
+                                    <span><i className={strength.icon+' fa-fw ml-1'}></i> {strength.title}</span> {!!myVotes.filter((x) => { return x.strengthId === strength.id}).length && <Icon name='times' color='red' onClick={() => unVoteProfileStrength(myVotes.filter((x) => { return x.strengthId === strength.id})[0].id)} title='Remover meu voto' />}
+                                </label>
+                            </div>
+                        </Form.Field>
+                    )}
+                </Form>
+            </Modal.Content>
+            <Modal.Actions>
+                <Button onClick={() => setModalStrengthsOpen(false)}>
+                    Fechar
+                </Button>
+                <Button primary loading={!strengthsLoaded} onClick={() => voteProfileStrength(strengthVoted)}>
+                    Votar
+                </Button>
+            </Modal.Actions>
+        </Modal>
         <Modal
             size='mini'
             open={modalFollowersOpen}

@@ -53,7 +53,7 @@ function SettingsPage () {
     const handleSubmitPasswordChange = () => {
         setIsLoading(true)
         let user = JSON.parse(localStorage.getItem('user'));
-        fetch('https://mublin.herokuapp.com/user/changePassword', {
+        fetch('https://mublin.herokuapp.com/userInfo/changePassword', {
             method: 'PUT',
             headers: {
                 'Accept': 'application/json, text/plain, */*',
@@ -111,7 +111,7 @@ function SettingsPage () {
     const handleSubmitEmailChange = () => {
         setIsLoading(true)
         let user = JSON.parse(localStorage.getItem('user'));
-        fetch('https://mublin.herokuapp.com/user/changeEmail', {
+        fetch('https://mublin.herokuapp.com/userInfo/changeEmail', {
             method: 'PUT',
             headers: {
                 'Accept': 'application/json, text/plain, */*',
@@ -332,7 +332,7 @@ function SettingsPage () {
                     </Button>
                     <Button 
                         positive 
-                        disabled={(emailAvailability.available) ? false : true}
+                        disabled={(!emailAvailability.available || errorEmailIsTheSame) ? true : false}
                         onClick={() => {
                             setModalChangeEmailOpen(false)
                             handleSubmitEmailChange()

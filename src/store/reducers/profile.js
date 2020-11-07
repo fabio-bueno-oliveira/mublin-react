@@ -85,6 +85,7 @@ const initialState = {
     { 
       id: '', 
       idUserTo: '',
+      idUserFrom: '',
       strengthId: '',
       strengthTitle: '',
       percent: '',
@@ -346,16 +347,15 @@ export function profile(state = initialState, action) {
     case profileTypes.GET_PROFILE_STRENGTHS_FAILURE:
       return {
         ...state,
-        strenghts: [
+        strengths: [
           { 
-            id: '',
-            created: '',
-            title: '',
-            testimonial: '',
-            friendId: '',
-            friendName: '',
-            friendUsername: '',
-            friendPicture: ''
+            id: '', 
+            idUserTo: '',
+            idUserFrom: '',
+            strengthId: '',
+            strengthTitle: '',
+            percent: '',
+            icon: ''
           }
         ],
         requesting: false,

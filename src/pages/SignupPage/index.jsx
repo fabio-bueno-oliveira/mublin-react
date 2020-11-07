@@ -319,7 +319,7 @@ function SignupPage (props) {
                                             }) : null }
                                         />
                                     </Form.Group>
-                                    <Button 
+                                    {/* <Button 
                                         className="mt-4"
                                         type="submit" 
                                         secondary fluid 
@@ -327,6 +327,14 @@ function SignupPage (props) {
                                         onClick={handleSubmit}
                                     >
                                         Continuar
+                                    </Button> */}
+                                    <Button
+                                        disabled 
+                                        className="mt-4"
+                                        type="submit" 
+                                        secondary fluid 
+                                    >
+                                        Cadastros desabilitados no momento
                                     </Button>
                                 </Form>
                             )}

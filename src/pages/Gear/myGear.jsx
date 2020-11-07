@@ -206,7 +206,7 @@ function MyGearPage () {
                         <Header as='h2' className='mb-4'>Meu equipamento</Header>
                         <Segment color='green' className='cpointer' onClick={() => setModalAddNewProductOpen(true)}>
                             <Header as='h5'>
-                                <Icon name='plus' />
+                                <Icon name='plus' color='green' />
                                 <Header.Content className='gear itemTitle'>
                                     Novo
                                     <Header.Subheader>Adicione um novo item à sua lista</Header.Subheader>

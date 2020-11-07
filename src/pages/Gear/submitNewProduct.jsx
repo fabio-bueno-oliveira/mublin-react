@@ -5,7 +5,7 @@ import { miscInfos } from '../../store/actions/misc';
 import HeaderDesktop from '../../components/layout/headerDesktop';
 import HeaderMobile from '../../components/layout/headerMobile';
 import Spacer from '../../components/layout/Spacer'
-import { Segment, Header, Grid, Icon, Form, Button, Image, Message, Modal } from 'semantic-ui-react';
+import { Segment, Header, Grid, Icon, Form, Checkbox, Button, Image, Message, Modal } from 'semantic-ui-react';
 import {IKUpload} from "imagekitio-react";
 import './styles.scss'
 
@@ -31,6 +31,7 @@ function SubmitNewProduct () {
     const [brandId, setBrandId] = useState(null)
     const [categoryId, setCategoryId] = useState(null)
     const [picture, setPicture] = useState(null)
+    const [addNewProductToMyGear, setAddNewProductToMyGear] = useState(true)
 
     useEffect(() => { 
         dispatch(miscInfos.getGearBrands());
@@ -132,16 +133,42 @@ function SubmitNewProduct () {
                     'Authorization': 'Bearer ' + user.token
                 },
                 body: JSON.stringify({name: name, id_brand: brandId, id_category: categoryId, year: null, color: null, picture: picture, id_user_creator: user.id})
-            }).then((response) => {
-                history.push("/gear")
+            }).then(res => res.json()).then((result) => {
                 setIsLoading(false)
                 setName(null)
                 setBrandId(null)
                 setCategoryId(null)
                 setPicture(null)
+                if (addNewProductToMyGear) {
+                    addProductToMyGear(result.id)
+                } else {
+                    history.push("/gear")
+                }
             }).catch(err => {
                 console.error(err)
                 alert("Ocorreu um erro ao adicionar o produto. Talvez o mesmo produto já esteja cadastrado.")
+                setIsLoading(false)
+            })
+        }, 300);
+    }
+
+    const addProductToMyGear = (newProductId) => {
+        setIsLoading(true)
+        setTimeout(() => {
+            fetch('https://mublin.herokuapp.com/user/addGearItem', {
+                method: 'post',
+                headers: {
+                    'Accept': 'application/json, text/plain, */*',
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + user.token
+                },
+                body: JSON.stringify({productId: newProductId, featured: 0, for_sale: 0, price: null, currently_using: 1})
+            }).then((response) => {
+                setIsLoading(false)
+                history.push("/gear")
+            }).catch(err => {
+                console.error(err)
+                alert("Ocorreu um erro ao adicionar o produto à sua lista de equipamentos")
                 setIsLoading(false)
             })
         }, 300);
@@ -232,6 +259,12 @@ function SubmitNewProduct () {
                                     onChange={(e, { value }) => setName(value)} 
                                 />
                             </Form.Group>
+                            <Checkbox 
+                                label='Adicionar este produto ao Meu Equipamento'
+                                onChange={() => setAddNewProductToMyGear(value => !value)}
+                                checked={addNewProductToMyGear ? true : false}
+                                className='mb-3'
+                            />
                             <Form.Field className='mb-0'>
                                 <label for='picture'>Foto genérica do produto</label>
                             </Form.Field>

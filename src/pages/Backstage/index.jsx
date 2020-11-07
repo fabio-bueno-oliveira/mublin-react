@@ -85,7 +85,7 @@ function BackstageMainPage () {
     const myProjects = (category) => userProjects.filter((project) => { return (project.name.toLowerCase().includes(pesquisa.toLowerCase())) }).sort((a, b) => a.name.localeCompare(b.name)).map((project, key) =>
         <>
         { !userInfo.requesting ? (
-        <Segment key={key} attached='top' className='mb-4' tertiary={project.confirmed === 2}>
+        <Segment key={key} attached='top' className='mb-4' secondary={project.confirmed === 2}>
             {(!project.yearEnd && project.ptid !== 7) &&
                 <Label attached='top' size='tiny' style={{fontWeight:'500'}}>
                     <Label circular color='green' empty size='mini' /> Projeto em atividade {project.yearFoundation && 'desde '+project.yearFoundation}

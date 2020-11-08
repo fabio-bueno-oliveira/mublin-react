@@ -83,13 +83,22 @@ const initialState = {
   ],
   strengths: [
     { 
-      id: '', 
+      strengthId: '',
+      strengthTitle: '',
+      idUserTo: '',
+      percent: '',
+      icon: ''
+    }
+  ],
+  strengthsRaw: [
+    { 
+      id: '',
       idUserTo: '',
       idUserFrom: '',
       strengthId: '',
+      icon: '',
       strengthTitle: '',
-      percent: '',
-      icon: ''
+      created: ''
     }
   ],
   gear: [
@@ -332,7 +341,7 @@ export function profile(state = initialState, action) {
         requesting: false,
         error: "A solicitação falhou"
       };
-    // STRENGTHS
+    // STRENGTHS GROUPED BY PERCENTAGE
     case profileTypes.GET_PROFILE_STRENGTHS_REQUEST:
       return {
         ...state,
@@ -349,13 +358,40 @@ export function profile(state = initialState, action) {
         ...state,
         strengths: [
           { 
-            id: '', 
             idUserTo: '',
-            idUserFrom: '',
             strengthId: '',
             strengthTitle: '',
             percent: '',
             icon: ''
+          }
+        ],
+        requesting: false,
+        error: "A solicitação falhou"
+      };
+    // STRENGTHS RAW LIST
+    case profileTypes.GET_PROFILE_STRENGTHS_RAW_REQUEST:
+      return {
+        ...state,
+        requesting: true
+      };
+    case profileTypes.GET_PROFILE_STRENGTHS_RAW_SUCCESS:
+      return {
+        ...state,
+        strengthsRaw: action.list,
+        requesting: false,
+      };
+    case profileTypes.GET_PROFILE_STRENGTHS_RAW_FAILURE:
+      return {
+        ...state,
+        strengthsRaw: [
+          { 
+            id: '',
+            idUserTo: '',
+            idUserFrom: '',
+            strengthId: '',
+            icon: '',
+            strengthTitle: '',
+            created: ''
           }
         ],
         requesting: false,

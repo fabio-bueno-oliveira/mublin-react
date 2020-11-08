@@ -36,6 +36,7 @@ function ProfilePage (props) {
         dispatch(profileInfos.getProfileGear(username));
         dispatch(profileInfos.getProfileAvailabilityItems(username));
         dispatch(profileInfos.getProfileStrengths(username));
+        dispatch(profileInfos.getProfileStrengthsRaw(username));
         dispatch(profileInfos.getProfileTestimonials(username));
         dispatch(followInfos.checkProfileFollowing(username));
     }, [dispatch, username]);
@@ -134,15 +135,16 @@ function ProfilePage (props) {
     const [strengths, setStrengths] = useState([]);
     const [strengthVoted, setStrengthVoted] = useState(null);
 
-    const myVotes = profile.strengths.filter((x) => { return x.idUserFrom === user.id}).map(x => ({ 
+    const myVotes = profile.strengthsRaw.filter((x) => { return x.idUserFrom === user.id}).map(x => ({ 
         id: x.id,
         idUserTo: x.idUserTo,
         idUserFrom: x.idUserFrom,
         strengthId: x.strengthId,
-        percent: x.percent,
         icon: x.icon,
         strengthTitle: x.strengthTitle
     }))
+
+    console.log(147, myVotes)
 
     useEffect(() => {
         fetch('https://mublin.herokuapp.com/strengths/getAllStrengths', {
@@ -471,15 +473,15 @@ function ProfilePage (props) {
                         <Card id="strengths" style={{ width: "100%" }}>
                             <Card.Content>
                                 <div className='cardTitle'>
-                                    <Header as='h3'>Pontos Fortes {profile.strengths[0].id && <span className='ml-2' style={{opacity:'0.4'}}>{profile.strengths.length+' votos'}</span>}</Header>
+                                    <Header as='h3'>Pontos Fortes {profile.strengths[0].idUserTo && <span className='ml-1' style={{opacity:'0.4'}}>{profile.strengths.length}</span>}</Header>
                                     { profile.id !== user.id &&
-                                        <Label as='a' size='small' content='Votar' icon={!myTestimonial.length ? 'plus' : 'pencil'} style={{height:'fit-content'}} onClick={() => setModalStrengthsOpen(true)} />
+                                        <Label as='a' size='small' content='Votar' style={{height:'fit-content'}} onClick={() => setModalStrengthsOpen(true)} />
                                     }
                                 </div>
                                 { profile.requesting ? (
                                     <Icon loading name='spinner' size='large' />
                                 ) : ( 
-                                    (profile.strengths[0].id && profile.strengths[0].idUserTo === profile.id) ? (
+                                    (profile.strengths[0].strengthId && profile.strengths[0].idUserTo === profile.id) ? (
                                         <Flickity
                                             className={'carousel'}
                                             elementType={'div'}
@@ -491,7 +493,6 @@ function ProfilePage (props) {
                                                 <div key={key} class="center aligned mr-4" style={{height:'63px', listStyle:'none'}}>
                                                     <Header as='h3' className='my-0'><i className={strength.icon}></i></Header>
                                                     <Header as='h5' className='my-0'><nobr>{strength.strengthTitle}</nobr></Header>
-                                                    {/* <Header sub className='my-0' style={{color:'grey',fontSize:'11px',fontWeight:'300'}}><nobr>{strength.percent} dos votos</nobr></Header> */}
                                                     <Label size='mini'>{strength.percent}</Label>
                                                 </div>
                                             )}
@@ -502,6 +503,7 @@ function ProfilePage (props) {
                                         </Card.Description>
                                     )
                                 )}
+                                <p className='mt-3 mb-0' style={{fontSize:'11px'}}>{profile.strengthsRaw[0].id && <span className='ml-2' style={{opacity:'0.4'}}>{profile.strengthsRaw.length+' votos no total'}</span>}</p>
                             </Card.Content>
                         </Card>
                         <Card id="gear" style={{ width: "100%" }}>
@@ -603,7 +605,7 @@ function ProfilePage (props) {
             open={modalStrengthsOpen}
             onClose={() => setModalStrengthsOpen(false)}
         >
-            <Modal.Header>Votar ponto forte de {profile.name+' '+profile.lastname}</Modal.Header>
+            <Modal.Header>Votar pontos fortes de {profile.name+' '+profile.lastname}</Modal.Header>
             <Modal.Content>
                 <Form>
                     { strengths.map((strength,key) =>
@@ -620,7 +622,7 @@ function ProfilePage (props) {
                                     onChange={() => setStrengthVoted(strength.id)}
                                 />
                                 <label for={'strengthsGroup_'+strength.id} className={myVotes.filter((x) => { return x.strengthId === strength.id}).length && 'voted'}>
-                                    <span><i className={strength.icon+' fa-fw ml-1'}></i> {strength.title}</span> {!!myVotes.filter((x) => { return x.strengthId === strength.id}).length && <Icon name='times' color='red' onClick={() => unVoteProfileStrength(myVotes.filter((x) => { return x.strengthId === strength.id})[0].id)} title='Remover meu voto' />}
+                                    <span><i className={strength.icon+' fa-fw ml-1'}></i> {strength.title}</span> {!!myVotes.filter((x) => { return x.strengthId === strength.id}).length && <Icon name='times' onClick={() => unVoteProfileStrength(myVotes.filter((x) => { return x.strengthId === strength.id})[0].id)} title='Remover meu voto' />}
                                 </label>
                             </div>
                         </Form.Field>

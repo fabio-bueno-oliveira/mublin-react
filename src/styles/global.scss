@@ -106,6 +106,16 @@ body, html {
   }
 }
 
+.ui.inverted.menu .link.item:active, .ui.inverted.menu a.item:active {
+  background: #1b1c1d;
+  color: #fff;
+}
+
+.ui.inverted.menu .dropdown.item:hover, .ui.inverted.menu .link.item:hover, .ui.inverted.menu a.item:hover, .ui.link.inverted.menu .item:hover {
+  background: #1b1c1d;
+  color: #fff;
+}
+
 .carousel.flickity-enabled {
   overflow: hidden;
   &:focus {

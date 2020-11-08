@@ -32,7 +32,7 @@ import MySubscription from './pages/Settings/Subscription';
 import SettingsPreferences from './pages/Settings/Preferences';
 import SettingsProfile from './pages/Settings/Profile';
 import SettingsProfilePicture from './pages/Settings/Profile/picture';
-import ProductPage from './pages/Gear/product'
+import ProductPage from './pages/Gear/productPage'
 import SubmitNewProduct from './pages/Gear/submitNewProduct'
 import MyGearPage from './pages/Gear/myGear'
 import AdminPage from './pages/Admin'

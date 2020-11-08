@@ -56,11 +56,11 @@ const HeaderMobile = (props) => {
         <>
             <Menu id='headerMobile' fixed='top' inverted size='mini' borderless>
                 <Container>
-                    <Menu.Item header onClick={() => history.push("/home")}>
+                    <Menu.Item header>
                         { !props.profile ? (
-                            <Image size='tiny' src={MublinLogo} style={{ marginRight: '1.5em' }} alt="Logo do Mublin" />
+                            <Image onClick={() => history.push("/home")} size='tiny' src={MublinLogo} style={{ marginRight: '1.5em' }} alt="Logo do Mublin" />
                         ) : (
-                            <Link onClick={() => history.goBack()} style={{fontFamily:'Baloo',fontSize:'19px',fontWeight:'400',color:'white'}}><Icon name='arrow left' size='small' /> {usernameUrl.replace(/^\//,'')}</Link>
+                            <div style={{fontFamily:"'Poppins'",fontSize:'16px',fontWeight:'400',color:'white',width:'170px',whiteSpace:'nowrap',overflow:'hidden',textOverflow:'ellipsis'}}><Icon name='arrow left' className='mr-3' onClick={() => history.goBack()} />{usernameUrl.replace(/^\//,'')}</div>
                         )}
                     </Menu.Item>
                     <Menu.Menu position='right'>

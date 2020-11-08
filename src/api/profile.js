@@ -26,6 +26,7 @@ export const profileService = {
     getProfileGear,
     getProfileAvailabilityItems,
     getProfileStrengths,
+    getProfileStrengthsRaw,
     getProfileTestimonials,
     logout
 };
@@ -108,6 +109,14 @@ function getProfileStrengths(username) {
         headers: authHeader()
     };
     return fetch(`${BASE_URL}/profile/${username}/strengths`, requestOptions).then(handleResponse);
+}
+
+function getProfileStrengthsRaw(username) {
+    const requestOptions = {
+        method: 'GET',
+        headers: authHeader()
+    };
+    return fetch(`${BASE_URL}/profile/${username}/strengthsRaw`, requestOptions).then(handleResponse);
 }
 
 function getProfileTestimonials(username) {

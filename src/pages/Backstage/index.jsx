@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { userInfos } from '../../store/actions/user';
 import { useHistory } from 'react-router-dom';
-import { Grid, Header, Segment, Form, Image, Icon, Placeholder, Label, Button } from 'semantic-ui-react';
+import { Grid, Header, Segment, Form, Image, Icon, Placeholder, Label, Button, Message } from 'semantic-ui-react';
 import HeaderDesktop from '../../components/layout/headerDesktop';
 import HeaderMobile from '../../components/layout/headerMobile';
 import Spacer from '../../components/layout/Spacer'
@@ -86,21 +86,23 @@ function BackstageMainPage () {
         <>
         { !userInfo.requesting ? (
         <Segment key={key} attached='top' className='mb-4' secondary={project.confirmed === 2}>
-            {(!project.yearEnd && project.ptid !== 7) &&
-                <Label attached='top' size='tiny' style={{fontWeight:'500'}}>
-                    <Label circular color='green' empty size='mini' /> Projeto em atividade {project.yearFoundation && 'desde '+project.yearFoundation}
-                </Label>
-            }
-            {(project.yearEnd && project.yearEnd <= currentYear) &&
-                <Label attached='top' size='tiny' style={{fontWeight:'500'}}>
-                    <Label circular color='red' empty size='mini' /> Projeto encerrado em {project.yearEnd}
-                </Label>
-            }
-            {(project.ptid === 7) &&
-                <Label attached='top' size='tiny' style={{fontWeight:'500'}}>
-                    <Label circular color='blue' empty size='mini' /> Ideia em desenvolvimento
-                </Label>
-            }
+            <Label attached='top' size='tiny' style={{fontWeight:'500'}}>
+                {project.status === 1 ? <><Icon name={project.workIcon} className='mr-1' />Membro oficial</> : <><Icon name={project.workIcon} className='mr-1' />Convidado/Sideman</>}
+                <Label circular color={(project.yearLeftTheProject || project.yearEnd) ? 'red' : 'green'} empty size='mini' style={{verticalAlign:'top'}} className='mx-1' />
+                {(project.joined_in && (project.joined_in !== project.yearLeftTheProject)) ? ( 
+                    <>
+                        { !project.yearEnd ? ( 
+                            project.joined_in +' até '+(project.yearLeftTheProject ? project.yearLeftTheProject : 'atualmente')
+                        ) : (
+                            project.joined_in +' até '+project.yearEnd
+                        )}
+                    </>
+                ) : (
+                    <>
+                        {project.joined_in} {project.yearEnd && ' até '+project.yearEnd}
+                    </>
+                )}
+            </Label>
             <Header as='h4' onClick={() => history.push('/backstage/'+project.username)} style={{cursor:'pointer'}}>
                 {project.picture ? (
                     <Image src={'https://ik.imagekit.io/mublin/projects/tr:h-200,w-200,c-maintain_ratio/'+project.picture} rounded />
@@ -118,16 +120,26 @@ function BackstageMainPage () {
                 ) : (
                     <Image src={'https://ik.imagekit.io/mublin/sample-folder/tr:h-200,w-200,c-maintain_ratio/sample-folder/avatar-undefined_Kblh5CBKPp.jpg'} avatar />
                 )}
-                { project.confirmed === 1 ? (
-                    <span><Icon name={project.workIcon} className='ml-1' />{project.workTitle} {!!project.admin && '(Administrador)'}</span>
-                ) : (
-                    <span><Icon name='clock outline' className='ml-1' />Aguardando aprovação</span>
-                )} 
+                <span style={{fontSize:'12px'}}>
+                    {project.role1}{project.role2 && ', '+project.role2}{project.role3 && ', '+project.role3}
+                </span>
             </div>
-            <span style={{fontSize:'11px'}}>
-                {project.role1}{project.role2 && ', '+project.role2}{project.role3 && ', '+project.role3}
-            </span>
-            <p className='mt-2'><Button size='mini' loading={action1IsLoading === key && true} onClick={project.portfolio ? ( () => updateProjectCategory(project.id, project.projectid, 0, key) ) : ( () => updateProjectCategory(project.id, project.projectid, 1, key) )}><Icon name='tag' color={project.portfolio ? 'blue' : 'grey'} />Portfolio</Button> <Button loading={action2IsLoading === key && true} size='mini' onClick={project.featured ? ( () => updateProjectFeatured(project.id, project.projectid, 0, key) ) : ( () => updateProjectFeatured(project.id, project.projectid, 1, key) )}><Icon name='star' color={project.featured ? 'yellow' : 'grey'} title='Em destaque' />Destaque</Button></p>
+            <p className='mt-2 mb-3'><Button size='mini' loading={action1IsLoading === key && true} onClick={project.portfolio ? ( () => updateProjectCategory(project.id, project.projectid, 0, key) ) : ( () => updateProjectCategory(project.id, project.projectid, 1, key) )}><Icon name='tag' color={project.portfolio ? 'blue' : 'grey'} />Portfolio</Button> <Button loading={action2IsLoading === key && true} size='mini' onClick={project.featured ? ( () => updateProjectFeatured(project.id, project.projectid, 0, key) ) : ( () => updateProjectFeatured(project.id, project.projectid, 1, key) )}><Icon name='star' color={project.featured ? 'yellow' : 'grey'} title='Em destaque' />Destaque</Button></p>
+            {(!project.yearEnd && project.ptid !== 7) &&
+                <p style={{fontSize:'11px'}}>
+                    Projeto em atividade {project.yearFoundation && 'desde '+project.yearFoundation}
+                </p>
+            }
+            {(project.yearEnd && project.yearEnd <= currentYear) &&
+                <p style={{fontSize:'11px'}}>
+                    Projeto encerrado em {project.yearEnd}
+                </p>
+            }
+            {(project.ptid === 7) &&
+                <p style={{fontSize:'11px'}}>
+                    Ideia em desenvolvimento
+                </p>
+            }
         </Segment>
         ) : (
         <Placeholder className='mt-4'>

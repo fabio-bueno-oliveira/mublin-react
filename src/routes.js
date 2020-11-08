@@ -16,6 +16,7 @@ import StartStep4Page from './pages/StartPages/Step4';
 import Home from './pages/Home';
 import Feed from './pages/Feed';
 import ProfilePage from './pages/ProfilePage';
+import PublicProfilePage from './pages/ProfilePage/publicPage';
 import New from './pages/New';
 import NewProject from './pages/New/project';
 import NewProjectIdea from './pages/New/idea';
@@ -37,7 +38,7 @@ import SubmitNewProduct from './pages/Gear/submitNewProduct'
 import MyGearPage from './pages/Gear/myGear'
 import AdminPage from './pages/Admin'
 
-function Routes () {
+function Routes (props) {
 
     const loggedIn = useSelector(state => state.authentication.loggedIn);
 
@@ -48,6 +49,17 @@ function Routes () {
             render={(props) => authed === true
               ? <Component {...props} />
               : <Redirect to={{pathname: '/', state: { errorMsg: "É necessário fazer o login" }}} />}
+          />
+        )
+    }
+
+    function PublicVersion ({component: Component, authed, path, ...rest}) {
+        return (
+          <Route
+            {...rest}
+            render={(props) => authed === true
+              ? <Component {...props} />
+              : <Redirect to={{pathname: '/'+props.match.params.username+'/public' }} />}
           />
         )
     }
@@ -88,7 +100,8 @@ function Routes () {
                 <PrivateRoute authed={loggedIn} path="/gear/submit/product" component={SubmitNewProduct} />
                 <PrivateRoute authed={loggedIn} path="/gear" component={MyGearPage} />
                 <PrivateRoute authed={loggedIn} path="/admin" component={AdminPage} />
-                <PrivateRoute authed={loggedIn} path="/:username" component={ProfilePage} />
+                <Route exact path="/:username/public" component={PublicProfilePage} />
+                <PublicVersion authed={loggedIn} path="/:username" component={ProfilePage} />
             </Switch>
         </BrowserRouter>
     );

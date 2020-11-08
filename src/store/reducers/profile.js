@@ -24,7 +24,8 @@ const initialState = {
   availabilityColor: '',
   availabilityFocus: '',
   projects: [
-    { 
+    {
+      confirme: '',
       joined_in: '',
       portfolio: '',
       created: '',
@@ -138,7 +139,8 @@ const initialState = {
   ],
   plan: '',
   legend: '',
-  verified: ''
+  verified: '',
+  public: ''
 }
 
 export function profile(state = initialState, action) {
@@ -168,7 +170,8 @@ export function profile(state = initialState, action) {
         firstAccess: action.info.firstAccess,
         plan: action.info.plan,
         legend: action.info.legend,
-        verified: action.info.verified
+        verified: action.info.verified,
+        public: action.info.public
       };
     case profileTypes.GET_PROFILE_INFO_FAILURE:
       return {

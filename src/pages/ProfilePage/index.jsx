@@ -50,8 +50,8 @@ function ProfilePage (props) {
 
     document.title = profile.requesting ? 'Carregando...' : profile.name+' '+profile.lastname+' | Mublin'
 
-    const mainProjects = profile.projects.filter((project) => { return project.portfolio === 0 })
-    const portfolioProjects = profile.projects.filter((project) => { return project.portfolio === 1 })
+    const mainProjects = profile.projects.filter((project) => { return project.portfolio === 0 && project.confirmed === 1 })
+    const portfolioProjects = profile.projects.filter((project) => { return project.portfolio === 1 && project.confirmed === 1 })
 
     const sliderOptions = {
         autoPlay: false,
@@ -144,8 +144,6 @@ function ProfilePage (props) {
         strengthTitle: x.strengthTitle
     }))
 
-    console.log(147, myVotes)
-
     useEffect(() => {
         fetch('https://mublin.herokuapp.com/strengths/getAllStrengths', {
             method: 'GET',
@@ -235,7 +233,7 @@ function ProfilePage (props) {
                                     { profile.picture ? (
                                         <Image src={profile.picture} size="small" circular />
                                     ) : (
-                                        <Image src='https://ik.imagekit.io/mublin/sample-folder/tr:h-200,w-200,c-maintain_ratio/avatar-undefined_Kblh5CBKPp.jpg' size="tiny" circular />
+                                        <Image src='https://ik.imagekit.io/mublin/sample-folder/tr:h-200,w-200,c-maintain_ratio/avatar-undefined_Kblh5CBKPp.jpg' size="small" circular />
                                     )}
                                 </div>
                                 <div className="center aligned">
@@ -244,7 +242,7 @@ function ProfilePage (props) {
                                         <Header size="large" className="mb-1" style={{fontSize:'1.60428571em'}}>
                                             {profile.name} <nobr>{profile.lastname} {!!profile.verified && <Icon name='check circle' color='blue' className='verifiedIcon' title='Verificado' />}</nobr>
                                         </Header>
-                                        <Header className='my-0'>{profile.plan === 'Pro' && <Label size="small" className="ml-1 p-1" style={{cursor:"default"}}>Pro</Label>}</Header>
+                                        <Header className='my-0'>{profile.plan === 'Pro' && <Label size="medium" className="ml-1 p-2" style={{cursor:"default"}}>PRO</Label>}</Header>
                                         <p className="mt-2 mb-0" style={{ fontSize: "13.5px" }}>
                                             {profile.roles.map((role, key) =>
                                                 <span key={key}>{role.name}{key < (profile.roles.length-1) && ', '}</span>
@@ -473,9 +471,9 @@ function ProfilePage (props) {
                         <Card id="strengths" style={{ width: "100%" }}>
                             <Card.Content>
                                 <div className='cardTitle'>
-                                    <Header as='h3'>Pontos Fortes {profile.strengths[0].idUserTo && <span className='ml-1' style={{opacity:'0.4'}}>{profile.strengths.length}</span>}</Header>
+                                    <Header as='h3' className='pt-1'>Pontos Fortes {profile.strengths[0].idUserTo && <Label className='ml-1 p-2' style={{opacity:'0.4'}}>{profile.strengths.length}</Label>}</Header>
                                     { profile.id !== user.id &&
-                                        <Label as='a' size='small' content='Votar' style={{height:'fit-content'}} onClick={() => setModalStrengthsOpen(true)} />
+                                        <Label color='black' basic as='a' size='small' content='Votar' style={{height:'fit-content'}} onClick={() => setModalStrengthsOpen(true)} />
                                     }
                                 </div>
                                 { profile.requesting ? (
@@ -488,6 +486,7 @@ function ProfilePage (props) {
                                             options={sliderOptions}
                                             disableImagesLoaded={false}
                                             reloadOnUpdate
+                                            className='mt-2'
                                         >
                                             {profile.strengths.map((strength, key) =>
                                                 <div key={key} class="center aligned mr-4" style={{height:'63px', listStyle:'none'}}>
@@ -508,7 +507,7 @@ function ProfilePage (props) {
                         </Card>
                         <Card id="gear" style={{ width: "100%" }}>
                             <Card.Content>
-                                <Header as='h3'>Equipamento</Header>
+                                <Header as='h3'>Equipamento {profile.gear[0].productId && <Label className='ml-1 p-2' style={{opacity:'0.4'}}>{profile.gear.length}</Label>}</Header>
                                 { profile.requesting ? (
                                     <Icon loading name='spinner' size='large' />
                                 ) : ( 
@@ -560,9 +559,9 @@ function ProfilePage (props) {
                         <Card id="testimonials" style={{ width: "100%" }} className={profile.testimonials[0].id && 'pb-4'}>
                             <Card.Content>
                                 <div className='cardTitle'>
-                                    <Header as='h3'>Depoimentos {profile.testimonials[0].id && '('+profile.testimonials.length+')'}</Header>
+                                    <Header as='h3' className='pt-1'>Depoimentos {profile.testimonials[0].id && '('+profile.testimonials.length+')'}</Header>
                                     { profile.id !== user.id &&
-                                        <Label size='small' content={myTestimonial.length ? 'Editar' : 'Escrever'} icon={!myTestimonial.length ? 'plus' : 'pencil'} />
+                                        <Label color='black' basic as='a' color='black' size='small' style={{height:'fit-content'}} content={myTestimonial.length ? 'Editar' : 'Escrever'} />
                                     }
                                 </div>
                                 { profile.testimonials[0].id ? (

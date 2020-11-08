@@ -108,8 +108,8 @@ function ProjectPage (props) {
                     </Grid.Column>
                 </Grid.Row>
             </Grid>
-            <div className='container'>
-                <Button fluid className='mb-3 d-block d-sm-none' size='mini' onClick={() => history.push('/backstage/'+props.match.params.username)}>
+            <div className='container px-3 d-block d-sm-none'>
+                <Button fluid className='mb-1' size='mini' onClick={() => history.push('/backstage/'+props.match.params.username)}>
                     <Icon name='warehouse' /> Ir para o Backstage deste projeto
                 </Button>
             </div>

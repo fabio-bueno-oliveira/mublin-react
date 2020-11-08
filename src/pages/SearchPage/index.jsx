@@ -78,7 +78,7 @@ function SearchPage (props) {
                     <Grid.Row>
                         <Grid.Column width={16}>
                             { searchedKeywords && 
-                                <Tab menu={{ secondary: true, pointing: true }} panes={
+                                <Tab menu={{ secondary: true, pointing: true, size:'large' }} panes={
                                     [
                                         {
                                             menuItem: searchResults.users[0].id ? 'Pessoas ('+searchResults.users.length+')' : 'Pessoas (0)',

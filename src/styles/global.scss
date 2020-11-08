@@ -214,3 +214,22 @@ body, html {
       padding-left: 0!important;
   }
 }
+
+.horizontalImageList {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  justify-content: center;
+
+  div {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin: 0px 12px;
+
+    h5 {
+      font-size: 12px;
+    }
+  }
+}

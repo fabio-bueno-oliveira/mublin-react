@@ -134,6 +134,7 @@ function ProfilePage (props) {
     const [error, setError] = useState(null);
     const [strengths, setStrengths] = useState([]);
     const [strengthVoted, setStrengthVoted] = useState(null);
+    const [strengthVotedName, setStrengthVotedName] = useState('');
 
     const myVotes = profile.strengthsRaw.filter((x) => { return x.idUserFrom === user.id}).map(x => ({ 
         id: x.id,
@@ -164,7 +165,7 @@ function ProfilePage (props) {
           )
     }, [])
 
-    const voteProfileStrength = (strengthId) => {
+    const voteProfileStrength = (strengthId, strengthTitle) => {
         setStrengthsLoaded(false)
         fetch('https://mublin.herokuapp.com/profile/voteStrength', {
             method: 'POST',
@@ -173,10 +174,11 @@ function ProfilePage (props) {
                 'Content-Type': 'application/json',
                 'Authorization': 'Bearer ' + user.token
             },
-            body: JSON.stringify({strengthId: strengthId, profileId: profile.id})
+            body: JSON.stringify({strengthId: strengthId, profileId: profile.id, nameTo: profile.name, emailTo: profile.email, strengthTitle: strengthTitle})
         })
         .then((response) => {
             dispatch(profileInfos.getProfileStrengths(username));
+            dispatch(profileInfos.getProfileStrengthsRaw(username));
             setStrengthsLoaded(true)
         }).catch(err => {
             console.error(err)
@@ -196,6 +198,7 @@ function ProfilePage (props) {
         })
         .then((response) => {
             dispatch(profileInfos.getProfileStrengths(username));
+            dispatch(profileInfos.getProfileStrengthsRaw(username));
             setStrengthsLoaded(true)
         }).catch(err => {
             console.error(err)
@@ -206,7 +209,7 @@ function ProfilePage (props) {
     return (
         <>
         <HeaderDesktop />
-        <HeaderMobile profile={true} />
+        <HeaderMobile profile={true} pageType='profile' />
         { profile.requesting ? (
             <Loader
                 className="appLoadingIcon"
@@ -502,7 +505,7 @@ function ProfilePage (props) {
                                         </Card.Description>
                                     )
                                 )}
-                                <p className='mt-3 mb-0' style={{fontSize:'11px'}}>{profile.strengthsRaw[0].id && <span className='ml-2' style={{opacity:'0.4'}}>{profile.strengthsRaw.length+' votos no total'}</span>}</p>
+                                <p className='mt-3 mb-0' style={{fontSize:'11px'}}>{profile.strengthsRaw[0].id && <span style={{opacity:'0.4'}}>{profile.strengthsRaw.length+' votos no total'}</span>}</p>
                             </Card.Content>
                         </Card>
                         <Card id="gear" style={{ width: "100%" }}>
@@ -618,7 +621,10 @@ function ProfilePage (props) {
                                     className="hidden" 
                                     value={strength.id}
                                     checked={(strength.id === strengthVoted || myVotes.filter((x) => { return x.strengthId === strength.id}).length) ? true : false}
-                                    onChange={() => setStrengthVoted(strength.id)}
+                                    onChange={() => {
+                                        setStrengthVoted(strength.id);
+                                        setStrengthVotedName(strength.title);
+                                    }}
                                 />
                                 <label for={'strengthsGroup_'+strength.id} className={myVotes.filter((x) => { return x.strengthId === strength.id}).length && 'voted'}>
                                     <span><i className={strength.icon+' fa-fw ml-1'}></i> {strength.title}</span> {!!myVotes.filter((x) => { return x.strengthId === strength.id}).length && <Icon name='times' onClick={() => unVoteProfileStrength(myVotes.filter((x) => { return x.strengthId === strength.id})[0].id)} title='Remover meu voto' />}
@@ -629,10 +635,10 @@ function ProfilePage (props) {
                 </Form>
             </Modal.Content>
             <Modal.Actions>
-                <Button onClick={() => setModalStrengthsOpen(false)}>
+                <Button size='small' onClick={() => setModalStrengthsOpen(false)}>
                     Fechar
                 </Button>
-                <Button primary loading={!strengthsLoaded} onClick={() => voteProfileStrength(strengthVoted)}>
+                <Button size='small' color='black' loading={!strengthsLoaded} onClick={() => voteProfileStrength(strengthVoted,strengthVotedName)}>
                     Votar
                 </Button>
             </Modal.Actions>

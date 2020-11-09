@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { userInfos } from '../../store/actions/user';
 import { useHistory } from 'react-router-dom';
-import { Grid, Header, Segment, Form, Image, Icon, Placeholder, Label, Button, Message } from 'semantic-ui-react';
+import { Grid, Header, Segment, Form, Image, Icon, Placeholder, Label, Button, Checkbox } from 'semantic-ui-react';
 import HeaderDesktop from '../../components/layout/headerDesktop';
 import HeaderMobile from '../../components/layout/headerMobile';
 import Spacer from '../../components/layout/Spacer'
@@ -124,7 +124,7 @@ function BackstageMainPage () {
                     {project.role1}{project.role2 && ', '+project.role2}{project.role3 && ', '+project.role3}
                 </span>
             </div>
-            <p className='mt-2 mb-3'><Button size='mini' loading={action1IsLoading === key && true} onClick={project.portfolio ? ( () => updateProjectCategory(project.id, project.projectid, 0, key) ) : ( () => updateProjectCategory(project.id, project.projectid, 1, key) )}><Icon name='tag' color={project.portfolio ? 'blue' : 'grey'} />Portfolio</Button> <Button loading={action2IsLoading === key && true} size='mini' onClick={project.featured ? ( () => updateProjectFeatured(project.id, project.projectid, 0, key) ) : ( () => updateProjectFeatured(project.id, project.projectid, 1, key) )}><Icon name='star' color={project.featured ? 'yellow' : 'grey'} title='Em destaque' />Destaque</Button></p>
+            <p className='mt-2 mb-3'><Checkbox disabled={action1IsLoading === key && true} toggle label='Portfolio' checked={project.portfolio} onChange={project.portfolio ? ( () => updateProjectCategory(project.id, project.projectid, 0, key) ) : ( () => updateProjectCategory(project.id, project.projectid, 1, key) )} /> <Checkbox disabled={action2IsLoading === key && true} toggle label='Favorito' checked={project.featured} onClick={project.featured ? ( () => updateProjectFeatured(project.id, project.projectid, 0, key) ) : ( () => updateProjectFeatured(project.id, project.projectid, 1, key) )} className='ml-3' /></p>
             {(!project.yearEnd && project.ptid !== 7) &&
                 <p style={{fontSize:'11px'}}>
                     Projeto em atividade {project.yearFoundation && 'desde '+project.yearFoundation}
@@ -187,7 +187,7 @@ function BackstageMainPage () {
                 <Grid.Row>
                     <Grid.Column computer={10} mobile={16}>
                         <Header as='h4' className='mb-1'>Meus projetos ({userInfo.requesting ? 'Carregando...' : userProjects.length})</Header>
-                        {!!myProjects().length && <p>{userInfo.requesting ? 'Carregando...' : 'Selecione para gerenciar'}</p>}
+                        {/* {!!myProjects().length && <p>{userInfo.requesting ? 'Carregando...' : 'Selecione para gerenciar'}</p>} */}
                         <p className='mt-2' style={{opacity:'0.6',fontSize:'11px'}}><Icon name='sort alphabet down' />Ordenado por ordem alfabética</p>
                         {myProjects().length ? myProjects() : <p>Nenhum projeto principal encontrado com '{pesquisa}'</p>}
                     </Grid.Column>

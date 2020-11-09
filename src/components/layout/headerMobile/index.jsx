@@ -8,7 +8,7 @@ import MublinLogo from '../../../assets/img/logos/mublin-logo-text-white.png';
 
 const HeaderMobile = (props) => {
 
-    // Gets URL string after domain (will be used if it is a ProfilePage)
+    // Gets URL string after domain (will be used if it is a Profile or Project Page)
     const usernameUrl = window.location.pathname + window.location.search + window.location.hash;
 
     let history = useHistory();
@@ -38,9 +38,14 @@ const HeaderMobile = (props) => {
         history.push('/settings')
     }
 
-    const goToFeed = () => {
+    // const goToFeed = () => {
+    //     setMobileMenuOpen(false)
+    //     history.push('/feed')
+    // }
+
+    const goToSearch = () => {
         setMobileMenuOpen(false)
-        history.push('/feed')
+        history.push('/search')
     }
 
     const goToMessages = () => {
@@ -57,20 +62,31 @@ const HeaderMobile = (props) => {
             <Menu id='headerMobile' fixed='top' inverted size='mini' borderless>
                 <Container>
                     <Menu.Item header>
-                        { !props.profile ? (
-                            <Image onClick={() => history.push("/home")} size='tiny' src={MublinLogo} style={{ marginRight: '1.5em' }} alt="Logo do Mublin" />
-                        ) : (
-                            <div style={{fontFamily:"'Poppins'",fontSize:'16px',fontWeight:'400',color:'white',width:'170px',whiteSpace:'nowrap',overflow:'hidden',textOverflow:'ellipsis'}}><Icon name='arrow left' className='mr-3' onClick={() => history.goBack()} />{usernameUrl.replace(/^\//,'')}</div>
-                        )}
+                        { !props.pageType &&
+                            <Image onClick={() => history.push("/home")} size='tiny' src={MublinLogo} style={{ marginRight: '1.5em' }} alt="Logo do Mublin" />      
+                        }
+                        { (props.pageType === 'profile' || props.pageType === 'project') &&
+                            <div style={{fontFamily:"'Poppins'",fontSize:'16px',fontWeight:'400',color:'white',width:'170px',whiteSpace:'nowrap',overflow:'hidden',textOverflow:'ellipsis'}}>
+                                <Icon name='arrow left' className='mr-3' onClick={() => history.goBack()} />{usernameUrl.replace(/^\//,'').replace("project/", "")}
+                            </div>      
+                        }
                     </Menu.Item>
                     <Menu.Menu position='right'>
-                        <Menu.Item
+                        {/* <Menu.Item
                             name='feed'
                             onClick={() => goToFeed(true)}
                             className='pr-2'
                             active={window.location.pathname === "/feed"}
                         >
                             <Icon name='globe' size='large' />
+                        </Menu.Item> */}
+                        <Menu.Item
+                            name='search'
+                            onClick={() => goToSearch(true)}
+                            className='pr-2'
+                            active={window.location.pathname === "/search"}
+                        >
+                            <Icon name='search' size='large' />
                         </Menu.Item>
                         <Menu.Item
                             name='message'

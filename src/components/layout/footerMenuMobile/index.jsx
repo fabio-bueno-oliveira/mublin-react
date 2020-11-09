@@ -23,10 +23,14 @@ const FooterMenuMobile = () => {
                     <Icon name='warehouse' className='mr-0' />
                     <span>Backstage</span>
                   </div>
-                  <div className={currentPath === '/search' && 'active'} onClick={() => history.push("/search")}>
-                    {/* <i className="fas fa-search"></i> */}
+                  {/* <div className={currentPath === '/search' && 'active'} onClick={() => history.push("/search")}>
                     <Icon name='search' className='mr-0' />
                     <span>Buscar</span>
+                  </div> */}
+                  <div className={currentPath === '/feed' && 'active'} onClick={() => history.push("/feed")}>
+                    {/* <i className="fas fa-search"></i> */}
+                    <Icon name='globe' className='mr-0' />
+                    <span>Feed</span>
                   </div>
                   <div className={currentPath === '/notifications' && 'active'} onClick={() => history.push("/notifications")}>
                     {/* <i className="fas fa-bell"></i> */}

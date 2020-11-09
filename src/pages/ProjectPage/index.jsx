@@ -58,7 +58,7 @@ function ProjectPage (props) {
     return (
         <>
         <HeaderDesktop />
-        <HeaderMobile />
+        <HeaderMobile pageType='project' />
         { project.requesting ? (
             <Loader
                 className="appLoadingIcon"

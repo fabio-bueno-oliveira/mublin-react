@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory, Link } from 'react-router-dom';
 import { miscInfos } from '../../../store/actions/misc';
-import { Grid, Segment, Header, Icon, Button, Message, Image, Label, Form, Table, Modal, Container, Loader as UiLoader, Select, Menu, Tab } from 'semantic-ui-react';
+import { Grid, Segment, Header, Icon, Button, Message, Image, Label, Form, Table, Modal, Container, Loader as UiLoader, Select, Menu, Tab, Divider } from 'semantic-ui-react';
 import { projectInfos } from '../../../store/actions/project';
 import HeaderDesktop from '../../../components/layout/headerDesktop';
 import HeaderMobile from '../../../components/layout/headerMobile';
@@ -13,6 +13,7 @@ import { Formik } from 'formik';
 import { formatDistance } from 'date-fns';
 import pt from 'date-fns/locale/pt-BR';
 import {IKUpload} from "imagekitio-react";
+import Flickity from 'react-flickity-component';
 import './styles.scss'
 
 function ProjectBackstagePage (props) {
@@ -270,6 +271,21 @@ function ProjectBackstagePage (props) {
         key: role.id
     }));
 
+    const sliderOptions = {
+        autoPlay: false,
+        cellAlign: 'left',
+        freeScroll: true,
+        prevNextButtons: false,
+        pageDots: false,
+        wrapAround: false,
+        draggable: '>1',
+        resize: true,
+        contain: true
+    }
+
+    const [activeTabIndex, setActiveTabIndex] = useState(0)
+    const handleTabChange = (e, { activeIndex }) => setActiveTabIndex(activeIndex)
+
     return (
         <>
         <HeaderDesktop />
@@ -310,7 +326,7 @@ function ProjectBackstagePage (props) {
                 <Spacer />
                 <Grid stackable centered verticalAlign='middle' columns={1} verticalAlign='top' className="container mb-2">
                     <Grid.Row>
-                        <Grid.Column mobile={16} computer={16}>
+                        <Grid.Column mobile={16} computer={10}>
                             { newProject === 'true' &&
                                 <Message color='green' size='tiny'>
                                     <Message.Header>{project.name} criado com sucesso!</Message.Header>
@@ -328,41 +344,297 @@ function ProjectBackstagePage (props) {
                                     <Header.Subheader>{project.typeName}</Header.Subheader>
                                 </Header.Content>
                             </Header>
+                            <Flickity
+                                className={'carousel mt-3'} // default ''
+                                elementType={'div'} // default 'div'
+                                options={sliderOptions} // takes flickity options {}
+                                disableImagesLoaded={false} // default false
+                                reloadOnUpdate // default false
+                            >
+                                <Button basic active={activeTabIndex === 0} size='tiny' onClick={() => setActiveTabIndex(0)}>
+                                    <Icon name='block layout' className="mr-2" />Resumo
+                                </Button>
+                                <Button basic active={activeTabIndex === 1} size='tiny' onClick={() => setActiveTabIndex(1)}>
+                                    <Icon name='users' className="mr-2" />Integrantes
+                                </Button>
+                                <Button basic active={activeTabIndex === 2} size='tiny' onClick={() => setActiveTabIndex(2)}>
+                                    <Icon name='calendar alternate outline' className="mr-2" />Eventos
+                                </Button>
+                                <Button basic active={activeTabIndex === 3} size='tiny' onClick={() => setActiveTabIndex(3)}>
+                                    <Icon name='pencil' className="mr-2" />Editar
+                                </Button>
+                            </Flickity>
                         </Grid.Column>
                     </Grid.Row>
-                    <Grid.Row>
-                        <Grid.Column mobile={16} computer={16}>
-                            <Tab menu={{ secondary: true }} defaultActiveIndex={0} panes={
+                    <Grid.Row className='backstageContainer'>
+                        <Grid.Column mobile={16} computer={10}>
+                            <Tab activeIndex={activeTabIndex} panes={
                                 [
                                     {
-                                        menuItem: (
-                                            <Menu.Item key='portfolio'>
-                                                <Icon name='block layout' className="mr-2" /> Resumo
-                                            </Menu.Item>
-                                            ),
                                         render: () => 
                                             <Tab.Pane attached={false} as="div">
-                                                asd
+                                                <Grid columns={1}>
+                                                    <Grid.Row stretched>
+                                                        <Grid.Column>
+                                                            <Segment textAlign='left'>
+                                                                <Header as='h4'>
+                                                                    Quadro de avisos
+                                                                </Header>
+                                                                {project.notes[0].id ? (
+                                                                    project.notes.map((note, key) =>
+                                                                        <Segment inverted basic style={{fontSize:'12px'}} key={key}>
+                                                                            {note.note}
+                                                                            <div className='mt-2'>
+                                                                                { note.authorPicture ? (
+                                                                                    <Image as='a' href={'/'+note.authorUsername} src={note.authorPicture} avatar />
+                                                                                ) : (
+                                                                                    <Image src='https://ik.imagekit.io/mublin/sample-folder/tr:h-200,w-200,c-maintain_ratio/avatar-undefined_Kblh5CBKPp.jpg' avatar />
+                                                                                )}
+                                                                                <span style={{opacity:'0.7'}}>{note.authorName+' '+note.authorLastname} há {formatDistance(new Date(note.created * 1000), new Date(), {locale:pt})}</span>
+                                                                            </div>
+                                                                        </Segment>
+                                                                    )
+                                                                ) : (
+                                                                    <p>Nenhum aviso cadastrado no momento</p>
+                                                                )}
+                                                            </Segment>
+                                                        </Grid.Column>
+                                                    </Grid.Row>
+                                                </Grid>
                                             </Tab.Pane>,
                                     }, 
                                     {
-                                        menuItem: (
-                                            <Menu.Item key='portfolio'>
-                                                <Icon name='pencil' className="mr-2" /> Editar dados do projeto
-                                            </Menu.Item>
-                                            ),
                                         render: () => 
                                             <Tab.Pane attached={false} as="div">
-                                                <Grid columns={2}>
+                                                <Grid columns={1}>
                                                     <Grid.Row stretched>
-                                                        <Grid.Column width={4}>
-                                                            <Segment attached textAlign='left'>
+                                                        <Grid.Column>
+                                                            <Segment basic className='p-0 m-0'>
+                                                                <Button color='black' size='mini'><Icon name='user plus' />Convidar novo</Button> <Button color='black' size='mini' onClick={() => setOpenModalNewOpportunity(true)}><Icon name='bullhorn' />Abrir vaga</Button>
+                                                            </Segment>
+                                                            <Segment>
+                                                                <Header as='h4'>
+                                                                    <Header.Content>
+                                                                        Integrantes
+                                                                        <Header.Subheader>{members.length} relacionados</Header.Subheader>
+                                                                    </Header.Content>
+                                                                </Header>
+                                                                <Table columns={3} unstackable compact='very' basic='very'>
+                                                                    {/* <Table.Header>
+                                                                        <Table.Row>
+                                                                            <Table.HeaderCell width={14}>Nome</Table.HeaderCell>
+                                                                            <Table.HeaderCell width={2}></Table.HeaderCell>
+                                                                        </Table.Row>
+                                                                    </Table.Header> */}
+                                                                    <Table.Body>
+                                                                        {members.map((member, key) =>
+                                                                            <Table.Row key={key}>
+                                                                                <Table.Cell width={14}>
+                                                                                    { member.picture ? (
+                                                                                        <Image src={'https://ik.imagekit.io/mublin/users/avatars/tr:h-200,w-200,c-maintain_ratio/'+member.id+'/'+member.picture} avatar onClick={() => history.push('/'+member.username)} style={{cursor:'pointer'}} />
+                                                                                    ) : (
+                                                                                        <Image src='https://ik.imagekit.io/mublin/sample-folder/avatar-undefined_Kblh5CBKPp.jpg' avatar onClick={() => history.push('/'+member.username)} style={{cursor:'pointer'}} />
+                                                                                    )}
+                                                                                    {member.confirmed === 1 ? ( 
+                                                                                        <>
+                                                                                            <span style={{fontWeight:'500'}} className='mr-1'>{member.name} {member.lastname} {!!member.admin && '(Administrador)'}</span>
+                                                                                            <div style={{fontSize:'12px'}}>{member.role1}{member.role2 && ', '+member.role2}{member.role3 && ', '+member.role3}</div>
+                                                                                            <span style={{fontSize:'11px'}}>
+                                                                                                {member.statusId === 1 ? 'Membro oficial · ' : 'Convidado/Sideman · '}
+                                                                                                {(member.joinedIn && (member.joinedIn !== member.leftIn)) ? ( 
+                                                                                                    <>
+                                                                                                        {member.joinedIn +' até '}{member.leftIn ? member.leftIn : 'atualmente'}
+                                                                                                    </>
+                                                                                                ) : (
+                                                                                                    <>
+                                                                                                        {member.joinedIn}
+                                                                                                    </>
+                                                                                                )}
+                                                                                            </span>
+                                                                                            {member.active ? (
+                                                                                                <div style={{fontSize:'11px'}}>
+                                                                                                    <Icon color='green' name='power' />Ativo no projeto atualmente
+                                                                                                </div>
+                                                                                            ) : (
+                                                                                                <div style={{fontSize:'12px'}}>
+                                                                                                    <Icon color='grey' name='power' />Inativo no projeto atualmente
+                                                                                                </div>
+                                                                                            )}
+                                                                                        </>
+                                                                                    ) : (
+                                                                                        <>
+                                                                                            <span style={{fontWeight:'500'}}>{member.name+' '+member.lastname}</span>
+                                                                                            <div className='mt-1'>
+                                                                                                <span style={{fontSize:'11px', fontWeight:'500'}}>solicitou participação como {member.role1}{member.role2 && ', '+member.role2}{member.role3 && ', '+member.role3}<br/>({member.statusName}{member.statusId === 2 && '/sideman'}{member.joinedIn && ', de '+member.joinedIn+' até '}{member.leftIn ? member.leftIn : 'atualmente'})</span>
+                                                                                                <div>
+                                                                                                    <Button.Group size='mini' className='mt-1'>
+                                                                                                        <Button positive disabled={!project.adminAccess ? true : false} onClick={() => updateMemberRequest(member.id, 1)} loading={isLoading}>Aceitar</Button>
+                                                                                                        <Button negative disabled={!project.adminAccess ? true : false} onClick={() => updateMemberRequest(member.id, 0)} loading={isLoading}>Recusar</Button>
+                                                                                                    </Button.Group>
+                                                                                                </div>
+                                                                                            </div>
+                                                                                        </>
+                                                                                    )}
+                                                                                </Table.Cell>
+                                                                                <Table.Cell width={2} textAlign='right'>
+                                                                                    {member.confirmed === 1 && 
+                                                                                        <Button size='mini' icon='cog' onClick={() => openModalMemberManagement(member.id, member.admin, member.active, member.leader)} />
+                                                                                    }
+                                                                                </Table.Cell>
+                                                                            </Table.Row>
+                                                                        )}
+                                                                    </Table.Body>
+                                                                </Table>
+                                                                <Modal
+                                                                    size='mini'
+                                                                    open={modalMemberManagement}
+                                                                    onClose={() => setModalMemberManagementOpen()}
+                                                                >
+                                                                    <Modal.Header>Gerenciar membro do projeto</Modal.Header>
+                                                                    <Modal.Content>
+                                                                        { memberInfo.map((memberToManage, key) => 
+                                                                        <>
+                                                                            <p style={{fontSize:'11px'}} className='mb-4'>Apenas administradores podem editar estas opções</p>
+                                                                            <div className='mb-4'>
+                                                                                { memberToManage.picture ? (
+                                                                                    <Image src={'https://ik.imagekit.io/mublin/users/avatars/tr:h-200,w-200,c-maintain_ratio/'+memberToManage.id+'/'+memberToManage.picture} avatar />
+                                                                                ) : (
+                                                                                    <Image src='https://ik.imagekit.io/mublin/sample-folder/avatar-undefined_Kblh5CBKPp.jpg' avatar />
+                                                                                )}
+                                                                                <span>{memberToManage.name+' '+memberToManage.lastname} {!!memberToManage.admin && '(Administrador)'}</span>
+                                                                            </div>
+                                                                            <Form>
+                                                                                <Form.Field 
+                                                                                    label='Administrador' 
+                                                                                    control='select' 
+                                                                                    disabled={(!project.adminAccess ? true : false || (membersAdmin.length < 2 && memberToManage.id === user.id))}
+                                                                                    onChange={(e) => setManageUserAdmin(e.target.options[e.target.selectedIndex].value)}
+                                                                                    value={manageUserAdmin}
+                                                                                >
+                                                                                    <option value='1' selected={memberToManage.admin ? true : false}>Sim</option>
+                                                                                    <option value='0' selected={!memberToManage.admin ? true : false}>Não</option>
+                                                                                </Form.Field>
+                                                                                { !!(membersAdmin.length === 1 && project.adminAccess && user.id === memberToManage.id) && 
+                                                                                    <p style={{fontSize:'11px'}}>É necessário ao menos um administrador por projeto</p>
+                                                                                }
+                                                                                <Form.Field 
+                                                                                    label='Ativo no projeto atualmente' 
+                                                                                    control='select' 
+                                                                                    disabled={!project.adminAccess ? true : false}
+                                                                                    onChange={(e) => setManageUserActive(e.target.options[e.target.selectedIndex].value)}
+                                                                                    value={manageUserActive}
+                                                                                >
+                                                                                    <option value='1' selected={memberToManage.active ? true : false}>Sim</option>
+                                                                                    <option value='0' selected={!memberToManage.active ? true : false}>Ñão</option>
+                                                                                </Form.Field>
+                                                                                <Form.Field 
+                                                                                    label='Líder' 
+                                                                                    control='select' 
+                                                                                    disabled={!project.adminAccess ? true : false}
+                                                                                    onChange={(e) => setManageUserLeader(e.target.options[e.target.selectedIndex].value)}
+                                                                                    value={manageUserLeader}
+                                                                                >
+                                                                                    <option value='1'>Sim</option>
+                                                                                    <option value='0'>Ñão</option>
+                                                                                </Form.Field>
+                                                                            </Form>
+                                                                            <Button secondary fluid size='small' className='mt-4' onClick={() => updateMemberSettings(memberToManage.id)} disabled={project.adminAccess ? false : true} loading={isLoading}>
+                                                                                Salvar
+                                                                            </Button>
+                                                                            <Button fluid className='mt-2' size='small' onClick={() => setModalMemberManagementOpen(false)}>
+                                                                                Voltar
+                                                                            </Button>
+                                                                            { (memberToManage.id === user.id) && 
+                                                                                <Button fluid basic size='small' color='red' className='mt-2' disabled={(membersAdmin.length === 1 && project.adminAccess) ? true : false}>
+                                                                                    Sair deste projeto (me desassociar)
+                                                                                </Button>
+                                                                            }
+                                                                            { !!(membersAdmin.length === 1 && project.adminAccess && memberToManage.id === user.id) && 
+                                                                                <p style={{fontSize:'11px'}} className='mt-2'>É necessário que outro usuário seja administrador para que você possa se desassociar deste projeto</p>
+                                                                            }
+                                                                            { memberToManage.id !== user.id && 
+                                                                                <Button fluid basic size='small' color='red' className='mt-2' disabled={project.adminAccess ? false : true}>
+                                                                                    Desassociar este integrante
+                                                                                </Button>
+                                                                            }
+                                                                        </>
+                                                                        )}
+                                                                    </Modal.Content>
+                                                                </Modal>
+                                                            </Segment>
+                                                            <Spacer compact />
+                                                        </Grid.Column>
+                                                    </Grid.Row>
+                                                </Grid>
+                                            </Tab.Pane>,
+                                    }, 
+                                    {
+                                        render: () => 
+                                            <Tab.Pane attached={false} as="div">
+                                                <Grid columns={1}>
+                                                    <Grid.Row stretched>
+                                                        <Grid.Column>
+                                                            <Segment>
+                                                                <Header as='h4'>
+                                                                    Eventos
+                                                                </Header>
+                                                                { project.events[0].id ? (
+                                                                    project.active === 1 ? ( 
+                                                                        <Table singleLine size unstackable compact='very' basic='very'>
+                                                                            <Table.Body>
+                                                                                {project.events.map((event, key) =>
+                                                                                    <Table.Row key={key}>
+                                                                                        <Table.Cell collapsing>
+                                                                                            {event.dateOpening}<br/>
+                                                                                            <span style={{fontSize:'12px'}}>{event.eventHourStart}</span><br/>
+                                                                                            <span style={{fontSize:'11px',opacity:'0.8'}}>{event.method}</span>
+                                                                                        </Table.Cell>
+                                                                                        <Table.Cell>
+                                                                                            <div className='eventTitle'>{event.title}</div>
+                                                                                            <div className='eventDescription'>
+                                                                                                {event.type+' · '+event.city+'/'+event.region} {(event.placeName && event.method === 'Presencial') && <><Icon name='map pin' />{event.placeName}</>}
+                                                                                            </div>
+                                                                                            <div>
+                                                                                                <Image src={event.authorPicture} avatar style={{width:'16px',height:'16px',cursor:'pointer'}} onClick={() => history.push('/'+event.authorUsername)} />
+                                                                                                <span style={{fontSize:'11px',opacity:'0.8'}}>criado por {event.authorName}</span>
+                                                                                            </div>
+                                                                                        </Table.Cell>
+                                                                                        <Table.Cell collapsing>
+                                                                                            <Button size='mini' basic>Detalhes</Button>
+                                                                                        </Table.Cell>
+                                                                                    </Table.Row>
+                                                                                )}
+                                                                            </Table.Body>
+                                                                        </Table>
+                                                                    ) : (
+                                                                        <p>Apenas usuários ativos no projeto podem visualizar eventos detalhados</p>
+                                                                    )
+                                                                ) : (
+                                                                    <p>Nenhum evento cadastrado para este projeto</p>
+                                                                )}
+                                                            </Segment>
+                                                            <Spacer compact />
+                                                        </Grid.Column>
+                                                    </Grid.Row>
+                                                </Grid>
+                                            </Tab.Pane>,
+                                    }, 
+                                    {
+                                        render: () => 
+                                            <Tab.Pane attached={false} as="div">
+                                                <Grid columns={1}>
+                                                    <Grid.Row stretched>
+                                                        <Grid.Column>
+                                                            <Segment textAlign='left'>
                                                                 <Header as='h4'>Foto</Header>
                                                                 {project.picture ? (
-                                                                        <Image centered bordered src={'https://ik.imagekit.io/mublin/projects/tr:h-400,w-400,c-maintain_ratio/'+project.picture} rounded size='small' />
+                                                                        <Image bordered src={'https://ik.imagekit.io/mublin/projects/tr:h-400,w-400,c-maintain_ratio/'+project.picture} rounded size='small' />
                                                                     ) : (
-                                                                        <Image centered bordered src={'https://ik.imagekit.io/mublin/sample-folder/tr:h-400,w-400,c-maintain_ratio/avatar-undefined_-dv9U6dcv3.jpg'} rounded size='small' />
+                                                                        <Image bordered src={'https://ik.imagekit.io/mublin/sample-folder/tr:h-400,w-400,c-maintain_ratio/avatar-undefined_-dv9U6dcv3.jpg'} rounded size='small' />
                                                                 )}
+                                                                <Button size='tiny' className='mt-3' onClick={() => setModalNewProjectPictureOpen(true)} disabled={project.adminAccess === 1 ? false : true}>
+                                                                    <Icon name={project.adminAccess === 1 ? 'pencil' : 'lock'}/> Alterar
+                                                                </Button>
                                                                 <Modal
                                                                     id="newProjectPicture"
                                                                     size='mini'
@@ -396,14 +668,8 @@ function ProjectBackstagePage (props) {
                                                                         }
                                                                     </Modal.Content>
                                                                 </Modal>
-                                                            </Segment>
-                                                            <Button size='tiny' attached='bottom' onClick={() => setModalNewProjectPictureOpen(true)} disabled={project.adminAccess === 1 ? false : true}>
-                                                                <Icon name={project.adminAccess === 1 ? 'pencil' : 'lock'}/> Alterar
-                                                            </Button>
-                                                        </Grid.Column>
-                                                        <Grid.Column width={12}>
-                                                            <Segment textAlign='left'>
-                                                                <Header as='h4'>Bio</Header>
+                                                                <Divider />
+                                                                <Header as='h4' className='mt-0'>Bio</Header>
                                                                 <p>{project.bio ? project.bio : 'Este projeto não possui descrição'}</p>
                                                                 <Button  
                                                                     size='tiny' 
@@ -475,7 +741,177 @@ function ProjectBackstagePage (props) {
                                                                         )}
                                                                     </Formik>
                                                                 </Modal>
+                                                                <Divider />
+                                                                <Header as='h4' className='mt-0'>Tempo em atividade</Header>
+                                                                { !project.endDate ? (
+                                                                    <p>{project.foundationYear} - atualmente {projectAge > 0 && '('+projectAge}{projectAge === 1 ? ' ano)' : ' anos)'}</p>
+                                                                ) : (
+                                                                    <p>{project.foundationYear} - {project.endDate} {projectAge > 0 && '('+projectAge+' anos)'}</p>
+                                                                )}
+                                                                <Button 
+                                                                    size='tiny' 
+                                                                    className='mt-3' 
+                                                                    onClick={() => setModalBioIsOpen(true)}
+                                                                    disabled={project.adminAccess === 1 ? false : true}
+                                                                >
+                                                                    <Icon name={project.adminAccess === 1 ? 'pencil' : 'lock'}/> Alterar
+                                                                </Button>
+                                                                <Divider />
+                                                                <Header as='h4' className='mt-0'>Tag</Header>
+                                                                { project.labelText ? (
+                                                                    <>
+                                                                        <Label tag color={project.labelColor} size='tiny' style={{fontWeight:'500'}} className='mr-2'>
+                                                                            {project.labelText}
+                                                                        </Label>
+                                                                        { project.labelShow ? (
+                                                                            <Icon name='eye' title='Visível' />
+                                                                        ) : (
+                                                                            <Icon name='eye slash' title='Oculta' />
+                                                                        )}
+                                                                    </>
+                                                                ) : (
+                                                                    <p>Nenhuma tag definida</p>
+                                                                )}
+                                                                <Button  
+                                                                    size='tiny' 
+                                                                    className='mt-3' 
+                                                                    onClick={() => setModalTagIsOpen(true)}
+                                                                    disabled={project.adminAccess === 1 ? false : true}
+                                                                >
+                                                                    <Icon name={project.adminAccess === 1 ? 'pencil' : 'lock'}/> Alterar
+                                                                </Button>
+                                                                <Modal
+                                                                    size='mini'
+                                                                    onClose={() => setModalTagIsOpen(false)}
+                                                                    onOpen={() => setModalTagIsOpen(true)}
+                                                                    open={modalTagIsOpen}
+                                                                >
+                                                                    <Formik
+                                                                        initialValues={{ 
+                                                                            label_show: String(project.labelShow),
+                                                                            label_text: project.labelText
+                                                                        }}
+                                                                        validate={false}
+                                                                        validateOnMount={true}
+                                                                        validateOnBlur={true}
+                                                                        onSubmit={(values, { setSubmitting }) => {
+                                                                            // alert(JSON.stringify(values, null, 2))
+                                                                            setTimeout(() => {
+                                                                                setSubmitting(false);
+                                                                                handleSubmitTag(values.label_show, values.label_text)
+                                                                            }, 400);
+                                                                        }}
+                                                                    >
+                                                                    {({
+                                                                        values, handleChange, handleSubmit, handleBlur, isSubmitting
+                                                                    }) => (
+                                                                        <>
+                                                                        <Modal.Content>
+                                                                            <Form loading={isSubmitting}>
+                                                                                <Form.Field
+                                                                                    label='Texto da tag'
+                                                                                    id='label_text'
+                                                                                    name='label_text'
+                                                                                    control='input'
+                                                                                    value={values.label_text}
+                                                                                    onChange={e => {
+                                                                                        handleChange(e);
+                                                                                    }}
+                                                                                    onBlur={handleBlur}
+                                                                                    maxLength="30"
+                                                                                />
+                                                                                { values.label_text && 
+                                                                                    <Label size='tiny' content={values.label_text.length+'/30'} color={values.label_text.length  > 29 ? 'red' : ''} />
+                                                                                }
+                                                                                <Form.Group inline>
+                                                                                    <Form.Radio
+                                                                                        id="label_show1"
+                                                                                        name="label_show"
+                                                                                        label='Exibir tag'
+                                                                                        value={1}
+                                                                                        checked={values.label_show === '1' ? true : false}
+                                                                                        onChange={e => {
+                                                                                            handleChange(e);
+                                                                                        }}
+                                                                                        onBlur={handleBlur}
+                                                                                    />
+                                                                                    <Form.Radio
+                                                                                        id="label_show2"
+                                                                                        name="label_show"
+                                                                                        label='Ocultar tag'
+                                                                                        value={0}
+                                                                                        checked={values.label_show === '0' ? true : false}
+                                                                                        onChange={e => {
+                                                                                            handleChange(e);
+                                                                                        }}
+                                                                                        onBlur={handleBlur}
+                                                                                    />
+                                                                                </Form.Group>
+                                                                            </Form>
+                                                                        </Modal.Content>
+                                                                        <Modal.Actions>
+                                                                            <Button
+                                                                                size='small'
+                                                                                onClick={() => setModalTagIsOpen(false)} 
+                                                                            >
+                                                                                Cancelar
+                                                                            </Button>
+                                                                            <Button
+                                                                                size='small' 
+                                                                                color='black'
+                                                                                type="submit" 
+                                                                                onClick={handleSubmit}
+                                                                                disabled={values.bio === project.bio ? true : false}
+                                                                            >
+                                                                                Salvar
+                                                                            </Button>
+                                                                        </Modal.Actions>
+                                                                        </>
+                                                                        )}
+                                                                    </Formik>
+                                                                </Modal>
+                                                                <Divider />
+                                                                <Header as='h4' className='mt-0'>Encerrar projeto no Mublin</Header>
+                                                                <Button 
+                                                                    negative
+                                                                    size='tiny' 
+                                                                    className='mt-1' 
+                                                                    onClick={() => setModalAlertDeleteProjectOpen(true)}
+                                                                    disabled={project.adminAccess === 1 ? false : true}
+                                                                >
+                                                                    <Icon name={project.adminAccess === 1 ? 'trash alternate outline' : 'lock'} /> Deletar página
+                                                                </Button>
+                                                                <Modal
+                                                                    basic
+                                                                    onClose={() => setModalAlertDeleteProjectOpen(false)}
+                                                                    onOpen={() => setModalAlertDeleteProjectOpen(true)}
+                                                                    open={modalAlertDeleteProjectOpen}
+                                                                    size='mini'
+                                                                >
+                                                                    <Header icon>
+                                                                        <Icon name='exclamation triangle' />
+                                                                        Deletar este projeto?
+                                                                    </Header>
+                                                                    <Modal.Content>
+                                                                        <p>Esta ação não poderá ser desfeita. Você perderá todos os dados do projeto, além de imagens e eventos relacionados. O projeto irá desaparecer pra você e para os demais membros.</p>
+                                                                    </Modal.Content>
+                                                                    <Modal.Actions>
+                                                                        <Button basic color='red' inverted 
+                                                                            onClick={() => setModalAlertDeleteProjectOpen(false)}
+                                                                            loading={isLoading}
+                                                                        >
+                                                                            Cancelar
+                                                                        </Button>
+                                                                        <Button color='red' inverted 
+                                                                            onClick={() => handleDeleteProject()}
+                                                                            loading={isLoading}
+                                                                        >
+                                                                            Deletar
+                                                                        </Button>
+                                                                    </Modal.Actions>
+                                                                </Modal>
                                                             </Segment>
+                                                            <Spacer compact />
                                                         </Grid.Column>
                                                     </Grid.Row>
                                                 </Grid>
@@ -484,541 +920,6 @@ function ProjectBackstagePage (props) {
                                 ]
                             }
                         />
-                        </Grid.Column>
-                    </Grid.Row>
-                    <Grid.Row stretched>
-                        <Grid.Column mobile={16} computer={4}>
-                            <Segment.Group>
-                                {/* <Segment>
-                                    <Header as='h4'>
-                                        <Header.Content>Funções administrativas</Header.Content>
-                                    </Header>
-                                </Segment> */}
-                                <Segment textAlign='left'>
-                                    <Header as='h4'>
-                                        Foto
-                                    </Header>
-                                    {project.picture ? (
-                                            <Image centered bordered src={'https://ik.imagekit.io/mublin/projects/tr:h-400,w-400,c-maintain_ratio/'+project.picture} rounded size='small' />
-                                        ) : (
-                                            <Image centered bordered src={'https://ik.imagekit.io/mublin/sample-folder/tr:h-400,w-400,c-maintain_ratio/avatar-undefined_-dv9U6dcv3.jpg'} rounded size='small' />
-                                    )}
-                                    <Button fluid size='tiny' className='mt-3' onClick={() => setModalNewProjectPictureOpen(true)} disabled={project.adminAccess === 1 ? false : true}>
-                                        <Icon name={project.adminAccess === 1 ? 'pencil' : 'lock'}/> Alterar
-                                    </Button>
-                                    <Modal
-                                        id="newProjectPicture"
-                                        size='mini'
-                                        onClose={() => setModalNewProjectPictureOpen(false)}
-                                        onOpen={() => setModalNewProjectPictureOpen(true)}
-                                        open={modalNewProjectPictureOpen}
-                                        closeIcon
-                                    >
-                                        <Modal.Header>Alterar foto de {project.name}</Modal.Header>
-                                        <Modal.Content>
-                                            { !project.picture ? (
-                                                <>
-                                                    {/* <Image centered rounded src='https://ik.imagekit.io/mublin/tr:h-200,w-200/sample-folder/avatar-undefined_-dv9U6dcv3.jpg' size='small' className="mb-3" /> */}
-                                                </>
-                                            ) : (
-                                                <Image centered rounded src={'https://ik.imagekit.io/mublin/tr:h-200,w-200,c-maintain_ratio/projects/'+project.picture} size='small' className="mb-4" />
-                                            )}
-                                            <div className="customFileUpload">
-                                                <IKUpload 
-                                                    fileName="avatar.jpg"
-                                                    folder={userAvatarPath}
-                                                    tags={["avatar"]}
-                                                    useUniqueFileName={true}
-                                                    isPrivateFile= {false}
-                                                    onError={onUploadError}
-                                                    onSuccess={onUploadSuccess}
-                                                />
-                                            </div>
-                                            { pictureIsLoading &&
-                                                <UiLoader active inline='centered' />
-                                            }
-                                        </Modal.Content>
-                                    </Modal>
-                                </Segment>
-                                <Segment>
-                                    <Header as='h4'>Bio</Header>
-                                    <p>{project.bio ? project.bio : 'Este projeto não possui descrição'}</p>
-                                    <Button 
-                                        fluid 
-                                        size='tiny' 
-                                        className='mt-3' 
-                                        onClick={() => setModalBioIsOpen(true)}
-                                        disabled={project.adminAccess === 1 ? false : true}
-                                    >
-                                        <Icon name={project.adminAccess === 1 ? 'pencil' : 'lock'}/> Alterar
-                                    </Button>
-                                    <Modal
-                                        size='mini'
-                                        onClose={() => setModalBioIsOpen(false)}
-                                        onOpen={() => setModalBioIsOpen(true)}
-                                        open={modalBioIsOpen}
-                                    >
-                                        <Formik
-                                            initialValues={{ 
-                                                bio: project.bio
-                                            }}
-                                            validate={false}
-                                            validateOnMount={true}
-                                            validateOnBlur={true}
-                                            onSubmit={(values, { setSubmitting }) => {
-                                            setTimeout(() => {
-                                                setSubmitting(false);
-                                                handleSubmitBio(values.bio)
-                                            }, 400);
-                                            }}
-                                        >
-                                        {({
-                                            values, handleChange, handleSubmit, handleBlur, isSubmitting
-                                        }) => (
-                                            <>
-                                            <Modal.Content>
-                                                <Form loading={isSubmitting}>
-                                                    <Form.TextArea 
-                                                        name='bio'
-                                                        label='Bio' 
-                                                        value={values.bio}
-                                                        onChange={e => {
-                                                            handleChange(e);
-                                                        }}
-                                                        onBlur={handleBlur}
-                                                        maxLength="200"
-                                                    />
-                                                    { values.bio && 
-                                                        <Label size='tiny' content={values.bio.length+'/200'} color={values.bio.length  > 199 ? 'red' : ''} />
-                                                    }
-                                                </Form>
-                                            </Modal.Content>
-                                            <Modal.Actions>
-                                                <Button
-                                                    size='small'
-                                                    onClick={() => setModalBioIsOpen(false)} 
-                                                >
-                                                    Cancelar
-                                                </Button>
-                                                <Button
-                                                    size='small' 
-                                                    color='black'
-                                                    type="submit" 
-                                                    onClick={handleSubmit}
-                                                    disabled={values.bio === project.bio ? true : false}
-                                                >
-                                                    Salvar
-                                                </Button>
-                                            </Modal.Actions>
-                                            </>
-                                            )}
-                                        </Formik>
-                                    </Modal>
-                                </Segment>
-                                <Segment>
-                                    <Header as='h4'>Tempo em atividade</Header>
-                                    { !project.endDate ? (
-                                        <p>{project.foundationYear} - atualmente {projectAge > 0 && '('+projectAge}{projectAge === 1 ? ' ano)' : ' anos)'}</p>
-                                    ) : (
-                                        <p>{project.foundationYear} - {project.endDate} {projectAge > 0 && '('+projectAge+' anos)'}</p>
-                                    )}
-                                    <Button 
-                                        fluid 
-                                        size='tiny' 
-                                        className='mt-3' 
-                                        onClick={() => setModalBioIsOpen(true)}
-                                        disabled={project.adminAccess === 1 ? false : true}
-                                    >
-                                        <Icon name={project.adminAccess === 1 ? 'pencil' : 'lock'}/> Alterar
-                                    </Button>
-                                </Segment>
-                                <Segment>
-                                    <Header as='h4'>Tag</Header>
-                                    { project.labelText ? (
-                                        <>
-                                            <Label tag color={project.labelColor} size='tiny' style={{fontWeight:'500'}} className='mr-2'>
-                                                {project.labelText}
-                                            </Label>
-                                            { project.labelShow ? (
-                                                <Icon name='eye' title='Visível' />
-                                            ) : (
-                                                <Icon name='eye slash' title='Oculta' />
-                                            )}
-                                        </>
-                                    ) : (
-                                        <p>Nenhuma tag definida</p>
-                                    )}
-                                    <Button 
-                                        fluid 
-                                        size='tiny' 
-                                        className='mt-3' 
-                                        onClick={() => setModalTagIsOpen(true)}
-                                        disabled={project.adminAccess === 1 ? false : true}
-                                    >
-                                        <Icon name={project.adminAccess === 1 ? 'pencil' : 'lock'}/> Alterar
-                                    </Button>
-                                    <Modal
-                                        size='mini'
-                                        onClose={() => setModalTagIsOpen(false)}
-                                        onOpen={() => setModalTagIsOpen(true)}
-                                        open={modalTagIsOpen}
-                                    >
-                                        <Formik
-                                            initialValues={{ 
-                                                label_show: String(project.labelShow),
-                                                label_text: project.labelText
-                                            }}
-                                            validate={false}
-                                            validateOnMount={true}
-                                            validateOnBlur={true}
-                                            onSubmit={(values, { setSubmitting }) => {
-                                                // alert(JSON.stringify(values, null, 2))
-                                                setTimeout(() => {
-                                                    setSubmitting(false);
-                                                    handleSubmitTag(values.label_show, values.label_text)
-                                                }, 400);
-                                            }}
-                                        >
-                                        {({
-                                            values, handleChange, handleSubmit, handleBlur, isSubmitting
-                                        }) => (
-                                            <>
-                                            <Modal.Content>
-                                                <Form loading={isSubmitting}>
-                                                    <Form.Field
-                                                        label='Texto da tag'
-                                                        id='label_text'
-                                                        name='label_text'
-                                                        control='input'
-                                                        value={values.label_text}
-                                                        onChange={e => {
-                                                            handleChange(e);
-                                                        }}
-                                                        onBlur={handleBlur}
-                                                        maxLength="30"
-                                                    />
-                                                    { values.label_text && 
-                                                        <Label size='tiny' content={values.label_text.length+'/30'} color={values.label_text.length  > 29 ? 'red' : ''} />
-                                                    }
-                                                    <Form.Group inline>
-                                                        <Form.Radio
-                                                            id="label_show1"
-                                                            name="label_show"
-                                                            label='Exibir tag'
-                                                            value={1}
-                                                            checked={values.label_show === '1' ? true : false}
-                                                            onChange={e => {
-                                                                handleChange(e);
-                                                            }}
-                                                            onBlur={handleBlur}
-                                                        />
-                                                        <Form.Radio
-                                                            id="label_show2"
-                                                            name="label_show"
-                                                            label='Ocultar tag'
-                                                            value={0}
-                                                            checked={values.label_show === '0' ? true : false}
-                                                            onChange={e => {
-                                                                handleChange(e);
-                                                            }}
-                                                            onBlur={handleBlur}
-                                                        />
-                                                    </Form.Group>
-                                                </Form>
-                                            </Modal.Content>
-                                            <Modal.Actions>
-                                                <Button
-                                                    size='small'
-                                                    onClick={() => setModalTagIsOpen(false)} 
-                                                >
-                                                    Cancelar
-                                                </Button>
-                                                <Button
-                                                    size='small' 
-                                                    color='black'
-                                                    type="submit" 
-                                                    onClick={handleSubmit}
-                                                    disabled={values.bio === project.bio ? true : false}
-                                                >
-                                                    Salvar
-                                                </Button>
-                                            </Modal.Actions>
-                                            </>
-                                            )}
-                                        </Formik>
-                                    </Modal>
-                                </Segment>
-                                <Segment>
-                                    <Header as='h4'>Encerrar projeto no Mublin</Header>
-                                    <Button 
-                                        fluid 
-                                        negative
-                                        size='tiny' 
-                                        className='mt-3' 
-                                        onClick={() => setModalAlertDeleteProjectOpen(true)}
-                                        disabled={project.adminAccess === 1 ? false : true}
-                                    >
-                                        <Icon name={project.adminAccess === 1 ? 'trash alternate outline' : 'lock'} /> Deletar página
-                                    </Button>
-                                    <Modal
-                                        basic
-                                        onClose={() => setModalAlertDeleteProjectOpen(false)}
-                                        onOpen={() => setModalAlertDeleteProjectOpen(true)}
-                                        open={modalAlertDeleteProjectOpen}
-                                        size='mini'
-                                    >
-                                        <Header icon>
-                                            <Icon name='exclamation triangle' />
-                                            Deletar este projeto?
-                                        </Header>
-                                        <Modal.Content>
-                                            <p>Esta ação não poderá ser desfeita. Você perderá todos os dados do projeto, além de imagens e eventos relacionados. O projeto irá desaparecer pra você e para os demais membros.</p>
-                                        </Modal.Content>
-                                        <Modal.Actions>
-                                            <Button basic color='red' inverted 
-                                                onClick={() => setModalAlertDeleteProjectOpen(false)}
-                                                loading={isLoading}
-                                            >
-                                                Cancelar
-                                            </Button>
-                                            <Button color='red' inverted 
-                                                onClick={() => handleDeleteProject()}
-                                                loading={isLoading}
-                                            >
-                                                Deletar
-                                            </Button>
-                                        </Modal.Actions>
-                                    </Modal>
-                                </Segment>
-                            </Segment.Group>
-                            <Spacer compact />
-                        </Grid.Column>
-                        <Grid.Column mobile={16} computer={8}>
-                            <Segment>
-                                <div className='cardTitle'>
-                                    <Header as='h4'>
-                                        <Header.Content>
-                                            Integrantes
-                                            <Header.Subheader>{members.length} relacionados</Header.Subheader>
-                                        </Header.Content>
-                                    </Header>
-                                    <Button.Group size='mini'>
-                                        <Button><Icon name='user plus' />Convidar</Button>
-                                        <Button onClick={() => setOpenModalNewOpportunity(true)}><Icon name='bullhorn' />Abrir vaga</Button>
-                                    </Button.Group>
-                                </div>
-                                <Table columns={3} unstackable compact='very' basic='very'>
-                                    {/* <Table.Header>
-                                        <Table.Row>
-                                            <Table.HeaderCell width={14}>Nome</Table.HeaderCell>
-                                            <Table.HeaderCell width={2}></Table.HeaderCell>
-                                        </Table.Row>
-                                    </Table.Header> */}
-                                    <Table.Body>
-                                        {members.map((member, key) =>
-                                            <Table.Row key={key}>
-                                                <Table.Cell width={14}>
-                                                    { member.picture ? (
-                                                        <Image src={'https://ik.imagekit.io/mublin/users/avatars/tr:h-200,w-200,c-maintain_ratio/'+member.id+'/'+member.picture} avatar onClick={() => history.push('/'+member.username)} style={{cursor:'pointer'}} />
-                                                    ) : (
-                                                        <Image src='https://ik.imagekit.io/mublin/sample-folder/avatar-undefined_Kblh5CBKPp.jpg' avatar onClick={() => history.push('/'+member.username)} style={{cursor:'pointer'}} />
-                                                    )}
-                                                    {member.confirmed === 1 ? ( 
-                                                        <>
-                                                            <span style={{fontWeight:'500'}} className='mr-1'>{member.name} {member.lastname} {!!member.admin && '(Administrador)'}</span>
-                                                            <div style={{fontSize:'12px'}}>{member.role1}{member.role2 && ', '+member.role2}{member.role3 && ', '+member.role3}</div>
-                                                            <span style={{fontSize:'11px'}}>
-                                                                {member.statusId === 1 ? 'Membro oficial · ' : 'Convidado/Sideman · '}
-                                                                {(member.joinedIn && (member.joinedIn !== member.leftIn)) ? ( 
-                                                                    <>
-                                                                        {member.joinedIn +' até '}{member.leftIn ? member.leftIn : 'atualmente'}
-                                                                    </>
-                                                                ) : (
-                                                                    <>
-                                                                        {member.joinedIn}
-                                                                    </>
-                                                                )}
-                                                            </span>
-                                                            {member.active ? (
-                                                                <div style={{fontSize:'11px'}}>
-                                                                    <Icon color='green' name='power' />Ativo no projeto atualmente
-                                                                </div>
-                                                            ) : (
-                                                                <div style={{fontSize:'12px'}}>
-                                                                    <Icon color='grey' name='power' />Inativo no projeto atualmente
-                                                                </div>
-                                                            )}
-                                                        </>
-                                                    ) : (
-                                                        <>
-                                                            <span style={{fontWeight:'500'}}>{member.name+' '+member.lastname}</span>
-                                                            <div className='mt-1'>
-                                                                <span style={{fontSize:'11px', fontWeight:'500'}}>solicitou participação como {member.role1}{member.role2 && ', '+member.role2}{member.role3 && ', '+member.role3}<br/>({member.statusName}{member.statusId === 2 && '/sideman'}{member.joinedIn && ', de '+member.joinedIn+' até '}{member.leftIn ? member.leftIn : 'atualmente'})</span>
-                                                                <div>
-                                                                    <Button.Group size='mini' className='mt-1'>
-                                                                        <Button positive disabled={!project.adminAccess ? true : false} onClick={() => updateMemberRequest(member.id, 1)} loading={isLoading}>Aceitar</Button>
-                                                                        <Button negative disabled={!project.adminAccess ? true : false} onClick={() => updateMemberRequest(member.id, 0)} loading={isLoading}>Recusar</Button>
-                                                                    </Button.Group>
-                                                                </div>
-                                                            </div>
-                                                        </>
-                                                    )}
-                                                </Table.Cell>
-                                                <Table.Cell width={2} textAlign='right'>
-                                                    {member.confirmed === 1 && 
-                                                        <Button size='mini' icon='cog' onClick={() => openModalMemberManagement(member.id, member.admin, member.active, member.leader)} />
-                                                    }
-                                                </Table.Cell>
-                                            </Table.Row>
-                                        )}
-                                    </Table.Body>
-                                </Table>
-                                <Modal
-                                    size='mini'
-                                    open={modalMemberManagement}
-                                    onClose={() => setModalMemberManagementOpen()}
-                                >
-                                    <Modal.Header>Gerenciar membro do projeto</Modal.Header>
-                                    <Modal.Content>
-                                        { memberInfo.map((memberToManage, key) => 
-                                        <>
-                                            <p style={{fontSize:'11px'}} className='mb-4'>Apenas administradores podem editar estas opções</p>
-                                            <div className='mb-4'>
-                                                { memberToManage.picture ? (
-                                                    <Image src={'https://ik.imagekit.io/mublin/users/avatars/tr:h-200,w-200,c-maintain_ratio/'+memberToManage.id+'/'+memberToManage.picture} avatar />
-                                                ) : (
-                                                    <Image src='https://ik.imagekit.io/mublin/sample-folder/avatar-undefined_Kblh5CBKPp.jpg' avatar />
-                                                )}
-                                                <span>{memberToManage.name+' '+memberToManage.lastname} {!!memberToManage.admin && '(Administrador)'}</span>
-                                            </div>
-                                            <Form>
-                                                <Form.Field 
-                                                    label='Administrador' 
-                                                    control='select' 
-                                                    disabled={(!project.adminAccess ? true : false || (membersAdmin.length < 2 && memberToManage.id === user.id))}
-                                                    onChange={(e) => setManageUserAdmin(e.target.options[e.target.selectedIndex].value)}
-                                                    value={manageUserAdmin}
-                                                >
-                                                    <option value='1' selected={memberToManage.admin ? true : false}>Sim</option>
-                                                    <option value='0' selected={!memberToManage.admin ? true : false}>Não</option>
-                                                </Form.Field>
-                                                { !!(membersAdmin.length === 1 && project.adminAccess && user.id === memberToManage.id) && 
-                                                    <p style={{fontSize:'11px'}}>É necessário ao menos um administrador por projeto</p>
-                                                }
-                                                <Form.Field 
-                                                    label='Ativo no projeto atualmente' 
-                                                    control='select' 
-                                                    disabled={!project.adminAccess ? true : false}
-                                                    onChange={(e) => setManageUserActive(e.target.options[e.target.selectedIndex].value)}
-                                                    value={manageUserActive}
-                                                >
-                                                    <option value='1' selected={memberToManage.active ? true : false}>Sim</option>
-                                                    <option value='0' selected={!memberToManage.active ? true : false}>Ñão</option>
-                                                </Form.Field>
-                                                <Form.Field 
-                                                    label='Líder' 
-                                                    control='select' 
-                                                    disabled={!project.adminAccess ? true : false}
-                                                    onChange={(e) => setManageUserLeader(e.target.options[e.target.selectedIndex].value)}
-                                                    value={manageUserLeader}
-                                                >
-                                                    <option value='1'>Sim</option>
-                                                    <option value='0'>Ñão</option>
-                                                </Form.Field>
-                                            </Form>
-                                            <Button secondary fluid size='small' className='mt-4' onClick={() => updateMemberSettings(memberToManage.id)} disabled={project.adminAccess ? false : true} loading={isLoading}>
-                                                Salvar
-                                            </Button>
-                                            <Button fluid className='mt-2' size='small' onClick={() => setModalMemberManagementOpen(false)}>
-                                                Voltar
-                                            </Button>
-                                            { (memberToManage.id === user.id) && 
-                                                <Button fluid basic size='small' color='red' className='mt-2' disabled={(membersAdmin.length === 1 && project.adminAccess) ? true : false}>
-                                                    Sair deste projeto (me desassociar)
-                                                </Button>
-                                            }
-                                            { !!(membersAdmin.length === 1 && project.adminAccess && memberToManage.id === user.id) && 
-                                                <p style={{fontSize:'11px'}} className='mt-2'>É necessário que outro usuário seja administrador para que você possa se desassociar deste projeto</p>
-                                            }
-                                            { memberToManage.id !== user.id && 
-                                                <Button fluid basic size='small' color='red' className='mt-2' disabled={project.adminAccess ? false : true}>
-                                                    Desassociar este integrante
-                                                </Button>
-                                            }
-                                        </>
-                                        )}
-                                    </Modal.Content>
-                                </Modal>
-                            </Segment>
-                            <Segment>
-                                <Header as='h4'>
-                                    Eventos
-                                </Header>
-                                { project.events[0].id ? (
-                                    project.active === 1 ? ( 
-                                        <Table singleLine size unstackable compact='very' basic='very'>
-                                            <Table.Body>
-                                                {project.events.map((event, key) =>
-                                                    <Table.Row key={key}>
-                                                        <Table.Cell collapsing>
-                                                            {event.dateOpening}<br/>
-                                                            <span style={{fontSize:'12px'}}>{event.eventHourStart}</span><br/>
-                                                            <span style={{fontSize:'11px',opacity:'0.8'}}>{event.method}</span>
-                                                        </Table.Cell>
-                                                        <Table.Cell>
-                                                            <div className='eventTitle'>{event.title}</div>
-                                                            <div className='eventDescription'>
-                                                                {event.type+' · '+event.city+'/'+event.region} {(event.placeName && event.method === 'Presencial') && <><Icon name='map pin' />{event.placeName}</>}
-                                                            </div>
-                                                            <div>
-                                                                <Image src={event.authorPicture} avatar style={{width:'16px',height:'16px',cursor:'pointer'}} onClick={() => history.push('/'+event.authorUsername)} />
-                                                                <span style={{fontSize:'11px',opacity:'0.8'}}>criado por {event.authorName}</span>
-                                                            </div>
-                                                        </Table.Cell>
-                                                        <Table.Cell collapsing>
-                                                            <Button size='mini' basic>Detalhes</Button>
-                                                        </Table.Cell>
-                                                    </Table.Row>
-                                                )}
-                                            </Table.Body>
-                                        </Table>
-                                    ) : (
-                                        <p>Apenas usuários ativos no projeto podem visualizar eventos detalhados</p>
-                                    )
-                                ) : (
-                                    <p>Nenhum evento cadastrado para este projeto</p>
-                                )}
-                            </Segment>
-                        </Grid.Column>
-                        <Grid.Column mobile={16} computer={4}>
-                            <Segment textAlign='left'>
-                                <Header as='h4'>
-                                    Turnê atual
-                                </Header>
-                                <p>Nenhuma</p>
-                            </Segment>
-                            <Segment textAlign='left'>
-                                <Header as='h4'>
-                                    Quadro de avisos
-                                </Header>
-                                {project.notes[0].id ? (
-                                    project.notes.map((note, key) =>
-                                        <Segment inverted basic style={{fontSize:'12px'}} key={key}>
-                                            {note.note}
-                                            <div className='mt-2'>
-                                                { note.authorPicture ? (
-                                                    <Image as='a' href={'/'+note.authorUsername} src={note.authorPicture} avatar />
-                                                ) : (
-                                                    <Image src='https://ik.imagekit.io/mublin/sample-folder/tr:h-200,w-200,c-maintain_ratio/avatar-undefined_Kblh5CBKPp.jpg' avatar />
-                                                )}
-                                                <span style={{opacity:'0.7'}}>{note.authorName+' '+note.authorLastname} há {formatDistance(new Date(note.created * 1000), new Date(), {locale:pt})}</span>
-                                            </div>
-                                        </Segment>
-                                    )
-                                ) : (
-                                    <p>Nenhum aviso cadastrado no momento</p>
-                                )}
-                            </Segment>
                         </Grid.Column>
                     </Grid.Row>
                 </Grid>

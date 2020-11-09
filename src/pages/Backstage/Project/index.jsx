@@ -271,6 +271,9 @@ function ProjectBackstagePage (props) {
         key: role.id
     }));
 
+    const [activeTabIndex, setActiveTabIndex] = useState(0)
+    const handleTabChange = (e, { activeIndex }) => setActiveTabIndex(activeIndex)
+
     const sliderOptions = {
         autoPlay: false,
         cellAlign: 'left',
@@ -280,11 +283,9 @@ function ProjectBackstagePage (props) {
         wrapAround: false,
         draggable: '>1',
         resize: true,
-        contain: true
+        contain: true,
+        initialIndex: activeTabIndex
     }
-
-    const [activeTabIndex, setActiveTabIndex] = useState(0)
-    const handleTabChange = (e, { activeIndex }) => setActiveTabIndex(activeIndex)
 
     return (
         <>
@@ -345,11 +346,11 @@ function ProjectBackstagePage (props) {
                                 </Header.Content>
                             </Header>
                             <Flickity
-                                className={'carousel mt-3'} // default ''
-                                elementType={'div'} // default 'div'
-                                options={sliderOptions} // takes flickity options {}
-                                disableImagesLoaded={false} // default false
-                                reloadOnUpdate // default false
+                                className={'carousel mt-3'}
+                                elementType={'div'}
+                                options={sliderOptions}
+                                disableImagesLoaded={false}
+                                reloadOnUpdate
                             >
                                 <Button basic active={activeTabIndex === 0} size='tiny' onClick={() => setActiveTabIndex(0)}>
                                     <Icon name='block layout' className="mr-2" />Resumo

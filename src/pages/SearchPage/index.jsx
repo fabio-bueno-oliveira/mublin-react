@@ -95,7 +95,7 @@ function SearchPage (props) {
                                                                 )}
                                                                 <Card.Content>
                                                                     <Card.Header style={{fontSize:'14.4px',width:'100%',whiteSpace:'nowrap',overflow:'hidden',textOverflow:'ellipsis'}} title={user.name+' '+user.lastname}>
-                                                                        {!!user.verified && <Icon name='check circle' color='blue' className='verifiedIcon' title='Verificado' />} {user.name} {user.id !== userSession.id ? user.lastname : '(Você)'}
+                                                                        {user.name} {user.id !== userSession.id ? user.lastname : '(Você)'} {!!user.verified && <Icon name='check circle' color='blue' className='verifiedIcon' title='Verificado' />}
                                                                     </Card.Header>
                                                                     { user.instrumentalist && 
                                                                         <Card.Meta style={{fontSize:'12.4px'}}>
@@ -219,7 +219,7 @@ function SearchPage (props) {
                                     )}
                                     <Card.Content>
                                         <Card.Header style={{fontSize:'14.4px',width:'100%',whiteSpace:'nowrap',overflow:'hidden',textOverflow:'ellipsis'}} title={user.name+' '+user.lastname}>
-                                            {user.name+' '+user.lastname}
+                                            {user.name+' '+user.lastname} {!!user.verified && <Icon name='check circle' color='blue' className='verifiedIcon' title='Verificado' />}
                                         </Card.Header>
                                         { user.instrumentalist && 
                                             <Card.Meta style={{fontSize:'12.4px'}}>

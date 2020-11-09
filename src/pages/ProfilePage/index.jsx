@@ -253,7 +253,7 @@ function ProfilePage (props) {
                                         </p>
                                         { profile.city &&
                                             <p className="mb-0" style={{ fontSize: "12px" }}>
-                                                {profile.city+', '+profile.region}
+                                                {profile.city} {profile.city !== profile.region && ', '+profile.region}
                                             </p>
                                         }
                                     </>
@@ -476,7 +476,7 @@ function ProfilePage (props) {
                                 <div className='cardTitle'>
                                     <Header as='h3' className='pt-1'>Pontos Fortes {profile.strengths[0].idUserTo && <Label className='ml-1 p-2' style={{opacity:'0.4'}}>{profile.strengths.length}</Label>}</Header>
                                     { profile.id !== user.id &&
-                                        <Label color='black' basic as='a' size='small' content='Votar' style={{height:'fit-content'}} onClick={() => setModalStrengthsOpen(true)} />
+                                        <Label as='a' size='small' content='Votar' style={{height:'fit-content'}} onClick={() => setModalStrengthsOpen(true)} />
                                     }
                                 </div>
                                 { profile.requesting ? (
@@ -505,9 +505,14 @@ function ProfilePage (props) {
                                         </Card.Description>
                                     )
                                 )}
-                                <p className='mt-3 mb-0' style={{fontSize:'11px'}}>{profile.strengthsRaw[0].id && <span style={{opacity:'0.4'}}>{profile.strengthsRaw.length+' votos no total'}</span>}</p>
+                                { profile.strengthsRaw[0].id && 
+                                    <p className='mt-3 mb-0' style={{fontSize:'11px'}}>
+                                        {profile.strengthsRaw[0].id && <span style={{opacity:'0.5'}}>{profile.strengthsRaw.length+' votos no total'}</span>}
+                                    </p>
+                                }
                             </Card.Content>
                         </Card>
+                        { profile.plan === "Pro" && 
                         <Card id="gear" style={{ width: "100%" }}>
                             <Card.Content>
                                 <Header as='h3'>Equipamento {profile.gear[0].productId && <Label className='ml-1 p-2' style={{opacity:'0.4'}}>{profile.gear.length}</Label>}</Header>
@@ -559,12 +564,13 @@ function ProfilePage (props) {
                                 )}
                             </Card.Content>
                         </Card>
+                        }
                         <Card id="testimonials" style={{ width: "100%" }} className={profile.testimonials[0].id && 'pb-4'}>
                             <Card.Content>
                                 <div className='cardTitle'>
-                                    <Header as='h3' className='pt-1'>Depoimentos {profile.testimonials[0].id && '('+profile.testimonials.length+')'}</Header>
+                                    <Header as='h3' className='pt-1'>Depoimentos {profile.testimonials[0].id && <Label className='ml-1 p-2' style={{opacity:'0.4'}}>{profile.testimonials.length}</Label>}</Header>
                                     { profile.id !== user.id &&
-                                        <Label color='black' basic as='a' color='black' size='small' style={{height:'fit-content'}} content={myTestimonial.length ? 'Editar' : 'Escrever'} />
+                                        <Label as='a' size='small' style={{height:'fit-content'}} content={myTestimonial.length ? 'Editar' : 'Escrever'} />
                                     }
                                 </div>
                                 { profile.testimonials[0].id ? (

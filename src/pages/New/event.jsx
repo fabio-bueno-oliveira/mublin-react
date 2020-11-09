@@ -486,14 +486,14 @@ function CreateNewEventPage () {
                                                 <Form.Field className='mb-0 mt-3'>
                                                     <label for='eventTicketPrice'>Preço do ingresso/entrada</label>
                                                     <IntlCurrencyInput 
-                                                    currency='BRL' 
-                                                    config={currencyConfig}
-                                                    id='eventTicketPrice'
-                                                    name='eventTicketPrice'
-                                                    value={eventTicketPrice}
-                                                    onChange={handleChangeEventTicketPrice} 
-                                                    className='mb-3'
-                                                />
+                                                        currency='BRL' 
+                                                        config={currencyConfig}
+                                                        id='eventTicketPrice'
+                                                        name='eventTicketPrice'
+                                                        value={eventTicketPrice}
+                                                        onChange={handleChangeEventTicketPrice} 
+                                                        className='mb-3'
+                                                    />
                                                 </Form.Field>
                                                 <Form.Field className='mb-0 mt-3'>
                                                     <Form.Input 

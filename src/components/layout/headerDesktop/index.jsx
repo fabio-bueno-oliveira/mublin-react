@@ -186,7 +186,7 @@ const HeaderDesktop = () => {
                             <Icon name='envelope outline' className='mr-0'/><span className="ui red circular mini label">2</span>
                         </Menu.Item>
                         <div className="ui simple dropdown item" key='userMenu'>
-                            { userInfo.picture ? (
+                            { (!userInfo.requesting && userInfo.picture) ? (
                                 <IKImage 
                                     path={'/users/avatars/'+userInfo.id+'/'+userInfo.picture}
                                     transformation={[{ "height": "200", "width": "200", "r": "max" }]} 
@@ -201,7 +201,9 @@ const HeaderDesktop = () => {
                             <Dropdown.Menu>
                                 <Dropdown.Header>{userInfo.username}</Dropdown.Header>
                                 <Dropdown.Item icon='user circle' text='Meu perfil' onClick={() => history.push('/'+userInfo.username)} />
-                                <Dropdown.Item icon='box' text='Meu equipamento' onClick={() => history.push('/gear')} />
+                                {userInfo.plan === 'Pro' && 
+                                    <Dropdown.Item icon='box' text='Meu equipamento' onClick={() => history.push('/gear')} />
+                                }
                                 <Dropdown.Item icon='setting' text='Configurações' onClick={() => history.push('/settings')} />
                                 <Dropdown.Divider />
                                 { userInfo.level === 1 &&

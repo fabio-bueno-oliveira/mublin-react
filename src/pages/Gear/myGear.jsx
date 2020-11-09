@@ -6,6 +6,7 @@ import HeaderMobile from '../../components/layout/headerMobile';
 import Spacer from '../../components/layout/Spacer'
 import { userInfos } from '../../store/actions/user';
 import { Form, Segment, Image, Modal, Header, Label, Grid, Button, Icon, Loader } from 'semantic-ui-react';
+import IntlCurrencyInput from "react-intl-currency-input";
 import './styles.scss'
 
 function MyGearPage () {
@@ -156,6 +157,22 @@ function MyGearPage () {
     const [featured, setFeatured] = useState('')
     const [for_sale, setForSale] = useState('')
     const [price, setPrice] = useState('')
+    const handleChangePrice = (event, value, maskedValue) => {
+        setPrice(value)
+    }
+    const currencyConfig = {
+        locale: "pt-BR",
+        formats: {
+          number: {
+            BRL: {
+              style: "currency",
+              currency: "BRL",
+              minimumFractionDigits: 2,
+              maximumFractionDigits: 2,
+            },
+          },
+        },
+    };
     const [currently_using, setCurrentlyUsing] = useState('')
 
     const [itemIdToEdit, setItemIdToEdit] = useState('')
@@ -383,7 +400,7 @@ function MyGearPage () {
                                         <option value='1'>Sim</option>
                                         <option value='0'>Não</option>
                                     </Form.Field>
-                                    <Form.Field
+                                    {/* <Form.Field
                                         disabled={(for_sale === '1' || for_sale === 1) ? false : true}
                                         label='Preço de venda'
                                         id='price'
@@ -391,7 +408,20 @@ function MyGearPage () {
                                         control='input'
                                         value={price}
                                         onChange={e => setPrice(e.target.value)}
-                                    />
+                                    /> */}
+                                    <Form.Field className='mb-0 mt-3'>
+                                        <label for='eventTicketPrice'>Preço de venda</label>
+                                        <IntlCurrencyInput 
+                                            disabled={(for_sale === '1' || for_sale === 1) ? false : true}
+                                            currency='BRL' 
+                                            config={currencyConfig}
+                                            id='price'
+                                            name='price'
+                                            value={price}
+                                            onChange={handleChangePrice} 
+                                            className='mb-3'
+                                        />
+                                    </Form.Field>
                                 </Form.Group>
                             </>
                         )}
@@ -404,7 +434,7 @@ function MyGearPage () {
                     <Button size='tiny' onClick={() => setModalEditItemOpen(false)}>
                         Cancelar
                     </Button>
-                    <Button size='tiny' secondary onClick={() => editGearItem(itemIdToEdit, modalItemManagementProductId, featured, for_sale, price, currently_using)} loading={!isLoaded}>
+                    <Button size='tiny' disabled={(for_sale === '1' && !price) ? true : false} secondary onClick={() => editGearItem(itemIdToEdit, modalItemManagementProductId, featured, for_sale, price, currently_using)} loading={!isLoaded}>
                         Salvar
                     </Button>
                 </Modal.Actions>

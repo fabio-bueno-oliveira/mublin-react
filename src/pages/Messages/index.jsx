@@ -1,11 +1,15 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { Grid, Header, Comment, Form, Input, Icon } from 'semantic-ui-react';
+import { Grid, Header, Comment, Form, Input, Divider, Icon, Label } from 'semantic-ui-react';
 import { userInfos } from '../../store/actions/user';
+import { messagesInfos } from '../../store/actions/messages';
 import HeaderDesktop from '../../components/layout/headerDesktop';
 import HeaderMobile from '../../components/layout/headerMobile';
 import FooterMenuMobile from '../../components/layout/footerMenuMobile';
+import Spacer from '../../components/layout/Spacer';
+import { formatDistance } from 'date-fns';
+import pt from 'date-fns/locale/pt-BR';
 
 function MessagesPage () {
  
@@ -19,71 +23,51 @@ function MessagesPage () {
 
     useEffect(() => { 
         dispatch(userInfos.getInfo());
+        dispatch(messagesInfos.getUserMessages());
     }, []);
 
     const userInfo = useSelector(state => state.user);
+    const conversations = useSelector(state => state.messages);
 
     return (
         <>
             <HeaderDesktop />
             <HeaderMobile />
-
-            <Grid centered verticalAlign='middle' columns={1} as='main' columns={1} className="container mb-2 mt-4 mt-md-5 pt-5">
+            <Spacer />
+            <Grid centered verticalAlign='middle' columns={1} as='main' columns={1} className="container mb-2 px-1 px-md-3">
                 <Grid.Row>
                     <Grid.Column mobile={16} computer={10}>
                         <Header as='h2' dividing className='pb-3'>Mensagens</Header>
-
-                        <Comment.Group>
-                            <Comment>
-                                <Comment.Avatar src='https://react.semantic-ui.com/images/avatar/small/matt.jpg' />
-                                <Comment.Content>
-                                    <Comment.Author as='a'>Matt</Comment.Author>
-                                    <Comment.Metadata>
-                                        <div>Today at 5:42PM</div>
-                                    </Comment.Metadata>
-                                    <Comment.Text>How artistic!</Comment.Text>
-                                    <Comment.Actions>
-                                        <Comment.Action>Remover</Comment.Action>
-                                    </Comment.Actions>
-                                </Comment.Content>
-                            </Comment>
-
-                            <Comment>
-                                <Comment.Avatar src={'https://ik.imagekit.io/mublin/tr:h-200,w-200,c-maintain_ratio/users/avatars/'+userInfo.id+'/'+userInfo.picture} />
-                                <Comment.Content>
-                                    <Comment.Author as='a'>{userInfo.name+' '+userInfo.lastname}</Comment.Author>
-                                    <Comment.Metadata>
-                                        <div>Yesterday at 12:30AM</div>
-                                    </Comment.Metadata>
-                                    <Comment.Text>
-                                        <p>This has been very useful for my research. Thanks as well!</p>
-                                    </Comment.Text>
-                                    <Comment.Actions>
-                                        {/* <Comment.Action><Icon name='trash alternate outline' /></Comment.Action> */}
-                                        <Comment.Action>Remover</Comment.Action>
-                                    </Comment.Actions>
-                                </Comment.Content>
-                            </Comment>
-
-                            <Comment>
-                                <Comment.Avatar src='https://react.semantic-ui.com/images/avatar/small/matt.jpg' />
-                                <Comment.Content>
-                                    <Comment.Author as='a'>Joe Henderson</Comment.Author>
-                                    <Comment.Metadata>
-                                        <div>5 days ago</div>
-                                    </Comment.Metadata>
-                                    <Comment.Text>Dude, this is awesome. Thanks so much</Comment.Text>
-                                    <Comment.Actions>
-                                        <Comment.Action>Remover</Comment.Action>
-                                    </Comment.Actions>
-                                </Comment.Content>
-                            </Comment>
-
-                            <Form reply>
-                                <Input fluid action={{icon:'send',primary:true}} placeholder='Mensagem...' />
-                            </Form>
-                        </Comment.Group>
-
+                        { conversations.requesting ? (
+                            <Header as='h5' className='my-4'>Carregando...</Header>
+                        ) : (
+                            <Comment.Group>
+                                { conversations.recentConversations.map((conversation, key) =>
+                                    <>
+                                        <Comment key={key}>
+                                            <Comment.Avatar src={conversation.senderPicture} />
+                                            <Comment.Content>
+                                                <Comment.Author as='a' onClick={() => history.push("/messages/conversation/"+conversation.senderId)}>{conversation.senderName+' '+conversation.senderLastname}</Comment.Author>
+                                                <Comment.Metadata>
+                                                    <div>última mensagem há {formatDistance(new Date(conversation.lastMessageCreatedFormatted * 1000), new Date(), {locale:pt})}</div>
+                                                </Comment.Metadata>
+                                                <Comment.Text style={ !conversation.lastMessageSeen ? { fontWeight:'500'} : {}}>
+                                                    {conversation.lastMessage.substring(0, 150) + '...'}
+                                                </Comment.Text>
+                                                <Comment.Text>
+                                                    {conversation.lastMessageSeen ? <nobr><Label size='mini'><Icon name='checkmark' color={conversation.lastMessageSeen ? 'green' : 'grey'} />Lida</Label></nobr> : <Label size='mini'>Não lida</Label>}
+                                                </Comment.Text>
+                                                <Comment.Actions>
+                                                    <Comment.Action onClick={() => history.push("/messages/conversation/"+conversation.senderId)}>Ver conversa</Comment.Action>
+                                                    <Comment.Action>Apagar conversa</Comment.Action>
+                                                </Comment.Actions>
+                                            </Comment.Content>
+                                        </Comment>
+                                        <Divider />
+                                    </>
+                                )}
+                            </Comment.Group>
+                        )}
                     </Grid.Column>
                 </Grid.Row>
             </Grid>

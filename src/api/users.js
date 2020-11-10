@@ -23,6 +23,7 @@ export const userService = {
     getUserGearInfoById,
     getUserAvailabilityItemsById,
     getUserProjects,
+    getUserMessages,
     update,
     logout
 };
@@ -88,6 +89,15 @@ function getUserProjects(id) {
     };
 
     return fetch(`${BASE_URL}/user/${id}/projects`, requestOptions).then(handleResponse);
+}
+
+function getUserMessages() {
+    const requestOptions = {
+        method: 'GET',
+        headers: authHeader()
+    };
+
+    return fetch(`${BASE_URL}/messages/conversations`, requestOptions).then(handleResponse);
 }
 
 function update(user) {

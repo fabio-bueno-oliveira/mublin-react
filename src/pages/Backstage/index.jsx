@@ -84,7 +84,7 @@ function BackstageMainPage () {
 
     const myProjects = (category) => userProjects.filter((project) => { return (project.name.toLowerCase().includes(pesquisa.toLowerCase())) }).sort((a, b) => a.name.localeCompare(b.name)).map((project, key) =>
         <>
-        { !userInfo.requesting ? (
+        { !userInfo.requesting &&
         <Segment key={key} attached='top' className='mb-4' secondary={project.confirmed === 2}>
             <Label attached='top' size='tiny' style={{fontWeight:'500'}}>
                 {project.status === 1 ? <><Icon name={project.workIcon} className='mr-1' />Membro oficial</> : <><Icon name={project.workIcon} className='mr-1' />Convidado/Sideman</>}
@@ -141,20 +141,7 @@ function BackstageMainPage () {
                 </p>
             }
         </Segment>
-        ) : (
-        <Placeholder className='mt-4'>
-            <Placeholder.Header image>
-                <Placeholder.Line />
-                <Placeholder.Line />
-            </Placeholder.Header>
-            <Placeholder.Paragraph>
-                <Placeholder.Line />
-                <Placeholder.Line />
-                <Placeholder.Line />
-                <Placeholder.Line />
-            </Placeholder.Paragraph>
-        </Placeholder>
-        )}
+        }
         </>
     )
 

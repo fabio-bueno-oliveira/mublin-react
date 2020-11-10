@@ -287,6 +287,10 @@ function ProjectBackstagePage (props) {
         initialIndex: activeTabIndex
     }
 
+    if (matchMedia('screen and (min-width: 800px)').matches) {
+        sliderOptions.draggable = false;
+    }  
+
     return (
         <>
         <HeaderDesktop />
@@ -362,6 +366,9 @@ function ProjectBackstagePage (props) {
                                     <Icon name='calendar alternate outline' className="mr-2" />Eventos
                                 </Button>
                                 <Button basic active={activeTabIndex === 3} size='tiny' onClick={() => setActiveTabIndex(3)}>
+                                    <Icon name='music' className="mr-2" />Músicas
+                                </Button>
+                                <Button basic active={activeTabIndex === 4} size='tiny' onClick={() => setActiveTabIndex(4)}>
                                     <Icon name='pencil' className="mr-2" />Editar
                                 </Button>
                             </Flickity>

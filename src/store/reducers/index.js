@@ -8,6 +8,7 @@ import { feed } from './feed';
 import { search } from './search';
 import { searchProject } from './searchProject';
 import { user } from './user';
+import { messages } from './messages';
 import { project } from './project';
 import { profile } from './profile';
 import { followedByMe } from './follow';
@@ -28,6 +29,7 @@ const rootReducer = combineReducers({
   search,
   searchProject,
   user,
+  messages,
   project,
   profile,
   followedByMe,

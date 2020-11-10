@@ -28,6 +28,7 @@ import BackstageMainPage from './pages/Backstage';
 import NotificationsPage from './pages/NotificationsPage';
 import SearchPage from './pages/SearchPage';
 import Messages from './pages/Messages';
+import Conversation from './pages/Messages/conversation'
 import Settings from './pages/Settings';
 import MySubscription from './pages/Settings/Subscription';
 import SettingsPreferences from './pages/Settings/Preferences';
@@ -90,6 +91,7 @@ function Routes (props) {
                 <PrivateRoute authed={loggedIn} path="/project/:username" component={ProjectPage} />
                 <PrivateRoute authed={loggedIn} path="/notifications" component={NotificationsPage} />
                 <PrivateRoute authed={loggedIn} path="/search" component={SearchPage} />
+                <PrivateRoute authed={loggedIn} path="/messages/conversation/:profileId" component={Conversation} />
                 <PrivateRoute authed={loggedIn} path="/messages" component={Messages} />
                 <PrivateRoute authed={loggedIn} path="/settings/profile/picture" component={SettingsProfilePicture} />
                 <PrivateRoute authed={loggedIn} path="/settings/profile" component={SettingsProfile} />

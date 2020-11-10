@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { Grid, Comment, Form, Button, Breadcrumb, Icon, Header } from 'semantic-ui-react';
+import { Grid, Comment, Form, Button, Icon, Header, Image } from 'semantic-ui-react';
 import { userInfos } from '../../store/actions/user';
 import HeaderDesktop from '../../components/layout/headerDesktop';
 import HeaderMobile from '../../components/layout/headerMobile';
@@ -97,11 +97,6 @@ function ConversationPage (props) {
         )
     }, [])
 
-    const sections = [
-        { key: 'messages', content: 'Mensagens', link: true, onClick:() => history.push("/messages") },
-        { key: 'chat', content: 'Conversa com '+profileInfo.name+' '+profileInfo.lastname, link: false }
-    ]
-
     return (
         <>
             <HeaderDesktop />
@@ -110,7 +105,11 @@ function ConversationPage (props) {
             <Grid centered verticalAlign='middle' columns={1} as='main' columns={1} className="container mb-2 px-1 px-md-3">
                 <Grid.Row>
                     <Grid.Column mobile={16} computer={10}>
-                        <Breadcrumb icon='right angle' sections={sections} />
+                        <div>
+                            <Icon name='arrow left' className='mr-3' onClick={() => history.push("/messages")} /> 
+                            <Image src={profileInfo.picture} avatar onClick={() => history.push("/"+profileInfo.username)} />
+                            <span>{profileInfo.username}</span>
+                        </div>
                         { !messagesLoaded ? (
                             <Header as='h5' className='my-4'>Carregando...</Header>
                         ) : (
@@ -120,9 +119,9 @@ function ConversationPage (props) {
                                     <Comment.Avatar onClick={() => history.push("/"+message.senderUsername)} src={message.senderPicture} style={{cursor:'pointer'}} />
                                     <Comment.Content>
                                         <Comment.Author as='a' onClick={() => history.push("/"+message.senderUsername)}>{message.senderName+' '+message.senderLastname}</Comment.Author>
-                                        <Comment.Metadata>
-                                            <div>há {formatDistance(new Date(message.createdFormatted * 1000), new Date(), {locale:pt})}</div>
-                                        </Comment.Metadata>
+                                        <Comment.Text style={{fontSize:'11px',opacity:'0.7'}}>
+                                            há {formatDistance(new Date(message.createdFormatted * 1000), new Date(), {locale:pt})}
+                                        </Comment.Text>
                                         <Comment.Text>{message.message}</Comment.Text>
                                         { !!(user.id === message.senderId && message.seen) &&
                                             <Comment.Text style={{fontSize:'11px',opacity:'0.7'}}><Icon name='check' size='small' color='blue' />Lido</Comment.Text>

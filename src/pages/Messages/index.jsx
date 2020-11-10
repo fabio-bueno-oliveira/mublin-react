@@ -44,23 +44,23 @@ function MessagesPage () {
                             <Comment.Group>
                                 { conversations.recentConversations.map((conversation, key) =>
                                     <>
-                                        <Comment key={key}>
+                                        <Comment key={key} onClick={() => history.push("/messages/conversation/"+conversation.senderId)}>
                                             <Comment.Avatar src={conversation.senderPicture} />
                                             <Comment.Content>
                                                 <Comment.Author as='a' onClick={() => history.push("/messages/conversation/"+conversation.senderId)}>{conversation.senderName+' '+conversation.senderLastname}</Comment.Author>
-                                                <Comment.Metadata>
-                                                    <div>última mensagem há {formatDistance(new Date(conversation.lastMessageCreatedFormatted * 1000), new Date(), {locale:pt})}</div>
-                                                </Comment.Metadata>
-                                                <Comment.Text style={ !conversation.lastMessageSeen ? { fontWeight:'500'} : {}}>
+                                                <Comment.Text className='pt-1' style={ !conversation.lastMessageSeen ? { fontWeight:'500'} : {}}>
                                                     {conversation.lastMessage.substring(0, 150) + '...'}
                                                 </Comment.Text>
-                                                <Comment.Text>
-                                                    {conversation.lastMessageSeen ? <nobr><Label size='mini'><Icon name='checkmark' color={conversation.lastMessageSeen ? 'green' : 'grey'} />Lida</Label></nobr> : <Label size='mini'>Não lida</Label>}
+                                                <Comment.Text style={{fontSize:'11px',opacity:'0.7'}}>
+                                                    há {formatDistance(new Date(conversation.lastMessageCreatedFormatted * 1000), new Date(), {locale:pt})}
                                                 </Comment.Text>
-                                                <Comment.Actions>
+                                                {/* <Comment.Text>
+                                                    {conversation.lastMessageSeen ? <nobr><Label size='mini'><Icon name='checkmark' color={conversation.lastMessageSeen ? 'green' : 'grey'} />Lida</Label></nobr> : <Label size='mini'>Não lida</Label>}
+                                                </Comment.Text> */}
+                                                {/* <Comment.Actions>
                                                     <Comment.Action onClick={() => history.push("/messages/conversation/"+conversation.senderId)}>Ver conversa</Comment.Action>
                                                     <Comment.Action>Apagar conversa</Comment.Action>
-                                                </Comment.Actions>
+                                                </Comment.Actions> */}
                                             </Comment.Content>
                                         </Comment>
                                         <Divider />

@@ -8,7 +8,7 @@ import FooterMenuMobile from '../../components/layout/footerMenuMobile';
 import Spacer from '../../components/layout/Spacer';
 import { profileInfos } from '../../store/actions/profile';
 import { followInfos } from '../../store/actions/follow';
-import { Header, Tab, Card, Grid, Image, Button, Label, Menu, Icon, Modal, List, Popup, Feed, Form, Radio} from 'semantic-ui-react';
+import { Header, Segment, Tab, Card, Grid, Image, Button, Label, Menu, Icon, Modal, List, Popup, Feed, Form, Radio} from 'semantic-ui-react';
 import Loader from 'react-loader-spinner';
 import Flickity from 'react-flickity-component';
 import { formatDistance } from 'date-fns';
@@ -220,13 +220,9 @@ function ProfilePage (props) {
                 timeout={30000} //30 secs
             />
         ) : (
+            profile.id && 
             <>
             <Spacer compact />
-            {/* <Grid centered columns={1} className="container mt-0" style={{backgroundColor:'white'}}>
-                <Grid.Column width={16}>
-                    <p>adsadad</p>
-                </Grid.Column>
-            </Grid> */}
             <Grid id="info" columns={2} stackable className="container pb-5 pb-md-0 mb-5 mb-md-0">
                 <Grid.Row>
                     <Grid.Column width={4} className='noPaddingForMobile main'>
@@ -605,8 +601,9 @@ function ProfilePage (props) {
                     </Grid.Column>
                 </Grid.Row>
             </Grid>
-        <FooterMenuMobile />
-        </>
+            <FooterMenuMobile />
+            }
+            </>
         )}
         <Modal
             size='mini'
@@ -695,6 +692,32 @@ function ProfilePage (props) {
                 )}
             </Modal.Content>
         </Modal>
+        { (!profile.requesting && !profile.id) && 
+            <main className='_404'>
+            <div className="ui container" style={{ height: '100%' }}>
+                <Grid centered columns={1} verticalAlign='middle'>
+                    <Grid.Column mobile={16} computer={10} className="pb-0">
+                        <Segment basic textAlign='center'>
+                            <Image as='a' href='/' centered src='https://ik.imagekit.io/mublin/logos/mublin-logo-text-black_xyGjcfis_.png' className='mb-1' /> Erro 404
+                        </Segment>
+                        <Segment basic textAlign='center'>
+                            <Header as='h1' className='mb-0'>Ops!</Header>
+                            <Header as='h3' className='mt-0'>Página não encontrada!</Header>
+                            <p>Não encontramos a página solicitada.</p>
+                            {/* <Button 
+                                color='black' 
+                                size='small' 
+                                onClick={() => history.push("/home")}
+                                className='mt-5 mr-0'
+                            >
+                                Ir para a Home
+                            </Button> */}
+                        </Segment>
+                    </Grid.Column>
+                </Grid>
+            </div>
+            </main>
+        }
         </>
     );
 };

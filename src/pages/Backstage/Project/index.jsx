@@ -337,8 +337,10 @@ function ProjectBackstagePage (props) {
                                     <Message.Header>{project.name} criado com sucesso!</Message.Header>
                                 </Message>
                             }
-                            <p><span style={{fontSize:'12px'}}><Icon name='warehouse' /> Backstage / </span> <Link as='a' to={{ pathname: '/project/'+project.username }} style={{fontSize:'12px'}}>Ir para a página do projeto</Link></p>
-                            <Header as='h3' style={{marginTop:'5px',marginBottom:'0px'}}>
+                            <p className='mb-3'>
+                                <Label basic as='a' size='small' style={{fontWeight:'500'}} onClick={() => history.push('/backstage')}><Icon name='warehouse' />Backstage</Label> <Label basic as='a' size='small' style={{fontWeight:'500'}} onClick={() => history.push('/project/'+project.username)}>Ir para a página do projeto</Label>
+                            </p>
+                            <Header as='h2' style={{marginTop:'5px',marginBottom:'0px'}}>
                                 {project.picture ? (
                                     <Image src={'https://ik.imagekit.io/mublin/projects/tr:h-200,w-200,c-maintain_ratio/'+project.picture} rounded />
                                 ) : (

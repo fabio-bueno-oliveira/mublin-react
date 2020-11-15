@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { userInfos } from '../../store/actions/user';
 import { useHistory } from 'react-router-dom';
-import { Grid, Header, Segment, Form, Image, Icon, Placeholder, Label, Button, Checkbox } from 'semantic-ui-react';
+import { Grid, Header, Segment, Form, Image, Icon, Modal, Label, Button, Checkbox } from 'semantic-ui-react';
 import HeaderDesktop from '../../components/layout/headerDesktop';
 import HeaderMobile from '../../components/layout/headerMobile';
 import Spacer from '../../components/layout/Spacer'
@@ -82,65 +82,106 @@ function BackstageMainPage () {
             })
     }
 
+    // Gerencia as preferências do usuário no Projeto selecionado
+    const [openModalMagageUser, setOpenModalManageUser] = useState(false)
+    const [selectedProjectIdToManage, setSelectedProjectIdToManage] = useState(null)
+    const [selectedProjectNameToManage, setSelectedProjectNameToManage] = useState(null)
+    const infoProjectToManage = userProjects.filter((x) => { return x.id === selectedProjectIdToManage })
+    const [active, setActive] = useState('1')
+    const [joined_in, setJoined_in] = useState(null)
+    const [left_in, setLeft_in] = useState(null)
+
+    const [checkbox, setCheckbox] = useState(true)
+    const handleCheckbox = (x) => {
+        setCheckbox(value => !value)
+        setLeft_in('')
+        if (x) {
+            setActive('0')
+        } else {
+            setActive('1')
+        }
+    }
+
+    const openModal = (projectId,projectName) => {
+        setSelectedProjectIdToManage(projectId)
+        setSelectedProjectNameToManage(projectName)
+        setOpenModalManageUser(true)
+    }
+    const closeModal = () => {
+        setSelectedProjectIdToManage(null)
+        setSelectedProjectNameToManage(null)
+        setOpenModalManageUser(false)
+    }
+
     const myProjects = (category) => userProjects.filter((project) => { return (project.name.toLowerCase().includes(pesquisa.toLowerCase())) }).sort((a, b) => a.name.localeCompare(b.name)).map((project, key) =>
         <>
         { !userInfo.requesting &&
-        <Segment key={key} attached='top' className='mb-4' secondary={project.confirmed === 2}>
-            <Label attached='top' size='tiny' style={{fontWeight:'500'}}>
-                {project.status === 1 ? <><Icon name={project.workIcon} className='mr-1' />Membro oficial</> : <><Icon name={project.workIcon} className='mr-1' />Convidado/Sideman</>}
-                <Label circular color={(project.yearLeftTheProject || project.yearEnd) ? 'red' : 'green'} empty size='mini' style={{verticalAlign:'top'}} className='mx-1' />
-                {(project.joined_in && (project.joined_in !== project.yearLeftTheProject)) ? ( 
-                    <>
-                        { !project.yearEnd ? ( 
-                            project.joined_in +' até '+(project.yearLeftTheProject ? project.yearLeftTheProject : 'atualmente')
-                        ) : (
-                            project.joined_in +' até '+project.yearEnd
-                        )}
-                    </>
-                ) : (
-                    <>
-                        {project.joined_in} {project.yearEnd && ' até '+project.yearEnd}
-                    </>
-                )}
-            </Label>
-            <Header as='h4' onClick={() => history.push('/backstage/'+project.username)} style={{cursor:'pointer'}}>
-                {project.picture ? (
-                    <Image src={'https://ik.imagekit.io/mublin/projects/tr:h-200,w-200,c-maintain_ratio/'+project.picture} rounded />
-                ) : (
-                    <Image src={'https://ik.imagekit.io/mublin/sample-folder/tr:h-200,w-200,c-maintain_ratio/avatar-undefined_-dv9U6dcv3.jpg'} rounded />
-                )}
-                <Header.Content>
-                    {project.name}
-                    <Header.Subheader style={{fontSize:'12px',width:'240px',whiteSpace:'nowrap',overflow:'hidden',textOverflow:'ellipsis'}}>{project.ptname} {project.genre1 && '('+project.genre1}{project.genre2 && ', '+project.genre2}{project.genre3 && ', '+project.genre3}{project.genre1 && ')'}</Header.Subheader>
-                </Header.Content>
-            </Header>
-            <div>
-                {userInfo.picture ? (
-                    <Image src={'https://ik.imagekit.io/mublin/users/avatars/tr:h-200,w-200,c-maintain_ratio/'+userInfo.id+'/'+userInfo.picture} avatar />
-                ) : (
-                    <Image src={'https://ik.imagekit.io/mublin/sample-folder/tr:h-200,w-200,c-maintain_ratio/sample-folder/avatar-undefined_Kblh5CBKPp.jpg'} avatar />
-                )}
-                <span style={{fontSize:'12px'}}>
-                    {project.role1}{project.role2 && ', '+project.role2}{project.role3 && ', '+project.role3}
-                </span>
-            </div>
-            <p className='mt-2 mb-3'><Checkbox disabled={action1IsLoading === key && true} toggle label='Portfolio' checked={project.portfolio} onChange={project.portfolio ? ( () => updateProjectCategory(project.id, project.projectid, 0, key) ) : ( () => updateProjectCategory(project.id, project.projectid, 1, key) )} /> <Checkbox disabled={action2IsLoading === key && true} toggle label='Favorito' checked={project.featured} onClick={project.featured ? ( () => updateProjectFeatured(project.id, project.projectid, 0, key) ) : ( () => updateProjectFeatured(project.id, project.projectid, 1, key) )} className='ml-3' /></p>
-            {(!project.yearEnd && project.ptid !== 7) &&
-                <p style={{fontSize:'11px'}}>
-                    Projeto em atividade {project.yearFoundation && 'desde '+project.yearFoundation}
-                </p>
-            }
-            {(project.yearEnd && project.yearEnd <= currentYear) &&
-                <p style={{fontSize:'11px'}}>
-                    Projeto encerrado em {project.yearEnd}
-                </p>
-            }
-            {(project.ptid === 7) &&
-                <p style={{fontSize:'11px'}}>
-                    Ideia em desenvolvimento
-                </p>
-            }
-        </Segment>
+        <div className='mb-4 mt-3'>
+            <Segment key={key} attached='top' secondary={project.confirmed === 2}>
+                <Label attached='top' size='tiny' basic style={{fontWeight:'500'}}>
+                    {project.status === 1 ? <><Icon name={project.workIcon} className='mr-1' />Membro oficial</> : <><Icon name={project.workIcon} className='mr-1' />Convidado/Sideman</>}
+                    <Label circular color={(project.yearLeftTheProject || project.yearEnd) ? 'red' : 'green'} empty size='mini' style={{verticalAlign:'top'}} className='mx-1' />
+                    {(project.joined_in && (project.joined_in !== project.yearLeftTheProject)) ? ( 
+                        <>
+                            { !project.yearEnd ? ( 
+                                project.joined_in +' até '+(project.yearLeftTheProject ? project.yearLeftTheProject : 'atualmente')
+                            ) : (
+                                project.joined_in +' até '+project.yearEnd
+                            )}
+                        </>
+                    ) : (
+                        <>
+                            {project.joined_in} {project.yearEnd && ' até '+project.yearEnd}
+                        </>
+                    )}
+                </Label>
+                <Header as='h3' onClick={() => history.push('/backstage/'+project.username)} style={{cursor:'pointer'}}>
+                    {project.picture ? (
+                        <Image src={'https://ik.imagekit.io/mublin/projects/tr:h-200,w-200,c-maintain_ratio/'+project.picture} rounded />
+                    ) : (
+                        <Image src={'https://ik.imagekit.io/mublin/sample-folder/tr:h-200,w-200,c-maintain_ratio/avatar-undefined_-dv9U6dcv3.jpg'} rounded />
+                    )}
+                    <Header.Content>
+                        {project.name}
+                        <Header.Subheader style={{fontSize:'12px',width:'240px',whiteSpace:'nowrap',overflow:'hidden',textOverflow:'ellipsis'}}>{project.ptname} {project.genre1 && '('+project.genre1}{project.genre2 && ', '+project.genre2}{project.genre3 && ', '+project.genre3}{project.genre1 && ')'}</Header.Subheader>
+                    </Header.Content>
+                </Header>
+                <div>
+                    {userInfo.picture ? (
+                        <Image src={'https://ik.imagekit.io/mublin/users/avatars/tr:h-200,w-200,c-maintain_ratio/'+userInfo.id+'/'+userInfo.picture} avatar />
+                    ) : (
+                        <Image src={'https://ik.imagekit.io/mublin/sample-folder/tr:h-200,w-200,c-maintain_ratio/sample-folder/avatar-undefined_Kblh5CBKPp.jpg'} avatar />
+                    )}
+                    <span style={{fontSize:'12px'}}>
+                        {project.role1}{project.role2 && ', '+project.role2}{project.role3 && ', '+project.role3}
+                    </span>
+                </div>
+                <p className='mt-2 mb-3'><Checkbox disabled={action1IsLoading === key && true} toggle label='Portfolio' checked={project.portfolio} onChange={project.portfolio ? ( () => updateProjectCategory(project.id, project.projectid, 0, key) ) : ( () => updateProjectCategory(project.id, project.projectid, 1, key) )} /> <Checkbox disabled={action2IsLoading === key && true} toggle label='Favorito' checked={project.featured} onClick={project.featured ? ( () => updateProjectFeatured(project.id, project.projectid, 0, key) ) : ( () => updateProjectFeatured(project.id, project.projectid, 1, key) )} className='ml-3' /></p>
+                {(!project.yearEnd && project.ptid !== 7) &&
+                    <p style={{fontSize:'11px'}}>
+                        Projeto em atividade {project.yearFoundation && 'desde '+project.yearFoundation}
+                    </p>
+                }
+                {(project.yearEnd && project.yearEnd <= currentYear) &&
+                    <p style={{fontSize:'11px'}}>
+                        Projeto encerrado em {project.yearEnd}
+                    </p>
+                }
+                {(project.ptid === 7) &&
+                    <p style={{fontSize:'11px'}}>
+                        Ideia em desenvolvimento
+                    </p>
+                }
+            </Segment>
+            <Button.Group attached='bottom' size='mini'>
+                <Button onClick={() => history.push('/backstage/'+project.username)}>
+                    <Icon name='warehouse' />Backstage
+                </Button>
+                <Button onClick={() => history.push('/backstage/preferences/'+project.username)}>
+                    <Icon name='setting' />Gerenciar participação
+                </Button>
+            </Button.Group>
+        </div>
         }
         </>
     )
@@ -155,7 +196,7 @@ function BackstageMainPage () {
                     <Grid.Column computer={10} mobile={16}>
                         <Header as='h2' className='mb-4'>
                             <Header.Content>
-                                Meu Backstage
+                                Meus Backstages
                                 <Header.Subheader>Gerencie e veja informações dos seus projetos</Header.Subheader>
                             </Header.Content>
                         </Header>

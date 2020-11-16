@@ -190,7 +190,7 @@ function HomePage () {
                                             <div className="carousel-cell">
                                                 <Image src={'https://ik.imagekit.io/mublin/misc/square-sad-music_SeGz8vs_2A.jpg'} height='85' width='85' rounded />
                                                 <h5 className="ui header mt-2 mb-0">
-                                                    <div className="sub header mt-1">Sem portfolios</div>
+                                                    <div className="sub header mt-1">Nada aqui</div>
                                                 </h5>
                                             </div> 
                                         )

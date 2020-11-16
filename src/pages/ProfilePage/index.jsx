@@ -275,7 +275,7 @@ function ProfilePage (props) {
                                     { (profile.availabilityId === 1 || profile.availabilityId === 2) &&
                                     <>
                                         <p style={{ fontSize: "11px" }}>
-                                            {profile.availabilityFocus && 'Para projetos:'} {profile.availabilityFocus === 1 || profile.availabilityFocus === 3 && <span className='ml-2 mr-2'><Icon name='checkmark' size='small' />Próprios</span>} {profile.availabilityFocus === 2 || profile.availabilityFocus === 3 && <span className='mr-2'><Icon name='checkmark' size='small' />Outros</span>}
+                                            {profile.availabilityFocus === 1 || profile.availabilityFocus === 3 && <span className='ml-2 mr-2'><Icon name='checkmark' size='small' />Projetos próprios</span>} {profile.availabilityFocus === 2 || profile.availabilityFocus === 3 && <span className='mr-2'><Icon name='checkmark' size='small' />Sideman</span>}
                                         </p>
                                         <p className='mt-1'>
                                             { profile.availabilityItems[0].id && profile.availabilityItems.map((item, key) =>
@@ -381,7 +381,7 @@ function ProfilePage (props) {
                                                         reloadOnUpdate
                                                     >
                                                         { !profile.requesting ? (
-                                                            profile.projects[0].id ? (
+                                                            portfolioProjects.length ? (
                                                                 portfolioProjects.map((projeto, key) =>
                                                                     <div className="carousel-cell" key={projeto.id}>
                                                                         <Link to={{ pathname: '/project/'+projeto.username }}>
@@ -394,7 +394,7 @@ function ProfilePage (props) {
                                                                                 <Header.Content>
                                                                                     {projeto.name}
                                                                                     <Header.Subheader style={{fontSize:'11.5px'}}>
-                                                                                        {projeto.type}
+                                                                                        {projeto.type}2
                                                                                     </Header.Subheader>
                                                                                 </Header.Content>
                                                                             </Header>
@@ -408,7 +408,7 @@ function ProfilePage (props) {
                                                                 <div className="carousel-cell">
                                                                     <Image src={'https://ik.imagekit.io/mublin/misc/square-sad-music_SeGz8vs_2A.jpg'} height='85' width='85' rounded />
                                                                     <h5 className="ui header mt-2 mb-0">
-                                                                        <div className="sub header mt-1">Sem projetos</div>
+                                                                        <div className="sub header mt-1">Nada aqui</div>
                                                                     </h5>
                                                                 </div> 
                                                             )

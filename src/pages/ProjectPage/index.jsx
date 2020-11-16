@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { projectInfos } from '../../store/actions/project';
+import { userInfos } from '../../store/actions/user';
 import HeaderDesktop from '../../components/layout/headerDesktop';
 import HeaderMobile from '../../components/layout/headerMobile';
 import FooterMenuMobile from '../../components/layout/footerMenuMobile';
@@ -17,15 +18,22 @@ function ProjectPage (props) {
 
     let dispatch = useDispatch();
 
+    const user = JSON.parse(localStorage.getItem('user'));
+
     useEffect(() => {
         dispatch(projectInfos.getProjectInfo(props.match.params.username));
         dispatch(projectInfos.getProjectMembers(props.match.params.username));
         dispatch(projectInfos.getProjectOpportunities(props.match.params.username));
+        dispatch(userInfos.getUserProjects(user.id));
     }, []);
 
     const project = useSelector(state => state.project);
     const members = project.members.filter((member) => { return member.confirmed === 1 });
     const opportunities = project.opportunities;
+
+    const userProjects = useSelector(state => state.user.projects)
+    const participationCheck = userProjects.filter((x) => { return x.projectid === project.id });
+    console.log(36, participationCheck)
 
     document.title = project.name+' | Mublin'
 
@@ -102,9 +110,11 @@ function ProjectPage (props) {
                                 </div>
                             }
                         </Segment>
-                        <section className="desktopAction d-none d-lg-block">
-                            <Button size='tiny' onClick={() => history.push('/backstage/'+props.match.params.username)}><Icon name='warehouse' /> Ir para o Backstage deste projeto</Button>
-                        </section>
+                        { !!(!project.requesting && participationCheck.length) && 
+                            <section className="desktopAction d-none d-lg-block">
+                                <Button size='tiny' onClick={() => history.push('/backstage/'+props.match.params.username)}><Icon name='warehouse' /> Ir para o Backstage deste projeto</Button>
+                            </section>
+                        }
                     </Grid.Column>
                 </Grid.Row>
             </Grid>

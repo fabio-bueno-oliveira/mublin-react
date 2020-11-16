@@ -144,7 +144,7 @@ function ProfilePage () {
                                         )}
                                         <Header.Content>
                                             {userInfo.username}
-                                            <Header.Subheader as='a' onClick={() => history.push("/settings/profile/picture")}>Alterar foto</Header.Subheader>
+                                            <Header.Subheader as='a' onClick={() => history.push("/settings/profile/picture")}><Icon name='camera' className='mr-0' />Alterar foto</Header.Subheader>
                                         </Header.Content>
                                     </Header>
                                 </section>

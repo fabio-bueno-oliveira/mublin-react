@@ -338,7 +338,7 @@ function ProjectBackstagePage (props) {
                                 </Message>
                             }
                             <p className='mb-3'>
-                                <Label basic as='a' size='small' style={{fontWeight:'500'}} onClick={() => history.push('/backstage')}><Icon name='warehouse' />Backstage</Label> <Label basic as='a' size='small' style={{fontWeight:'500'}} onClick={() => history.push('/project/'+project.username)}>Ir para a página do projeto</Label>
+                                <Label basic as='a' size='small' style={{fontWeight:'500'}} onClick={() => history.push('/backstage')}><Icon name='warehouse' />Backstages</Label> <Label basic as='a' size='small' style={{fontWeight:'500'}} onClick={() => history.push('/project/'+project.username)}>Ir para a página do projeto</Label>
                             </p>
                             <Header as='h2' style={{marginTop:'5px',marginBottom:'0px'}}>
                                 {project.picture ? (
@@ -463,11 +463,11 @@ function ProjectBackstagePage (props) {
                                                                                             </span>
                                                                                             {member.active ? (
                                                                                                 <div style={{fontSize:'11px'}}>
-                                                                                                    <Icon color='green' name='power' />Ativo no projeto atualmente
+                                                                                                    <Label circular color='green'  empty size='mini' /> Ativo no projeto atualmente
                                                                                                 </div>
                                                                                             ) : (
                                                                                                 <div style={{fontSize:'12px'}}>
-                                                                                                    <Icon color='grey' name='power' />Inativo no projeto atualmente
+                                                                                                    <Label circular color='grey'  empty size='mini' /> Inativo no projeto atualmente
                                                                                                 </div>
                                                                                             )}
                                                                                         </>

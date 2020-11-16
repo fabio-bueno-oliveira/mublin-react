@@ -103,13 +103,13 @@ function ProductPage (props) {
                                 </Placeholder.Header>
                             </Placeholder>
                         ) : (
-                            <List relaxed='very' divided>
+                            <List relaxed='very' size='large' divided>
                                 { owners.length ? (
                                         owners.map((owner,key) =>
                                             <List.Item key={key} size='large'>
-                                                <Image avatar src={owner.picture} onClick={() => history.push('/'+owner.username)} />
+                                                <Image style={{cursor:'pointer'}} avatar src={owner.picture} onClick={() => history.push('/'+owner.username)} />
                                                 <List.Content>
-                                                    <List.Header as='a'>{owner.name+' '+owner.lastname}</List.Header>
+                                                    <List.Header as='a' onClick={() => history.push('/'+owner.username)}>{owner.name+' '+owner.lastname}</List.Header>
                                                     <List.Description style={{fontSize:'12px'}} className='py-1'>
                                                         {owner.city && <span>{owner.city}/{owner.region}</span>}
                                                     </List.Description>

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { userInfos } from '../../store/actions/user';
 import { useHistory } from 'react-router-dom';
-import { Grid, Header, Segment, Form, Image, Icon, Modal, Label, Button, Checkbox } from 'semantic-ui-react';
+import { Grid, Header, Segment, Form, Image, Icon, Label, Button } from 'semantic-ui-react';
 import HeaderDesktop from '../../components/layout/headerDesktop';
 import HeaderMobile from '../../components/layout/headerMobile';
 import Spacer from '../../components/layout/Spacer'
@@ -28,89 +28,10 @@ function BackstageMainPage () {
 
     const userProjects = useSelector(state => state.user.projects)
 
-    const [isLoading, setIsLoading] = useState(false)
-    const [action1IsLoading, setAction1IsLoading] = useState(null)
-    const [action2IsLoading, setAction2IsLoading] = useState(null)
-
     const [pesquisa, setPesquisa] = useState("")
 
     const handlePesquisaChange = e => {
         setPesquisa(e.target.value)
-    }
-
-    const updateProjectCategory = (userProjectId, projectId, portfolio, key) => {
-        setAction1IsLoading(key)
-        fetch('https://mublin.herokuapp.com/project/'+projectId+'/updateCategory', {
-            method: 'PUT',
-            headers: {
-                'Accept': 'application/json, text/plain, */*',
-                'Content-Type': 'application/json',
-                'Authorization': 'Bearer ' + userToken.token
-            },
-            body: JSON.stringify({userProjectId: userProjectId, portfolio: portfolio})
-        }).then((response) => {
-            response.json().then((response) => {
-                dispatch(userInfos.getUserProjects(userToken.id));
-                setAction1IsLoading(null)
-            })
-        }).catch(err => {
-                setAction1IsLoading(null)
-                console.error(err)
-                alert('Ocorreu um erro ao tentar atualizar a categoria do projeto. Tente novamente em instantes')
-            })
-    }
-
-    const updateProjectFeatured = (userProjectId, projectId, featured, key) => {
-        setAction2IsLoading(key)
-        fetch('https://mublin.herokuapp.com/project/'+projectId+'/updateFeatured', {
-            method: 'PUT',
-            headers: {
-                'Accept': 'application/json, text/plain, */*',
-                'Content-Type': 'application/json',
-                'Authorization': 'Bearer ' + userToken.token
-            },
-            body: JSON.stringify({userProjectId: userProjectId, featured: featured})
-        }).then((response) => {
-            response.json().then((response) => {
-                dispatch(userInfos.getUserProjects(userToken.id));
-                setAction2IsLoading(null)
-            })
-        }).catch(err => {
-                setAction2IsLoading(null)
-                console.error(err)
-                alert('Ocorreu um erro ao tentar atualizar a opção de favorito neste projeto. Tente novamente em instantes')
-            })
-    }
-
-    // Gerencia as preferências do usuário no Projeto selecionado
-    const [openModalMagageUser, setOpenModalManageUser] = useState(false)
-    const [selectedProjectIdToManage, setSelectedProjectIdToManage] = useState(null)
-    const [selectedProjectNameToManage, setSelectedProjectNameToManage] = useState(null)
-    const infoProjectToManage = userProjects.filter((x) => { return x.id === selectedProjectIdToManage })
-    const [active, setActive] = useState('1')
-    const [joined_in, setJoined_in] = useState(null)
-    const [left_in, setLeft_in] = useState(null)
-
-    const [checkbox, setCheckbox] = useState(true)
-    const handleCheckbox = (x) => {
-        setCheckbox(value => !value)
-        setLeft_in('')
-        if (x) {
-            setActive('0')
-        } else {
-            setActive('1')
-        }
-    }
-
-    const openModal = (projectId,projectName) => {
-        setSelectedProjectIdToManage(projectId)
-        setSelectedProjectNameToManage(projectName)
-        setOpenModalManageUser(true)
-    }
-    const closeModal = () => {
-        setSelectedProjectIdToManage(null)
-        setSelectedProjectNameToManage(null)
-        setOpenModalManageUser(false)
     }
 
     const myProjects = (category) => userProjects.filter((project) => { return (project.name.toLowerCase().includes(pesquisa.toLowerCase())) }).sort((a, b) => a.name.localeCompare(b.name)).map((project, key) =>
@@ -118,9 +39,30 @@ function BackstageMainPage () {
         { !userInfo.requesting &&
         <div className='mb-4 mt-3'>
             <Segment key={key} attached='top' secondary={project.confirmed === 2}>
-                <Label attached='top' size='tiny' basic style={{fontWeight:'500'}}>
-                    {project.status === 1 ? <><Icon name={project.workIcon} className='mr-1' />Membro oficial</> : <><Icon name={project.workIcon} className='mr-1' />Convidado/Sideman</>}
-                    <Label circular color={(project.yearLeftTheProject || project.yearEnd) ? 'red' : 'green'} empty size='mini' style={{verticalAlign:'top'}} className='mx-1' />
+                <Header as='h3' className='mt-0 mb-3'>
+                    {project.picture ? (
+                        <Image src={'https://ik.imagekit.io/mublin/projects/tr:h-200,w-200,c-maintain_ratio/'+project.picture} rounded />
+                    ) : (
+                        <Image src={'https://ik.imagekit.io/mublin/sample-folder/tr:h-200,w-200,c-maintain_ratio/avatar-undefined_-dv9U6dcv3.jpg'} rounded />
+                    )}
+                    <Header.Content>
+                        {project.name}
+                        <Header.Subheader style={{fontSize:'12px',width:'240px',whiteSpace:'nowrap',overflow:'hidden',textOverflow:'ellipsis'}}>{project.ptname} {project.genre1 && '('+project.genre1}{project.genre2 && ', '+project.genre2}{project.genre3 && ', '+project.genre3}{project.genre1 && ')'}</Header.Subheader>
+                    </Header.Content>
+                </Header>
+                <div className='mb-2'>
+                    {userInfo.picture ? (
+                        <Image src={'https://ik.imagekit.io/mublin/users/avatars/tr:h-200,w-200,c-maintain_ratio/'+userInfo.id+'/'+userInfo.picture} avatar />
+                    ) : (
+                        <Image src={'https://ik.imagekit.io/mublin/sample-folder/tr:h-200,w-200,c-maintain_ratio/sample-folder/avatar-undefined_Kblh5CBKPp.jpg'} avatar />
+                    )}
+                    <span style={{fontSize:'12px'}}>
+                        {project.role1}{project.role2 && ', '+project.role2}{project.role3 && ', '+project.role3}
+                    </span>
+                </div>
+                <div className='mb-2' style={{fontWeight:'500', fontSize:'11px'}}>
+                    {project.status === 1 ? <><Icon name={project.workIcon} className='mr-1' />Membro oficial</> : <><Icon name={project.workIcon} className='mr-1' />Sideman</>}
+                    <Label circular color={(project.yearLeftTheProject || project.yearEnd) ? 'red' : 'green'} empty size='mini' className='ml-2 mr-1' />
                     {(project.joined_in && (project.joined_in !== project.yearLeftTheProject)) ? ( 
                         <>
                             { !project.yearEnd ? ( 
@@ -134,51 +76,35 @@ function BackstageMainPage () {
                             {project.joined_in} {project.yearEnd && ' até '+project.yearEnd}
                         </>
                     )}
-                </Label>
-                <Header as='h3' onClick={() => history.push('/backstage/'+project.username)} style={{cursor:'pointer'}}>
-                    {project.picture ? (
-                        <Image src={'https://ik.imagekit.io/mublin/projects/tr:h-200,w-200,c-maintain_ratio/'+project.picture} rounded />
-                    ) : (
-                        <Image src={'https://ik.imagekit.io/mublin/sample-folder/tr:h-200,w-200,c-maintain_ratio/avatar-undefined_-dv9U6dcv3.jpg'} rounded />
-                    )}
-                    <Header.Content>
-                        {project.name}
-                        <Header.Subheader style={{fontSize:'12px',width:'240px',whiteSpace:'nowrap',overflow:'hidden',textOverflow:'ellipsis'}}>{project.ptname} {project.genre1 && '('+project.genre1}{project.genre2 && ', '+project.genre2}{project.genre3 && ', '+project.genre3}{project.genre1 && ')'}</Header.Subheader>
-                    </Header.Content>
-                </Header>
-                <div>
-                    {userInfo.picture ? (
-                        <Image src={'https://ik.imagekit.io/mublin/users/avatars/tr:h-200,w-200,c-maintain_ratio/'+userInfo.id+'/'+userInfo.picture} avatar />
-                    ) : (
-                        <Image src={'https://ik.imagekit.io/mublin/sample-folder/tr:h-200,w-200,c-maintain_ratio/sample-folder/avatar-undefined_Kblh5CBKPp.jpg'} avatar />
-                    )}
-                    <span style={{fontSize:'12px'}}>
-                        {project.role1}{project.role2 && ', '+project.role2}{project.role3 && ', '+project.role3}
-                    </span>
                 </div>
-                <p className='mt-2 mb-3'><Checkbox disabled={action1IsLoading === key && true} toggle label='Portfolio' checked={project.portfolio} onChange={project.portfolio ? ( () => updateProjectCategory(project.id, project.projectid, 0, key) ) : ( () => updateProjectCategory(project.id, project.projectid, 1, key) )} /> <Checkbox disabled={action2IsLoading === key && true} toggle label='Favorito' checked={project.featured} onClick={project.featured ? ( () => updateProjectFeatured(project.id, project.projectid, 0, key) ) : ( () => updateProjectFeatured(project.id, project.projectid, 1, key) )} className='ml-3' /></p>
                 {(!project.yearEnd && project.ptid !== 7) &&
-                    <p style={{fontSize:'11px'}}>
+                    <p className='mb-0' style={{fontSize:'11px'}}>
                         Projeto em atividade {project.yearFoundation && 'desde '+project.yearFoundation}
                     </p>
                 }
                 {(project.yearEnd && project.yearEnd <= currentYear) &&
-                    <p style={{fontSize:'11px'}}>
+                    <p className='mb-0' style={{fontSize:'11px'}}>
                         Projeto encerrado em {project.yearEnd}
                     </p>
                 }
                 {(project.ptid === 7) &&
-                    <p style={{fontSize:'11px'}}>
+                    <p className='mb-0' style={{fontSize:'11px'}}>
                         Ideia em desenvolvimento
                     </p>
                 }
+                {/* <p className='mt-2 mb-0' style={{fontSize:'12px'}}> */}
+                    {project.confirmed === 2 && <Label className='mr-2' size='mini' tag color='grey' style={{fontWeight:'500'}}><Icon name='clock' />Aguardando aprovação</Label>}  
+                    {!!(project.featured && project.confirmed !== 2) && <Label className='mr-2' size='mini' tag color='black' style={{fontWeight:'500'}}><Icon name='star' color='yellow' />Favorito</Label>} 
+                    {!!(project.portfolio && project.confirmed !== 2) && <Label className='mr-2' size='mini' color='black' tag style={{fontWeight:'500'}}><Icon name='tag' />Portfolio</Label>} 
+                    {!!(project.touring && project.confirmed !== 2) && <Label className='mr-2' size='mini' color='black' tag style={{fontWeight:'500'}}><Icon name='road' />Em turnê</Label>}
+                {/* </p> */}
             </Segment>
             <Button.Group attached='bottom' size='mini'>
                 <Button onClick={() => history.push('/backstage/'+project.username)}>
-                    <Icon name='warehouse' />Backstage
+                    <Icon name='warehouse' />Ver Backstage
                 </Button>
                 <Button onClick={() => history.push('/backstage/preferences/'+project.username)}>
-                    <Icon name='setting' />Gerenciar participação
+                    <Icon name='setting' />Gerenciar Participação
                 </Button>
             </Button.Group>
         </div>
@@ -197,11 +123,12 @@ function BackstageMainPage () {
                         <Header as='h2' className='mb-4'>
                             <Header.Content>
                                 Meus Backstages
-                                <Header.Subheader>Gerencie e veja informações dos seus projetos</Header.Subheader>
+                                <Header.Subheader>Gerencie seus projetos</Header.Subheader>
                             </Header.Content>
                         </Header>
-                        <Form style={{width:'260px'}}>
+                        <Form>
                             <Form.Input 
+                                fluid
                                 icon='search'
                                 id="pesquisa"
                                 name="pesquisa"

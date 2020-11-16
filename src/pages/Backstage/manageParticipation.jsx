@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { projectInfos } from '../../store/actions/project';
 import { miscInfos } from '../../store/actions/misc';
-import { Grid, Header, Form, Divider, Checkbox, Icon, Label, Button, Image } from 'semantic-ui-react';
+import { Grid, Header, Form, Select, Divider, Checkbox, Icon, Label, Button, Image } from 'semantic-ui-react';
 import HeaderDesktop from '../../components/layout/headerDesktop';
 import HeaderMobile from '../../components/layout/headerMobile';
 import Spacer from '../../components/layout/Spacer'
@@ -90,7 +90,6 @@ function BackstageProjectPreferencesPage (props) {
           (result) => {
             setIsLoaded(true);
             setInfo(result);
-            console.log(result);
             setFormInfo(
                 {
                     status: result.status,
@@ -118,13 +117,43 @@ function BackstageProjectPreferencesPage (props) {
         )
     }, [])
 
-    const handleCheckbox = (x) => {
+    const handleActiveCheckbox = (x) => {
         setActiveCheckbox(value => !value)
         if (x) {
             setFormInfo({...formInfo,left_in: info.left_in})
         } else {
             setFormInfo({...formInfo,left_in: null})
         }
+    }
+
+    const rolesList = roles.list.map(role => ({ 
+        text: role.name !== role.description ? role.name+' ('+role.description+')' : role.name,
+        value: role.id,
+        key: role.id
+    }));
+
+    const [submitIsLoading, setSubmitIsLoading] = useState(false) 
+
+    const handleFormSubmit = () => {
+        setSubmitIsLoading(true)
+        setTimeout(() => {
+            fetch('https://mublin.herokuapp.com/user/project/updatePreferencesInProject', {
+                method: 'PUT',
+                headers: {
+                    'Accept': 'application/json, text/plain, */*',
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + userToken.token
+                },
+                body: JSON.stringify({projectId: project.id, status: formInfo.status, featured: formInfo.featured, portfolio: formInfo.portfolio, joined_in: formInfo.joined_in, left_in: formInfo.left_in, touring: formInfo.touring, show_on_profile: formInfo.show_on_profile, main_role_fk: formInfo.main_role_fk, second_role_fk: formInfo.second_role_fk, third_role_fk: formInfo.third_role_fk })
+            }).then(res => res.json()).then((result) => {
+                setSubmitIsLoading(false)
+                history.push("/backstages")
+            }).catch(err => {
+                console.error(err)
+                alert("Ocorreu um erro ao atualizar as informações. Tente novamente em instantes")
+                setSubmitIsLoading(false)
+            })
+        }, 300);
     }
 
     return (
@@ -140,7 +169,7 @@ function BackstageProjectPreferencesPage (props) {
                         <Header as='h2' className='mb-0'>
                             <Header.Content>
                                 {info.name}
-                                <p><Label tag size='mini' color='violet'>{info.typeName}</Label> <Label tag size='mini' color='green'>Fundado em {info.foundation_year}</Label> {info.end_year && <Label tag size='mini' color='red'>Encerrado em {info.end_year}</Label>}</p>
+                                <p><Label tag size='mini' color='black'>{info.typeName}</Label> <Label tag size='mini' color='black'>Fundado em {info.foundation_year}</Label> {info.end_year && <Label tag size='mini' color='red'>Encerrado em {info.end_year}</Label>}</p>
                                 <Image.Group size='mini' className='mt-2'>
                                     { members.filter((member) => { return member.id !== userToken.id }).map((member,key) =>
                                         <Image src={'https://ik.imagekit.io/mublin/users/avatars/tr:h-200,w-200,c-maintain_ratio/'+member.id+'/'+member.picture} avatar title={member.name+' '+member.lastname+' ('+member.role1+')'} />
@@ -153,7 +182,10 @@ function BackstageProjectPreferencesPage (props) {
                             { members.filter((member) => { return member.id === userToken.id }).map((member,key) =>
                                 <Image src={'https://ik.imagekit.io/mublin/users/avatars/tr:h-200,w-200,c-maintain_ratio/'+member.id+'/'+member.picture} avatar title={member.name+' '+member.lastname} />
                             )}
-                            <span>Gerenciar minha participação neste projeto</span>
+                            <span>Gerenciar minha participação</span>
+                            {/* <div>
+                                {JSON.stringify(formInfo, null, 2)}
+                            </div> */}
                         </div>
                         </>
                         }
@@ -175,112 +207,132 @@ function BackstageProjectPreferencesPage (props) {
                                         checked={formInfo.featured ? true : false}
                                         onChange={formInfo.featured ? () => setFormInfo({...formInfo,featured:0}) : () => setFormInfo({...formInfo,featured:1})}
                                     />
-                                    <p style={{fontSize:'11px'}}>Projetos favoritos são exibidos em destaque em seu perfil</p>
+                                    <p style={{fontSize:'11px'}}>Projetos favoritos são exibidos com destaque em seu perfil</p>
                                 </Form.Field>
                                 <Form.Group widths='equal'>
-                                    <Form.Input name="joined_in" type="number" fluid label='Entrei em' defaultValue={info.joined_in} onChange={e => setFormInfo({...formInfo,joined_in: e.target.value})} error={(formInfo.joined_in > 0 && formInfo.joined_in < info.foundation_year) && { content: 'Ano inferior ao início do projeto' }} min={info.foundation_year} max={info.end_year} />
+                                    <Form.Input required name="joined_in" type="number" fluid label='Entrei em' defaultValue={info.joined_in} onChange={e => setFormInfo({...formInfo,joined_in: e.target.value})} error={(!formInfo.joined_in || (info.end_year && formInfo.joined_in > info.end_year) || formInfo.joined_in < info.foundation_year) && { content: formInfo.joined_in < info.foundation_year ? 'Ano inferior ao início do projeto' : 'Ano superior ao início do projeto' }} min={info.foundation_year} max={info.end_year} />
                                     { info.left_in ? (
                                         <Form.Input name="left_in" type="number" fluid label={'Deixei o projeto em'} defaultValue={info.left_in} onChange={e => setFormInfo({...formInfo,left_in: e.target.value})} error={(formInfo.left_in > 0 && formInfo.left_in > info.end_year) && {content: 'Ano superior ao encerramento do projeto'}} min={info.foundation_year} max={info.end_year} disabled={activeCheckbox ? true : false} />
                                     ) : (
                                         <Form.Input name="left_in" type="number" fluid label='Deixei o projeto em' onChange={e => setFormInfo({...formInfo,left_in: e.target.value})} error={(formInfo.left_in > currentYear) && {content: 'Ano superior ao ano atual'}} min={info.foundation_year} max={currentYear} disabled={activeCheckbox ? true : false} />
                                     )}
                                 </Form.Group>
-                                <Form.Checkbox name="active" checked={activeCheckbox} label={info.end_year ? 'Estive ativo até o final do projeto' : 'Estou ativo atualmente neste projeto'} onChange={() => handleCheckbox(activeCheckbox)} />
+                                <Form.Checkbox 
+                                    name="active" 
+                                    checked={activeCheckbox} 
+                                    label={info.end_year ? { children: <><Label circular color={activeCheckbox ? 'green' : 'grey'} empty size='mini' /> Estive ativo até o final do projeto</> } : { children: <><Label circular color={activeCheckbox ? 'green' : 'grey'} empty size='mini' /> Estou ativo atualmente neste projeto</> }}
+                                    onChange={() => handleActiveCheckbox(activeCheckbox)} 
+                                />
+                                <Form.Field 
+                                    required
+                                    id="role"
+                                    name="role"
+                                    control={Select}
+                                    label="Meu papel principal neste projeto"
+                                    options={rolesList}
+                                    placeholder="Selecione ou digite"
+                                    onChange={(e, { value }) => setFormInfo({...formInfo,main_role_fk:value})}
+                                    search
+                                    value={formInfo.main_role_fk}
+                                />
+                                <Form.Field 
+                                    id="role"
+                                    name="role"
+                                    control={Select}
+                                    label="Meu papel secundário neste projeto"
+                                    options={rolesList}
+                                    placeholder="Selecione ou digite"
+                                    onChange={(e, { value }) => setFormInfo({...formInfo,second_role_fk:value})}
+                                    search
+                                    value={formInfo.second_role_fk}
+                                />
+                                <Form.Field 
+                                    id="role"
+                                    name="role"
+                                    control={Select}
+                                    label="Meu papel terciário neste projeto"
+                                    options={rolesList}
+                                    placeholder="Selecione ou digite"
+                                    onChange={(e, { value }) => setFormInfo({...formInfo,third_role_fk:value})}
+                                    search
+                                    value={formInfo.third_role_fk}
+                                />
                                 <Divider />
-                                <Form.Group grouped>
+                                <Form.Field>
                                     <label><Icon name='id badge' />Meu status no projeto</label>
-                                    { info.type !== 7 && 
-                                    <>
-                                    <Form.Field
-                                        disabled={(info.admin && info.confirmed !== 2) ? false : true }
-                                        label='Membro'
-                                        control='input'
-                                        type='radio'
-                                        name='status'
-                                        checked={formInfo.status === 1 ? true : false}
-                                        onClick={() => setFormInfo({...formInfo,status:1})}
-                                    />
-                                    <Form.Field
-                                        disabled={(info.admin && info.confirmed !== 2) ? false : true }
-                                        label='Convidado'
-                                        control='input'
-                                        type='radio'
-                                        name='status'
-                                        checked={formInfo.status === 2 ? true : false}
-                                        onClick={() => setFormInfo({...formInfo,status:2})}
-                                    />
-                                    </>
-                                    }
-                                    { info.type === 7 && 
-                                    <>
-                                    <Form.Field
-                                        disabled={(info.status && 3) ? false : true }
-                                        label='Idealizador'
-                                        control='input'
-                                        type='radio'
-                                        name='status'
-                                        checked={formInfo.status === 3 ? true : false}
-                                    />
-                                    <Form.Field
-                                        disabled={(info.status && 4) ? false : true }
-                                        label='Candidato'
-                                        control='input'
-                                        type='radio'
-                                        name='status'
-                                        checked={formInfo.status === 4 ? true : false}
-                                    />
-                                    </>
-                                    }
-                                    { info.confirmed === 2 && 
-                                        <Form.Field
+                                </Form.Field>
+                                { info.type !== 7 && 
+                                <>
+                                    <Form.Field>
+                                        <Checkbox
+                                            radio
+                                            label='Membro'
+                                            name='statusRadioGroup'
+                                            value={1}
+                                            checked={formInfo.status === 1 ? true : false}
+                                            onClick={() => setFormInfo({...formInfo,status:1})}
+                                            disabled={(info.admin && info.confirmed !== 2) ? false : true }
+                                        />
+                                    </Form.Field>
+                                    <Form.Field>
+                                        <Checkbox
+                                            radio
+                                            label='Convidado'
+                                            name='statusRadioGroup'
+                                            value={2}
+                                            checked={formInfo.status === 2 ? true : false}
+                                            onClick={() => setFormInfo({...formInfo,status:2})}
+                                            disabled={(info.admin && info.confirmed !== 2) ? false : true }
+                                        />
+                                    </Form.Field>
+                                </>
+                                }
+                                { info.type === 7 && 
+                                <>
+                                    <Form.Field>
+                                        <Checkbox
+                                            radio
+                                            label='Idealizador'
+                                            name='statusRadioGroup'
+                                            value={3}
+                                            checked={formInfo.status === 3 ? true : false}
+                                            onClick={() => setFormInfo({...formInfo,status:3})}
+                                            disabled={(info.status && 3) ? false : true }
+                                        />
+                                    </Form.Field>
+                                    <Form.Field>
+                                        <Checkbox
+                                            radio
+                                            label='Candidato'
+                                            name='statusRadioGroup'
+                                            value={4}
+                                            checked={formInfo.status === 4 ? true : false}
+                                            onClick={() => setFormInfo({...formInfo,status:4})}
+                                            disabled={(info.status && 4) ? false : true }
+                                        />
+                                    </Form.Field>
+                                </>
+                                }
+                                { info.confirmed === 2 && 
+                                    <Form.Field>
+                                        <Checkbox
+                                            radio
                                             label='Aguardando aprovação'
-                                            control='input'
-                                            type='radio'
-                                            name='status'
+                                            name='statusRadioGroup'
                                             checked
                                         />
-                                    }
-                                    { info.confirmed === 0 && 
-                                        <Form.Field
+                                    </Form.Field>
+                                }
+                                { info.confirmed === 0 && 
+                                    <Form.Field>
+                                        <Checkbox
+                                            radio
                                             label='Participação recusada pelo administrador'
-                                            control='input'
-                                            type='radio'
-                                            name='status'
+                                            name='statusRadioGroup'
                                             checked
                                         />
-                                    }
-                                </Form.Group>
-
-
-
-                                <Form.Field>
-                                    <label><Icon name='id badge' />Meu status no projeto</label>
-                                </Form.Field>
-                                <Form.Field>
-                                    <Checkbox
-                                        radio
-                                        label='Membro'
-                                        name='statusRadioGroup'
-                                        value={1}
-                                        checked={formInfo.status === 1 ? true : false}
-                                        onClick={() => setFormInfo({...formInfo,status:1})}
-                                        disabled={(info.admin && info.confirmed !== 2) ? false : true }
-                                    />
-                                </Form.Field>
-                                <Form.Field>
-                                    <Checkbox
-                                        radio
-                                        label='Convidado'
-                                        name='statusRadioGroup'
-                                        value={2}
-                                        checked={formInfo.status === 2 ? true : false}
-                                        onClick={() => setFormInfo({...formInfo,status:2})}
-                                        disabled={(info.admin && info.confirmed !== 2) ? false : true }
-                                    />
-                                </Form.Field>
-
-
-
+                                    </Form.Field>
+                                }
                                 <Divider />
                                 <Form.Field>
                                     <label><Icon name='folder open outline' />Categorizar este projeto em</label>
@@ -308,6 +360,7 @@ function BackstageProjectPreferencesPage (props) {
                                 <Divider />
                                 <Form.Field>
                                     <Checkbox 
+                                        disabled={info.end_year ? true : false}
                                         label={{ children: <><Icon name='road' />Estou turnê com este projeto atualmente</> }}
                                         checked={formInfo.touring ? true : false}
                                         onChange={formInfo.touring ? () => setFormInfo({...formInfo,touring:0}) : () => setFormInfo({...formInfo,touring:1})}
@@ -320,9 +373,23 @@ function BackstageProjectPreferencesPage (props) {
                                         onChange={formInfo.show_on_profile ? () => setFormInfo({...formInfo,show_on_profile:0}) : () => setFormInfo({...formInfo,show_on_profile:1})}
                                     />
                                 </Form.Field>
-                                <Button primary>Salvar alterações</Button>
+                                <Button 
+                                    primary
+                                    disabled={(!formInfo.joined_in || formInfo.joined_in < info.foundation_year) ? true : false}
+                                    onClick={() => handleFormSubmit()}
+                                    loading={submitIsLoading}
+                                >
+                                    Salvar alterações
+                                </Button>
                             </Form>
-                            <Button className='mt-3' basic negative size='tiny'>Sair deste projeto (me desassociar)</Button>
+                            <Button 
+                                className='mt-3' 
+                                basic 
+                                negative 
+                                size='tiny'
+                            >
+                                Sair deste projeto (me desassociar)
+                            </Button>
                             </>
                         )}
                     </Grid.Column>

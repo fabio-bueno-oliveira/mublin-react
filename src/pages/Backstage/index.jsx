@@ -38,7 +38,7 @@ function BackstageMainPage () {
         <>
         { !userInfo.requesting &&
         <div className='mb-4 mt-3'>
-            <Segment key={key} attached='top' secondary={project.confirmed === 2}>
+            <Segment key={key} attached='top' color={(project.yearLeftTheProject || project.yearEnd) ? null : 'green'} secondary={project.confirmed === 2}>
                 <Header as='h3' className='mt-0 mb-3'>
                     {project.picture ? (
                         <Image src={'https://ik.imagekit.io/mublin/projects/tr:h-200,w-200,c-maintain_ratio/'+project.picture} rounded />
@@ -62,7 +62,7 @@ function BackstageMainPage () {
                 </div>
                 <div className='mb-2' style={{fontWeight:'500', fontSize:'11px'}}>
                     {project.status === 1 ? <><Icon name={project.workIcon} className='mr-1' />Membro oficial</> : <><Icon name={project.workIcon} className='mr-1' />Sideman</>}
-                    <Label circular color={(project.yearLeftTheProject || project.yearEnd) ? 'red' : 'green'} empty size='mini' className='ml-2 mr-1' />
+                    <Label circular color={(project.yearLeftTheProject || project.yearEnd) ? 'grey' : 'green'} empty size='mini' className='ml-2 mr-1' />
                     {(project.joined_in && (project.joined_in !== project.yearLeftTheProject)) ? ( 
                         <>
                             { !project.yearEnd ? ( 
@@ -93,10 +93,11 @@ function BackstageMainPage () {
                     </p>
                 }
                 {/* <p className='mt-2 mb-0' style={{fontSize:'12px'}}> */}
-                    {project.confirmed === 2 && <Label className='mr-2' size='mini' tag color='grey' style={{fontWeight:'500'}}><Icon name='clock' />Aguardando aprovação</Label>}  
-                    {!!(project.featured && project.confirmed !== 2) && <Label className='mr-2' size='mini' tag color='black' style={{fontWeight:'500'}}><Icon name='star' color='yellow' />Favorito</Label>} 
-                    {!!(project.portfolio && project.confirmed !== 2) && <Label className='mr-2' size='mini' color='black' tag style={{fontWeight:'500'}}><Icon name='tag' />Portfolio</Label>} 
-                    {!!(project.touring && project.confirmed !== 2) && <Label className='mr-2' size='mini' color='black' tag style={{fontWeight:'500'}}><Icon name='road' />Em turnê</Label>}
+                    {project.confirmed === 2 && <Label className='mr-2 mt-3' size='mini' tag color='grey' style={{fontWeight:'500'}}><Icon name='clock' />Aguardando aprovação</Label>}  
+                    { project.admin === 1 && <Label className='mr-2 mt-3' size='mini' tag style={{fontWeight:'500'}}><Icon name='key' />Administrador</Label>}
+                    {!!(project.featured && project.confirmed !== 2) && <Label className='mr-2 mt-3' size='mini' tag style={{fontWeight:'500'}}><Icon name='star' />Favorito</Label>} 
+                    {!!(project.portfolio && project.confirmed !== 2) && <Label className='mr-2 mt-3' size='mini' tag style={{fontWeight:'500'}}><Icon name='tag' />Portfolio</Label>} 
+                    {!!(project.touring && project.confirmed !== 2) && <Label className='mt-3' size='mini' tag style={{fontWeight:'500'}}><Icon name='road' />Em turnê</Label>}
                 {/* </p> */}
             </Segment>
             <Button.Group attached='bottom' size='mini'>

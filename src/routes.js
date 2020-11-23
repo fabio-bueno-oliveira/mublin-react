@@ -21,6 +21,7 @@ import New from './pages/New';
 import NewProject from './pages/New/project';
 import NewProjectIdea from './pages/New/idea';
 import NewEvent from './pages/New/event';
+import NewEventStep2 from './pages/New/event-step2'
 import JoinProject from './pages/New/join';
 import ProjectPage from './pages/ProjectPage';
 import ProjectBackstagePage from './pages/Backstage/Project';
@@ -83,6 +84,7 @@ function Routes (props) {
                 <PrivateRoute authed={loggedIn} path="/home" component={Home} />
                 <PrivateRoute authed={loggedIn} path="/feed" component={Feed} />
                 <PrivateRoute authed={loggedIn} path="/new/event" component={NewEvent} />
+                <PrivateRoute authed={loggedIn} path="/new/event/step2/" component={NewEventStep2} />
                 <PrivateRoute authed={loggedIn} path="/new/project" component={NewProject} />
                 <PrivateRoute authed={loggedIn} path="/new/idea" component={NewProjectIdea} />
                 <PrivateRoute authed={loggedIn} path="/new/join" component={JoinProject} />

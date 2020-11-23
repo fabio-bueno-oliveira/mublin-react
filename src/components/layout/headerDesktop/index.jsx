@@ -111,7 +111,7 @@ const HeaderDesktop = () => {
                         <Dropdown.Menu>
                             <Dropdown.Item>
                                 <i className='dropdown icon' />
-                                <i className="text fas fa-cogs mr-1"></i> Projeto
+                                <i className="text fas fa-bolt mr-1"></i> Projeto
                                 <Dropdown.Menu>
                                     <Dropdown.Item onClick={() => history.push("/new/project")}>
                                         <i className="fas fa-plus fa-fw"></i> Criar do zero
@@ -130,17 +130,23 @@ const HeaderDesktop = () => {
                                     </Dropdown.Item>
                                 </Dropdown.Menu>
                             </Dropdown.Item>
+                            <Dropdown.Item>
+                                <i className='dropdown icon' />
+                                <i className="text far fa-calendar-plus mr-1"></i> Evento
+                                <Dropdown.Menu>
+                                    <Dropdown.Item onClick={() => history.push("/new/event/?type=private")}>
+                                        <i className="fas fa-drum mr-1"></i> Ensaio
+                                    </Dropdown.Item>
+                                    <Dropdown.Item onClick={() => history.push("/new/event/?type=public")}>
+                                        <i className="fas fa-ticket-alt mr-1"></i> Show
+                                    </Dropdown.Item>
+                                    {/* <Dropdown.Item onClick={() => history.push("/home")}>
+                                        <i className="fas fa-road mr-1"></i> Turnê
+                                    </Dropdown.Item> */}
+                                </Dropdown.Menu>
+                            </Dropdown.Item>
                             <Dropdown.Item onClick={() => history.push("/home")}>
                                 <i className="fas fa-music mr-1"></i> <span className='mr-4'>Música</span>
-                            </Dropdown.Item>
-                            <Dropdown.Item onClick={() => history.push("/new/event/?type=private")}>
-                                <i className="fas fa-drum mr-1"></i> Ensaio
-                            </Dropdown.Item>
-                            <Dropdown.Item onClick={() => history.push("/new/event/?type=public")}>
-                                <i className="fas fa-ticket-alt mr-1"></i> Show
-                            </Dropdown.Item>
-                            <Dropdown.Item onClick={() => history.push("/home")}>
-                                <i className="fas fa-road mr-1"></i> Turnê
                             </Dropdown.Item>
                         </Dropdown.Menu>
                     </Dropdown >

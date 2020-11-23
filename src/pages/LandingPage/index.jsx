@@ -7,7 +7,7 @@ import './styles.scss';
 
 function LandingPage () {
 
-    document.title = 'Otimize sua vida de músico';
+    document.title = 'Mublin — Otimize sua rotina na música';
 
     const loggedIn = useSelector(state => state.authentication.loggedIn);
 

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory, Link } from 'react-router-dom';
 import { miscInfos } from '../../../store/actions/misc';
-import { Grid, Segment, Header, Icon, Button, Message, Image, Label, Form, Table, Modal, Container, Loader as UiLoader, Select, Menu, Tab, Divider } from 'semantic-ui-react';
+import { Grid, Segment, Header, Icon, Button, Message, Image, Label, Form, Table, Modal, Container, Loader as UiLoader, Select, Confirm, Tab, Divider } from 'semantic-ui-react';
 import { projectInfos } from '../../../store/actions/project';
 import HeaderDesktop from '../../../components/layout/headerDesktop';
 import HeaderMobile from '../../../components/layout/headerMobile';
@@ -207,7 +207,7 @@ function ProjectBackstagePage (props) {
                 'Content-Type': 'application/json',
                 'Authorization': 'Bearer ' + user.token
             },
-            body: JSON.stringify({userId: memberId, projectId: project.id, admin: manageUserAdmin, active: manageUserActive, leader: manageUserLeader})
+            body: JSON.stringify({userId: memberId, projectId: project.id, admin: manageUserAdmin, active: 1, leader: 0})
         }).then((response) => {
             response.json().then((response) => {
                 dispatch(projectInfos.getProjectMembers(props.match.params.username))
@@ -289,7 +289,46 @@ function ProjectBackstagePage (props) {
 
     if (matchMedia('screen and (min-width: 800px)').matches) {
         sliderOptions.draggable = false;
-    }  
+    }
+
+    // START Events
+
+    const [modalConfirmDeleteEvent, setModalConfirmDeleteEvent] = useState(false)
+    const [eventIdToDelete, setEventIdToDelete] = useState(null)
+    const openModalDeleteEvent = (eventId) => {
+        setModalConfirmDeleteEvent(true)
+        setEventIdToDelete(eventId)
+    }
+    const closeModalDeleteEvent = () => {
+        setModalConfirmDeleteEvent(false)
+        setEventIdToDelete(null)
+    }
+
+    const deleteEvent = () => {
+        setIsLoading(true)
+        fetch('https://mublin.herokuapp.com/event/deleteEvent', {
+            method: 'DELETE',
+            headers: {
+                'Accept': 'application/json, text/plain, */*',
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + user.token
+            },
+            body: JSON.stringify({eventId: eventIdToDelete, projectId: project.id})
+        }).then((response) => {
+            response.json().then((response) => {
+                dispatch(projectInfos.getProjectEvents(props.match.params.username));
+                setIsLoading(false)
+                setModalConfirmDeleteEvent(false)
+                setEventIdToDelete(null)
+            })
+        }).catch(err => {
+                setIsLoading(false)
+                console.error(err)
+                alert('Ocorreu um erro ao tentar deletar o evento. Tente novamente em instantes')
+                setModalConfirmDeleteEvent(false)
+                setEventIdToDelete(null)
+            })
+    }
 
     return (
         <>
@@ -362,7 +401,7 @@ function ProjectBackstagePage (props) {
                                     <Icon name='block layout' className="mr-2" />Resumo
                                 </Button>
                                 <Button basic active={activeTabIndex === 1} size='tiny' onClick={() => setActiveTabIndex(1)}>
-                                    <Icon name='users' className="mr-2" />Integrantes
+                                    <Icon name='users' className="mr-2" />Integrantes {!!members.filter((x) => { return x.confirmed === 2 }).length && <Label circular color='red' empty size='mini' />}
                                 </Button>
                                 <Button basic active={activeTabIndex === 2} size='tiny' onClick={() => setActiveTabIndex(2)}>
                                     <Icon name='calendar alternate outline' className="mr-2" />Eventos
@@ -439,7 +478,7 @@ function ProjectBackstagePage (props) {
                                                                     <Table.Body>
                                                                         {members.map((member, key) =>
                                                                             <Table.Row key={key}>
-                                                                                <Table.Cell width={14}>
+                                                                                <Table.Cell width={14} warning={member.confirmed === 2}>
                                                                                     { member.picture ? (
                                                                                         <Image src={'https://ik.imagekit.io/mublin/users/avatars/tr:h-200,w-200,c-maintain_ratio/'+member.id+'/'+member.picture} avatar onClick={() => history.push('/'+member.username)} style={{cursor:'pointer'}} />
                                                                                     ) : (
@@ -527,7 +566,7 @@ function ProjectBackstagePage (props) {
                                                                                 { !!(membersAdmin.length === 1 && project.adminAccess && user.id === memberToManage.id) && 
                                                                                     <p style={{fontSize:'11px'}}>É necessário ao menos um administrador por projeto</p>
                                                                                 }
-                                                                                <Form.Field 
+                                                                                {/* <Form.Field 
                                                                                     label='Ativo no projeto atualmente' 
                                                                                     control='select' 
                                                                                     disabled={!project.adminAccess ? true : false}
@@ -546,7 +585,7 @@ function ProjectBackstagePage (props) {
                                                                                 >
                                                                                     <option value='1'>Sim</option>
                                                                                     <option value='0'>Ñão</option>
-                                                                                </Form.Field>
+                                                                                </Form.Field> */}
                                                                             </Form>
                                                                             <Button secondary fluid size='small' className='mt-4' onClick={() => updateMemberSettings(memberToManage.id)} disabled={project.adminAccess ? false : true} loading={isLoading}>
                                                                                 Salvar
@@ -584,6 +623,14 @@ function ProjectBackstagePage (props) {
                                                 <Grid columns={1}>
                                                     <Grid.Row stretched>
                                                         <Grid.Column>
+                                                            <Segment basic className='p-0 m-0'>
+                                                                <Button as='a' color='black' size='mini' href={'/new/event/?type=private&project='+project.id+'&username='+project.username} disabled={!project.adminAccess}>
+                                                                    <Icon name='calendar plus outline' />Novo ensaio
+                                                                </Button>
+                                                                <Button as='a' color='black' size='mini' href={'/new/event/?type=public&project='+project.id+'&username='+project.username} disabled={!project.adminAccess}>
+                                                                    <Icon name='calendar plus outline' />Novo show
+                                                                </Button>
+                                                            </Segment>
                                                             <Segment>
                                                                 <Header as='h4'>
                                                                     Eventos
@@ -611,6 +658,11 @@ function ProjectBackstagePage (props) {
                                                                                         </Table.Cell>
                                                                                         <Table.Cell collapsing>
                                                                                             <Button size='mini' basic>Detalhes</Button>
+                                                                                            { project.adminAccess === 1 &&
+                                                                                                <Button icon negative basic size='mini' title='Deletar evento' onClick={() => openModalDeleteEvent(event.id)}>
+                                                                                                    <Icon name='times' />
+                                                                                                </Button>
+                                                                                            }
                                                                                         </Table.Cell>
                                                                                     </Table.Row>
                                                                                 )}
@@ -992,6 +1044,15 @@ function ProjectBackstagePage (props) {
                 </>
             )
         )}
+        <Confirm
+            content='Deletar este evento?'
+            cancelButton='Cancelar'
+            confirmButton="Deletar!"
+            open={modalConfirmDeleteEvent}
+            onCancel={() => closeModalDeleteEvent()
+            }
+            onConfirm={() => deleteEvent()}
+        />
         <FooterMenuMobile />
         </>
     )

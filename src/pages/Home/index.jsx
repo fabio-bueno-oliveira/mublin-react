@@ -9,9 +9,7 @@ import { userInfos } from '../../store/actions/user';
 import { eventsInfos } from '../../store/actions/events';
 import { notesInfos } from '../../store/actions/notes';
 import { Container, Header, Tab, Grid, Image, Icon, Label, Menu } from 'semantic-ui-react';
-// import Notes from './notes';
-import PublicEvents from './publicEvents';
-import PrivateEvents from './privateEvents';
+import Events from './events';
 import Flickity from 'react-flickity-component';
 import './styles.scss';
 
@@ -37,9 +35,6 @@ function HomePage () {
     const projectsPortfolio = userProjects.filter((project) => { return project.portfolio === 1 && project.confirmed !== 0 })
 
     const events = useSelector(state => state.events)
-    const allEvents = events.list
-    const publicEvents = allEvents.filter((evento) => { return evento.eventTypeId === 2 || evento.eventTypeId === 5 || evento.eventTypeId === 6 })
-    const privateEvents = allEvents.filter((evento) => { return evento.eventTypeId === 1 || evento.eventTypeId === 3 || evento.eventTypeId === 4 })
 
     const sliderOptions = {
         autoPlay: false,
@@ -69,158 +64,161 @@ function HomePage () {
         <HeaderDesktop />
         <HeaderMobile />
         <Spacer />
-        <main className="home">
-            <section id="carousels" className="ui container px-3">
-                <Header as='h2'>Meus projetos</Header>
-                <Tab menu={{ secondary: true }} defaultActiveIndex={0} panes={
-                    [
-                        {
-                        menuItem: 'Principais ('+projectsMain.length+')',
-                        render: () => 
-                            <Tab.Pane loading={userInfo.requesting} attached={false} as="div">
-                                <Flickity
-                                    className={'carousel'} // default ''
-                                    elementType={'div'} // default 'div'
-                                    options={sliderOptions} // takes flickity options {}
-                                    disableImagesLoaded={false} // default false
-                                    reloadOnUpdate // default false
-                                >
-                                    { !userInfo.requesting ? (
-                                        projectsMain.length ? (
-                                            projectsMain.map((project, key) =>
-                                                <div className="carousel-cell" key={key} style={project.confirmed === 2 ? {opacity:'0.6'} : {}}>
-                                                    <Link to={{ pathname: '/project/'+project.username }}>
-                                                        { !!project.featured && 
-                                                            <Label color='black' floating size='mini' style={{top: '0', left: '20%',width:'fit-content'}}>
-                                                                <Icon name='star' color='yellow' className='mr-0' />
-                                                            </Label>
-                                                        }
-                                                        {project.picture ? (
-                                                            <Image src={'https://ik.imagekit.io/mublin/projects/tr:h-85,w-95,c-maintain_ratio/'+project.picture} rounded />
-                                                        ) : (
-                                                            <Image src={'https://ik.imagekit.io/mublin/sample-folder/avatar-undefined_-dv9U6dcv3.jpg'} height='85' width='85' rounded />
-                                                        )}
-                                                        <Header as='h5' className='mt-2 mb-0'>
-                                                            <Header.Content>
-                                                                {project.name}
-                                                                <Header.Subheader style={{fontSize:'11.5px'}}>
-                                                                    {project.ptname}
-                                                                </Header.Subheader>
-                                                            </Header.Content>
-                                                        </Header>
-                                                        { project.confirmed === 1 ? (
-                                                            <div className="mt-2" style={{fontWeight: '400',fontSize: '11px', color: 'black', opacity: '0.8'}}>
-                                                                <Icon name={project.workIcon} />{project.workTitle}
-                                                            </div>
-                                                        ) : (
-                                                            <div className="mt-2" style={{fontWeight: '400',fontSize: '11px', color: 'black', opacity: '0.8'}}>
-                                                                <Icon name='clock outline' />Aguardando
-                                                            </div>
-                                                        )}
-                                                    </Link>
-                                                </div>
-                                            )
-                                        ) : (
-                                            <div className="carousel-cell">
-                                                <Image src={'https://ik.imagekit.io/mublin/misc/square-sad-music_SeGz8vs_2A.jpg'} height='85' width='85' rounded />
-                                                <h5 className="ui header mt-2 mb-0">
-                                                    <div className="sub header mt-1">Sem principais</div>
-                                                </h5>
-                                            </div> 
-                                        )
-                                    ) : (
-                                        <div style={{textAlign: 'center', width: '100%'}}>
-                                            <Icon loading name='spinner' size='big' />
-                                        </div>
-                                    )}
-                                </Flickity>
-                            </Tab.Pane>,
-                        }, 
-                        {
-                        menuItem: (
-                            <Menu.Item key='portfolio'>
-                                <Icon name='tags' className="mr-2" /> Portfolio ({projectsPortfolio.length})
-                            </Menu.Item>
+        <Container className='px-3'>
+            <Grid stackable columns={2}>
+                <Grid.Column mobile={16} tablet={16} computer={10}>
+                    <Header size='medium'>
+                        <Icon name='rocket' />
+                        <Header.Content>
+                            Meus projetos
+                        </Header.Content>
+                    </Header>
+                    <Tab menu={{ secondary: true }} defaultActiveIndex={0} panes={
+                        [
+                            {
+                            menuItem: (
+                                <Menu.Item key='portfolio'>
+                                    {/* <Icon name='bullseye' color='green' className="mr-2" /> Principais ({projectsMain.length}) */}
+                                    Principais ({projectsMain.length})
+                                </Menu.Item>
                             ),
-                        render: () => 
-                            <Tab.Pane loading={userInfo.requesting} attached={false} as="div">
-                                <Flickity
-                                    className={'carousel'} // default ''
-                                    elementType={'div'} // default 'div'
-                                    options={sliderOptions} // takes flickity options {}
-                                    disableImagesLoaded={false} // default false
-                                    reloadOnUpdate // default false
-                                >
-                                    { !userInfo.requesting ? (
-                                        projectsPortfolio.length ? (
-                                            projectsPortfolio.map((project, key) =>
-                                                <div className="carousel-cell" key={key}>
-                                                    <Link to={{ pathname: '/project/'+project.username }}>
-                                                        { project.yearLeftTheProject && 
-                                                            <Label color='black' floating size='mini' style={{top: '0', left: '20%',width:'fit-content'}}>
-                                                                {project.joined_in+' a '+project.yearLeftTheProject}
-                                                            </Label>
-                                                        }
-                                                        {project.picture ? (
-                                                            <Image src={'https://ik.imagekit.io/mublin/projects/tr:h-85,w-95,c-maintain_ratio/'+project.picture} rounded />
-                                                        ) : (
-                                                            <Image src={'https://ik.imagekit.io/mublin/sample-folder/avatar-undefined_-dv9U6dcv3.jpg'} height='85' width='85' rounded />
-                                                        )}
-                                                        <Header as='h5' className='mt-2 mb-0'>
-                                                            <Header.Content>
-                                                                {project.name}
-                                                                <Header.Subheader style={{fontSize:'11.5px'}}>
-                                                                    {project.ptname}
-                                                                </Header.Subheader>
-                                                            </Header.Content>
-                                                        </Header>
-                                                        { project.confirmed === 1 ? (
-                                                            <div className="mt-2" style={{fontWeight: '400',fontSize: '11px', color: 'black', opacity: '0.8'}}>
-                                                                <Icon name={project.workIcon} />{project.workTitle}
-                                                            </div>
-                                                        ) : (
-                                                            <div className="mt-2" style={{fontWeight: '400',fontSize: '11px', color: 'black', opacity: '0.8'}}>
-                                                                <Icon name='clock outline' />Aguardando
-                                                            </div>
-                                                        )}
-                                                    </Link>
-                                                </div>
+                            render: () => 
+                                <Tab.Pane loading={userInfo.requesting} attached={false} as="div">
+                                    <Flickity
+                                        className={'carousel'}
+                                        elementType={'div'}
+                                        options={sliderOptions}
+                                        disableImagesLoaded={false}
+                                        reloadOnUpdate
+                                    >
+                                        { !userInfo.requesting ? (
+                                            projectsMain.length ? (
+                                                projectsMain.map((project, key) =>
+                                                    <div className="carousel-cell" key={key} style={project.confirmed === 2 ? {opacity:'0.6'} : {}}>
+                                                        <Link to={{ pathname: '/project/'+project.username }}>
+                                                            { !!project.featured && 
+                                                                <Label color='black' floating size='mini' style={{top: '0', left: '20%',width:'fit-content'}}>
+                                                                    <Icon name='star' color='yellow' className='mr-0' />
+                                                                </Label>
+                                                            }
+                                                            {project.picture ? (
+                                                                <Image src={'https://ik.imagekit.io/mublin/projects/tr:h-85,w-95,c-maintain_ratio/'+project.picture} rounded />
+                                                            ) : (
+                                                                <Image src={'https://ik.imagekit.io/mublin/sample-folder/avatar-undefined_-dv9U6dcv3.jpg'} height='85' width='85' rounded />
+                                                            )}
+                                                            <Header as='h5' className='mt-2 mb-0'>
+                                                                <Header.Content>
+                                                                    {project.name}
+                                                                    <Header.Subheader style={{fontSize:'11.5px'}}>
+                                                                        {project.ptname}
+                                                                    </Header.Subheader>
+                                                                </Header.Content>
+                                                            </Header>
+                                                            { project.confirmed === 1 ? (
+                                                                <div className="mt-2" style={{fontWeight: '400',fontSize: '11px', color: 'black', opacity: '0.8'}}>
+                                                                    <Icon name={project.workIcon} />{project.workTitle}
+                                                                </div>
+                                                            ) : (
+                                                                <div className="mt-2" style={{fontWeight: '400',fontSize: '11px', color: 'black', opacity: '0.8'}}>
+                                                                    <Icon name='clock outline' />Aguardando
+                                                                </div>
+                                                            )}
+                                                        </Link>
+                                                    </div>
+                                                )
+                                            ) : (
+                                                <div className="carousel-cell">
+                                                    <Image src={'https://ik.imagekit.io/mublin/misc/square-sad-music_SeGz8vs_2A.jpg'} height='85' width='85' rounded />
+                                                    <h5 className="ui header mt-2 mb-0">
+                                                        <div className="sub header mt-1">Sem principais</div>
+                                                    </h5>
+                                                </div> 
                                             )
                                         ) : (
-                                            <div className="carousel-cell">
-                                                <Image src={'https://ik.imagekit.io/mublin/misc/square-sad-music_SeGz8vs_2A.jpg'} height='85' width='85' rounded />
-                                                <h5 className="ui header mt-2 mb-0">
-                                                    <div className="sub header mt-1">Nada aqui</div>
-                                                </h5>
-                                            </div> 
-                                        )
-                                    ) : (
-                                        <div style={{textAlign: 'center', width: '100%'}}>
-                                            <Icon loading name='spinner' size='big' />
-                                        </div>
-                                    )}
-                                </Flickity>
-                            </Tab.Pane>,
-                        }
-                    ]
-                }
-                />
-            </section>
-
-            <Container>
-            <Grid stackable columns={2} className='mt-1 mt-md-2 mb-5 mb-md-0 pb-5 pb-md-0'>
-                <Grid.Column>
-                    <PublicEvents publicEvents={publicEvents} requesting={events.requesting} />
+                                            <div style={{textAlign: 'center', width: '100%'}}>
+                                                <Icon loading name='spinner' size='big' />
+                                            </div>
+                                        )}
+                                    </Flickity>
+                                </Tab.Pane>,
+                            }, 
+                            {
+                            menuItem: (
+                                <Menu.Item key='portfolio'>
+                                    {/* <Icon name='tags' className="mr-2" /> Portfolio ({projectsPortfolio.length}) */}
+                                    Portfolio ({projectsPortfolio.length})
+                                </Menu.Item>
+                                ),
+                            render: () => 
+                                <Tab.Pane loading={userInfo.requesting} attached={false} as="div">
+                                    <Flickity
+                                        className={'carousel'}
+                                        elementType={'div'}
+                                        options={sliderOptions}
+                                        disableImagesLoaded={false}
+                                        reloadOnUpdate
+                                    >
+                                        { !userInfo.requesting ? (
+                                            projectsPortfolio.length ? (
+                                                projectsPortfolio.map((project, key) =>
+                                                    <div className="carousel-cell" key={key}>
+                                                        <Link to={{ pathname: '/project/'+project.username }}>
+                                                            { project.yearLeftTheProject && 
+                                                                <Label color='black' floating size='mini' style={{top: '0', left: '20%',width:'fit-content'}}>
+                                                                    {project.joined_in+' a '+project.yearLeftTheProject}
+                                                                </Label>
+                                                            }
+                                                            {project.picture ? (
+                                                                <Image src={'https://ik.imagekit.io/mublin/projects/tr:h-85,w-95,c-maintain_ratio/'+project.picture} rounded />
+                                                            ) : (
+                                                                <Image src={'https://ik.imagekit.io/mublin/sample-folder/avatar-undefined_-dv9U6dcv3.jpg'} height='85' width='85' rounded />
+                                                            )}
+                                                            <Header as='h5' className='mt-2 mb-0'>
+                                                                <Header.Content>
+                                                                    {project.name}
+                                                                    <Header.Subheader style={{fontSize:'11.5px'}}>
+                                                                        {project.ptname}
+                                                                    </Header.Subheader>
+                                                                </Header.Content>
+                                                            </Header>
+                                                            { project.confirmed === 1 ? (
+                                                                <div className="mt-2" style={{fontWeight: '400',fontSize: '11px', color: 'black', opacity: '0.8'}}>
+                                                                    <Icon name={project.workIcon} />{project.workTitle}
+                                                                </div>
+                                                            ) : (
+                                                                <div className="mt-2" style={{fontWeight: '400',fontSize: '11px', color: 'black', opacity: '0.8'}}>
+                                                                    <Icon name='clock outline' />Aguardando
+                                                                </div>
+                                                            )}
+                                                        </Link>
+                                                    </div>
+                                                )
+                                            ) : (
+                                                <div className="carousel-cell">
+                                                    <Image src={'https://ik.imagekit.io/mublin/misc/square-sad-music_SeGz8vs_2A.jpg'} height='85' width='85' rounded />
+                                                    <h5 className="ui header mt-2 mb-0">
+                                                        <div className="sub header mt-1">Nada aqui</div>
+                                                    </h5>
+                                                </div> 
+                                            )
+                                        ) : (
+                                            <div style={{textAlign: 'center', width: '100%'}}>
+                                                <Icon loading name='spinner' size='big' />
+                                            </div>
+                                        )}
+                                    </Flickity>
+                                </Tab.Pane>,
+                            }
+                        ]
+                    }
+                    />
                 </Grid.Column>
-                <Grid.Column>
-                    <PrivateEvents privateEvents={privateEvents} requesting={events.requesting} />
+                <Grid.Column mobile={16} tablet={16} computer={6} className='mt-0 mt-md-3 py-0'>
+                    <Events events={events} />
                 </Grid.Column>
-                {/* <Grid.Column>
-                    <Notes notes={notes} user={user} projectsList={projectsList} members={members} />
-                </Grid.Column> */}
             </Grid>
-            </Container>
-        </main>
+        </Container>
+        <Spacer />
         <FooterMenuMobile />
         </>
     );

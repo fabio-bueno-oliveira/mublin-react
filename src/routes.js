@@ -27,6 +27,8 @@ import ProjectPage from './pages/ProjectPage';
 import ProjectBackstagePage from './pages/Backstage/Project';
 import ProjectBackstagePreferencesPage from './pages/Backstage/manageParticipation';
 import BackstagesMainPage from './pages/Backstage';
+import ProjectsManagementPage from './pages/MyProjects/list';
+import ProjectManagementPage from './pages/MyProjects/project';
 import NotificationsPage from './pages/NotificationsPage';
 import SearchPage from './pages/SearchPage';
 import Messages from './pages/Messages';
@@ -93,6 +95,8 @@ function Routes (props) {
                 <PrivateRoute authed={loggedIn} path="/backstage/:username" component={ProjectBackstagePage} />
                 <PrivateRoute authed={loggedIn} path="/backstages" component={BackstagesMainPage} />
                 <PrivateRoute authed={loggedIn} path="/project/:username" component={ProjectPage} />
+                <PrivateRoute authed={loggedIn} path="/my-projects/:username" component={ProjectManagementPage} />
+                <PrivateRoute authed={loggedIn} path="/my-projects" component={ProjectsManagementPage} />
                 <PrivateRoute authed={loggedIn} path="/notifications" component={NotificationsPage} />
                 <PrivateRoute authed={loggedIn} path="/search" component={SearchPage} />
                 <PrivateRoute authed={loggedIn} path="/messages/conversation/:profileId" component={Conversation} />

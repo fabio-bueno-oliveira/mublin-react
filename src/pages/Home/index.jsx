@@ -67,10 +67,10 @@ function HomePage () {
         <Container className='px-3'>
             <Grid stackable columns={2}>
                 <Grid.Column mobile={16} tablet={16} computer={10}>
-                    <Header size='medium'>
-                        <Icon name='rocket' />
+                    <Header size='large'>
+                        {/* <Icon name='rocket' /> */}
                         <Header.Content>
-                            Meus projetos
+                            {userInfo.requesting ? "Projetos" : userProjects.length+" projetos"}
                         </Header.Content>
                     </Header>
                     <Tab menu={{ secondary: true }} defaultActiveIndex={0} panes={

@@ -21,9 +21,12 @@ const HeaderDesktop = () => {
     useEffect(() => { 
         dispatch(userInfos.getInfo());
         dispatch(miscInfos.getNotifications());
+        dispatch(userInfos.getUserProjects(user.id));
     }, [dispatch]);
 
     const userInfo = useSelector(state => state.user);
+
+    const userProjects = useSelector(state => state.user.projects.sort((a, b) => a.name.localeCompare(b.name)))
 
     const unreadNotifications = useSelector(state => state.notifications.list.filter((item) => { return item.seen === 0 }).map(item => ({ 
         id: item.id,
@@ -104,52 +107,46 @@ const HeaderDesktop = () => {
                     <Menu.Item onClick={() => history.push("/feed")} active={window.location.pathname === "/feed"}>
                         <i className="fas fa-globe-americas mr-2"></i> Feed
                     </Menu.Item>
-                    <Menu.Item onClick={() => history.push("/backstages")} active={window.location.pathname.includes("/backstage")}>
+                    {/* <Menu.Item onClick={() => history.push("/backstages")} active={window.location.pathname.includes("/backstage")}>
                         <i className="fas fa-warehouse mr-2"></i> Backstages
-                    </Menu.Item>
-                    <Dropdown item simple text='Novo' icon='caret down' key='new'>
+                    </Menu.Item> */}
+                    <Dropdown text='Projetos' simple item active={window.location.pathname === "/my-projects"}>
                         <Dropdown.Menu>
-                            <Dropdown.Item>
-                                <i className='dropdown icon' />
-                                <i className="text fas fa-bolt mr-1"></i> Projeto
-                                <Dropdown.Menu>
-                                    <Dropdown.Item onClick={() => history.push("/new/project")}>
-                                        <i className="fas fa-plus fa-fw"></i> Criar do zero
-                                    </Dropdown.Item>
-                                    <Dropdown.Item onClick={() => history.push("/new/idea")}>
-                                        <i className="far fa-lightbulb fa-fw"></i> Nova ideia de projeto
-                                    </Dropdown.Item>
-                                    <Dropdown.Item onClick={() => history.push("/new/join")}>
-                                        <i className="fas fa-user-plus fa-fw"></i> Ingressar em um projeto
-                                    </Dropdown.Item>
-                                    <Dropdown.Item onClick={() => history.push("/home")}>
-                                        <i className="fas fa-envelope-open-text fa-fw"></i> Convidar alguém para um projeto
-                                    </Dropdown.Item>
-                                    <Dropdown.Item onClick={() => history.push("/home")}>
-                                        <i className="fas fa-crosshairs fa-fw"></i> Buscar projetos que estão contratando
-                                    </Dropdown.Item>
-                                </Dropdown.Menu>
-                            </Dropdown.Item>
-                            <Dropdown.Item>
-                                <i className='dropdown icon' />
-                                <i className="text far fa-calendar-plus mr-1"></i> Evento
-                                <Dropdown.Menu>
-                                    <Dropdown.Item onClick={() => history.push("/new/event/?type=private")}>
-                                        <i className="fas fa-drum mr-1"></i> Ensaio
-                                    </Dropdown.Item>
-                                    <Dropdown.Item onClick={() => history.push("/new/event/?type=public")}>
-                                        <i className="fas fa-ticket-alt mr-1"></i> Show
-                                    </Dropdown.Item>
-                                    {/* <Dropdown.Item onClick={() => history.push("/home")}>
-                                        <i className="fas fa-road mr-1"></i> Turnê
-                                    </Dropdown.Item> */}
-                                </Dropdown.Menu>
-                            </Dropdown.Item>
-                            <Dropdown.Item onClick={() => history.push("/home")}>
-                                <i className="fas fa-music mr-1"></i> <span className='mr-4'>Música</span>
-                            </Dropdown.Item>
+                            <Dropdown.Header>Novo</Dropdown.Header>
+                            <Dropdown.Item icon='plus' text='Criar do zero' />
+                            <Dropdown.Item icon='lightbulb' text='Nova ideia de projeto' />
+                            <Dropdown.Item icon='add user' text='Ingressar em um projeto' />
+                            <Dropdown.Item icon='envelope' text='Convidar alguém para um projeto' />
+                            <Dropdown.Divider />
+                            <Dropdown.Header>Meus projetos</Dropdown.Header>
+                            <Dropdown.Item 
+                                icon='bars' 
+                                text='Ver todos' 
+                                onClick={() => history.push("/my-projects")}
+                            />
+                            {userProjects.map((project,key) =>
+                                <>
+                                <Dropdown.Item key={key}>
+                                    <i className='dropdown icon' />
+                                    {project.name}
+                                    <Dropdown.Menu>
+                                        <Dropdown.Item 
+                                            icon='globe' 
+                                            text='Página do projeto' 
+                                            description={project.username}
+                                            onClick={() => history.push("/new/project")} 
+                                        />
+                                        <Dropdown.Item 
+                                            icon='warehouse' 
+                                            text='Backstage' 
+                                            description='gerenciar' 
+                                        />
+                                    </Dropdown.Menu>
+                                </Dropdown.Item>
+                                </>
+                            )}
                         </Dropdown.Menu>
-                    </Dropdown >
+                    </Dropdown>
                     <Menu.Item onClick={() => goToNotifications()}>
                         <Icon name='bell outline' className='mr-0'/>
                         {!!unreadNotifications.length && <span className="ui red circular mini label">{unreadNotifications.length}</span>}
@@ -206,10 +203,11 @@ const HeaderDesktop = () => {
                             {userInfo.plan === 'Pro' && <Label size='mini' content='PRO' />}<i className='dropdown icon' />
                             <Dropdown.Menu>
                                 <Dropdown.Header>{userInfo.username}</Dropdown.Header>
-                                <Dropdown.Item icon='user circle' text='Meu perfil' onClick={() => history.push('/'+userInfo.username)} />
+                                <Dropdown.Item icon='user circle' text='Meu Perfil' onClick={() => history.push('/'+userInfo.username)} />
                                 {userInfo.plan === 'Pro' && 
-                                    <Dropdown.Item icon='box' text='Meu equipamento' onClick={() => history.push('/gear')} />
+                                    <Dropdown.Item icon='box' text='Meu Equipamento' onClick={() => history.push('/gear')} />
                                 }
+                                <Dropdown.Item icon='warehouse' text='Meus Backstages' onClick={() => history.push('/backstages')} />
                                 <Dropdown.Item icon='setting' text='Configurações' onClick={() => history.push('/settings')} />
                                 <Dropdown.Divider />
                                 { userInfo.level === 1 &&

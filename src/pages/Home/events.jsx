@@ -61,7 +61,7 @@ const Events = (props) => {
                         </Header>
                     </div>
                 ) : (
-                    <span style={{fontWeight:'500',fontSize:'13px'}}>Nenhum evento público próximo</span>
+                    <span style={{fontWeight:'500',fontSize:'13px'}}>Nenhum evento próximo</span>
                 )}
                 <div className="right floated">
                     <Link to={{ pathname: '/new/event/' }}>

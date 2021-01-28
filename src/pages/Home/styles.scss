@@ -1,4 +1,45 @@
-/* carousel */
+/* carousel friends */
+.friends-carousel-cell{
+  width: 93px;
+  height: 130px;
+  padding: 0px 0px;
+  margin-right: 0px;
+  counter-increment: gallery-cell;
+  text-align: left;
+}
+
+.friends-carousel-cell {
+  h5 {
+    width: 83%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+
+    .content {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      width: 99%;
+      font-weight: 500;
+      font-size: 12px;
+    }
+  }
+}
+
+@media screen and (min-width: 601px) {
+  .friends-carousel-cell {
+    width: 100px!important;
+    height: 130px!important;
+    margin-right: 0px!important;
+    padding: 0px 9px!important;
+
+    h5 {
+      width: 98%;
+    }
+  }
+}
+
+/* carousel projects */
 .carousel-cell{
   width: 113px;
   height: 165px;

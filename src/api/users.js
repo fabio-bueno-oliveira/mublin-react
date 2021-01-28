@@ -24,6 +24,7 @@ export const userService = {
     getUserAvailabilityItemsById,
     getUserProjects,
     getUserMessages,
+    getUserLastConnectedFriends,
     update,
     logout
 };
@@ -89,6 +90,15 @@ function getUserProjects(id) {
     };
 
     return fetch(`${BASE_URL}/user/${id}/projects`, requestOptions).then(handleResponse);
+}
+
+function getUserLastConnectedFriends() {
+    const requestOptions = {
+        method: 'GET',
+        headers: authHeader()
+    };
+
+    return fetch(`${BASE_URL}/lastConnectedFriends`, requestOptions).then(handleResponse);
 }
 
 function getUserMessages() {

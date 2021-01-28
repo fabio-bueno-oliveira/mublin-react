@@ -85,7 +85,16 @@ const initialState = {
   ],
   availabilityItemsLoaded: false,
   availabilityFocus: '',
-  level: ''
+  level: '',
+  lastConnectedFriends: [
+    {
+      name: '',
+      lastname: '',
+      username: '',
+      picture: '',
+      lastLogin: ''
+    }
+  ]
 }
 
 export function user(state = initialState, action) {
@@ -245,6 +254,33 @@ export function user(state = initialState, action) {
             role1: '',
             role2: '',
             role3: '',
+          }
+        ],
+        error: "A solicitação falhou"
+      };
+    // get user´s last connected friends
+    case userTypes.GET_USER_LAST_CONNECTED_FRIENDS_REQUEST:
+      return {
+        ...state,
+        requesting: true
+      };
+    case userTypes.GET_USER_LAST_CONNECTED_FRIENDS_SUCCESS:
+      return {
+        ...state,
+        requesting: false,
+        lastConnectedFriends: action.list
+      };
+    case userTypes.GET_USER_LAST_CONNECTED_FRIENDS_FAILURE:
+      return {
+        ...state,
+        requesting: false,
+        lastConnectedFriends: [
+          {
+            name: '',
+            lastname: '',
+            username: '',
+            picture: '',
+            lastLogin: ''
           }
         ],
         error: "A solicitação falhou"

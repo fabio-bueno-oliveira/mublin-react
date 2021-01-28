@@ -37,8 +37,9 @@ function MyProjectsListPage () {
     const myProjects = () => userProjects.filter((project) => { return (project.name.toLowerCase().includes(pesquisa.toLowerCase())) }).sort((a, b) => a.name.localeCompare(b.name)).map((project, key) =>
         <>
         { !userInfo.requesting &&
-        <div className='mb-4 mt-3'>
-            <Segment key={key} attached='top' secondary={project.confirmed === 2}>
+        <div className='mb-4'>
+            <Segment.Group stacked>
+            <Segment key={key} secondary={project.confirmed === 2}>
                 {(!project.yearEnd && project.ptid !== 7) &&
                     <p className='mb-0' style={{fontSize:'11px'}}>
                         <Icon name='toggle on' color='green' />Projeto em atividade {project.yearFoundation && 'desde '+project.yearFoundation}
@@ -113,12 +114,11 @@ function MyProjectsListPage () {
                     {!!(project.portfolio && project.confirmed !== 2) && <Label tag color='black' className='mr-2 mt-0' size='mini' style={{fontWeight:'500'}}><Icon name='tag' />Portfolio</Label>} 
                     {!!(project.touring && project.confirmed !== 2) && <Label tag color='black' className='mt-0' size='mini' style={{fontWeight:'500'}}><Icon name='road' />Em turnê</Label>}
                 </div>
-                <Divider />
-                <Button>Gerenciar</Button> <Button>Gerenciar</Button>
             </Segment>
-            {/* <Button size='mini' secondary attached='bottom' onClick={() => history.push('/backstage/'+project.username)}>
-                Gerenciar
-            </Button> */}
+            <Segment>
+                <Button size='tiny' href={`/backstage/${project.username}`}>Gerenciar</Button>
+            </Segment>
+            </Segment.Group>
         </div>
         }
         </>
@@ -132,25 +132,6 @@ function MyProjectsListPage () {
             <Grid stackable columns={2} className="container mb-5 pb-4 px-1 px-md-3">
                 <Grid.Row>
                     <Grid.Column only='computer' computer={4}>
-                        {/* <Segment basic textAlign='center'>
-                            { !userInfo.requesting &&
-                                <Image src={'https://ik.imagekit.io/mublin/tr:h-200,w-200,r-max/users/avatars/'+userInfo.id+'/'+userInfo.picture} centered size='mini' />
-                            }
-                            <Header as='h3' className='mt-2 mb-0'>
-                                {userInfo.name+' '+userInfo.lastname}
-                                <Header.Subheader>
-                                    {userInfo.requesting ? 'Carregando total de projetos...' : userProjects.length+' projetos'}
-                                </Header.Subheader>
-                            </Header>
-                        </Segment> */}
-                        <Button.Group vertical fluid size='small' basic>
-                            <Button><Icon name='plus'/> Criar novo projeto do zero</Button>
-                            <Button><Icon name='lightbulb'/> Nova ideia de projeto</Button>
-                            <Button><Icon name='add user'/> Ingressar em um projeto</Button>
-                            <Button><Icon name='envelope'/> Convidar para um projeto</Button>
-                        </Button.Group>
-                    </Grid.Column>
-                    <Grid.Column mobile={16} tablet={16} computer={12}>
                         <Form className='mb-3'>
                             <Form.Input 
                                 fluid
@@ -162,7 +143,15 @@ function MyProjectsListPage () {
                                 value={pesquisa}
                             />
                         </Form>
-                        <p style={{opacity:'0.6',fontSize:'11px',textAlign:'right'}}><Icon name='sort alphabet down' />Ordenado por ordem alfabética</p>
+                        <Button.Group vertical fluid size='small' basic>
+                            <Button><Icon name='plus'/> Criar novo projeto do zero</Button>
+                            <Button><Icon name='lightbulb'/> Nova ideia de projeto</Button>
+                            <Button><Icon name='add user'/> Ingressar em um projeto</Button>
+                            <Button><Icon name='envelope'/> Convidar para um projeto</Button>
+                        </Button.Group>
+                    </Grid.Column>
+                    <Grid.Column mobile={16} tablet={16} computer={12}>
+                        {/* <p style={{opacity:'0.6',fontSize:'11px',textAlign:'right'}}><Icon name='sort alphabet down' />Ordenado por ordem alfabética</p> */}
                         {myProjects().length ? myProjects() : <p>Nenhum projeto principal encontrado com '{pesquisa}'</p>}
                     </Grid.Column>
                 </Grid.Row>

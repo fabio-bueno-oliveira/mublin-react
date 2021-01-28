@@ -11,7 +11,8 @@ export const userInfos = {
     getUserRolesInfoById: getUserRolesInfoById,
     getUserGearInfoById: getUserGearInfoById,
     getUserAvailabilityItemsById: getUserAvailabilityItemsById,
-    getUserProjects: getUserProjects
+    getUserProjects: getUserProjects,
+    getUserLastConnectedFriends: getUserLastConnectedFriends
     // delete: _delete
 };
 
@@ -125,6 +126,22 @@ function getUserProjects(id) {
     function request(id) { return { type: userTypes.GET_USER_PROJECTS_REQUEST, id } }
     function success(list) { return { type: userTypes.GET_USER_PROJECTS_SUCCESS, list } }
     function failure(id, error) { return { type: userTypes.GET_USER_PROJECTS_FAILURE, id, error } }
+}
+
+function getUserLastConnectedFriends() {
+    return dispatch => {
+        dispatch(request());
+
+        userService.getUserLastConnectedFriends()
+            .then(
+                list => dispatch(success(list)),
+                error => dispatch(failure(error.toString()))
+            );
+    };
+
+    function request() { return { type: userTypes.GET_USER_LAST_CONNECTED_FRIENDS_REQUEST } }
+    function success(list) { return { type: userTypes.GET_USER_LAST_CONNECTED_FRIENDS_SUCCESS, list } }
+    function failure(error) { return { type: userTypes.GET_USER_LAST_CONNECTED_FRIENDS_FAILURE, error } }
 }
 
 // prefixed function name with underscore because delete is a reserved word in javascript

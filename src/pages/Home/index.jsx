@@ -26,6 +26,7 @@ function HomePage () {
         dispatch(userInfos.getUserProjects(user.id));
         dispatch(eventsInfos.getUserEvents(user.id));
         dispatch(notesInfos.getUserNotes(user.id));
+        dispatch(userInfos.getUserLastConnectedFriends())
     }, [user.id, dispatch]);
 
     const userInfo = useSelector(state => state.user)
@@ -65,6 +66,43 @@ function HomePage () {
         <HeaderMobile />
         <Spacer />
         <Container className='px-3'>
+            <div>
+                <Header size='small'>
+                    <Header.Content>
+                        Conectados recentemente
+                    </Header.Content>
+                </Header>
+                <Flickity
+                    className={'carousel'}
+                    elementType={'div'}
+                    options={sliderOptions}
+                    disableImagesLoaded={false}
+                    reloadOnUpdate
+                >
+                    { !userInfo.requesting ? (
+                        userInfo.lastConnectedFriends.map((friend, key) =>
+                            <div className="friends-carousel-cell" key={key}>
+                                <Link to={{ pathname: '/'+friend.username }}>
+                                    {friend.picture ? (
+                                        <Image src={'https://ik.imagekit.io/mublin/tr:h-200,w-200,r-max,c-maintain_ratio/users/avatars/'+friend.id+'/'+friend.picture} rounded size='tiny' />
+                                    ) : (
+                                        <Image src={'https://ik.imagekit.io/mublin/sample-folder/avatar-undefined_Kblh5CBKPp.jpg'} height='85' width='85' rounded />
+                                    )}
+                                    <Header as='h5' textAlign='center' className='mt-2 mb-0'>
+                                        <Header.Content>
+                                            {friend.username}
+                                        </Header.Content>
+                                    </Header>
+                                </Link>
+                            </div>
+                        )
+                    ) : (
+                        <div style={{textAlign: 'center', width: '100%'}}>
+                            <Icon loading name='spinner' size='big' />
+                        </div>
+                    )}
+                </Flickity>
+            </div>
             <Grid stackable columns={2}>
                 <Grid.Column mobile={16} tablet={16} computer={10}>
                     <Header size='large'>

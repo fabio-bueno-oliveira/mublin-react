@@ -8,7 +8,7 @@ import Spacer from '../../components/layout/Spacer';
 import { userInfos } from '../../store/actions/user';
 import { eventsInfos } from '../../store/actions/events';
 import { notesInfos } from '../../store/actions/notes';
-import { Container, Header, Tab, Grid, Image, Icon, Label, Menu } from 'semantic-ui-react';
+import { Container, Header, Segment, Tab, Grid, Image, Icon, Label, Menu } from 'semantic-ui-react';
 import Events from './events';
 import Flickity from 'react-flickity-component';
 import './styles.scss';
@@ -66,56 +66,34 @@ function HomePage () {
         <HeaderMobile />
         <Spacer />
         <Container className='px-3'>
-            <div>
-                <Header size='small'>
-                    <Header.Content>
-                        Conectados recentemente
-                    </Header.Content>
-                </Header>
-                <Flickity
-                    className={'carousel'}
-                    elementType={'div'}
-                    options={sliderOptions}
-                    disableImagesLoaded={false}
-                    reloadOnUpdate
-                >
-                    { !userInfo.requesting ? (
-                        userInfo.lastConnectedFriends.map((friend, key) =>
-                            <div className="friends-carousel-cell" key={key}>
-                                <Link to={{ pathname: '/'+friend.username }}>
-                                    {friend.picture ? (
-                                        <Image src={'https://ik.imagekit.io/mublin/tr:h-200,w-200,r-max,c-maintain_ratio/users/avatars/'+friend.id+'/'+friend.picture} rounded size='tiny' />
-                                    ) : (
-                                        <Image src={'https://ik.imagekit.io/mublin/sample-folder/avatar-undefined_Kblh5CBKPp.jpg'} height='85' width='85' rounded />
-                                    )}
-                                    <Header as='h5' textAlign='center' className='mt-2 mb-0'>
-                                        <Header.Content>
-                                            {friend.username}
-                                        </Header.Content>
-                                    </Header>
-                                </Link>
-                            </div>
-                        )
-                    ) : (
-                        <div style={{textAlign: 'center', width: '100%'}}>
-                            <Icon loading name='spinner' size='big' />
-                        </div>
-                    )}
-                </Flickity>
-            </div>
-            <Grid stackable columns={2}>
-                <Grid.Column mobile={16} tablet={16} computer={10}>
-                    <Header size='large'>
+            <Header as='h2' className='mb-5'>
+                { (!userInfo.requesting && userInfo.picture) ? (
+                    <Image circular
+                        src={'https://ik.imagekit.io/mublin/users/avatars/'+userInfo.id+'/'+userInfo.picture}
+                    />
+                ) : (
+                    <Image circular
+                        src={'https://ik.imagekit.io/mublin/sample-folder/avatar-undefined_Kblh5CBKPp.jpg'}
+                    />
+                )}
+                <Header.Content>
+                    Bem-vindo, {userInfo.name}
+                    <Header.Subheader>O Mublin te ajuda a gerenciar sua vida com projetos musicais. Esperamos que goste!</Header.Subheader>
+                </Header.Content>
+            </Header>
+            <Grid centered columns={1}>
+                <Grid.Column mobile={16} tablet={16} computer={16}>
+                    <Header size='medium'>
                         {/* <Icon name='rocket' /> */}
                         <Header.Content>
-                            {userInfo.requesting ? "Projetos" : userProjects.length+" projetos"}
+                            Meus Projetos ({userProjects.length})
                         </Header.Content>
                     </Header>
                     <Tab menu={{ secondary: true }} defaultActiveIndex={0} panes={
                         [
                             {
                             menuItem: (
-                                <Menu.Item key='portfolio'>
+                                <Menu.Item key='main'>
                                     {/* <Icon name='bullseye' color='green' className="mr-2" /> Principais ({projectsMain.length}) */}
                                     Principais ({projectsMain.length})
                                 </Menu.Item>
@@ -251,7 +229,49 @@ function HomePage () {
                     }
                     />
                 </Grid.Column>
-                <Grid.Column mobile={16} tablet={16} computer={6} className='mt-0 mt-md-3 py-0'>
+                <Grid.Column mobile={16} tablet={16} computer={16}>
+                    <Header size='medium'>
+                        <Header.Content>
+                            Pessoas conectadas recentemente
+                        </Header.Content>
+                    </Header>
+                    <Flickity
+                        className={'carousel'}
+                        elementType={'div'}
+                        options={sliderOptions}
+                        disableImagesLoaded={false}
+                        reloadOnUpdate
+                    >
+                        { !userInfo.requesting ? (
+                            userInfo.lastConnectedFriends.map((friend, key) =>
+                                <div className="friends-carousel-cell" key={key}>
+                                    <Link to={{ pathname: '/'+friend.username }}>
+                                        {friend.picture ? (
+                                            <Image src={'https://ik.imagekit.io/mublin/tr:h-200,w-200,r-max,c-maintain_ratio/users/avatars/'+friend.id+'/'+friend.picture} rounded size='tiny' />
+                                        ) : (
+                                            <Image src={'https://ik.imagekit.io/mublin/sample-folder/avatar-undefined_Kblh5CBKPp.jpg'} height='85' width='85' rounded />
+                                        )}
+                                        <Header as='h5' textAlign='center' className='mt-2 mb-0'>
+                                            <Header.Content>
+                                                {friend.username}
+                                            </Header.Content>
+                                        </Header>
+                                    </Link>
+                                </div>
+                            )
+                        ) : (
+                            <div style={{textAlign: 'center', width: '100%'}}>
+                                <Icon loading name='spinner' size='big' />
+                            </div>
+                        )}
+                    </Flickity>
+                </Grid.Column>
+                <Grid.Column mobile={16} tablet={16} computer={16}>
+                    <Header size='medium'>
+                        <Header.Content>
+                            Eventos próximos
+                        </Header.Content>
+                    </Header>
                     <Events events={events} />
                 </Grid.Column>
             </Grid>

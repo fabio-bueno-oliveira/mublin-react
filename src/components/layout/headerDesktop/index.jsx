@@ -104,9 +104,9 @@ const HeaderDesktop = () => {
                     <Menu.Item onClick={() => history.push("/home")} active={window.location.pathname === "/home"}>
                         <Icon name='home'/> Início
                     </Menu.Item>
-                    <Menu.Item onClick={() => history.push("/feed")} active={window.location.pathname === "/feed"}>
+                    {/* <Menu.Item onClick={() => history.push("/feed")} active={window.location.pathname === "/feed"}>
                         <i className="fas fa-globe-americas mr-2"></i> Feed
-                    </Menu.Item>
+                    </Menu.Item> */}
                     {/* <Menu.Item onClick={() => history.push("/backstages")} active={window.location.pathname.includes("/backstage")}>
                         <i className="fas fa-warehouse mr-2"></i> Backstages
                     </Menu.Item> */}
@@ -120,8 +120,8 @@ const HeaderDesktop = () => {
                             <Dropdown.Divider />
                             <Dropdown.Header>Meus projetos</Dropdown.Header>
                             <Dropdown.Item 
-                                icon='bars' 
-                                text='Ver todos' 
+                                icon='setting' 
+                                text='Gerenciar meus projetos' 
                                 onClick={() => history.push("/my-projects")}
                             />
                             {userProjects.map((project,key) =>

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { userInfos } from '../../store/actions/user';
 import { useHistory } from 'react-router-dom';
-import { Grid, Header, Segment, Form, Divider, Table, Image, Icon, Label, Button } from 'semantic-ui-react';
+import { Grid, Header, Segment, Form, Breadcrumb, Table, Image, Icon, Label, Button } from 'semantic-ui-react';
 import HeaderDesktop from '../../components/layout/headerDesktop';
 import HeaderMobile from '../../components/layout/headerMobile';
 import Spacer from '../../components/layout/Spacer'
@@ -61,14 +61,14 @@ function MyProjectsListPage () {
                     ) : (
                         <Image src={'https://ik.imagekit.io/mublin/sample-folder/tr:h-200,w-200,c-maintain_ratio/avatar-undefined_-dv9U6dcv3.jpg'} rounded />
                     )}
-                    <Header.Content>
+                    <Header.Content style={{width:'210px'}}>
                         {project.name}
                         <Header.Subheader style={{fontSize:'12px',width:'240px',whiteSpace:'nowrap',overflow:'hidden',textOverflow:'ellipsis'}}>{project.ptname} {project.genre1 && '('+project.genre1}{project.genre2 && ', '+project.genre2}{project.genre3 && ', '+project.genre3}{project.genre1 && ')'}</Header.Subheader>
                     </Header.Content>
                 </Header>
                 <Table size='small' celled collapsing compact='very' basic='very'>
                     <Table.Body>
-                        <Table.Row className='p-0'>
+                        <Table.Row className='p-0' style={{border:"none"}}>
                             <Table.Cell collapsing>
                                 {userInfo.picture ? (
                                     <Image src={'https://ik.imagekit.io/mublin/users/avatars/tr:h-200,w-200,c-maintain_ratio/'+userInfo.id+'/'+userInfo.picture} avatar className='mr-1' />
@@ -107,6 +107,8 @@ function MyProjectsListPage () {
                         </Table.Row>
                     </Table.Body>
                 </Table>
+            </Segment>
+            <Segment>
                 <div id='tags'>
                     {project.confirmed === 2 && <Label tag color='black' className='mr-2 mt-0' size='mini' color='grey' style={{fontWeight:'500'}}><Icon name='clock' />Aguardando aprovação</Label>}  
                     { project.admin === 1 && <Label tag color='black' className='mr-2 mt-0' size='mini' style={{fontWeight:'500'}}><Icon name='key' />Administrador</Label>}
@@ -151,6 +153,15 @@ function MyProjectsListPage () {
                         </Button.Group>
                     </Grid.Column>
                     <Grid.Column mobile={16} tablet={16} computer={12}>
+                        <Breadcrumb size='tiny' className='mb-4'>
+                            <Breadcrumb.Section link onClick={() => history.push("/home")}>
+                                Home
+                            </Breadcrumb.Section>
+                            <Breadcrumb.Divider icon='right chevron' />
+                            <Breadcrumb.Section active>
+                                Gerenciar Meus Projetos
+                            </Breadcrumb.Section>
+                        </Breadcrumb>
                         {/* <p style={{opacity:'0.6',fontSize:'11px',textAlign:'right'}}><Icon name='sort alphabet down' />Ordenado por ordem alfabética</p> */}
                         {myProjects().length ? myProjects() : <p>Nenhum projeto principal encontrado com '{pesquisa}'</p>}
                     </Grid.Column>

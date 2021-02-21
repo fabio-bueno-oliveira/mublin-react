@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useHistory, Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { miscInfos } from '../../store/actions/misc';
-import { Grid, Feed, Icon, Label, Header } from 'semantic-ui-react';
+import { Grid, Feed, Icon, Label, Header, Message } from 'semantic-ui-react';
 import HeaderDesktop from '../../components/layout/headerDesktop';
 import HeaderMobile from '../../components/layout/headerMobile';
 import FooterMenuMobile from '../../components/layout/footerMenuMobile';
@@ -78,8 +78,15 @@ function FeedPage () {
             <Grid as='main' columns={1} className="container mb-2 px-1 px-md-3">
                 <Grid.Row>
                     <Grid.Column width={16}>
-                        <Header as='h2' className='mb-4'>Acontecendo em sua rede</Header>
-                        <Feed>
+                        <Header as='h2'>Acontecendo em sua rede</Header>
+                        <Message icon warning>
+                            <Icon name='exclamation' />
+                            <Message.Content>
+                                <Message.Header>Esta é a versão beta do Mublin!</Message.Header>
+                                O feed ainda está em desenvolvimento
+                            </Message.Content>
+                        </Message>
+                        <Feed className='pt-4'>
                             { feed.list.map((item, key) =>
                                 <Feed.Event key={key} className='mb-3'>
                                     <Feed.Label style={{cursor:'pointer'}} onClick={() => history.push('/'+item.relatedUserUsername)}>

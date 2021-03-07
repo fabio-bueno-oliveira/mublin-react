@@ -151,7 +151,7 @@ function JoinPage () {
                             <Input 
                                 fluid
                                 size='large'
-                                icon='search' 
+                                icon='search'
                                 placeholder='Comece a digitar o nome do projeto...' 
                                 value={keyword}
                                 onChange={e => searchProjectByKeyword(e.target.value)}

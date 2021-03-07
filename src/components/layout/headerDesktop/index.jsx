@@ -20,7 +20,7 @@ const HeaderDesktop = () => {
 
     useEffect(() => { 
         dispatch(userInfos.getInfo());
-        dispatch(miscInfos.getNotifications());
+        // dispatch(miscInfos.getNotifications());
         dispatch(userInfos.getUserProjects(user.id));
     }, [dispatch]);
 
@@ -28,10 +28,10 @@ const HeaderDesktop = () => {
 
     const userProjects = useSelector(state => state.user.projects.sort((a, b) => a.name.localeCompare(b.name)))
 
-    const unreadNotifications = useSelector(state => state.notifications.list.filter((item) => { return item.seen === 0 }).map(item => ({ 
-        id: item.id,
-        seen: item.seen
-    })))
+    // const unreadNotifications = useSelector(state => state.notifications.list.filter((item) => { return item.seen === 0 }).map(item => ({ 
+    //     id: item.id,
+    //     seen: item.seen
+    // })))
 
     // const search = useSelector(state => state.search);
 
@@ -58,21 +58,21 @@ const HeaderDesktop = () => {
     //     }
     // }
 
-    const goToNotifications = () => {
-        fetch('https://mublin.herokuapp.com/notifications/'+user.id+'/read', {
-            method: 'PUT',
-            headers: {
-                'Accept': 'application/json, text/plain, */*',
-                'Content-Type': 'application/json',
-                'Authorization': 'Bearer ' + user.token
-            }
-        }).then((response) => {
-            history.push("/notifications")
-        }).catch(err => {
-            console.error(err)
-            history.push("/notifications")
-        })
-    }
+    // const goToNotifications = () => {
+    //     fetch('https://mublin.herokuapp.com/notifications/'+user.id+'/read', {
+    //         method: 'PUT',
+    //         headers: {
+    //             'Accept': 'application/json, text/plain, */*',
+    //             'Content-Type': 'application/json',
+    //             'Authorization': 'Bearer ' + user.token
+    //         }
+    //     }).then((response) => {
+    //         history.push("/notifications")
+    //     }).catch(err => {
+    //         console.error(err)
+    //         history.push("/notifications")
+    //     })
+    // }
 
     const logout = () => {
         dispatch(userActions.logout());
@@ -113,9 +113,9 @@ const HeaderDesktop = () => {
                     <Dropdown text='Projetos' simple item active={window.location.pathname === "/my-projects"}>
                         <Dropdown.Menu>
                             <Dropdown.Header>Novo</Dropdown.Header>
-                            <Dropdown.Item icon='plus' text='Criar do zero' />
-                            <Dropdown.Item icon='lightbulb' text='Nova ideia de projeto' />
-                            <Dropdown.Item icon='add user' text='Ingressar em um projeto' />
+                            <Dropdown.Item icon='plus' text='Criar do zero' onClick={() => history.push("/new/project")} />
+                            <Dropdown.Item icon='lightbulb' text='Nova ideia de projeto' onClick={() => history.push("/new/idea")} />
+                            <Dropdown.Item icon='add user' text='Ingressar em um projeto'  onClick={() => history.push("/new/join")} />
                             <Dropdown.Item icon='envelope' text='Convidar alguém para um projeto' />
                             <Dropdown.Divider />
                             <Dropdown.Header>Meus projetos</Dropdown.Header>
@@ -147,10 +147,10 @@ const HeaderDesktop = () => {
                             )}
                         </Dropdown.Menu>
                     </Dropdown>
-                    <Menu.Item onClick={() => goToNotifications()}>
+                    {/* <Menu.Item onClick={() => goToNotifications()}>
                         <Icon name='bell outline' className='mr-0'/>
                         {!!unreadNotifications.length && <span className="ui red circular mini label">{unreadNotifications.length}</span>}
-                    </Menu.Item>
+                    </Menu.Item> */}
                     <Menu.Item key='search'>
                         <Form
                             onKeyDown={(e) => {

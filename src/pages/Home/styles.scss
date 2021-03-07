@@ -1,3 +1,36 @@
+@media only screen and (min-width: 600px) {
+  .carousel-wrapper {
+    border: 1px silver solid;
+    border-radius: 5px;
+    padding: 14px 6px 8px 6px;
+  }
+}
+
+.flickity-prev-next-button:disabled { display: none; }
+
+.news {
+  margin-top:18px;
+  color: rgba(0,0,0,.6);
+  
+  p {
+    font-size: 12.6px;
+  }
+
+  ul {
+    margin-top: 10px;
+
+    li {
+      font-size: 11px;
+      margin: 4px 0 0 0;
+      list-style: square inside;
+
+      code {
+        font-family: monospace;
+      }
+    }
+  }
+}
+
 /* carousel friends */
 .friends-carousel-cell{
   width: 93px;
@@ -42,7 +75,7 @@
 /* carousel projects */
 .carousel-cell{
   width: 113px;
-  height: 165px;
+  height: 158px;
   padding: 0px 8px;
   margin-right: 3px;
   counter-increment: gallery-cell;
@@ -59,7 +92,7 @@
 @media screen and (min-width: 601px) {
   .carousel-cell {
     width: 113px!important;
-    height: 172px!important;
+    height: 154px!important;
     margin-right: 0px!important;
     padding: 0px 9px!important;
   }

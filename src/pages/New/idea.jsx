@@ -137,12 +137,10 @@ function NewProjectIdeaPage () {
             <Spacer />
             <Grid as='main' centered columns={1} className="container">
                 <Grid.Row>
-                    <Grid.Column width={16}>
-                        <Header as='h2'>Criar nova ideia de projeto</Header>
-                    </Grid.Column>
-                </Grid.Row>
-                <Grid.Row>
                     <Grid.Column mobile={16} computer={10}>
+                        <Header as='h2' className='mb-4'>
+                            Criar nova ideia de projeto
+                        </Header>
                         <Form>
                             <Form.Field>
                                 <Form.Input name="projectName" fluid placeholder="Nome da ideia do projeto ou banda" onChange={(e, { value }) => setProjectName(value)} />

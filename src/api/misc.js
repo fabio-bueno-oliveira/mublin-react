@@ -32,7 +32,7 @@ function getFeed() {
         method: 'GET',
         headers: authHeader()
     };
-    return fetch(`${BASE_URL}/feed`, requestOptions).then(handleResponse);
+    return fetch(`${BASE_URL}/simpleFeed`, requestOptions).then(handleResponse);
 }
 
 function getNotifications() {

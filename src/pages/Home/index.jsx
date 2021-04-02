@@ -1,15 +1,13 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import HeaderDesktop from '../../components/layout/headerDesktop';
 import HeaderMobile from '../../components/layout/headerMobile';
 import FooterMenuMobile from '../../components/layout/footerMenuMobile';
 import Spacer from '../../components/layout/Spacer';
 import { userInfos } from '../../store/actions/user';
-// import { eventsInfos } from '../../store/actions/events';
-// import { notesInfos } from '../../store/actions/notes';
-import { Container, Header, Tab, Grid, Image, Icon, Label, Menu } from 'semantic-ui-react';
-// import Events from './events';
+import { searchInfos } from '../../store/actions/search';
+import { Container, Header, Tab, Grid, Image, Icon, Label, List, Menu, Popup } from 'semantic-ui-react';
 import Flickity from 'react-flickity-component';
 import './styles.scss';
 
@@ -19,23 +17,21 @@ function HomePage () {
 
     let dispatch = useDispatch();
 
+    let history = useHistory();
+
     const user = JSON.parse(localStorage.getItem('user'));
 
     useEffect(() => {
-        // dispatch(userInfos.getInfo());
         dispatch(userInfos.getUserProjects(user.id));
-        // dispatch(eventsInfos.getUserEvents(user.id));
-        // dispatch(notesInfos.getUserNotes(user.id));
-        dispatch(userInfos.getUserLastConnectedFriends())
+        dispatch(userInfos.getUserLastConnectedFriends());
+        dispatch(searchInfos.getSuggestedUsersResults());
     }, [user.id, dispatch]);
 
     const userInfo = useSelector(state => state.user)
-
+    const suggestedUsers = useSelector(state => state.search.suggestedUsers)
     const userProjects = useSelector(state => state.user.projects)
     const projectsMain = userProjects.filter((project) => { return project.portfolio === 0 && project.confirmed !== 0 }).sort((a, b) => parseFloat(b.featured) - parseFloat(a.featured))
     const projectsPortfolio = userProjects.filter((project) => { return project.portfolio === 1 && project.confirmed !== 0 }).sort((a, b) => parseFloat(b.featured) - parseFloat(a.featured))
-
-    const events = useSelector(state => state.events)
 
     const sliderOptions = {
         autoPlay: false,
@@ -48,17 +44,6 @@ function HomePage () {
         resize: true,
         contain: true
     }
-
-    //// START NOTES SECTION ////
-    const notes = useSelector(state => state.notes)
-    const projectsList = userProjects.filter((project) => { return project.confirmed === 1 }).map(project => ({ 
-        text: project.name,
-        value: project.projectid,
-        key: project.projectid,
-        image: { avatar: true, src: 'https://ik.imagekit.io/mublin/tr:h-200,w-200,r-max/projects/'+project.picture+'' }
-    }));
-    const members = useSelector(state => state.project.members);
-    //// END NOTES SECTION ////
 
     return (
         <>
@@ -251,26 +236,12 @@ function HomePage () {
                                 )}
                             </Flickity>
                         </div>
-                        {/* 
-                            <Header size='medium'>
-                                <Header.Content>
-                                    Eventos próximos
-                                </Header.Content>
-                            </Header>
-                            <Events events={events} />
-                         */}
                     </Grid.Column>
                     <Grid.Column mobile={16} tablet={16} computer={4} className="only-computer">
                         { !userInfo.requesting && 
                             <>
-                                {/* <Header as='h2'>
-                                    <Header.Content className='mb-2'>
-                                        Bem-vindo!
-                                        <Header.Subheader>O Mublin está em versão Beta e evoluindo a cada dia!</Header.Subheader>
-                                    </Header.Content>
-                                </Header> */}
                                 <a href={"/"+userInfo.username}>
-                                    <Header as='h4'>
+                                    <Header as='h3'>
                                         { (!userInfo.requesting && userInfo.picture) ? (
                                             <Image circular
                                                 src={'https://ik.imagekit.io/mublin/users/avatars/'+userInfo.id+'/'+userInfo.picture}
@@ -286,13 +257,31 @@ function HomePage () {
                                         </Header.Content>
                                     </Header>
                                 </a>
-                                <div className='news'>
-                                    <p>O Mublin está em versão Beta e evoluindo a cada dia! Confira algumas das features que estão por vir nos próximos releases:</p>
-                                    <ul>
-                                        <li><code>Feed de atividade de amigos</code></li>
-                                        <li><code>Gerenciamento de eventos</code></li>
-                                    </ul>
-                                </div>
+                                <Header as='h5'>Sugestões</Header>
+                                <List relaxed className='mt-3'>
+                                    {suggestedUsers.map((user, key) =>
+                                        <List.Item key={key}>
+                                            <Popup
+                                                content={user.totalProjects + (user.totalProjects === 1 ? ' projeto' : ' projetos') + (user.availabilityTitle ? ' · ' + user.availabilityTitle : '')}
+                                                header={user.username}
+                                                size='tiny'
+                                                trigger={<Image src={user.picture ? user.picture : 'https://ik.imagekit.io/mublin/sample-folder/avatar-undefined_Kblh5CBKPp.jpg'} avatar className='cpointer' onClick={() => history.push('/'+user.username)} />}
+                                            />
+                                            <List.Content>
+                                                <Popup
+                                                    content={user.totalProjects + (user.totalProjects === 1 ? ' projeto' : ' projetos') + (user.availabilityTitle ? ' · ' + user.availabilityTitle : '')}
+                                                    header={user.username}
+                                                    size='tiny'
+                                                    trigger={<List.Header as='a' href={'/'+user.username}>{user.name+' '+user.lastname} {!!user.verified && <Icon name='check circle' color='blue' className='verifiedIcon' title='Verificado' />}</List.Header>}
+                                                />
+                                                {/* <List.Header as='a' href={'/'+user.username}>{user.name+' '+user.lastname} {!!user.verified && <Icon name='check circle' color='blue' className='verifiedIcon' title='Verificado' />}</List.Header> */}
+                                                <List.Description style={{fontSize:"11px"}}>
+                                                    {user.instrumentalist && user.mainRole+' · '} {user.city+', '+user.region}
+                                                </List.Description>
+                                            </List.Content>
+                                        </List.Item>
+                                    )}
+                                </List>
                             </>
                         }
                     </Grid.Column>

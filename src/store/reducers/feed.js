@@ -41,6 +41,7 @@ export function feed(state = initialState, action) {
         ...state,
         list: action.list,
         requesting: false,
+        error: ""
       };
     case feedTypes.GET_USER_FEED_FAILURE:
       return {

@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useHistory } from 'react-router-dom';
 import HeaderDesktop from '../../components/layout/headerDesktop';
@@ -7,8 +7,11 @@ import FooterMenuMobile from '../../components/layout/footerMenuMobile';
 import Spacer from '../../components/layout/Spacer';
 import { userInfos } from '../../store/actions/user';
 import { searchInfos } from '../../store/actions/search';
-import { Container, Header, Tab, Grid, Image, Icon, Label, List, Menu, Popup } from 'semantic-ui-react';
+import { miscInfos } from '../../store/actions/misc';
+import { Container, Header, Tab, Grid, Feed, Image, Icon, Label, List, Menu, Popup } from 'semantic-ui-react';
 import Flickity from 'react-flickity-component';
+import { formatDistance } from 'date-fns';
+import pt from 'date-fns/locale/pt-BR';
 import './styles.scss';
 
 function HomePage () {
@@ -25,6 +28,7 @@ function HomePage () {
         dispatch(userInfos.getUserProjects(user.id));
         dispatch(userInfos.getUserLastConnectedFriends());
         dispatch(searchInfos.getSuggestedUsersResults());
+        dispatch(miscInfos.getFeed());
     }, [user.id, dispatch]);
 
     const userInfo = useSelector(state => state.user)
@@ -32,6 +36,7 @@ function HomePage () {
     const userProjects = useSelector(state => state.user.projects)
     const projectsMain = userProjects.filter((project) => { return project.portfolio === 0 && project.confirmed !== 0 }).sort((a, b) => parseFloat(b.featured) - parseFloat(a.featured))
     const projectsPortfolio = userProjects.filter((project) => { return project.portfolio === 1 && project.confirmed !== 0 }).sort((a, b) => parseFloat(b.featured) - parseFloat(a.featured))
+    const feed = useSelector(state => state.feed)
 
     const sliderOptions = {
         autoPlay: false,
@@ -45,6 +50,48 @@ function HomePage () {
         contain: true
     }
 
+    const [likeFeedPostLoading, setLikeFeedPostLoading] = useState(null)
+    const likeFeedPost = (feedId) => {
+        setLikeFeedPostLoading(feedId)
+        fetch('https://mublin.herokuapp.com/feed/'+feedId+'/like', {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json, text/plain, */*',
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + user.token
+            }
+        })
+        .then(() => {
+            dispatch(miscInfos.getFeed());
+            setLikeFeedPostLoading(null)
+        }).catch(err => {
+            setLikeFeedPostLoading(null)
+            console.error(err)
+            alert("Ocorreu um erro ao curtir a postagem")
+        })
+    }
+
+    const [unlikeFeedPostLoading, setUnlikeFeedPostLoading] = useState(null)
+    const unlikeFeedPost = (feedId) => {
+        setUnlikeFeedPostLoading(feedId)
+        fetch('https://mublin.herokuapp.com/feed/'+feedId+'/unlike', {
+            method: 'DELETE',
+            headers: {
+                'Accept': 'application/json, text/plain, */*',
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + user.token
+            }
+        })
+        .then((response) => {
+            dispatch(miscInfos.getFeed());
+            setUnlikeFeedPostLoading(null)
+        }).catch(err => {
+            setUnlikeFeedPostLoading(null)
+            console.error(err)
+            alert("Ocorreu um erro ao curtir a postagem")
+        })
+    }
+
     return (
         <>
         <HeaderDesktop />
@@ -54,13 +101,14 @@ function HomePage () {
             <Grid centered>
                 <Grid.Row columns={2}>
                     <Grid.Column mobile={16} tablet={16} computer={12}>
+                        <div>
                         <Header size='medium' className='mt-1'>
                             {/* <Icon name='rocket' /> */}
-                            <Header.Content className='mb-2'>
+                            <Header.Content className='mb-1' style={{opacity:"0.7"}}>
                                 Meus Projetos ({userProjects.length})
                             </Header.Content>
                         </Header>
-                        <Tab menu={{ secondary: true }} defaultActiveIndex={0} panes={
+                        <Tab defaultActiveIndex={0} panes={
                             [
                                 {
                                 menuItem: (
@@ -70,7 +118,12 @@ function HomePage () {
                                     </Menu.Item>
                                 ),
                                 render: () => 
-                                    <Tab.Pane loading={userInfo.requesting} attached={false} as="div" className='carousel-wrapper'>
+                                    <Tab.Pane 
+                                        loading={userInfo.requesting} 
+                                        attached={true} 
+                                        // as="div" 
+                                        // className='carousel-wrapper'
+                                    >
                                         <Flickity
                                             className={'carousel'}
                                             elementType={'div'}
@@ -137,7 +190,12 @@ function HomePage () {
                                     </Menu.Item>
                                     ),
                                 render: () => 
-                                    <Tab.Pane loading={userInfo.requesting} attached={false} as='div' className='carousel-wrapper'>
+                                    <Tab.Pane 
+                                        loading={userInfo.requesting} 
+                                        attached={true} 
+                                        // as='div' 
+                                        // className='carousel-wrapper'
+                                    >
                                         <Flickity
                                             className={'carousel'}
                                             elementType={'div'}
@@ -199,12 +257,13 @@ function HomePage () {
                             ]
                         }
                         />
-                        <Header size='small' className="mt-3 mt-md-4 mb-4 mb-md-3">
-                            <Header.Content>
-                                Pessoas conectadas recentemente
-                            </Header.Content>
-                        </Header>
-                        <div className='carousel-wrapper'>
+                        </div>
+                        <div className='carousel-wrapper mt-4 mt-md-4'>
+                            <Header size='small' className="mb-3 ml-2">
+                                <Header.Content style={{opacity:"0.7"}}>
+                                    Pessoas conectadas recentemente
+                                </Header.Content>
+                            </Header>
                             <Flickity
                                 className={'carousel'}
                                 elementType={'div'}
@@ -219,11 +278,12 @@ function HomePage () {
                                                 {friend.picture ? (
                                                     <Image src={'https://ik.imagekit.io/mublin/tr:h-200,w-200,r-max,c-maintain_ratio/users/avatars/'+friend.id+'/'+friend.picture} rounded size='tiny' />
                                                 ) : (
-                                                    <Image src={'https://ik.imagekit.io/mublin/sample-folder/avatar-undefined_Kblh5CBKPp.jpg'} height='85' width='85' rounded />
+                                                    <Image src={'https://ik.imagekit.io/mublin/sample-folder/avatar-undefined_Kblh5CBKPp.jpg'} rounded size='tiny' />
                                                 )}
                                                 <Header as='h5' textAlign='center' className='mt-2 mb-0'>
-                                                    <Header.Content>
-                                                        {friend.username}
+                                                    <Header.Content title={friend.username}>
+                                                        {/* {friend.username} */}
+                                                        {(friend.username.length > 9) ? friend.username.substr(0,8) + '...' : friend.username}
                                                     </Header.Content>
                                                 </Header>
                                             </Link>
@@ -236,6 +296,67 @@ function HomePage () {
                                 )}
                             </Flickity>
                         </div>
+                        {!feed.error ? (
+                            <Feed className='pt-3 carousel-wrapper'>
+                                <Header size='small' className="mb-3 ml-2">
+                                    <Header.Content style={{opacity:"0.7"}}>
+                                        Feed
+                                    </Header.Content>
+                                </Header>
+                                { feed.list.map((item, key) =>
+                                    <Feed.Event key={key} className='mb-3'>
+                                        <Feed.Label style={{cursor:'pointer'}} onClick={() => history.push('/'+item.relatedUserUsername)}>
+                                            { item.relatedUserPicture ? (
+                                                <img src={item.relatedUserPicture} alt={'Foto de '+item.relatedUserName} />
+                                            ) : (
+                                                <img src='https://ik.imagekit.io/mublin/sample-folder/tr:h-200,w-200,c-maintain_ratio/avatar-undefined_Kblh5CBKPp.jpg' />
+                                            )}
+                                            {item.relatedUserPlan === 'Pro' && <Label size="mini" className="ml-2 p-1">Pro</Label>}
+                                        </Feed.Label>
+                                        <Feed.Content className='mt-1'>
+                                            {feed.requesting ? (
+                                                <Feed.Date style={{fontSize:'12px',fontWeight:'500'}}>
+                                                    Carregando...
+                                                </Feed.Date>
+                                            ) : (
+                                                <Feed.Date style={{fontSize:'12px',fontWeight:'500'}} title={Date(item.created)}>
+                                                    há {formatDistance(new Date(item.created * 1000), new Date(), {locale:pt})}
+                                                </Feed.Date>
+                                            )}
+                                            <Feed.Summary>
+                                                <Feed.User style={{fontWeight:'600'}} onClick={() => history.push('/'+item.relatedUserUsername)}>{item.relatedUserName+' '+item.relatedUserLastname}</Feed.User> <span style={{fontWeight:'500'}}>{item.action} {item.category === 'project' ? item.relatedProjectName+' ('+item.relatedProjectType+')' : (<a>{item.relatedEventTitle}</a>)}</span>
+                                            </Feed.Summary>
+                                            { (item.categoryId === 8) && 
+                                                <Feed.Extra text content={item.extraText} />
+                                            }
+                                            { item.category === 'project' &&
+                                                <Feed.Extra images>
+                                                    <Link as='a' to={{ pathname: '/project/'+item.relatedProjectUsername }}>
+                                                        { item.relatedProjectPicture ? (
+                                                            <img src={item.relatedProjectPicture} />
+                                                        ) : (
+                                                            <img src='https://ik.imagekit.io/mublin/sample-folder/avatar-undefined_-dv9U6dcv3.jpg' alt={'Foto de '+item.relatedUserName} />
+                                                        )}
+                                                    </Link>
+                                                </Feed.Extra>
+                                            }
+                                            { (item.categoryId !== 6 && item.categoryId !== 7 && !feed.requesting) && 
+                                                <Feed.Meta>
+                                                    <Feed.Like onClick={!item.likedByMe ? () => likeFeedPost(item.id) : () => unlikeFeedPost(item.id)}>
+                                                        <Icon loading={likeFeedPostLoading === item.id || unlikeFeedPostLoading === item.id} name={(likeFeedPostLoading === item.id || unlikeFeedPostLoading === item.id) ? 'spinner' : 'like'} color={item.likedByMe ? 'red' : ''}/>
+                                                    </Feed.Like> {item.likes}
+                                                </Feed.Meta>
+                                            }
+                                        </Feed.Content>
+                                    </Feed.Event>
+                                )}
+                            </Feed>
+                        ) : (
+                            <Header as='h5'>
+                                <Icon name='meh outline' />
+                                Nada por aqui! Comece a seguir pessoas para visualizar as interações no Feed
+                            </Header>
+                        )}
                     </Grid.Column>
                     <Grid.Column mobile={16} tablet={16} computer={4} className="only-computer">
                         { !userInfo.requesting && 

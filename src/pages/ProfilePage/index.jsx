@@ -290,7 +290,7 @@ function ProfilePage (props) {
     return (
         <>
         <HeaderDesktop />
-        <HeaderMobile profile={true} pageType='profile' />
+        <HeaderMobile profile={true} pageType='profile' profilePicture={profile.picture} />
         { profile.requesting ? (
             <Loader
                 className="appLoadingIcon"

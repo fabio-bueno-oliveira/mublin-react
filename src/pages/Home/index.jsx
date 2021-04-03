@@ -8,10 +8,11 @@ import Spacer from '../../components/layout/Spacer';
 import { userInfos } from '../../store/actions/user';
 import { searchInfos } from '../../store/actions/search';
 import { miscInfos } from '../../store/actions/misc';
-import { Container, Header, Tab, Grid, Feed, Image, Icon, Label, List, Menu, Popup } from 'semantic-ui-react';
+import { Container, Header, Tab, Grid, Feed, Image, Icon, Label, List, Menu, Popup, Loader } from 'semantic-ui-react';
 import Flickity from 'react-flickity-component';
 import { formatDistance } from 'date-fns';
 import pt from 'date-fns/locale/pt-BR';
+import LogoMublin from '../../assets/img/logos/logo-mublin-circle-black.png'
 import './styles.scss';
 
 function HomePage () {
@@ -101,20 +102,19 @@ function HomePage () {
             <Grid centered>
                 <Grid.Row columns={2}>
                     <Grid.Column mobile={16} tablet={16} computer={12}>
-                        <div>
-                        <Header size='medium' className='mt-1'>
-                            {/* <Icon name='rocket' /> */}
+                        
+                        {/* <Header size='medium' className='mt-1'>
                             <Header.Content className='mb-1' style={{opacity:"0.7"}}>
                                 Meus Projetos ({userProjects.length})
                             </Header.Content>
-                        </Header>
+                        </Header> */}
                         <Tab defaultActiveIndex={0} panes={
                             [
                                 {
                                 menuItem: (
                                     <Menu.Item key='main'>
                                         {/* <Icon name='bullseye' color='green' className="mr-2" /> Principais ({projectsMain.length}) */}
-                                        Principais ({projectsMain.length})
+                                        Meus Projetos Principais ({projectsMain.length})
                                     </Menu.Item>
                                 ),
                                 render: () => 
@@ -257,11 +257,11 @@ function HomePage () {
                             ]
                         }
                         />
-                        </div>
+                        
                         <div className='carousel-wrapper mt-4 mt-md-4'>
-                            <Header size='small' className="mb-3 ml-2">
+                            <Header size='small' className="mb-3 ml-0 ml-md-2">
                                 <Header.Content style={{opacity:"0.7"}}>
-                                    Pessoas conectadas recentemente
+                                    Conectados recentemente
                                 </Header.Content>
                             </Header>
                             <Flickity
@@ -291,64 +291,99 @@ function HomePage () {
                                     )
                                 ) : (
                                     <div style={{textAlign: 'center', width: '100%'}}>
-                                        <Icon loading name='spinner' size='big' />
+                                        <Loader active inline='centered' className='mb-4' />
                                     </div>
                                 )}
                             </Flickity>
+
+                            <div className='userSuggestionsCarouselMobile'>
+                                <Header size='tiny' className="mt-3 mb-0 ml-0 ml-md-2">
+                                    <Header.Content style={{opacity:"0.7"}}>
+                                        Sugestões para seguir
+                                    </Header.Content>
+                                </Header>
+                                <Flickity
+                                    className={'mt-2 pb-0 pb-md-2'}
+                                    elementType={'div'}
+                                    options={sliderOptions}
+                                    disableImagesLoaded={false}
+                                    reloadOnUpdate
+                                >
+                                    {suggestedUsers.filter((user) => { return user.picture }).map((user, key) =>
+                                        <div className='pr-3' key={key} style={{display:'flex', alignItems:'center'}}>
+                                            <Image as='a' href={'/'+user.username} src={user.picture ? user.picture : 'https://ik.imagekit.io/mublin/sample-folder/avatar-undefined_Kblh5CBKPp.jpg'} avatar />
+                                            <span style={{fontSize:'11.8px'}}>{user.username}</span>
+                                        </div>
+                                    )}
+                                </Flickity>
+                            </div>
+
                         </div>
+
                         {!feed.error ? (
                             <Feed className='pt-3 carousel-wrapper'>
-                                <Header size='small' className="mb-3 ml-2">
+                                <Header size='small' className="mb-3 ml-0 ml-md-2">
                                     <Header.Content style={{opacity:"0.7"}}>
                                         Feed
                                     </Header.Content>
                                 </Header>
-                                { feed.list.map((item, key) =>
-                                    <Feed.Event key={key} className='mb-3'>
-                                        <Feed.Label style={{cursor:'pointer'}} onClick={() => history.push('/'+item.relatedUserUsername)}>
-                                            { item.relatedUserPicture ? (
-                                                <img src={item.relatedUserPicture} alt={'Foto de '+item.relatedUserName} />
-                                            ) : (
-                                                <img src='https://ik.imagekit.io/mublin/sample-folder/tr:h-200,w-200,c-maintain_ratio/avatar-undefined_Kblh5CBKPp.jpg' />
-                                            )}
-                                            {item.relatedUserPlan === 'Pro' && <Label size="mini" className="ml-2 p-1">Pro</Label>}
+                                {feed.requesting ? (
+                                    <div>
+                                        <Loader active inline='centered' className='mb-4' />
+                                    </div>
+                                ) : (
+                                    <>
+                                    {feed.list.map((item, key) =>
+                                        <Feed.Event key={key} className='mb-3 ml-0 ml-md-2'>
+                                            <Feed.Label style={{cursor:'pointer'}} onClick={() => history.push('/'+item.relatedUserUsername)}>
+                                                { item.relatedUserPicture ? (
+                                                    <img src={item.relatedUserPicture} alt={'Foto de '+item.relatedUserName} />
+                                                ) : (
+                                                    <img src='https://ik.imagekit.io/mublin/sample-folder/tr:h-200,w-200,c-maintain_ratio/avatar-undefined_Kblh5CBKPp.jpg' />
+                                                )}
+                                                {item.relatedUserPlan === 'Pro' && <Label size="mini" className="ml-2 p-1">Pro</Label>}
+                                            </Feed.Label>
+                                            <Feed.Content className='mt-1'>
+                                                {feed.requesting ? (
+                                                    <Feed.Date style={{fontSize:'12px',fontWeight:'500'}}>
+                                                        Carregando...
+                                                    </Feed.Date>
+                                                ) : (
+                                                    <Feed.Date style={{fontSize:'12px',fontWeight:'500'}} title={Date(item.created)}>
+                                                        há {formatDistance(new Date(item.created * 1000), new Date(), {locale:pt})}
+                                                    </Feed.Date>
+                                                )}
+                                                <Feed.Summary>
+                                                    <Feed.User style={{fontWeight:'600'}} onClick={() => history.push('/'+item.relatedUserUsername)}>{item.relatedUserName+' '+item.relatedUserLastname}</Feed.User> <span style={{fontWeight:'500'}}>{item.action}</span>
+                                                </Feed.Summary>
+                                                { (item.categoryId === 8) && 
+                                                    <Feed.Extra text content={item.extraText} />
+                                                }
+                                                {!feed.requesting &&
+                                                    <Feed.Meta>
+                                                        <Feed.Like onClick={!item.likedByMe ? () => likeFeedPost(item.id) : () => unlikeFeedPost(item.id)}>
+                                                            <Icon loading={likeFeedPostLoading === item.id || unlikeFeedPostLoading === item.id} name={(likeFeedPostLoading === item.id || unlikeFeedPostLoading === item.id) ? 'spinner' : 'like'} color={item.likedByMe ? 'red' : ''}/>
+                                                        </Feed.Like> {item.likes}
+                                                    </Feed.Meta>
+                                                }
+                                            </Feed.Content>
+                                        </Feed.Event>
+                                    )}
+                                    <Feed.Event className='mb-3'>
+                                        <Feed.Label>
+                                            <img src={LogoMublin} alt='Mublin' />
                                         </Feed.Label>
                                         <Feed.Content className='mt-1'>
-                                            {feed.requesting ? (
-                                                <Feed.Date style={{fontSize:'12px',fontWeight:'500'}}>
-                                                    Carregando...
-                                                </Feed.Date>
-                                            ) : (
-                                                <Feed.Date style={{fontSize:'12px',fontWeight:'500'}} title={Date(item.created)}>
-                                                    há {formatDistance(new Date(item.created * 1000), new Date(), {locale:pt})}
-                                                </Feed.Date>
-                                            )}
+                                            <Feed.Date style={{fontSize:'12px',fontWeight:'500'}}>
+                                                há {formatDistance(new Date('2021-03-04'), new Date(), {locale:pt})}
+                                            </Feed.Date>
                                             <Feed.Summary>
-                                                <Feed.User style={{fontWeight:'600'}} onClick={() => history.push('/'+item.relatedUserUsername)}>{item.relatedUserName+' '+item.relatedUserLastname}</Feed.User> <span style={{fontWeight:'500'}}>{item.action} {item.category === 'project' ? item.relatedProjectName+' ('+item.relatedProjectType+')' : (<a>{item.relatedEventTitle}</a>)}</span>
+                                                <Feed.User style={{fontWeight:'600',cursor:'default'}}>Mublin</Feed.User> <span style={{fontWeight:'500'}}>escreveu</span>
                                             </Feed.Summary>
-                                            { (item.categoryId === 8) && 
-                                                <Feed.Extra text content={item.extraText} />
-                                            }
-                                            { item.category === 'project' &&
-                                                <Feed.Extra images>
-                                                    <Link as='a' to={{ pathname: '/project/'+item.relatedProjectUsername }}>
-                                                        { item.relatedProjectPicture ? (
-                                                            <img src={item.relatedProjectPicture} />
-                                                        ) : (
-                                                            <img src='https://ik.imagekit.io/mublin/sample-folder/avatar-undefined_-dv9U6dcv3.jpg' alt={'Foto de '+item.relatedUserName} />
-                                                        )}
-                                                    </Link>
-                                                </Feed.Extra>
-                                            }
-                                            { (item.categoryId !== 6 && item.categoryId !== 7 && !feed.requesting) && 
-                                                <Feed.Meta>
-                                                    <Feed.Like onClick={!item.likedByMe ? () => likeFeedPost(item.id) : () => unlikeFeedPost(item.id)}>
-                                                        <Icon loading={likeFeedPostLoading === item.id || unlikeFeedPostLoading === item.id} name={(likeFeedPostLoading === item.id || unlikeFeedPostLoading === item.id) ? 'spinner' : 'like'} color={item.likedByMe ? 'red' : ''}/>
-                                                    </Feed.Like> {item.likes}
-                                                </Feed.Meta>
-                                            }
+                                            <Feed.Extra text content="Bem-vindo à versão Beta do Mublin! Você faz parte de um seleto grupo de pessoas que estão fazendo parte dos primeiros testes neste pré-lançamento. Este é um espaço feito para trazer mais facilidade à rotina de pessoas que amam música e que estão de alguma forma envolvidos com projetos de música. Esperamos que goste!" />
                                         </Feed.Content>
                                     </Feed.Event>
+                                    </>
                                 )}
                             </Feed>
                         ) : (
@@ -378,7 +413,7 @@ function HomePage () {
                                         </Header.Content>
                                     </Header>
                                 </a>
-                                <Header as='h5'>Sugestões</Header>
+                                <Header as='h5'>Sugestões para seguir</Header>
                                 <List relaxed className='mt-3'>
                                     {suggestedUsers.map((user, key) =>
                                         <List.Item key={key}>

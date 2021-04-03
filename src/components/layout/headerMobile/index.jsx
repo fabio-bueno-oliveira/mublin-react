@@ -57,6 +57,20 @@ const HeaderMobile = (props) => {
         dispatch(userActions.logout());
     }
 
+    const [scrollTop, setScrollTop] = useState(0);
+
+    useEffect(() => {
+        function onScroll() {
+        let currentPosition = window.pageYOffset; // or use document.documentElement.scrollTop;
+        setScrollTop(currentPosition <= 0 ? 0 : currentPosition);
+        }
+
+        window.addEventListener("scroll", onScroll);
+        return () => window.removeEventListener("scroll", onScroll);
+    }, [scrollTop]);
+
+    const AvatarUndefined = 'https://ik.imagekit.io/mublin/sample-folder/tr:h-200,w-200,c-maintain_ratio/avatar-undefined_Kblh5CBKPp.jpg'
+
     return (
         <>
             <Menu id='headerMobile' fixed='top' inverted size='mini' borderless>
@@ -66,8 +80,8 @@ const HeaderMobile = (props) => {
                             <Image onClick={() => history.push("/home")} size='tiny' src={MublinLogo} style={{ marginRight: '1.5em' }} alt="Logo do Mublin" />      
                         }
                         { (props.pageType === 'profile' || props.pageType === 'project') &&
-                            <div style={{fontFamily:"'Poppins'",fontSize:'16px',fontWeight:'400',color:'white',width:'170px',whiteSpace:'nowrap',overflow:'hidden',textOverflow:'ellipsis'}}>
-                                <Icon name='arrow left' className='mr-3' onClick={() => history.goBack()} />{usernameUrl.replace(/^\//,'').replace("project/", "")}
+                            <div style={{fontFamily:"'Poppins'",fontSize:'16px',fontWeight:'400',color:'white',width:'170px',whiteSpace:'nowrap',overflow:'hidden',textOverflow:'ellipsis',paddingBottom:'2px'}}>
+                                <Icon name='arrow left' className='mr-3' onClick={() => history.goBack()} /> {scrollTop > 100 ? <Image src={props.profilePicture ? props.profilePicture : AvatarUndefined} avatar /> : null} {usernameUrl.replace(/^\//,'').replace("project/", "")}
                             </div>      
                         }
                     </Menu.Item>

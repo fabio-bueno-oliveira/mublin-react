@@ -74,10 +74,10 @@ function SearchPage (props) {
                         </Form>
                     </Grid.Column>
                 </Grid.Row>
-                { searchedKeywords ? ( 
+                {searchedKeywords ? ( 
                     <Grid.Row>
                         <Grid.Column width={16}>
-                            { searchedKeywords && 
+                            {searchedKeywords && 
                                 <Tab menu={{ secondary: true, pointing: true, size:'large' }} panes={
                                     [
                                         {
@@ -203,47 +203,44 @@ function SearchPage (props) {
                         </Grid.Column>
                     </Grid.Row>
                 ) : (
-                    <Grid.Row style={{justifyContent:'center'}} className='pb-5'>
+                    <Grid.Row style={{justifyContent:'center'}} className='pb-5 pt-0'>
                         { searchResults.requesting ? (
-                        <Loader active inline='centered' />
+                            <Loader active inline='centered' />
                         ) : (
-                        <>
-                        <Header>Sugestões para você seguir</Header>
-                        <Card.Group itemsPerRow={screenSize.matches ? 6 : 2} className='px-0 px-md-0 pb-5 mt-1' style={{maxWidth:'100%'}}>
-                            { suggestedUsers.map((user, key) =>
-                                <Card key={key} onClick={() => history.push('/'+user.username)}>
-                                    { user.picture ? (
-                                        <Image src={user.picture} wrapped ui={false} />
-                                    ) : (
-                                        <Image src='https://ik.imagekit.io/mublin/sample-folder/avatar-undefined_Kblh5CBKPp.jpg' wrapped ui={false} />
-                                    )}
-                                    <Card.Content>
-                                        <Card.Header style={{fontSize:'14.4px',width:'100%',whiteSpace:'nowrap',overflow:'hidden',textOverflow:'ellipsis'}} title={user.name+' '+user.lastname}>
-                                            {user.name+' '+user.lastname} {!!user.verified && <Icon name='check circle' color='blue' className='verifiedIcon' title='Verificado' />}
-                                        </Card.Header>
-                                        { user.instrumentalist && 
-                                            <Card.Meta style={{fontSize:'12.4px'}}>
-                                                {user.mainRole}
-                                            </Card.Meta>
-                                        }
-                                        {user.city &&
-                                            <Card.Meta style={{fontSize:'11px',width:'100%',whiteSpace:'nowrap',overflow:'hidden',textOverflow:'ellipsis'}}>
-                                                {user.city+' - '+user.region}
-                                            </Card.Meta>
-                                        }
-                                        <Card.Description style={{fontSize:'11px'}}>
-                                            {user.totalProjects} projetos
-                                        </Card.Description>
-                                        { user.availabilityTitle && 
-                                            <Card.Description style={{fontSize:'11px',width:'100%',whiteSpace:'nowrap',overflow:'hidden',textOverflow:'ellipsis'}} className='mt-1'>
-                                                 <Label circular color={user.availabilityColor} empty size='mini' /> {user.availabilityTitle}
+                            <Card.Group itemsPerRow={screenSize.matches ? 6 : 2} className='px-0 px-md-0 pb-5 mt-1' style={{maxWidth:'100%'}}>
+                                { suggestedUsers.map((user, key) =>
+                                    <Card key={key} onClick={() => history.push('/'+user.username)}>
+                                        { user.picture ? (
+                                            <Image src={user.picture} wrapped ui={false} />
+                                        ) : (
+                                            <Image src='https://ik.imagekit.io/mublin/sample-folder/avatar-undefined_Kblh5CBKPp.jpg' wrapped ui={false} />
+                                        )}
+                                        <Card.Content>
+                                            <Card.Header style={{fontSize:'14.4px',width:'100%',whiteSpace:'nowrap',overflow:'hidden',textOverflow:'ellipsis'}} title={user.name+' '+user.lastname}>
+                                                {user.name+' '+user.lastname} {!!user.verified && <Icon name='check circle' color='blue' className='verifiedIcon' title='Verificado' />}
+                                            </Card.Header>
+                                            { user.instrumentalist && 
+                                                <Card.Meta style={{fontSize:'12.4px'}}>
+                                                    {user.mainRole}
+                                                </Card.Meta>
+                                            }
+                                            {user.city &&
+                                                <Card.Meta style={{fontSize:'11px',width:'100%',whiteSpace:'nowrap',overflow:'hidden',textOverflow:'ellipsis'}}>
+                                                    {user.city+' - '+user.region}
+                                                </Card.Meta>
+                                            }
+                                            <Card.Description style={{fontSize:'11px'}}>
+                                                {user.totalProjects} projetos
                                             </Card.Description>
-                                        }
-                                    </Card.Content>
-                                </Card>
-                            )}
-                        </Card.Group>
-                        </>
+                                            { user.availabilityTitle && 
+                                                <Card.Description style={{fontSize:'11px',width:'100%',whiteSpace:'nowrap',overflow:'hidden',textOverflow:'ellipsis'}} className='mt-1'>
+                                                    <Label circular color={user.availabilityColor} empty size='mini' /> {user.availabilityTitle}
+                                                </Card.Description>
+                                            }
+                                        </Card.Content>
+                                    </Card>
+                                )}
+                            </Card.Group>
                         )}
                     </Grid.Row>
                 )}

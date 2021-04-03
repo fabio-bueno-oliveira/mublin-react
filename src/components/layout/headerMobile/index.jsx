@@ -94,14 +94,14 @@ const HeaderMobile = (props) => {
                         >
                             <Icon name='globe' size='large' />
                         </Menu.Item> */}
-                        <Menu.Item
+                        {/* <Menu.Item
                             name='search'
                             onClick={() => goToSearch(true)}
                             className='pr-2'
                             active={window.location.pathname === "/search"}
                         >
                             <Icon name='search' size='large' />
-                        </Menu.Item>
+                        </Menu.Item> */}
                         <Menu.Item
                             name='message'
                             onClick={() => goToMessages(true)}
@@ -130,7 +130,7 @@ const HeaderMobile = (props) => {
                 onClose={() => setMobileMenuOpen(false)}
             >
                 <Modal.Content>
-                    <Menu vertical fluid>
+                    <Menu vertical fluid size='large'>
                         <Menu.Item
                             key='profile'
                             onClick={goToProfile}

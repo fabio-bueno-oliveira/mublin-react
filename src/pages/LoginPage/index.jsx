@@ -157,6 +157,7 @@ function LoginPage (props) {
                                             className="mb-3" 
                                             disabled={(!values.email || !values.password || isSubmitting) ? true : false}
                                             onClick={handleSubmit}
+                                            size="big"
                                         >
                                             Entrar
                                         </Button>

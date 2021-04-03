@@ -336,10 +336,14 @@ function ProfilePage (props) {
                                     </>
                                     }
                                     <Button.Group fluid color="black" size="small" className="mt-3">
-                                        { user.id !== profile.id ? (
-                                            <Button content={followedByMe.following === 'true' ? 'Seguindo' : 'Seguir'} loading={loadingFollow} onClick={() => followUnfollow()} />
+                                        {followedByMe.requesting ? (
+                                            <Button content='Carregando...' />
                                         ) : (
-                                            <Button content='Editar' onClick={() => history.push("/settings/profile")} />
+                                            user.id !== profile.id ? (
+                                                <Button content={followedByMe.following === 'true' ? <><Icon name='check' />Seguindo</> : 'Seguir'} loading={loadingFollow} onClick={() => followUnfollow()} />
+                                            ) : (
+                                                <Button content='Editar' onClick={() => history.push("/settings/profile")} />
+                                            )
                                         )}
                                         <Button content='Mensagem' />
                                     </Button.Group>

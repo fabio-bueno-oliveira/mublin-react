@@ -35,7 +35,7 @@ function PublicProfilePage (props) {
             { (loggedIn && profile.id) &&
                 <Redirect to={{ pathname: '/'+username }} />
             }
-            { profile.id ? ( 
+            {(!profile.requesting && profile.id) ? ( 
                 <Grid as='main' textAlign='center' columns={1} className="container mb-2 px-1 px-md-3">
                     <Grid.Row>
                         <Grid.Column mobile={16} tabled={16} computer={8}>

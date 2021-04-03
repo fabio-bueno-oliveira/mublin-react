@@ -131,15 +131,15 @@ const HeaderDesktop = () => {
                                     {project.name}
                                     <Dropdown.Menu>
                                         <Dropdown.Item 
-                                            icon='globe' 
+                                            // icon='user circle outline' 
                                             text='Página do projeto' 
-                                            description={project.username}
+                                            // description={project.username}
                                             onClick={() => history.push("/new/project")} 
                                         />
                                         <Dropdown.Item 
-                                            icon='warehouse' 
-                                            text='Backstage' 
-                                            description='gerenciar' 
+                                            // icon='setting' 
+                                            text='Gerenciar' 
+                                            // description='gerenciar' 
                                         />
                                     </Dropdown.Menu>
                                 </Dropdown.Item>

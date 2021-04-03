@@ -53,7 +53,7 @@ function HomePage () {
         <Container className='px-3'>
             <Grid centered>
                 <Grid.Row columns={2}>
-                    <Grid.Column mobile={16} tablet={16} computer={8}>
+                    <Grid.Column mobile={16} tablet={16} computer={12}>
                         <Header size='medium' className='mt-1'>
                             {/* <Icon name='rocket' /> */}
                             <Header.Content className='mb-2'>

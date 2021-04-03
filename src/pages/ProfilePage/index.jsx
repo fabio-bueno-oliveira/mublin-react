@@ -39,14 +39,40 @@ function ProfilePage (props) {
         dispatch(profileInfos.getProfileStrengthsRaw(username));
         dispatch(profileInfos.getProfileTestimonials(username));
         dispatch(followInfos.checkProfileFollowing(username));
+
+        fetch('https://mublin.herokuapp.com/strengths/getAllStrengths', {
+            method: 'GET',
+            headers: new Headers({
+                'Authorization': 'Bearer '+user.token
+            }),
+        })
+          .then(res => res.json())
+          .then(
+            (result) => {
+                setStrengthsLoaded(true);
+                setStrengths(result);
+            },
+            (error) => {
+                setStrengthsLoaded(true);
+            }
+          )
     }, [dispatch, username]);
 
     const profile = useSelector(state => state.profile);
-    const followedByMe = useSelector(state => state.followedByMe)
 
     const myTestimonial = profile.testimonials.filter((testimonial) => { return testimonial.friendId === user.id}).map(testimonial => ({ 
-        id: testimonial.id
+        id: testimonial.id,
+        title: testimonial.title,
+        testimonial: testimonial.testimonial
     }))
+
+    useEffect(() => {
+        setTestimonialId(myTestimonial[0] ? myTestimonial[0].id : "")
+        setTestimonialText(myTestimonial[0] ? myTestimonial[0].testimonial : "")
+        setTestimonialTitle(myTestimonial[0] ? myTestimonial[0].title : "")
+    }, [profile.testimonials]);
+
+    const followedByMe = useSelector(state => state.followedByMe)
 
     document.title = profile.requesting ? 'Carregando...' : profile.name+' '+profile.lastname+' | Mublin'
 
@@ -115,7 +141,7 @@ function ProfilePage (props) {
     }
 
     // Unfollow Confirmation
-    const [unfollowAlert, setUnfollowAlert] = useState(false)
+    // const [unfollowAlert, setUnfollowAlert] = useState(false)
 
     // Modals
     const goToProfile = (username) => {
@@ -131,7 +157,6 @@ function ProfilePage (props) {
     // Strengths (Pontos Fortes)
     const [modalStrengthsOpen, setModalStrengthsOpen] = useState(false);
     const [strengthsLoaded, setStrengthsLoaded] = useState(false);
-    const [error, setError] = useState(null);
     const [strengths, setStrengths] = useState([]);
     const [strengthVoted, setStrengthVoted] = useState(null);
     const [strengthVotedName, setStrengthVotedName] = useState('');
@@ -144,26 +169,6 @@ function ProfilePage (props) {
         icon: x.icon,
         strengthTitle: x.strengthTitle
     }))
-
-    useEffect(() => {
-        fetch('https://mublin.herokuapp.com/strengths/getAllStrengths', {
-            method: 'GET',
-            headers: new Headers({
-                'Authorization': 'Bearer '+user.token
-            }),
-        })
-          .then(res => res.json())
-          .then(
-            (result) => {
-                setStrengthsLoaded(true);
-                setStrengths(result);
-            },
-            (error) => {
-                setStrengthsLoaded(true);
-                setError(error);
-            }
-          )
-    }, [])
 
     const voteProfileStrength = (strengthId, strengthTitle) => {
         setStrengthsLoaded(false)
@@ -180,6 +185,8 @@ function ProfilePage (props) {
             dispatch(profileInfos.getProfileStrengths(username));
             dispatch(profileInfos.getProfileStrengthsRaw(username));
             setStrengthsLoaded(true)
+            setStrengthVoted(null)
+            setStrengthVotedName(null)
         }).catch(err => {
             console.error(err)
             alert("Ocorreu um erro. Tente novamente em instantes")
@@ -200,9 +207,83 @@ function ProfilePage (props) {
             dispatch(profileInfos.getProfileStrengths(username));
             dispatch(profileInfos.getProfileStrengthsRaw(username));
             setStrengthsLoaded(true)
+            setStrengthVoted(null)
+            setStrengthVotedName(null)
         }).catch(err => {
             console.error(err)
             alert("Ocorreu um erro ao remover o voto. Tente novamente em instantes")
+        })
+    }
+
+    // Testimonials (Depoimentos)
+    const [modalTestimonialsOpen, setModalTestimonialsOpen] = useState(false);
+    const [testimonialId, setTestimonialId] = useState("")
+    const [testimonialText, setTestimonialText] = useState("")
+    const [testimonialTitle, setTestimonialTitle] = useState("")
+
+    const submitTestimonial = () => {
+        fetch(`https://mublin.herokuapp.com/profile/${profile.username}/newTestimonial`, {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json, text/plain, */*',
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + user.token
+            },
+            body: JSON.stringify({ testimonialTitle: testimonialTitle, testimonialText: testimonialText, profileId: profile.id, nameTo: profile.name, emailTo: profile.email })
+        })
+        .then((response) => {
+            dispatch(profileInfos.getProfileTestimonials(username));
+            setTestimonialId('');
+            setTestimonialTitle('');
+            setTestimonialText('');
+            setModalTestimonialsOpen(false);
+        }).catch(err => {
+            console.error(err)
+            alert("Ocorreu um erro. Tente novamente em instantes")
+        })
+    }
+
+    const updateTestimonial = () => {
+        fetch(`https://mublin.herokuapp.com/profile/${profile.username}/updateTestimonial`, {
+            method: 'PUT',
+            headers: {
+                'Accept': 'application/json, text/plain, */*',
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + user.token
+            },
+            body: JSON.stringify({ testimonialId: testimonialId, testimonialTitle: testimonialTitle, testimonialText: testimonialText, profileId: profile.id })
+        })
+        .then((response) => {
+            dispatch(profileInfos.getProfileTestimonials(username));
+            setTestimonialId('');
+            setTestimonialTitle('');
+            setTestimonialText('');
+            setModalTestimonialsOpen(false);
+        }).catch(err => {
+            console.error(err)
+            alert("Ocorreu um erro. Tente novamente em instantes")
+        })
+    }
+
+    const deleteTestimonial = () => {
+        fetch(`https://mublin.herokuapp.com/profile/${profile.username}/deleteTestimonial`, {
+            method: 'DELETE',
+            headers: {
+                'Accept': 'application/json, text/plain, */*',
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + user.token
+            },
+            body: JSON.stringify({ testimonialId: testimonialId, profileId: profile.id })
+        })
+        .then((response) => {
+            dispatch(profileInfos.getProfileTestimonials(username));
+            setTestimonialId('');
+            setTestimonialTitle('');
+            setTestimonialText('');
+            setModalTestimonialsOpen(false);
+        }).catch(err => {
+            console.error(err)
+            alert("Ocorreu um erro. Tente novamente em instantes")
         })
     }
 
@@ -566,7 +647,7 @@ function ProfilePage (props) {
                                 <div className='cardTitle'>
                                     <Header as='h3' className='pt-1'>Depoimentos {profile.testimonials[0].id && <Label className='ml-1 p-2' style={{opacity:'0.4'}}>{profile.testimonials.length}</Label>}</Header>
                                     { profile.id !== user.id &&
-                                        <Label as='a' size='small' style={{height:'fit-content'}} content={myTestimonial.length ? 'Editar' : 'Escrever'} />
+                                        <Label as='a' size='small' style={{height:'fit-content'}} content={myTestimonial.length ? 'Editar' : 'Escrever'} onClick={() => setModalTestimonialsOpen(true)}  />
                                     }
                                 </div>
                                 { profile.testimonials[0].id ? (
@@ -641,8 +722,50 @@ function ProfilePage (props) {
                 <Button size='small' onClick={() => setModalStrengthsOpen(false)}>
                     Fechar
                 </Button>
-                <Button size='small' color='black' loading={!strengthsLoaded} onClick={() => voteProfileStrength(strengthVoted,strengthVotedName)}>
+                <Button size='small' color='black' loading={!strengthsLoaded} onClick={() => voteProfileStrength(strengthVoted,strengthVotedName)} disabled={strengthVoted ? false : true}>
                     Votar
+                </Button>
+            </Modal.Actions>
+        </Modal>
+        <Modal
+            size='mini'
+            open={modalTestimonialsOpen}
+            onClose={() => setModalTestimonialsOpen(false)}
+        >
+            <Modal.Header>{myTestimonial.length ? "Editar" : "Escrever"} depoimento para {profile.name+' '+profile.lastname}</Modal.Header>
+            <Modal.Content>
+                <Form>
+                    <Form.Input 
+                        required
+                        fluid
+                        id='testimonialTitle'
+                        label='Título do Depoimento'
+                        placeholder='Ex: Um artista incrível...'
+                        value={testimonialTitle}
+                        onChange={(e) => setTestimonialTitle(e.target.value)}
+                    />         
+                    <Form.TextArea 
+                        required
+                        id='testimonialText'
+                        label='Depoimento'
+                        placeholder={'O que você pensa sobre '+profile.name+'...'}
+                        maxLength='300'
+                        value={testimonialText}
+                        onChange={(e) => setTestimonialText(e.target.value)}
+                    />
+                </Form>
+            </Modal.Content>
+            <Modal.Actions>
+                <Button size='small' onClick={() => setModalTestimonialsOpen(false)}>
+                    Fechar
+                </Button>
+                {!!myTestimonial.length &&
+                    <Button negative size='small' onClick={() => deleteTestimonial()}>
+                        Deletar
+                    </Button>
+                }
+                <Button size='small' color='black' onClick={myTestimonial.length ? () => updateTestimonial() : () => submitTestimonial()} disabled={(!testimonialText || !testimonialTitle) ? true : false}>
+                    Salvar
                 </Button>
             </Modal.Actions>
         </Modal>

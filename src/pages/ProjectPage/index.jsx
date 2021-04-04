@@ -66,7 +66,7 @@ function ProjectPage (props) {
     return (
         <>
         <HeaderDesktop />
-        <HeaderMobile pageType='project' />
+        <HeaderMobile pageType='project' profilePicture={'https://ik.imagekit.io/mublin/projects/tr:h-200,w-200,c-maintain_ratio/'+project.picture} />
         { project.requesting ? (
             <Loader
                 className="appLoadingIcon"

@@ -122,7 +122,7 @@
     padding: 0px 9px!important;
   }
   .carousel-cell.compact {
-    height: 142px!important;
+    height: 145px!important;
   }
 }
 
@@ -164,4 +164,11 @@ h2.ui.header .sub.header {
   font-weight: 500 !important;
   display: flex !important;
   width: fit-content !important;
+}
+
+.ui.inverted.menu .active.item {
+  background: transparent!important;
+  color: #fff!important;
+  border-bottom: 2px solid white;
+  padding-top: 14px;
 }

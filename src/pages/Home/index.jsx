@@ -194,7 +194,7 @@ function HomePage () {
                                 <>
                                 {userInfo.lastConnectedFriends[0].username &&
                                     <>
-                                        <Header as='h3'>Conectados recentemente</Header>
+                                        {/* <Header as='h3'>Conectados recentemente</Header> */}
                                         <Flickity
                                             className={'carousel'}
                                             elementType={'div'}
@@ -212,11 +212,18 @@ function HomePage () {
                                                         )}
                                                         <Header as='h5' textAlign='center' className='mt-2 mb-0'>
                                                             <Header.Content title={friend.username}>
-                                                                {/* {friend.username} */}
                                                                 {(friend.username.length > 7) ? friend.username.substr(0,6) + '...' : friend.username}
                                                             </Header.Content>
                                                         </Header>
                                                     </Link>
+                                                    <Label 
+                                                        circular 
+                                                        // color={new Date(friend.lastLogin) > new Date(today - (5*86400000)) ? 'green' : 'blue'} 
+                                                        color='green'
+                                                        empty 
+                                                        size='mini' 
+                                                        style={{position:'absolute',top:'42%',right:'23%'}} 
+                                                    />
                                                 </div>
                                             )}
                                         </Flickity>
@@ -317,14 +324,14 @@ function HomePage () {
                         <Feed className='pt-3'>
                             <Header as='h3' className='mb-3 ml-0 ml-md-2'>Feed</Header>
                             <div className='mt-2 ml-2 mb-4' style={{display:'flex'}}>
-                                <Image avatar src={userInfo.picture ? 'https://ik.imagekit.io/mublin/users/avatars/'+userInfo.id+'/'+userInfo.picture : undefinedAvatar} className='mr-2' /> <Button fluid circular size='tiny' onClick={() => setModalNewPost(true)}><Icon name='pencil' /> Publicar no Mublin</Button>
+                                <Image avatar src={userInfo.picture ? 'https://ik.imagekit.io/mublin/users/avatars/'+userInfo.id+'/'+userInfo.picture : undefinedAvatar} className='mr-2' /> <Button circular size='tiny' onClick={() => setModalNewPost(true)}><Icon name='pencil' /> Publicar no Mublin</Button>
                             </div>
                             <Modal
                                 size='tiny'
                                 open={modalNewPost}
                                 onClose={() => setModalNewPost(false)}
                             >
-                                <Modal.Content scrolling>
+                                <Modal.Content>
                                     <div className='mb-3'>
                                         <Image avatar src={userInfo.picture ? 'https://ik.imagekit.io/mublin/users/avatars/'+userInfo.id+'/'+userInfo.picture : undefinedAvatar} />
                                         <span>Publicar como {userInfo.name}</span>
@@ -358,7 +365,7 @@ function HomePage () {
                                             )}
                                         </div>
                                     </div>
-                                    <div className='mt-4'>
+                                    <div className='mt-4 mb-3'>
                                         <Button
                                             floated='right'
                                             content={isLoading ? 'Publicando...' : 'Publicar'} 
@@ -408,7 +415,7 @@ function HomePage () {
                                                     </Feed.Date>
                                                 )}
                                                 <Feed.Summary>
-                                                    <Feed.User style={{fontWeight:'600'}} onClick={() => history.push('/'+item.relatedUserUsername)}>{item.relatedUserName+' '+item.relatedUserLastname}</Feed.User> <span style={{fontWeight:'500'}}>{item.action}</span>
+                                                    <Feed.User style={{fontWeight:'600'}} onClick={() => history.push('/'+item.relatedUserUsername)}>{item.relatedUserName+' '+item.relatedUserLastname} {!!item.relatedUserVerified && <Icon name='check circle' color='blue' className='verifiedIcon' title='Verificado' />}</Feed.User> <span style={{fontWeight:'500'}}>{item.action}</span>
                                                 </Feed.Summary>
                                                 { (item.categoryId === 8) && 
                                                     <Feed.Extra text content={item.extraText} />
@@ -452,7 +459,7 @@ function HomePage () {
                                                 há {formatDistance(new Date('2021-03-04'), new Date(), {locale:pt})}
                                             </Feed.Date>
                                             <Feed.Summary>
-                                                <Feed.User style={{fontWeight:'600',cursor:'default'}}>Mublin</Feed.User> <span style={{fontWeight:'500'}}>escreveu</span>
+                                                <Feed.User style={{fontWeight:'600',cursor:'default'}}>Mublin <Icon name='check circle' color='blue' className='verifiedIcon' title='Verificado' /></Feed.User> <span style={{fontWeight:'500'}}>escreveu</span>
                                             </Feed.Summary>
                                             <Feed.Extra text content="Bem-vindo à versão Beta do Mublin! Você faz parte de um seleto grupo de pessoas que estão fazendo parte dos primeiros testes neste pré-lançamento. Este é um espaço feito para trazer mais facilidade à rotina de pessoas que amam música e que estão de alguma forma envolvidos com projetos de música. Esperamos que goste!" />
                                         </Feed.Content>

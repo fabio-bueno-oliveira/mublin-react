@@ -153,18 +153,28 @@ const HeaderDesktop = () => {
                     </Menu.Item> */}
                     <Menu.Item key='search'>
                         <Form
-                            onKeyDown={(e) => {
-                                if (e.key === 'Enter') {
-                                    setSearchQuery(searchQuery);
-                                }
-                            }}
+                            // onKeyDown={(e) => {
+                            //     if (e.key === 'Enter') {
+                            //         setSearchQuery(searchQuery);
+                            //     }
+                            // }}
+                            onSubmit={() => setSearchQuery(searchQuery)}
                         >
                             <Input 
                                 size='small'
                                 action={{ icon: 'search', onClick: () => handleSearch(searchQuery) }} 
-                                placeholder='Pesquisar...'
-                                value={searchQuery} 
+                                // icon={
+                                //     <Icon 
+                                //         name='search' 
+                                //         style={{cursor:'default'}}
+                                //         // onClick={() => handleSearch(searchQuery)} 
+                                //         inverted circular link  />
+                                // }
+                                // iconPosition='left'
+                                placeholder='Busque por pessoa, instrumento, cidade...'
+                                value={searchQuery || ''} 
                                 onChange={e => setSearchQuery(e.target.value)}
+                                style={{width:'286px'}}
                             />
                         </Form>
                         {/* <Search

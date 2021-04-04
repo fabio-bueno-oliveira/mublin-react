@@ -85,23 +85,33 @@ body, html {
 }
 
 #headerDesktop {
-  .ui.icon.input {
+  .ui.input {
     input {
-      background-color: transparent;
-      border-radius: 0;
+      background-color: #0a0a0a!important;
+      border-radius: 6px;
       outline: none;
-      color: white;
+      color: grey;
 
       &:hover {
         // border: none;
-        color: white;
+        // color: white;
       }
       &:focus {
         border-color: transparent;
+        border-right-color: transparent!important;
+        color: white;
       }
     }
     i {
       color: white;
+    }
+  }
+
+  .ui.button {
+    background-color: rgba(255,255,255,.15)!important;
+
+    &:hover {
+      color: white!important;
     }
   }
 }
@@ -238,4 +248,8 @@ body, html {
   .only-computer {
     display:none!important;
   }
+}
+
+.ui.feed>.event>.content .extra.text {
+  max-width: 98%;
 }

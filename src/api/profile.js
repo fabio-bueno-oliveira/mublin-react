@@ -24,6 +24,7 @@ export const profileService = {
     checkProfileFollowing,
     getProfilePosts,
     getProfileGear,
+    getProfilePartners,
     getProfileAvailabilityItems,
     getProfileStrengths,
     getProfileStrengthsRaw,
@@ -93,6 +94,14 @@ function getProfileGear(username) {
         headers: authHeader()
     };
     return fetch(`${BASE_URL}/profile/${username}/gear`, requestOptions).then(handleResponse);
+}
+
+function getProfilePartners(username) {
+    const requestOptions = {
+        method: 'GET',
+        headers: authHeader()
+    };
+    return fetch(`${BASE_URL}/profile/${username}/partners`, requestOptions).then(handleResponse);
 }
 
 function getProfileAvailabilityItems(username) {

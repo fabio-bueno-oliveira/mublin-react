@@ -67,19 +67,12 @@ const initialState = {
   recentActivity: [
     {
       id: '',
-      category: '',
+      typeId: '',
       created: '',
+      created_date: '',
       action: '',
       extraText: '',
-      image: '',
-      relatedProjectName: '',
-      relatedProjectUsername: '',
-      relatedProjectPicture: '',
-      relatedProjectType: '',
-      relatedEventId: '',
-      relatedEventTitle: '',
-      likes: '',
-      likedByMe: ''
+      image: ''
     }
   ],
   strengths: [
@@ -115,6 +108,14 @@ const initialState = {
       featured: '',
       forSale: '',
       price: ''
+    }
+  ],
+  partners: [
+    {
+      featured: '',
+      type: '',
+      brandName: '',
+      brandLogo: ''
     }
   ],
   availabilityItems: [
@@ -269,18 +270,12 @@ export function profile(state = initialState, action) {
         recentActivity: [
           {
             id: '',
+            typeId: '',
             created: '',
+            created_date: '',
             action: '',
             extraText: '',
-            image: '',
-            relatedProjectName: '',
-            relatedProjectUsername: '',
-            relatedProjectPicture: '',
-            relatedProjectType: '',
-            relatedEventId: '',
-            relatedEventTitle: '',
-            likes: '',
-            likedByMe: ''
+            image: ''
           }
         ],
         requesting: false,
@@ -314,6 +309,32 @@ export function profile(state = initialState, action) {
             featured: '',
             forSale: '',
             price: ''
+          }
+        ],
+        requesting: false,
+        error: "A solicitação falhou"
+      };
+    // PARTNERS
+    case profileTypes.GET_PROFILE_PARTNERS_REQUEST:
+      return {
+        ...state,
+        requesting: true
+      };
+    case profileTypes.GET_PROFILE_PARTNERS_SUCCESS:
+      return {
+        ...state,
+        partners: action.list,
+        requesting: false,
+      };
+    case profileTypes.GET_PROFILE_PARTNERS_FAILURE:
+      return {
+        ...state,
+        partners: [
+          {
+            featured: '',
+            type: '',
+            brandName: '',
+            brandLogo: ''
           }
         ],
         requesting: false,

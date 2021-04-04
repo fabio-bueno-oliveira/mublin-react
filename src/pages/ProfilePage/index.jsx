@@ -34,6 +34,7 @@ function ProfilePage (props) {
         dispatch(profileInfos.getProfileFollowing(username));
         dispatch(profileInfos.getProfilePosts(username));
         dispatch(profileInfos.getProfileGear(username));
+        dispatch(profileInfos.getProfilePartners(username));
         dispatch(profileInfos.getProfileAvailabilityItems(username));
         dispatch(profileInfos.getProfileStrengths(username));
         dispatch(profileInfos.getProfileStrengthsRaw(username));
@@ -287,6 +288,9 @@ function ProfilePage (props) {
         })
     }
 
+    // Posts
+    const [modalPosts, setModalPosts] = useState(false)
+
     return (
         <>
         <HeaderDesktop />
@@ -518,37 +522,24 @@ function ProfilePage (props) {
                                     <Icon loading name='spinner' size='large' />
                                 ) : ( 
                                     <Feed>
-                                        {profile.recentActivity.map((activity, key) =>
+                                        {profile.recentActivity.slice(0,2).map((activity, key) =>
                                             <Feed.Event key={key} className={key < (profile.recentActivity.length - 1) ? 'mb-2' : ''}>
                                                 <Feed.Label image={profile.picture} />
                                                 <Feed.Content className='mt-1'>
                                                     <Feed.Date style={{fontSize:'11px',fontWeight:'500'}}>
                                                         há {formatDistance(new Date(activity.created * 1000), new Date(), {locale:pt})}
                                                     </Feed.Date>
-                                                    {activity.category === 'user' && 
-                                                        <Feed.Summary style={{fontWeight:'500'}}>
-                                                            {activity.extraText}
-                                                        </Feed.Summary>
-                                                    }
-                                                    {activity.category === 'project' && 
-                                                        <Feed.Summary>
-                                                            <span style={{fontWeight:'500'}}>
-                                                                {activity.action} {activity.category === 'project' ? activity.relatedProjectName+' ('+activity.relatedProjectType+')' : (<a>{activity.relatedEventTitle}</a>)}
-                                                            </span>
-                                                        </Feed.Summary>
-                                                    }
-                                                    {activity.category === 'event' && 
-                                                        <Feed.Summary>
-                                                            <span style={{fontWeight:'500'}}>
-                                                                {activity.action} <a>{activity.relatedEventTitle}</a>
-                                                            </span>
-                                                        </Feed.Summary>
-                                                    }
+                                                    <Feed.Summary style={{fontWeight:'500',fontSize:'13px'}}>
+                                                        {activity.extraText}
+                                                    </Feed.Summary>
                                                 </Feed.Content>
                                             </Feed.Event>
                                         )}
                                     </Feed>
                                 )}
+                                {profile.recentActivity.length >=2 &&
+                                    <Header size='tiny' as='a' className='mt-0' onClick={() => setModalPosts(true)}>Ver todas as atividades</Header>
+                                }
                             </Card.Content>
                         </Card>
                         }
@@ -565,7 +556,7 @@ function ProfilePage (props) {
                                 ) : ( 
                                     (profile.strengths[0].strengthId && profile.strengths[0].idUserTo === profile.id) ? (
                                         <Flickity
-                                            className={'carousel'}
+                                            className={'carousel mt-3'}
                                             elementType={'div'}
                                             options={sliderOptions}
                                             disableImagesLoaded={false}
@@ -640,6 +631,54 @@ function ProfilePage (props) {
                                     ) : (
                                         <Card.Description className="mt-3" style={{ fontSize: "13px" }}>
                                             Nenhum equipamento cadastrado
+                                        </Card.Description>
+                                    )
+                                )}
+                            </Card.Content>
+                        </Card>
+                        }
+                        { profile.plan === "Pro" && 
+                        <Card id="partnerships" style={{ width: "100%" }}>
+                            <Card.Content>
+                                <Header as='h3'>Parceiros {profile.partners[0].type && <Label className='ml-1 p-2' style={{opacity:'0.4'}}>{profile.partners.length}</Label>}</Header>
+                                { profile.requesting ? (
+                                    <Icon loading name='spinner' size='large' />
+                                ) : ( 
+                                    profile.partners[0].type ? (
+                                        <Flickity
+                                            className={'carousel'}
+                                            elementType={'div'}
+                                            options={sliderOptions}
+                                            disableImagesLoaded={false}
+                                            reloadOnUpdate
+                                        >
+                                            {profile.partners.map((partner, key) =>
+                                                <div className='carousel-cell compact' key={key}>
+                                                    {partner.brandLogo ? (
+                                                        <Image 
+                                                            src={partner.brandLogo} 
+                                                            rounded 
+                                                            as='a' 
+                                                            href={'/brand/'+partner.brandId}
+                                                            className='cpointer' 
+                                                        />
+                                                    ) : (
+                                                        <Image src={'https://ik.imagekit.io/mublin/misc/tr:h-200,w-200,c-maintain_ratio/no-picture_pKZ8CRarWks.jpg'} height='85' width='85' className='cpointer' rounded as='a' href={'/brand/'+partner.brandId} />
+                                                    )}
+                                                    <Header as='h5' className='mt-2 mb-0' style={{cursor:'default'}}>
+                                                        <Header.Content as='a' href={'/brand/'+partner.brandId} style={{color:'black'}}>
+                                                            {partner.brandName}
+                                                        </Header.Content>
+                                                        <Header.Subheader style={{fontWeight: '500',fontSize: '11px'}}>
+                                                            {partner.type}
+                                                        </Header.Subheader>
+                                                    </Header>
+                                                </div>
+                                            )}
+                                        </Flickity>
+                                    ) : (
+                                        <Card.Description className="mt-3" style={{ fontSize: "13px" }}>
+                                            Nenhum parceiro cadastrado
                                         </Card.Description>
                                     )
                                 )}
@@ -736,7 +775,7 @@ function ProfilePage (props) {
             open={modalTestimonialsOpen}
             onClose={() => setModalTestimonialsOpen(false)}
         >
-            <Modal.Header>{myTestimonial.length ? "Editar" : "Escrever"} depoimento para {profile.name+' '+profile.lastname}</Modal.Header>
+            <Modal.Header>{myTestimonial.length ? "Editar" : "Escrever"} depoimento para {profile.name}</Modal.Header>
             <Modal.Content>
                 <Form>
                     <Form.Input 
@@ -770,6 +809,35 @@ function ProfilePage (props) {
                 }
                 <Button size='small' color='black' onClick={myTestimonial.length ? () => updateTestimonial() : () => submitTestimonial()} disabled={(!testimonialText || !testimonialTitle) ? true : false}>
                     Salvar
+                </Button>
+            </Modal.Actions>
+        </Modal>
+        <Modal
+            size='tiny'
+            open={modalPosts}
+            onClose={() => setModalPosts(false)}
+        >
+            <Modal.Header>Postagens de {profile.name}</Modal.Header>
+            <Modal.Content scrolling>
+                <Feed>
+                    {profile.recentActivity.map((activity, key) =>
+                        <Feed.Event key={key} className={key < (profile.recentActivity.length - 1) ? 'mb-2' : ''}>
+                            <Feed.Label image={profile.picture} />
+                            <Feed.Content className='mt-1'>
+                                <Feed.Date style={{fontSize:'11px',fontWeight:'500'}}>
+                                    há {formatDistance(new Date(activity.created * 1000), new Date(), {locale:pt})}
+                                </Feed.Date>
+                                <Feed.Summary style={{fontWeight:'500',fontSize:'13px'}}>
+                                    {activity.extraText}
+                                </Feed.Summary>
+                            </Feed.Content>
+                        </Feed.Event>
+                    )}
+                </Feed>
+            </Modal.Content>
+            <Modal.Actions>
+                <Button size='small' onClick={() => setModalPosts(false)}>
+                    Fechar
                 </Button>
             </Modal.Actions>
         </Modal>

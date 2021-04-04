@@ -106,9 +106,12 @@
 @media screen and (min-width: 601px) {
   .carousel-cell {
     width: 113px!important;
-    height: 154px!important;
+    height: 162px!important;
     margin-right: 0px!important;
     padding: 0px 9px!important;
+  }
+  .carousel-cell.compact {
+    height: 142px!important;
   }
 }
 

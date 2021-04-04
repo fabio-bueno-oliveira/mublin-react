@@ -135,7 +135,7 @@ function HomePage () {
                                             { !userInfo.requesting ? (
                                                 projectsMain.length ? (
                                                     projectsMain.map((project, key) =>
-                                                        <div className="carousel-cell" key={key} style={project.confirmed === 2 ? {opacity:'0.6'} : {}}>
+                                                        <div className="carousel-cell compact" key={key} style={project.confirmed === 2 ? {opacity:'0.6'} : {}}>
                                                             <Link to={{ pathname: '/project/'+project.username }}>
                                                                 { !!project.featured && 
                                                                     <Label color='black' floating size='mini' style={{top: '0', left: '20%',width:'fit-content'}}>
@@ -168,7 +168,7 @@ function HomePage () {
                                                         </div>
                                                     )
                                                 ) : (
-                                                    <div className="carousel-cell">
+                                                    <div className="carousel-cell compact">
                                                         <Image src={'https://ik.imagekit.io/mublin/misc/square-sad-music_SeGz8vs_2A.jpg'} height='85' width='85' rounded />
                                                         <h5 className="ui header mt-2 mb-0">
                                                             <div className="sub header mt-1">Sem principais</div>
@@ -207,7 +207,7 @@ function HomePage () {
                                             { !userInfo.requesting ? (
                                                 projectsPortfolio.length ? (
                                                     projectsPortfolio.map((project, key) =>
-                                                        <div className="carousel-cell" key={key}>
+                                                        <div className="carousel-cell compact" key={key}>
                                                             <Link to={{ pathname: '/project/'+project.username }}>
                                                                 { project.yearLeftTheProject && 
                                                                     <Label color='black' floating size='mini' style={{top: '0', left: '20%',width:'fit-content'}}>
@@ -240,7 +240,7 @@ function HomePage () {
                                                         </div>
                                                     )
                                                 ) : (
-                                                    <div className="carousel-cell">
+                                                    <div className="carousel-cell compact">
                                                         <Image src={'https://ik.imagekit.io/mublin/misc/square-sad-music_SeGz8vs_2A.jpg'} height='85' width='85' rounded />
                                                         <h5 className="ui header mt-2 mb-0">
                                                             <div className="sub header mt-1">Nada aqui</div>
@@ -300,7 +300,7 @@ function HomePage () {
                                     </>
                                 }
                                 <div className='userSuggestionsCarouselMobile'>
-                                    <Header size='tiny' className="mt-3 mb-0 ml-0 ml-md-2">
+                                    <Header size='tiny' className="mt-3 ml-0 ml-md-2">
                                         <Header.Content style={{opacity:"0.7"}}>
                                             Sugestões para seguir
                                         </Header.Content>

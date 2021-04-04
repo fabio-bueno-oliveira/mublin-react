@@ -10,6 +10,7 @@ export const profileInfos = {
     checkProfileFollowing: checkProfileFollowing,
     getProfilePosts: getProfilePosts,
     getProfileGear: getProfileGear,
+    getProfilePartners: getProfilePartners,
     getProfileStrengths: getProfileStrengths,
     getProfileStrengthsRaw: getProfileStrengthsRaw,
     getProfileAvailabilityItems: getProfileAvailabilityItems,
@@ -138,10 +139,26 @@ function getProfileGear(username) {
                 error => dispatch(failure(username, error.toString()))
             );
     };
-  
+
     function request(username) { return { type: profileTypes.GET_PROFILE_GEAR_REQUEST, username } }
     function success(list) { return { type: profileTypes.GET_PROFILE_GEAR_SUCCESS, list } }
     function failure(username, error) { return { type: profileTypes.GET_PROFILE_GEAR_FAILURE, username, error } }
+}
+
+function getProfilePartners(username) {
+    return dispatch => {
+        dispatch(request(username));
+
+        profileService.getProfilePartners(username)
+            .then(
+                list => dispatch(success(list)),
+                error => dispatch(failure(username, error.toString()))
+            );
+    };
+
+    function request(username) { return { type: profileTypes.GET_PROFILE_PARTNERS_REQUEST, username } }
+    function success(list) { return { type: profileTypes.GET_PROFILE_PARTNERS_SUCCESS, list } }
+    function failure(username, error) { return { type: profileTypes.GET_PROFILE_PARTNERS_FAILURE, username, error } }
 }
 
 function getProfileAvailabilityItems(username) {

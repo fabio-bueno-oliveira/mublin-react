@@ -8,11 +8,12 @@ import Spacer from '../../components/layout/Spacer';
 import { userInfos } from '../../store/actions/user';
 import { searchInfos } from '../../store/actions/search';
 import { miscInfos } from '../../store/actions/misc';
-import { Container, Header, Tab, Grid, Feed, Image, Icon, Label, List, Menu, Popup, Loader, Divider, Placeholder, Segment } from 'semantic-ui-react';
+import { Container, Header, Tab, Grid, Feed, Image, Icon, Label, List, Menu, Popup, Loader, Divider, Placeholder, Segment, Form, Button, Modal } from 'semantic-ui-react';
 import Flickity from 'react-flickity-component';
 import { formatDistance } from 'date-fns';
 import pt from 'date-fns/locale/pt-BR';
-import LogoMublin from '../../assets/img/logos/logo-mublin-circle-black.png'
+import LogoMublin from '../../assets/img/logos/logo-mublin-circle-black.png';
+import {IKUpload} from "imagekitio-react";
 import './styles.scss';
 
 function HomePage () {
@@ -92,6 +93,53 @@ function HomePage () {
             console.error(err)
             alert("Ocorreu um erro ao curtir a postagem")
         })
+    }
+
+    // New Post
+    const [modalNewPost, setModalNewPost] = useState(false)
+    const [postText, setPostText] = useState(null)
+    const [imagePostUrl, setImagePostUrl] = useState(null)
+    const [isLoading, setIsLoading] = useState(null)
+
+    // Image Upload to ImageKit.io
+    const uploadPath = "/posts/"
+    const onUploadError = err => {
+        alert("Ocorreu um erro. Tente novamente em alguns minutos.");
+    };
+    const onUploadSuccess = res => {
+        let n = res.filePath.lastIndexOf('/');
+        setImagePostUrl(res.name);
+    };
+
+    const submitPost = () => {
+        setIsLoading(true)
+        let user = JSON.parse(localStorage.getItem('user'));
+        fetch('https://mublin.herokuapp.com/user/newPost/', {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json, text/plain, */*',
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + user.token
+            },
+            body: JSON.stringify({text: postText, image: imagePostUrl})
+        }).then((response) => {
+            response.json().then((response) => {
+              setIsLoading(false)
+              setModalNewPost(false)
+              dispatch(miscInfos.getFeed());
+            })
+          }).catch(err => {
+            setIsLoading(false)
+            alert("Ocorreu um erro! Tente novamente em instantes.")
+            console.error(err)
+        })
+    };
+
+    const [modalImage, setModalImage] = useState(false)
+    const [imageToShow, setImageToShow] = useState(null)
+    const showImage = (imageUrl) => {
+        setImageToShow(imageUrl)
+        setModalImage(true)
     }
 
     return (
@@ -332,6 +380,61 @@ function HomePage () {
                                     Feed
                                 </Header.Content>
                             </Header>
+                            <div className='mt-2 ml-2 mb-4'>
+                                <Image avatar src={userInfo.picture ? 'https://ik.imagekit.io/mublin/users/avatars/'+userInfo.id+'/'+userInfo.picture : undefinedAvatar} /> <Button size='tiny' onClick={() => setModalNewPost(true)}><Icon name='pencil' /> Publicar no Mublin</Button>
+                            </div>
+                            <Modal
+                                size='tiny'
+                                open={modalNewPost}
+                                onClose={() => setModalNewPost(false)}
+                            >
+                                <Modal.Header>Publicar</Modal.Header>
+                                <Modal.Content scrolling>
+                                    <Form>
+                                        <Form.TextArea
+                                            value={postText}
+                                            onChange={(e) => setPostText(e.target.value)}
+                                        />
+                                    </Form>
+                                    <div>
+                                        <Header as='h6' className='mt-3 mb-1'>
+                                            <Icon name='image outline' />
+                                            <Header.Content>Enviar imagem</Header.Content>
+                                        </Header>
+                                        <div className="customFileUpload">
+                                            {!imagePostUrl ? ( 
+                                                <>
+                                                    <IKUpload 
+                                                        fileName="img"
+                                                        folder={uploadPath}
+                                                        tags={["post","feed"]}
+                                                        useUniqueFileName={true}
+                                                        isPrivateFile= {false}
+                                                        onError={onUploadError}
+                                                        onSuccess={onUploadSuccess}
+                                                    />
+                                                </>
+                                            ) : (
+                                                <><Image src={'https://ik.imagekit.io/mublin/posts/'+imagePostUrl} size='small' /> <Icon className='cpointer mt-1' color='red' name='trash alternate outline' onClick={() => setImagePostUrl(null)} /></>
+                                            )}
+                                        </div>
+                                    </div>
+                                </Modal.Content>
+                                <Modal.Actions>
+                                    <Button size='small' onClick={() => setModalNewPost(false)}>
+                                        Fechar
+                                    </Button>
+                                    <Button  
+                                        content={isLoading ? 'Publicando...' : 'Publicar'} 
+                                        labelPosition='left' 
+                                        icon='edit' 
+                                        size='small' 
+                                        primary 
+                                        disabled={(!postText || isLoading) ? true : false}
+                                        onClick={submitPost}
+                                    />
+                                </Modal.Actions>
+                            </Modal>
                             {feed.requesting ? (
                                 <Segment>
                                     <Placeholder>
@@ -374,6 +477,15 @@ function HomePage () {
                                                     { (item.categoryId === 8) && 
                                                         <Feed.Extra text content={item.extraText} />
                                                     }
+                                                    {item.image && 
+                                                        <Feed.Extra images>
+                                                            <a onClick={() => {
+                                                                showImage('https://ik.imagekit.io/mublin/posts/'+item.image)
+                                                            }}>
+                                                                <img src={'https://ik.imagekit.io/mublin/posts/'+item.image} />
+                                                            </a>
+                                                        </Feed.Extra>
+                                                    }
                                                     {!feed.requesting &&
                                                         <Feed.Meta>
                                                             <Feed.Like onClick={!item.likedByMe ? () => likeFeedPost(item.id) : () => unlikeFeedPost(item.id)}>
@@ -386,6 +498,17 @@ function HomePage () {
                                             <Divider className='mt-1 mb-3' />
                                         </>
                                     )}
+                                    <Modal
+                                        size='tiny'
+                                        basic
+                                        closeIcon
+                                        open={modalImage}
+                                        onClose={() => setModalImage(false)}
+                                    >
+                                        <Modal.Content>
+                                            <Image src={imageToShow} />
+                                        </Modal.Content>
+                                    </Modal>
                                     <Feed.Event className='mb-1 ml-0 ml-md-2'>
                                         <Feed.Label>
                                             <img src={LogoMublin} alt='Mublin' />

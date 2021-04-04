@@ -65,7 +65,7 @@ function CreateNewItemPage () {
             <Grid as='main' columns={1} className="container">
                 <Grid.Row>
                     <Grid.Column width={16}>
-                        {/* <div>
+                        <div>
                             <progress value={progress} max="100" />
                             <br />
                             <br />
@@ -75,7 +75,7 @@ function CreateNewItemPage () {
                             {url}
                             <br />
                             <img src={url || "http://via.placeholder.com/300"} alt="firebase-image" />
-                        </div> */}
+                        </div>
                         {/* <Header as='h2'>Criar</Header> */}
                         <Menu vertical fluid>
                             <Menu.Item

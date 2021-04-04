@@ -8,7 +8,7 @@ import Spacer from '../../components/layout/Spacer';
 import { userInfos } from '../../store/actions/user';
 import { searchInfos } from '../../store/actions/search';
 import { miscInfos } from '../../store/actions/misc';
-import { Container, Header, Tab, Grid, Feed, Image, Icon, Label, List, Menu, Popup, Loader, Divider, Placeholder, Segment, Form, Button, Modal } from 'semantic-ui-react';
+import { Container, Header, Grid, Feed, Image, Icon, Label, List, Popup, Loader, Placeholder, Segment, Form, Button, Modal, Checkbox, Confirm } from 'semantic-ui-react';
 import Flickity from 'react-flickity-component';
 import { formatDistance } from 'date-fns';
 import pt from 'date-fns/locale/pt-BR';
@@ -35,11 +35,12 @@ function HomePage () {
 
     const userInfo = useSelector(state => state.user)
     const suggestedUsers = useSelector(state => state.search.suggestedUsers)
-    const userProjects = useSelector(state => state.user.projects)
-    const projectsMain = userProjects.filter((project) => { return project.portfolio === 0 && project.confirmed !== 0 }).sort((a, b) => parseFloat(b.featured) - parseFloat(a.featured))
-    const projectsPortfolio = userProjects.filter((project) => { return project.portfolio === 1 && project.confirmed !== 0 }).sort((a, b) => parseFloat(b.featured) - parseFloat(a.featured))
     const feed = useSelector(state => state.feed)
-    const undefinedAvatar = 'https://ik.imagekit.io/mublin/sample-folder/avatar-undefined_Kblh5CBKPp.jpg'
+
+    const [showPortfolio, setShowPortfolio] = useState(true)
+    const toggle = () => setShowPortfolio(value => !value)
+
+    const projectsToShow = useSelector(state => state.user.projects).filter((project) => { return showPortfolio ? (project.portfolio === 1 || project.portfolio === 0) && project.confirmed !== 0 : project.portfolio === 0 && project.confirmed !== 0 }).sort((a, b) => parseFloat(b.featured) - parseFloat(a.featured))
 
     const sliderOptions = {
         autoPlay: false,
@@ -142,6 +143,39 @@ function HomePage () {
         setModalImage(true)
     }
 
+    const [modalDeletePost, setModalDeletePost] = useState(false)
+    const [postIdToDelete, setPostIdToDelete] = useState(null)
+    const [loadingDeletePost, setLoadingDeletePost] = useState(false)
+
+    const showModalPost = (idPost) => {
+        setModalDeletePost(true)
+        setPostIdToDelete(idPost)
+    }
+
+    const deletePost = (postId) => {
+        setLoadingDeletePost(true)
+        fetch('https://mublin.herokuapp.com/user/deletePost/', {
+            method: 'DELETE',
+            headers: {
+                'Accept': 'application/json, text/plain, */*',
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + user.token
+            },
+            body: JSON.stringify({ postId: postId })
+        })
+        .then((response) => {
+            dispatch(miscInfos.getFeed());
+            setLoadingDeletePost(false)
+            setModalDeletePost(false)
+        }).catch(err => {
+            setLoadingDeletePost(false)
+            console.error(err)
+            alert("Ocorreu um erro ao deletar o post.")
+        })
+    }
+
+    const undefinedAvatar = 'https://ik.imagekit.io/mublin/sample-folder/avatar-undefined_Kblh5CBKPp.jpg'
+
     return (
         <>
         <HeaderDesktop />
@@ -151,162 +185,7 @@ function HomePage () {
             <Grid centered>
                 <Grid.Row columns={2}>
                     <Grid.Column mobile={16} tablet={16} computer={12}>
-                        
-                        {/* <Header size='medium' className='mt-1'>
-                            <Header.Content className='mb-1' style={{opacity:"0.7"}}>
-                                Meus Projetos ({userProjects.length})
-                            </Header.Content>
-                        </Header> */}
-                        <Tab defaultActiveIndex={0} panes={
-                            [
-                                {
-                                menuItem: (
-                                    <Menu.Item key='main'>
-                                        {/* <Icon name='bullseye' color='green' className="mr-2" /> Principais ({projectsMain.length}) */}
-                                        Meus projetos principais ({projectsMain.length})
-                                    </Menu.Item>
-                                ),
-                                render: () => 
-                                    <Tab.Pane 
-                                        loading={userInfo.requesting} 
-                                        attached={true} 
-                                        // as="div" 
-                                        // className='carousel-wrapper'
-                                    >
-                                        <Flickity
-                                            className={'carousel mt-2'}
-                                            elementType={'div'}
-                                            options={sliderOptions}
-                                            disableImagesLoaded={false}
-                                            reloadOnUpdate
-                                        >
-                                            { !userInfo.requesting ? (
-                                                projectsMain.length ? (
-                                                    projectsMain.map((project, key) =>
-                                                        <div className="carousel-cell compact" key={key} style={project.confirmed === 2 ? {opacity:'0.6'} : {}}>
-                                                            <Link to={{ pathname: '/project/'+project.username }}>
-                                                                { !!project.featured && 
-                                                                    <Label color='black' floating size='mini' style={{top: '0', left: '20%',width:'fit-content'}}>
-                                                                        <Icon name='star' color='yellow' className='mr-0' />
-                                                                    </Label>
-                                                                }
-                                                                {project.picture ? (
-                                                                    <Image src={'https://ik.imagekit.io/mublin/projects/tr:h-85,w-95,c-maintain_ratio/'+project.picture} rounded />
-                                                                ) : (
-                                                                    <Image src={'https://ik.imagekit.io/mublin/sample-folder/avatar-undefined_-dv9U6dcv3.jpg'} height='85' width='85' rounded />
-                                                                )}
-                                                                <Header as='h5' className='mt-2 mb-0'>
-                                                                    <Header.Content>
-                                                                        {project.name}
-                                                                        <Header.Subheader style={{fontSize:'11.5px'}}>
-                                                                            {project.ptname}
-                                                                        </Header.Subheader>
-                                                                    </Header.Content>
-                                                                </Header>
-                                                                { project.confirmed === 1 ? (
-                                                                    <div className="mt-2" style={{fontWeight: '400',fontSize: '11px', color: 'black', opacity: '0.8'}}>
-                                                                        <Icon name={project.workIcon} />{project.workTitle}
-                                                                    </div>
-                                                                ) : (
-                                                                    <div className="mt-2" style={{fontWeight: '400',fontSize: '11px', color: 'black', opacity: '0.8'}}>
-                                                                        <Icon name='clock outline' />Aguardando
-                                                                    </div>
-                                                                )}
-                                                            </Link>
-                                                        </div>
-                                                    )
-                                                ) : (
-                                                    <div className="carousel-cell compact">
-                                                        <Image src={'https://ik.imagekit.io/mublin/misc/square-sad-music_SeGz8vs_2A.jpg'} height='85' width='85' rounded />
-                                                        <h5 className="ui header mt-2 mb-0">
-                                                            <div className="sub header mt-1">Sem principais</div>
-                                                        </h5>
-                                                    </div> 
-                                                )
-                                            ) : (
-                                                <div style={{textAlign: 'center', width: '100%'}}>
-                                                    <Icon loading name='spinner' size='big' />
-                                                </div>
-                                            )}
-                                        </Flickity>
-                                    </Tab.Pane>,
-                                }, 
-                                {
-                                menuItem: (
-                                    <Menu.Item key='portfolio'>
-                                        {/* <Icon name='tags' className="mr-2" /> Portfolio ({projectsPortfolio.length}) */}
-                                        Portfolio ({projectsPortfolio.length})
-                                    </Menu.Item>
-                                    ),
-                                render: () => 
-                                    <Tab.Pane 
-                                        loading={userInfo.requesting} 
-                                        attached={true} 
-                                        // as='div' 
-                                        // className='carousel-wrapper'
-                                    >
-                                        <Flickity
-                                            className={'carousel mt-2'}
-                                            elementType={'div'}
-                                            options={sliderOptions}
-                                            disableImagesLoaded={false}
-                                            reloadOnUpdate
-                                        >
-                                            { !userInfo.requesting ? (
-                                                projectsPortfolio.length ? (
-                                                    projectsPortfolio.map((project, key) =>
-                                                        <div className="carousel-cell compact" key={key}>
-                                                            <Link to={{ pathname: '/project/'+project.username }}>
-                                                                { project.yearLeftTheProject && 
-                                                                    <Label color='black' floating size='mini' style={{top: '0', left: '20%',width:'fit-content'}}>
-                                                                        {project.joined_in+' a '+project.yearLeftTheProject}
-                                                                    </Label>
-                                                                }
-                                                                {project.picture ? (
-                                                                    <Image src={'https://ik.imagekit.io/mublin/projects/tr:h-85,w-95,c-maintain_ratio/'+project.picture} rounded />
-                                                                ) : (
-                                                                    <Image src={'https://ik.imagekit.io/mublin/sample-folder/avatar-undefined_-dv9U6dcv3.jpg'} height='85' width='85' rounded />
-                                                                )}
-                                                                <Header as='h5' className='mt-2 mb-0'>
-                                                                    <Header.Content>
-                                                                        {project.name}
-                                                                        <Header.Subheader style={{fontSize:'11.5px'}}>
-                                                                            {project.ptname}
-                                                                        </Header.Subheader>
-                                                                    </Header.Content>
-                                                                </Header>
-                                                                { project.confirmed === 1 ? (
-                                                                    <div className="mt-2" style={{fontWeight: '400',fontSize: '11px', color: 'black', opacity: '0.8'}}>
-                                                                        <Icon name={project.workIcon} />{project.workTitle}
-                                                                    </div>
-                                                                ) : (
-                                                                    <div className="mt-2" style={{fontWeight: '400',fontSize: '11px', color: 'black', opacity: '0.8'}}>
-                                                                        <Icon name='clock outline' />Aguardando
-                                                                    </div>
-                                                                )}
-                                                            </Link>
-                                                        </div>
-                                                    )
-                                                ) : (
-                                                    <div className="carousel-cell compact">
-                                                        <Image src={'https://ik.imagekit.io/mublin/misc/square-sad-music_SeGz8vs_2A.jpg'} height='85' width='85' rounded />
-                                                        <h5 className="ui header mt-2 mb-0">
-                                                            <div className="sub header mt-1">Nada aqui</div>
-                                                        </h5>
-                                                    </div> 
-                                                )
-                                            ) : (
-                                                <div style={{textAlign: 'center', width: '100%'}}>
-                                                    <Icon loading name='spinner' size='big' />
-                                                </div>
-                                            )}
-                                        </Flickity>
-                                    </Tab.Pane>,
-                                }
-                            ]
-                        }
-                        />
-                        <div className='carousel-wrapper mt-4 mt-md-4'>
+                        <div className='mt-0 mt-md-0'>
                             {userInfo.requesting ? (
                                 <div style={{textAlign: 'center', width: '100%'}}>
                                     <Loader active inline='centered' className='mb-4' />
@@ -315,11 +194,7 @@ function HomePage () {
                                 <>
                                 {userInfo.lastConnectedFriends[0].username &&
                                     <>
-                                        <Header size='small' className="mb-3 ml-0 ml-md-2">
-                                            <Header.Content style={{opacity:"0.7"}}>
-                                                Conectados recentemente
-                                            </Header.Content>
-                                        </Header>
+                                        <Header as='h3'>Conectados recentemente</Header>
                                         <Flickity
                                             className={'carousel'}
                                             elementType={'div'}
@@ -331,14 +206,14 @@ function HomePage () {
                                                 <div className="friends-carousel-cell" key={key}>
                                                     <Link to={{ pathname: '/'+friend.username }}>
                                                         {friend.picture ? (
-                                                            <Image src={'https://ik.imagekit.io/mublin/tr:h-200,w-200,r-max,c-maintain_ratio/users/avatars/'+friend.id+'/'+friend.picture} rounded size='tiny' />
+                                                            <Image src={'https://ik.imagekit.io/mublin/tr:h-200,w-200,r-max,c-maintain_ratio/users/avatars/'+friend.id+'/'+friend.picture} rounded width='50' height='auto' />
                                                         ) : (
                                                             <Image src={undefinedAvatar} rounded size='tiny' />
                                                         )}
                                                         <Header as='h5' textAlign='center' className='mt-2 mb-0'>
                                                             <Header.Content title={friend.username}>
                                                                 {/* {friend.username} */}
-                                                                {(friend.username.length > 9) ? friend.username.substr(0,8) + '...' : friend.username}
+                                                                {(friend.username.length > 7) ? friend.username.substr(0,6) + '...' : friend.username}
                                                             </Header.Content>
                                                         </Header>
                                                     </Link>
@@ -347,49 +222,113 @@ function HomePage () {
                                         </Flickity>
                                     </>
                                 }
-                                <div className='userSuggestionsCarouselMobile'>
-                                    <Header size='tiny' className="mt-3 ml-0 ml-md-2">
-                                        <Header.Content style={{opacity:"0.7"}}>
-                                            Sugestões para seguir
-                                        </Header.Content>
-                                    </Header>
-                                    <Flickity
-                                        className={'mt-2 pb-0 pb-md-2'}
-                                        elementType={'div'}
-                                        options={sliderOptions}
-                                        disableImagesLoaded={false}
-                                        reloadOnUpdate
-                                    >
-                                        {suggestedUsers.filter((user) => { return user.picture }).map((user, key) =>
-                                            <div className='pr-3' key={key} style={{display:'flex', alignItems:'center'}}>
-                                                <Image as='a' href={'/'+user.username} src={user.picture ? user.picture : undefinedAvatar} avatar />
-                                                <div style={{display:'flex',flexDirection:'column'}}>
-                                                    <span style={{fontSize:'11.8px',fontWeight:'500'}}>{user.username}</span>
-                                                    <span style={{fontSize:'9px'}}>{user.city}</span>
-                                                </div>
-                                            </div>
-                                        )}
-                                    </Flickity>
-                                </div>
                                 </>
                             )}    
                         </div>
-                        <Feed className='pt-3 carousel-wrapper'>
-                            <Header size='small' className="mb-3 ml-0 ml-md-2">
-                                <Header.Content style={{opacity:"0.7"}}>
-                                    Feed
-                                </Header.Content>
+                        <div className='mb-3'>
+                            <Header as='h3' className='mb-1'>Meus Projetos ({projectsToShow.length})</Header>
+                            <Checkbox 
+                                label={['Exibir projetos tipo Portfolio ' , <Icon name='tag' style={{fontSize:'10px'}} />]}
+                                checked={showPortfolio}
+                                onClick={toggle}
+                                style={{fontSize:'12px'}}
+                            />
+                        </div>
+                        <Flickity
+                            className={'carousel mt-2'}
+                            elementType={'div'}
+                            options={sliderOptions}
+                            disableImagesLoaded={false}
+                            reloadOnUpdate
+                        >
+                            { !userInfo.requesting ? (
+                                projectsToShow.length ? (
+                                    projectsToShow.map((project, key) =>
+                                        <div className="carousel-cell compact" key={key} style={project.confirmed === 2 ? {opacity:'0.6'} : {}}>
+                                            <Link to={{ pathname: '/project/'+project.username }}>
+                                                {project.yearLeftTheProject && 
+                                                    <Label color='black' floating size='mini' style={{top: '0', left: '21%',width:'fit-content'}}>
+                                                        {project.joined_in+' a '+project.yearLeftTheProject}
+                                                    </Label>
+                                                }
+                                                {project.picture ? (
+                                                    <Image src={'https://ik.imagekit.io/mublin/projects/tr:h-85,w-95,c-maintain_ratio/'+project.picture} rounded />
+                                                ) : (
+                                                    <Image src={'https://ik.imagekit.io/mublin/sample-folder/avatar-undefined_-dv9U6dcv3.jpg'} height='85' width='85' rounded />
+                                                )}
+                                                <Header as='h5' className='mt-2 mb-0'>
+                                                    <Header.Content>
+                                                        {project.portfolio === 1 && <Icon name='tag' style={{fontSize:'10px'}} className='mr-1' title='Portfolio' />}{project.name}
+                                                        <Header.Subheader style={{fontSize:'11.5px'}}>
+                                                            {project.ptname}
+                                                        </Header.Subheader>
+                                                    </Header.Content>
+                                                </Header>
+                                                { project.confirmed === 1 ? (
+                                                    <div className="mt-2" style={{fontWeight: '400',fontSize: '11px', color: 'black', opacity: '0.8'}}>
+                                                        <Icon name={project.workIcon} />{project.workTitle}
+                                                    </div>
+                                                ) : (
+                                                    <div className="mt-2" style={{fontWeight: '400',fontSize: '11px', color: 'black', opacity: '0.8'}}>
+                                                        <Icon name='clock outline' />Aguardando
+                                                    </div>
+                                                )}
+                                            </Link>
+                                        </div>
+                                    )
+                                ) : (
+                                    <div className="carousel-cell compact">
+                                        <Image src={'https://ik.imagekit.io/mublin/misc/square-sad-music_SeGz8vs_2A.jpg'} height='85' width='85' rounded />
+                                        <h5 className="ui header mt-2 mb-0">
+                                            <div className="sub header mt-1">Sem principais</div>
+                                        </h5>
+                                    </div> 
+                                )
+                            ) : (
+                                <div style={{textAlign: 'center', width: '100%'}}>
+                                    <Icon loading name='spinner' size='big' />
+                                </div>
+                            )}
+                        </Flickity>
+
+                        <div className='userSuggestionsCarouselMobile'>
+                            <Header size='tiny' className='mt-3 ml-0 ml-md-2' style={{opacity:"0.7"}}>
+                                Sugestões de pessoas para seguir
                             </Header>
-                            <div className='mt-2 ml-2 mb-4'>
-                                <Image avatar src={userInfo.picture ? 'https://ik.imagekit.io/mublin/users/avatars/'+userInfo.id+'/'+userInfo.picture : undefinedAvatar} /> <Button size='tiny' onClick={() => setModalNewPost(true)}><Icon name='pencil' /> Publicar no Mublin</Button>
+                            <Flickity
+                                className={'mt-2 pb-0 pb-md-2'}
+                                elementType={'div'}
+                                options={sliderOptions}
+                                disableImagesLoaded={false}
+                                reloadOnUpdate
+                            >
+                                {suggestedUsers.filter((user) => { return user.picture }).map((user, key) =>
+                                    <div className='pr-3' key={key} style={{display:'flex', alignItems:'center'}}>
+                                        <Image as='a' href={'/'+user.username} src={user.picture ? user.picture : undefinedAvatar} avatar />
+                                        <div style={{display:'flex',flexDirection:'column'}}>
+                                            <span style={{fontSize:'11.8px',fontWeight:'500'}}>{user.username}</span>
+                                            <span style={{fontSize:'9px'}}>{user.city}</span>
+                                        </div>
+                                    </div>
+                                )}
+                            </Flickity>
+                        </div>
+
+                        <Feed className='pt-3'>
+                            <Header as='h3' className='mb-3 ml-0 ml-md-2'>Feed</Header>
+                            <div className='mt-2 ml-2 mb-4' style={{display:'flex'}}>
+                                <Image avatar src={userInfo.picture ? 'https://ik.imagekit.io/mublin/users/avatars/'+userInfo.id+'/'+userInfo.picture : undefinedAvatar} className='mr-2' /> <Button fluid circular size='tiny' onClick={() => setModalNewPost(true)}><Icon name='pencil' /> Publicar no Mublin</Button>
                             </div>
                             <Modal
                                 size='tiny'
                                 open={modalNewPost}
                                 onClose={() => setModalNewPost(false)}
                             >
-                                <Modal.Header>Publicar</Modal.Header>
                                 <Modal.Content scrolling>
+                                    <div className='mb-3'>
+                                        <Image avatar src={userInfo.picture ? 'https://ik.imagekit.io/mublin/users/avatars/'+userInfo.id+'/'+userInfo.picture : undefinedAvatar} />
+                                        <span>Publicar como {userInfo.name}</span>
+                                    </div>
                                     <Form>
                                         <Form.TextArea
                                             value={postText}
@@ -419,21 +358,20 @@ function HomePage () {
                                             )}
                                         </div>
                                     </div>
+                                    <div className='mt-4'>
+                                        <Button
+                                            floated='right'
+                                            content={isLoading ? 'Publicando...' : 'Publicar'} 
+                                            size='small' 
+                                            primary 
+                                            disabled={(!postText || isLoading) ? true : false}
+                                            onClick={submitPost}
+                                        />
+                                        <Button floated='right' size='small' onClick={() => setModalNewPost(false)}>
+                                            Fechar
+                                        </Button>
+                                    </div>
                                 </Modal.Content>
-                                <Modal.Actions>
-                                    <Button size='small' onClick={() => setModalNewPost(false)}>
-                                        Fechar
-                                    </Button>
-                                    <Button  
-                                        content={isLoading ? 'Publicando...' : 'Publicar'} 
-                                        labelPosition='left' 
-                                        icon='edit' 
-                                        size='small' 
-                                        primary 
-                                        disabled={(!postText || isLoading) ? true : false}
-                                        onClick={submitPost}
-                                    />
-                                </Modal.Actions>
                             </Modal>
                             {feed.requesting ? (
                                 <Segment>
@@ -451,52 +389,48 @@ function HomePage () {
                             ) : (
                                 <>
                                     {!feed.error && feed.list.map((item, key) =>
-                                        <>
-                                            <Feed.Event key={key} className='mb-0 ml-0 ml-md-2'>
-                                                <Feed.Label style={{cursor:'pointer'}} onClick={() => history.push('/'+item.relatedUserUsername)}>
-                                                    { item.relatedUserPicture ? (
-                                                        <img src={item.relatedUserPicture} alt={'Foto de '+item.relatedUserName} />
-                                                    ) : (
-                                                        <img src={undefinedAvatar} />
-                                                    )}
-                                                    {item.relatedUserPlan === 'Pro' && <Label size="mini" className="ml-2 p-1">Pro</Label>}
-                                                </Feed.Label>
-                                                <Feed.Content className='mt-1'>
-                                                    {feed.requesting ? (
-                                                        <Feed.Date style={{fontSize:'12px',fontWeight:'500'}}>
-                                                            Carregando...
-                                                        </Feed.Date>
-                                                    ) : (
-                                                        <Feed.Date style={{fontSize:'12px',fontWeight:'500'}} title={Date(item.created)}>
-                                                            há {formatDistance(new Date(item.created * 1000), new Date(), {locale:pt})}
-                                                        </Feed.Date>
-                                                    )}
-                                                    <Feed.Summary>
-                                                        <Feed.User style={{fontWeight:'600'}} onClick={() => history.push('/'+item.relatedUserUsername)}>{item.relatedUserName+' '+item.relatedUserLastname}</Feed.User> <span style={{fontWeight:'500'}}>{item.action}</span>
-                                                    </Feed.Summary>
-                                                    { (item.categoryId === 8) && 
-                                                        <Feed.Extra text content={item.extraText} />
-                                                    }
-                                                    {item.image && 
-                                                        <Feed.Extra images>
-                                                            <a onClick={() => {
-                                                                showImage('https://ik.imagekit.io/mublin/posts/'+item.image)
-                                                            }}>
-                                                                <img src={'https://ik.imagekit.io/mublin/posts/'+item.image} />
-                                                            </a>
-                                                        </Feed.Extra>
-                                                    }
-                                                    {!feed.requesting &&
-                                                        <Feed.Meta>
-                                                            <Feed.Like onClick={!item.likedByMe ? () => likeFeedPost(item.id) : () => unlikeFeedPost(item.id)}>
-                                                                <Icon loading={likeFeedPostLoading === item.id || unlikeFeedPostLoading === item.id} name={(likeFeedPostLoading === item.id || unlikeFeedPostLoading === item.id) ? 'spinner' : 'like'} color={item.likedByMe ? 'red' : ''}/>
-                                                            </Feed.Like> {item.likes}
-                                                        </Feed.Meta>
-                                                    }
-                                                </Feed.Content>
-                                            </Feed.Event>
-                                            <Divider className='mt-1 mb-3' />
-                                        </>
+                                        <Feed.Event key={key} className='mb-2 ml-0 ml-md-2 feed-item-wrapper'>
+                                            <Feed.Label>
+                                                <img src={item.relatedUserPicture ? item.relatedUserPicture : undefinedAvatar} alt={'Foto de '+item.relatedUserName} style={{cursor:'pointer'}} onClick={() => history.push('/'+item.relatedUserUsername)} />
+                                                {item.relatedUserPlan === 'Pro' && <Label size="mini" className="ml-2 p-1">Pro</Label>}
+                                                {item.relatedUserUsername === userInfo.username &&
+                                                    <Icon name='trash alternate outline' style={{fontSize:'0.8em',marginTop:'14px'}} className='cpointer' onClick={() => showModalPost(item.id)} />
+                                                }
+                                            </Feed.Label>
+                                            <Feed.Content className='mt-1'>
+                                                {feed.requesting ? (
+                                                    <Feed.Date style={{fontSize:'12px',fontWeight:'500'}}>
+                                                        Carregando...
+                                                    </Feed.Date>
+                                                ) : (
+                                                    <Feed.Date style={{fontSize:'12px',fontWeight:'500'}} title={Date(item.created)}>
+                                                        há {formatDistance(new Date(item.created * 1000), new Date(), {locale:pt})}
+                                                    </Feed.Date>
+                                                )}
+                                                <Feed.Summary>
+                                                    <Feed.User style={{fontWeight:'600'}} onClick={() => history.push('/'+item.relatedUserUsername)}>{item.relatedUserName+' '+item.relatedUserLastname}</Feed.User> <span style={{fontWeight:'500'}}>{item.action}</span>
+                                                </Feed.Summary>
+                                                { (item.categoryId === 8) && 
+                                                    <Feed.Extra text content={item.extraText} />
+                                                }
+                                                {item.image && 
+                                                    <Feed.Extra images>
+                                                        <a onClick={() => {
+                                                            showImage('https://ik.imagekit.io/mublin/posts/'+item.image)
+                                                        }}>
+                                                            <img src={'https://ik.imagekit.io/mublin/posts/'+item.image} />
+                                                        </a>
+                                                    </Feed.Extra>
+                                                }
+                                                {!feed.requesting &&
+                                                    <Feed.Meta>
+                                                        <Feed.Like onClick={!item.likedByMe ? () => likeFeedPost(item.id) : () => unlikeFeedPost(item.id)}>
+                                                            <Icon loading={likeFeedPostLoading === item.id || unlikeFeedPostLoading === item.id} name={(likeFeedPostLoading === item.id || unlikeFeedPostLoading === item.id) ? 'spinner' : 'like'} color={item.likedByMe ? 'red' : ''}/>
+                                                        </Feed.Like> {item.likes}
+                                                    </Feed.Meta>
+                                                }
+                                            </Feed.Content>
+                                        </Feed.Event>
                                     )}
                                     <Modal
                                         size='tiny'
@@ -509,7 +443,7 @@ function HomePage () {
                                             <Image src={imageToShow} />
                                         </Modal.Content>
                                     </Modal>
-                                    <Feed.Event className='mb-1 ml-0 ml-md-2'>
+                                    <Feed.Event className='mb-1 ml-0 ml-md-2 feed-item-wrapper'>
                                         <Feed.Label>
                                             <img src={LogoMublin} alt='Mublin' />
                                         </Feed.Label>
@@ -526,6 +460,15 @@ function HomePage () {
                                 </>
                             )}
                         </Feed>
+                        <Confirm
+                            open={modalDeletePost}
+                            size='tiny'
+                            content='Deletar este post?'
+                            onCancel={() => setModalDeletePost(false)}
+                            onConfirm={() => deletePost(postIdToDelete)}
+                            cancelButton='Voltar'
+                            confirmButton={{content:'Deletar', negative: true, loading: loadingDeletePost ? true : false}}
+                        />
                     </Grid.Column>
                     <Grid.Column mobile={16} tablet={16} computer={4} className="only-computer"
                         style={{position:"-webkit-sticky",position:"sticky",top:"90px",display:"inline-table"}}

@@ -1,17 +1,22 @@
+.feed-item-wrapper {
+  background-color: rgb(255, 255, 255)!important;
+  border: 1px rgb(219, 219, 219) solid!important;
+  border-radius: 6px!important;
+  padding: 14px 6px 2px 12px!important;
+}
+
 @media only screen and (min-width: 600px) {
-  .carousel-wrapper {
-    background-color: rgb(255, 255, 255);
-    border: 1px rgb(219, 219, 219) solid;
-    border-radius: 6px;
-    padding: 14px 6px 8px 6px;
-  }
   .userSuggestionsCarouselMobile {
     display:none;
+  }
+  .feed-item-wrapper {
+    width: 99%!important;
   }
 }
 
 .ui.attached.tabular.menu {
-  .item {
+  .item,
+  .active.item {
     opacity: 0.7;
     font-family: "Poppins", sans-serif !important;
     font-weight: 600 !important;
@@ -20,6 +25,7 @@
   }
 }
 
+.flickity-prev-next-button { width: 28px!important; height: 28px!important; }
 .flickity-prev-next-button:disabled { display: none; }
 
 .news {
@@ -46,16 +52,21 @@
 }
 
 /* carousel friends */
-.friends-carousel-cell{
-  width: 93px;
-  height: 110px;
+
+.friends-carousel-cell {
+  width: 70px;
+  height: 102px;
   padding: 0px 0px;
   margin-right: 0px;
   counter-increment: gallery-cell;
   text-align: left;
-}
 
-.friends-carousel-cell {
+  a {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
   h5 {
     width: 83%;
     white-space: nowrap;
@@ -75,10 +86,10 @@
 
 @media screen and (min-width: 601px) {
   .friends-carousel-cell {
-    width: 100px!important;
-    height: 110px!important;
+    width: 66px!important;
+    height: 100px!important;
     margin-right: 0px!important;
-    padding: 0px 9px!important;
+    padding: 0px 0px!important;
 
     h5 {
       width: 98%;
@@ -88,7 +99,7 @@
 
 /* carousel projects */
 .carousel-cell{
-  width: 113px;
+  width: 103px;
   height: 158px;
   padding: 0px 8px 0 0;
   margin-right: 3px;
@@ -96,7 +107,7 @@
   text-align: left;
 
   h5 {
-    width: 100%;
+    width: 94%;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { Grid, Comment, Form, Button, Icon, Header, Image } from 'semantic-ui-react';
+import { Grid, Comment, Form, Button, Icon, Header, Image, Segment, Divider } from 'semantic-ui-react';
 import { userInfos } from '../../store/actions/user';
 import HeaderDesktop from '../../components/layout/headerDesktop';
 import HeaderMobile from '../../components/layout/headerMobile';
@@ -22,14 +22,61 @@ function ConversationPage (props) {
 
     let history = useHistory();
 
-    useEffect(() => { 
+    const [messageSubmitted, setMessageSubmitted] = useState(false)
+
+    useEffect(() => {
         dispatch(userInfos.getInfo());
         window.scrollTo(0,document.body.scrollHeight);
-    }, []);
+
+        fetch(BASE_URL+"/messages/"+profileId+"/basicInfo", {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json, text/plain, */*',
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + user.token
+            }
+        })
+        .then(res => res.json())
+        .then(
+            (result) => {
+                setProfileInfoLoaded(true);
+                setProfileInfo(result);
+            },
+            (error) => {
+                setProfileInfoLoaded(true);
+                setError(error);
+            }
+        )
+
+        fetch(BASE_URL+"/messages/"+profileId+"/conversation", {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json, text/plain, */*',
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + user.token
+            }
+        })
+        .then(res => res.json())
+        .then(
+            (result) => {
+                setMessagesLoaded(true);
+                if (result.message && result.message.includes('No conversations found')) {
+                    // do nothing
+                } else {
+                    setMessages(result);
+                }
+            },
+            (error) => {
+                setMessagesLoaded(true);
+                setError(error);
+            }
+        )
+    }, [messageSubmitted]);
 
     const userInfo = useSelector(state => state.user);
 
     const BASE_URL = "https://mublin.herokuapp.com";
+
     const [error, setError] = useState(null);
     const [profileInfoLoaded, setProfileInfoLoaded] = useState(false);
     const [profileInfo, setProfileInfo] = useState([]);
@@ -54,48 +101,32 @@ function ConversationPage (props) {
             status: ''
         }
     ]);
-  
-    useEffect(() => {
-        fetch(BASE_URL+"/messages/"+profileId+"/basicInfo", {
-            method: 'GET',
+
+    const [isLoading, setIsLoading] = useState(false)
+    const [message, setMessage] = useState('')
+
+    const submitMessage = () => {
+        setMessageSubmitted(false)
+        setIsLoading(true)
+        fetch('https://mublin.herokuapp.com/messages/submitNewMessage/', {
+            method: 'POST',
             headers: {
                 'Accept': 'application/json, text/plain, */*',
                 'Content-Type': 'application/json',
                 'Authorization': 'Bearer ' + user.token
-            }
-        })
-        .then(res => res.json())
-        .then(
-            (result) => {
-                setProfileInfoLoaded(true);
-                setProfileInfo(result);
             },
-            (error) => {
-                setProfileInfoLoaded(true);
-                setError(error);
-            }
-        )
-  
-        fetch(BASE_URL+"/messages/"+profileId+"/conversation", {
-            method: 'GET',
-            headers: {
-                'Accept': 'application/json, text/plain, */*',
-                'Content-Type': 'application/json',
-                'Authorization': 'Bearer ' + user.token
-            }
+            body: JSON.stringify({receiverId: profileId, message: message})
         })
-        .then(res => res.json())
-        .then(
-            (result) => {
-                setMessagesLoaded(true);
-                setMessages(result);
-            },
-            (error) => {
-                setMessagesLoaded(true);
-                setError(error);
-            }
-        )
-    }, [])
+        .then((response) => {
+            setIsLoading(false)
+            setMessageSubmitted(true)
+            setMessage('')
+        }).catch(err => {
+            setIsLoading(false)
+            console.error(err)
+            alert("Ocorreu um erro ao enviar a mensagem. Tente novamente em instantes")
+        })
+    }
 
     return (
         <>
@@ -106,32 +137,51 @@ function ConversationPage (props) {
                 <Grid.Row>
                     <Grid.Column mobile={16} computer={10}>
                         <div>
-                            <Icon name='arrow left' className='mr-3' onClick={() => history.push("/messages")} /> 
-                            <Image src={profileInfo.picture} avatar onClick={() => history.push("/"+profileInfo.username)} />
-                            <span>{profileInfo.username}</span>
+                            <Icon name='arrow left' onClick={() => history.goBack()} className='cpointer' /> 
+                            <Image src={profileInfo.picture} avatar onClick={() => history.push("/"+profileInfo.username)} className='cpointer ml-2'/>
+                            <span className='cpointer' onClick={() => history.push("/"+profileInfo.username)}>{profileInfo.username}</span>
                         </div>
+                        <Divider />
                         { !messagesLoaded ? (
                             <Header as='h5' className='my-4'>Carregando...</Header>
                         ) : (
                             <Comment.Group>
-                                { messages.map((message, key) =>
-                                <Comment key={key}>
-                                    <Comment.Avatar onClick={() => history.push("/"+message.senderUsername)} src={message.senderPicture} style={{cursor:'pointer'}} />
-                                    <Comment.Content>
-                                        <Comment.Author as='a' onClick={() => history.push("/"+message.senderUsername)}>{message.senderName+' '+message.senderLastname}</Comment.Author>
-                                        <Comment.Text style={{fontSize:'11px',opacity:'0.7'}}>
-                                            há {formatDistance(new Date(message.createdFormatted * 1000), new Date(), {locale:pt})}
-                                        </Comment.Text>
-                                        <Comment.Text>{message.message}</Comment.Text>
-                                        { !!(user.id === message.senderId && message.seen) &&
-                                            <Comment.Text style={{fontSize:'11px',opacity:'0.7'}}><Icon name='check' size='small' color='blue' />Lido</Comment.Text>
-                                        }
-                                    </Comment.Content>
-                                </Comment>
+                                {messages[0].id ? ( messages.map((message, key) =>
+                                    <Comment key={key}>
+                                        <Comment.Avatar onClick={() => history.push("/"+message.senderUsername)} src={message.senderPicture} style={{cursor:'pointer'}} />
+                                        <Comment.Content>
+                                            <Comment.Author as='a' onClick={() => history.push("/"+message.senderUsername)}>{message.senderName+' '+message.senderLastname}</Comment.Author>
+                                            <Comment.Text style={{fontSize:'11px',opacity:'0.7'}}>
+                                                há {formatDistance(new Date(message.createdFormatted * 1000), new Date(), {locale:pt})}
+                                            </Comment.Text>
+                                            <Comment.Text>{message.message}</Comment.Text>
+                                            { !!(user.id === message.senderId && message.seen) &&
+                                                <Comment.Text style={{fontSize:'11px',opacity:'0.7'}}><Icon name='check' size='small' color='blue' />Lido</Comment.Text>
+                                            }
+                                        </Comment.Content>
+                                    </Comment>
+                                )) : (
+                                    <Segment placeholder>
+                                        <Header textAlign='center' as='h5' color='grey'>
+                                            Nenhuma mensagem por aqui ainda
+                                        </Header>
+                                    </Segment>
                                 )}
-                                <Form reply>
-                                    <Form.TextArea />
-                                    <Button content='Enviar' labelPosition='left' icon='edit' primary size='small' />
+                                <Form reply className='pt-3'>
+                                    <Form.Input
+                                        value={message}
+                                        onChange={e => setMessage(e.target.value)}
+                                        maxLength='600'
+                                    />
+                                    <Button 
+                                        content='Enviar' 
+                                        labelPosition='left' 
+                                        icon='send' 
+                                        primary 
+                                        size='small' 
+                                        loading={isLoading} 
+                                        onClick={() => submitMessage()}
+                                    />
                                 </Form>
                             </Comment.Group>
                         )}

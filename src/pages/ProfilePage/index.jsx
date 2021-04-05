@@ -349,7 +349,7 @@ function ProfilePage (props) {
                                                 <Button content='Editar' onClick={() => history.push("/settings/profile")} />
                                             )
                                         )}
-                                        <Button content='Mensagem' />
+                                        <Button content='Mensagem' as='a' href={`/messages/conversation/${profile.id}`} />
                                     </Button.Group>
                                 </div>
                                 { (profile.bio && profile.bio !== 'null') && 

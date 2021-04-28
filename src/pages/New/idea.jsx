@@ -138,8 +138,9 @@ function NewProjectIdeaPage () {
             <Grid as='main' centered columns={1} className="container">
                 <Grid.Row>
                     <Grid.Column mobile={16} computer={10}>
-                        <Header as='h2' className='mb-4'>
+                        <Header as='h1' className='mb-4 mt-3 mb-5 textCenter'>
                             Criar nova ideia de projeto
+                            <Header.Subheader>Tem uma ideia de banda autoral, cover ou algum outro tipo de projeto? Cadastre e atraia outros artistas interessados em participar!</Header.Subheader>
                         </Header>
                         <Form>
                             <Form.Field>

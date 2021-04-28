@@ -152,8 +152,9 @@ function NewProjectPage () {
             <Grid as='main' centered columns={1} className="container">
                 <Grid.Row>
                     <Grid.Column mobile={16} computer={10}>
-                        <Header as='h2' className='mb-4'>
+                        <Header as='h1' className='mb-4 mt-3 mb-4 textCenter'>
                             Criar novo projeto
+                            {/* <Header.Subheader></Header.Subheader> */}
                         </Header>
                         <Form>
                             <Form.Field>

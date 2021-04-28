@@ -47,7 +47,7 @@ function StartStep3Page () {
     }));
 
     const userProjects = userInfo.projects.map((project, key) =>
-        <Label color="blue" key={key} className="mb-2 mr-2" style={{ fontWeight: 'normal' }} image>
+        <Label color='blue' size='large' key={key} className="mb-2 mr-2" style={{ fontWeight: 'normal' }} image>
             {project.picture ? (
                 <img src={'https://ik.imagekit.io/mublin/projects/tr:h-200,w-200,c-maintain_ratio/'+project.picture} />
             ) : (
@@ -352,7 +352,7 @@ function StartStep3Page () {
                                         {userInfo.projects[0].id && userProjects}
                                     </Segment>
                                 )}
-                                <p style={{fontWeight: '300'}} className="my-3">Pesquise abaixo ou  <Button basic size="mini" onClick={() => setModalNewProjectOpen(true)} className="ml-1">cadastre um novo projeto</Button></p>
+                                <p style={{fontWeight: '400'}} className="my-3">Pesquise abaixo ou  <Button basic size="tiny" onClick={() => setModalNewProjectOpen(true)} className="ml-1">cadastre um novo projeto</Button></p>
                                 <Search
                                     fluid
                                     size='large'
@@ -393,7 +393,7 @@ function StartStep3Page () {
                                             <Form.Field>
                                                 <Radio
                                                     className="mt-0"
-                                                    label='Convidado (sideman)'
+                                                    label='Sideman'
                                                     name='radioGroup'
                                                     value='2'
                                                     checked={status === '2'}
@@ -665,7 +665,7 @@ function StartStep3Page () {
                                 >
                                     Concluir
                                 </Button>
-                                <p style={{fontWeight: '300'}} className="mt-3">Você poderá ingressar ou criar projetos mais tarde se preferir</p>
+                                <p style={{fontWeight: '400'}} className="mt-3">Fica tranquilo! Você poderá ingressar ou criar projetos mais tarde se preferir <Icon name='smile outline' /></p>
                             </Segment>
                         </Form>
                     </Grid.Column>

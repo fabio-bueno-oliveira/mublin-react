@@ -76,6 +76,10 @@ body, html {
   }
 }
 
+.noBorder {
+  border-width: 0px !important;
+}
+
 .ui.search {
   .results {
     .price {
@@ -124,6 +128,16 @@ body, html {
 .ui.inverted.menu .dropdown.item:hover, .ui.inverted.menu .link.item:hover, .ui.inverted.menu a.item:hover, .ui.link.inverted.menu .item:hover {
   background: #1b1c1d;
   color: #fff;
+}
+
+.ui.inverted.menu {
+  font-family: "Poppins", sans-serif !important;
+
+  &.active.item {
+    font-weight: 600 !important;
+    background: transparent!important;
+    color: #fff!important;
+  }
 }
 
 .carousel.flickity-enabled {
@@ -252,4 +266,10 @@ body, html {
 
 .ui.feed>.event>.content .extra.text {
   max-width: 98%;
+}
+
+/* UI Colors */
+
+.mainColor {
+  color: #5555ff!important;
 }

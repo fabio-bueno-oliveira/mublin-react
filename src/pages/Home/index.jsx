@@ -37,7 +37,7 @@ function HomePage () {
     const suggestedUsers = useSelector(state => state.search.suggestedUsers)
     const feed = useSelector(state => state.feed)
 
-    const [showPortfolio, setShowPortfolio] = useState(true)
+    const [showPortfolio, setShowPortfolio] = useState(false)
     const toggle = () => setShowPortfolio(value => !value)
 
     const projectsToShow = useSelector(state => state.user.projects).filter((project) => { return showPortfolio ? (project.portfolio === 1 || project.portfolio === 0) && project.confirmed !== 0 : project.portfolio === 0 && project.confirmed !== 0 }).sort((a, b) => parseFloat(b.featured) - parseFloat(a.featured))
@@ -174,6 +174,8 @@ function HomePage () {
         })
     }
 
+    var today = new Date();
+
     const undefinedAvatar = 'https://ik.imagekit.io/mublin/sample-folder/avatar-undefined_Kblh5CBKPp.jpg'
 
     return (
@@ -184,19 +186,76 @@ function HomePage () {
         <Container className='px-3'>
             <Grid centered>
                 <Grid.Row columns={2}>
+                    <Grid.Column mobile={16} tablet={16} computer={4} className="only-computer pt-md-1"
+                        style={{position:"-webkit-sticky",position:"sticky",top:"90px",display:"inline-table"}}
+                    >
+                        { !userInfo.requesting && 
+                            <>
+                                <a href={"/"+userInfo.username}>
+                                    <Header as='h2'>
+                                        { (!userInfo.requesting && userInfo.picture) ? (
+                                            <Image circular
+                                                src={'https://ik.imagekit.io/mublin/users/avatars/'+userInfo.id+'/'+userInfo.picture}
+                                            />
+                                        ) : (
+                                            <Image circular
+                                                src={undefinedAvatar}
+                                            />
+                                        )}
+                                        <Header.Content>
+                                            {userInfo.name}
+                                            <Header.Subheader>@{userInfo.username}</Header.Subheader>
+                                        </Header.Content>
+                                    </Header>
+                                </a>
+                                <Label className='mt-3 mx-0'>
+                                    Plano:
+                                    <Label.Detail>{userInfo.plan ? userInfo.plan.toUpperCase() : null}</Label.Detail>
+                                </Label>
+                                <Header as='h5' disabled>Sugestões para seguir</Header>
+                                <div>
+                                    <List size='large' relaxed>
+                                        {suggestedUsers.map((user, key) =>
+                                            <List.Item key={key}>
+                                                <Popup
+                                                    content={user.totalProjects + (user.totalProjects === 1 ? ' projeto' : ' projetos') + (user.availabilityTitle ? ' · ' + user.availabilityTitle : '')}
+                                                    header={user.username}
+                                                    size='tiny'
+                                                    trigger={<Image src={user.picture ? user.picture : undefinedAvatar} avatar className='cpointer' onClick={() => history.push('/'+user.username)} />}
+                                                />
+                                                <List.Content>
+                                                    <Popup
+                                                        content={user.totalProjects + (user.totalProjects === 1 ? ' projeto' : ' projetos') + (user.availabilityTitle ? ' · ' + user.availabilityTitle : '')}
+                                                        header={user.username}
+                                                        size='tiny'
+                                                        trigger={<List.Header as='a' href={'/'+user.username} style={{width:'150px',whiteSpace:'nowrap',overflow:'hidden',textOverflow:'ellipsis'}}>{user.name+' '+user.lastname} {!!user.verified && <Icon name='check circle' color='blue' className='verifiedIcon' title='Verificado' />}</List.Header>}
+                                                    />
+                                                    {/* <List.Header as='a' href={'/'+user.username}>{user.name+' '+user.lastname} {!!user.verified && <Icon name='check circle' color='blue' className='verifiedIcon' title='Verificado' />}</List.Header> */}
+                                                    <List.Description style={{fontSize:'11px',width:'160px',whiteSpace:'nowrap',overflow:'hidden',textOverflow:'ellipsis'}}>
+                                                        {user.instrumentalist && user.mainRole+' · '} {user.city+', '+user.region}
+                                                    </List.Description>
+                                                </List.Content>
+                                            </List.Item>
+                                        )}
+                                    </List>
+                                </div>
+                            </>
+                        }
+                    </Grid.Column>
                     <Grid.Column mobile={16} tablet={16} computer={12}>
-                        <div className='mt-0 mt-md-0'>
+                        {/* <div className='mt-0 mt-md-0'>
                             {userInfo.requesting ? (
-                                <div style={{textAlign: 'center', width: '100%'}}>
-                                    <Loader active inline='centered' className='mb-4' />
+                                <div style={{textAlign: 'center', width: '100%', height: '100px'}} className='py-3'>
+                                    <Loader active inline='centered' />
                                 </div>
                             ) : (
                                 <>
                                 {userInfo.lastConnectedFriends[0].username &&
                                     <>
-                                        {/* <Header as='h3'>Conectados recentemente</Header> */}
+                                        <Header disabled as='h5'>Conectados recentemente</Header>
                                         <Flickity
                                             className={'carousel'}
+                                            style={{height: '200px'}}
                                             elementType={'div'}
                                             options={sliderOptions}
                                             disableImagesLoaded={false}
@@ -218,7 +277,7 @@ function HomePage () {
                                                     </Link>
                                                     <Label 
                                                         circular 
-                                                        // color={new Date(friend.lastLogin) > new Date(today - (5*86400000)) ? 'green' : 'blue'} 
+                                                        color={new Date(friend.lastLogin) > new Date(today - (5*86400000)) ? 'green' : 'blue'} 
                                                         color='green'
                                                         empty 
                                                         size='mini' 
@@ -231,9 +290,9 @@ function HomePage () {
                                 }
                                 </>
                             )}    
-                        </div>
-                        <div className='mb-3'>
-                            <Header as='h3' className='mb-1'>Meus Projetos ({projectsToShow.length})</Header>
+                        </div> */}
+                        <div className='mb-3 mt-2'>
+                            <Header as='h2' className='mb-1'>Meus Projetos ({projectsToShow.length})</Header>
                             <Checkbox 
                                 label={['Exibir projetos tipo Portfolio ' , <Icon name='tag' style={{fontSize:'10px'}} />]}
                                 checked={showPortfolio}
@@ -241,6 +300,7 @@ function HomePage () {
                                 style={{fontSize:'12px'}}
                             />
                         </div>
+
                         <Flickity
                             className={'carousel mt-2'}
                             elementType={'div'}
@@ -292,9 +352,24 @@ function HomePage () {
                                     </div> 
                                 )
                             ) : (
-                                <div style={{textAlign: 'center', width: '100%'}}>
-                                    <Icon loading name='spinner' size='big' />
-                                </div>
+                                <List horizontal>
+                                    <List.Item as='div'>
+                                        <Placeholder style={{ height: 100, width: 100 }}>
+                                            <Placeholder.Image />
+                                            <Placeholder.Line length='very short' />
+                                        </Placeholder>
+                                    </List.Item>
+                                    <List.Item as='div'>
+                                        <Placeholder style={{ height: 100, width: 100 }}>
+                                            <Placeholder.Image />
+                                        </Placeholder>
+                                    </List.Item>
+                                    <List.Item as='div'>
+                                        <Placeholder style={{ height: 100, width: 100 }}>
+                                            <Placeholder.Image />
+                                        </Placeholder>
+                                    </List.Item>
+                                </List>
                             )}
                         </Flickity>
 
@@ -322,9 +397,9 @@ function HomePage () {
                         </div>
 
                         <Feed className='pt-3'>
-                            <Header as='h3' className='mb-3 ml-0 ml-md-2'>Feed</Header>
+                            {/* <Header as='h2' className='mb-3 ml-0 ml-md-2'>Feed</Header> */}
                             <div className='mt-2 ml-2 mb-4' style={{display:'flex'}}>
-                                <Image avatar src={userInfo.picture ? 'https://ik.imagekit.io/mublin/users/avatars/'+userInfo.id+'/'+userInfo.picture : undefinedAvatar} className='mr-2' /> <Button circular size='tiny' onClick={() => setModalNewPost(true)}><Icon name='pencil' /> Publicar no Mublin</Button>
+                                <Image as='a' href={'/'+userInfo.username} avatar src={userInfo.picture ? 'https://ik.imagekit.io/mublin/users/avatars/'+userInfo.id+'/'+userInfo.picture : undefinedAvatar} className='mr-2' /> <Button circular size='tiny' fluid onClick={() => setModalNewPost(true)}><Icon name='pencil' /> Publicar no Mublin</Button>
                             </div>
                             <Modal
                                 size='tiny'
@@ -365,7 +440,7 @@ function HomePage () {
                                             )}
                                         </div>
                                     </div>
-                                    <div className='mt-4 mb-3'>
+                                    <div className='mt-4 mb-3 pb-3'>
                                         <Button
                                             floated='right'
                                             content={isLoading ? 'Publicando...' : 'Publicar'} 
@@ -473,59 +548,9 @@ function HomePage () {
                             content='Deletar este post?'
                             onCancel={() => setModalDeletePost(false)}
                             onConfirm={() => deletePost(postIdToDelete)}
-                            cancelButton='Voltar'
+                            cancelButton='Cancelar'
                             confirmButton={{content:'Deletar', negative: true, loading: loadingDeletePost ? true : false}}
                         />
-                    </Grid.Column>
-                    <Grid.Column mobile={16} tablet={16} computer={4} className="only-computer"
-                        style={{position:"-webkit-sticky",position:"sticky",top:"90px",display:"inline-table"}}
-                    >
-                        { !userInfo.requesting && 
-                            <>
-                                <a href={"/"+userInfo.username}>
-                                    <Header as='h3'>
-                                        { (!userInfo.requesting && userInfo.picture) ? (
-                                            <Image circular
-                                                src={'https://ik.imagekit.io/mublin/users/avatars/'+userInfo.id+'/'+userInfo.picture}
-                                            />
-                                        ) : (
-                                            <Image circular
-                                                src={undefinedAvatar}
-                                            />
-                                        )}
-                                        <Header.Content>
-                                            Olá, {userInfo.name}!
-                                            <Header.Subheader>@{userInfo.username}</Header.Subheader>
-                                        </Header.Content>
-                                    </Header>
-                                </a>
-                                <Header as='h5'>Sugestões para seguir</Header>
-                                <List relaxed className='mt-3'>
-                                    {suggestedUsers.map((user, key) =>
-                                        <List.Item key={key}>
-                                            <Popup
-                                                content={user.totalProjects + (user.totalProjects === 1 ? ' projeto' : ' projetos') + (user.availabilityTitle ? ' · ' + user.availabilityTitle : '')}
-                                                header={user.username}
-                                                size='tiny'
-                                                trigger={<Image src={user.picture ? user.picture : undefinedAvatar} avatar className='cpointer' onClick={() => history.push('/'+user.username)} />}
-                                            />
-                                            <List.Content>
-                                                <Popup
-                                                    content={user.totalProjects + (user.totalProjects === 1 ? ' projeto' : ' projetos') + (user.availabilityTitle ? ' · ' + user.availabilityTitle : '')}
-                                                    header={user.username}
-                                                    size='tiny'
-                                                    trigger={<List.Header as='a' href={'/'+user.username}>{user.name+' '+user.lastname} {!!user.verified && <Icon name='check circle' color='blue' className='verifiedIcon' title='Verificado' />}</List.Header>}
-                                                />
-                                                {/* <List.Header as='a' href={'/'+user.username}>{user.name+' '+user.lastname} {!!user.verified && <Icon name='check circle' color='blue' className='verifiedIcon' title='Verificado' />}</List.Header> */}
-                                                <List.Description style={{fontSize:"11px"}}>
-                                                    {user.instrumentalist && user.mainRole+' · '} {user.city+', '+user.region}
-                                                </List.Description>
-                                            </List.Content>
-                                        </List.Item>
-                                    )}
-                                </List>
-                            </>
-                        }
                     </Grid.Column>
                 </Grid.Row>
             </Grid>

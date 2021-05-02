@@ -319,13 +319,13 @@ function ProfilePage (props) {
                                     { profile.picture ? (
                                         <Image src={profile.picture} size="small" circular />
                                     ) : (
-                                        <Image src='https://ik.imagekit.io/mublin/sample-folder/tr:h-200,w-200,c-maintain_ratio/avatar-undefined_Kblh5CBKPp.jpg' size="small" circular />
+                                        <Image src={cdnBaseURL+'/sample-folder/tr:h-200,w-200,c-maintain_ratio/avatar-undefined_Kblh5CBKPp.jpg'} size="small" circular />
                                     )}
                                 </div>
                                 <div className="center aligned">
                                     { !profile.requesting &&
                                         <>
-                                            <Header as='h6' className='my-0'><span style={{fontWeight:'lighter'}}>{username}</span> {!!profile.verified && <Icon name='check circle' color='blue' className='verifiedIcon' title='Verificado' />} {profile.plan === 'Pro' && <Label size="small" className="ml-1 p-2" style={{cursor:"default"}}>PRO</Label>}</Header>
+                                            <Header as='h6' className='my-0'><span style={{fontWeight:'lighter'}}>@{username}</span> {!!profile.verified && <Icon name='check circle' color='blue' className='verifiedIcon' title='Verificado' />} {profile.plan === 'Pro' && <Label size="mini" className="ml-0 p-1" style={{cursor:"default"}}>PRO</Label>}</Header>
                                             <Header size="large" className="mt-0 mb-1" style={{fontSize:'1.60428571em'}}>
                                                 {profile.name} {profile.lastname}
                                             </Header>
@@ -366,7 +366,7 @@ function ProfilePage (props) {
                                 </div>
                                 <ul className="mt-3 mb-0 rolesList">
                                     {profile.roles.map((role, key) =>
-                                        <li key={key}>{role.icon && <img src={cdnBaseURL+'/icons/music/tr:h-13,w-13,c-maintain_ratio/'+role.icon} loading='lazy' />}{role.name}{key < (profile.roles.length-1) && ', '}</li>
+                                        <li key={key}>{role.icon && <img src={cdnBaseURL+'/icons/music/tr:h-26,w-26,c-maintain_ratio/'+role.icon} width='13' height='13' />}{role.name}{key < (profile.roles.length-1) && ', '}</li>
                                     )}
                                 </ul>
                                 { (profile.bio && profile.bio !== 'null') && 
@@ -433,7 +433,7 @@ function ProfilePage (props) {
                                                                         {projeto.picture ? (
                                                                             <Image src={projeto.picture} rounded />
                                                                         ) : (
-                                                                            <Image src={'https://ik.imagekit.io/mublin/sample-folder/avatar-undefined_-dv9U6dcv3.jpg'} height='85' width='95' rounded />
+                                                                            <Image src={cdnBaseURL+'/sample-folder/avatar-undefined_-dv9U6dcv3.jpg'} height='85' width='95' rounded />
                                                                         )}
                                                                         <Header as='h5' className='mt-2 mb-0'>
                                                                             <Header.Content>
@@ -451,7 +451,7 @@ function ProfilePage (props) {
                                                             )
                                                         ) : (
                                                             <div className="carousel-cell">
-                                                                <Image src={'https://ik.imagekit.io/mublin/misc/square-sad-music_SeGz8vs_2A.jpg'} height='85' width='85' rounded />
+                                                                <Image src={cdnBaseURL+'/misc/square-sad-music_SeGz8vs_2A.jpg'} height='85' width='85' rounded />
                                                                 <h5 className="ui header mt-2 mb-0">
                                                                     <div className="sub header mt-1">Sem projetos</div>
                                                                 </h5>
@@ -488,7 +488,7 @@ function ProfilePage (props) {
                                                                             {projeto.picture ? (
                                                                                 <Image src={projeto.picture} rounded />
                                                                             ) : (
-                                                                                <Image src={'https://ik.imagekit.io/mublin/sample-folder/avatar-undefined_-dv9U6dcv3.jpg'} height='85' width='95' rounded />
+                                                                                <Image src={cdnBaseURL+'/sample-folder/avatar-undefined_-dv9U6dcv3.jpg'} height='85' width='95' rounded />
                                                                             )}
                                                                             <Header as='h5' className='mt-2 mb-0'>
                                                                                 <Header.Content>
@@ -506,7 +506,7 @@ function ProfilePage (props) {
                                                                 )
                                                             ) : (
                                                                 <div className="carousel-cell">
-                                                                    <Image src={'https://ik.imagekit.io/mublin/misc/square-sad-music_SeGz8vs_2A.jpg'} height='85' width='85' rounded />
+                                                                    <Image src={cdnBaseURL+'/misc/square-sad-music_SeGz8vs_2A.jpg'} height='85' width='85' rounded />
                                                                     <h5 className="ui header mt-2 mb-0">
                                                                         <div className="sub header mt-1">Nada aqui</div>
                                                                     </h5>
@@ -530,12 +530,12 @@ function ProfilePage (props) {
                                 <div className='cardTitle'>
                                     <Header as='h3' className='pt-1'>Postagens recentes</Header>
                                     { profile.id === user.id &&
-                                        <Button primary circular icon='plus' size='mini' 
+                                        <Button primary circular icon='pencil' size='medium' 
                                             style={{
                                                 height:'fit-content',
                                                 position:'absolute',
                                                 top:'-6px',
-                                                right:'10px',
+                                                right:'12px',
                                                 border:'4px solid white'
                                             }} 
                                         />
@@ -576,7 +576,10 @@ function ProfilePage (props) {
                         <Card id="strengths" style={{ width: "100%" }}>
                             <Card.Content>
                                 <div className='cardTitle'>
-                                    <Header as='h3' className='pt-1'>Pontos Fortes {profile.strengths[0].idUserTo && <Label className='ml-1 p-2' style={{opacity:'0.4'}}>{profile.strengths.length}</Label>}</Header>
+                                    <Header as='h3' className='pt-1'>
+                                        Pontos Fortes 
+                                        {/* {profile.strengths[0].idUserTo && <Label className='ml-1 p-2' style={{opacity:'0.4'}}>{profile.strengths.length}</Label>} */}
+                                    </Header>
                                     { profile.id !== user.id &&
                                         <Label as='a' size='small' content='Votar' style={{height:'fit-content'}} onClick={() => setModalStrengthsOpen(true)} />
                                     }
@@ -617,7 +620,15 @@ function ProfilePage (props) {
                         { profile.plan === "Pro" && 
                         <Card id="gear" style={{ width: "100%" }}>
                             <Card.Content>
-                                <Header as='h3'>Equipamento {profile.gear[0].productId && <Label className='ml-1 p-2' style={{opacity:'0.4'}}>{profile.gear.length}</Label>}</Header>
+                                <Header as='h3'>
+                                    Equipamento 
+                                    {/* {profile.gear[0].productId && <Label className='ml-1 p-2' style={{opacity:'0.4'}}>{profile.gear.length}</Label>} */}
+                                </Header>
+                                {/* {profile.gearCategories.map((gearCategory, key) =>
+                                    <Label size='mini' basic color='blue' key={key} style={{fontWeight:'lighter'}}>
+                                        {gearCategory.category}
+                                    </Label>
+                                )} */}
                                 { profile.requesting ? (
                                     <Icon loading name='spinner' size='large' />
                                 ) : ( 
@@ -645,7 +656,7 @@ function ProfilePage (props) {
                                                             <Image src={product.picture} rounded as='a' href={'/gear/product/'+product.productId} />
                                                         )
                                                     ) : (
-                                                        <Image src={'https://ik.imagekit.io/mublin/misc/tr:h-200,w-200,c-maintain_ratio/no-picture_pKZ8CRarWks.jpg'} height='85' width='85' rounded label={{ as: 'a', corner: 'left', icon: 'heart' }} as='a' href={'/gear/product/'+product.productId} />
+                                                        <Image src={cdnBaseURL+'/misc/tr:h-200,w-200,c-maintain_ratio/no-picture_pKZ8CRarWks.jpg'} height='85' width='85' rounded label={{ as: 'a', corner: 'left', icon: 'heart' }} as='a' href={'/gear/product/'+product.productId} />
                                                     )}
                                                     <Popup inverted size='mini' content={product.category+' '+product.brandName+' '+product.productName} trigger={<Header as='h5' className='mt-2 mb-0' style={{cursor:'default'}}><Header.Content><Link to={{pathname: '/gear/product/'+product.productId}} style={{color:'black'}}>{product.productName}</Link></Header.Content></Header>} />
                                                     <Header.Subheader style={{fontWeight: '500',fontSize: '11px',whiteSpace:'nowrap',overflow:'hidden',textOverflow:'ellipsis',width:'99%'}}><Link to={{pathname: '/gear/product/'+product.productId}} style={{color:'gray'}}>{product.brandName}</Link></Header.Subheader>
@@ -693,7 +704,7 @@ function ProfilePage (props) {
                                                             className='cpointer' 
                                                         />
                                                     ) : (
-                                                        <Image src={'https://ik.imagekit.io/mublin/misc/tr:h-200,w-200,c-maintain_ratio/no-picture_pKZ8CRarWks.jpg'} height='85' width='85' className='cpointer' rounded as='a' href={'/brand/'+partner.brandId} />
+                                                        <Image src={cdnBaseURL+'/misc/tr:h-200,w-200,c-maintain_ratio/no-picture_pKZ8CRarWks.jpg'} height='85' width='85' className='cpointer' rounded as='a' href={'/brand/'+partner.brandId} />
                                                     )}
                                                     <Header as='h5' className='mt-2 mb-0' style={{cursor:'default'}}>
                                                         <Header.Content as='a' href={'/brand/'+partner.brandId} style={{color:'black'}}>
@@ -885,7 +896,7 @@ function ProfilePage (props) {
                             <List.Content floated='right'>
                                 <Button size='tiny' onClick={() => goToProfile(follower.username)}>Ver perfil</Button>
                             </List.Content>
-                            <Image avatar src={follower.picture ? follower.picture : 'https://ik.imagekit.io/mublin/sample-folder/avatar-undefined_Kblh5CBKPp.jpg'} onClick={() => goToProfile(follower.username)} style={{cursor:'pointer'}} />
+                            <Image avatar src={follower.picture ? follower.picture : cdnBaseURL+'/sample-folder/avatar-undefined_Kblh5CBKPp.jpg'} onClick={() => goToProfile(follower.username)} style={{cursor:'pointer'}} />
                             <List.Content onClick={() => goToProfile(follower.username)}>
                                 <List.Header style={{cursor:'pointer'}}>{follower.name}<br/><span style={{fontWeight:'400'}}>{'@'+follower.username}</span></List.Header>
                             </List.Content>
@@ -908,7 +919,7 @@ function ProfilePage (props) {
                             <List.Content floated='right'>
                                 <Button size='tiny' onClick={() => goToProfile(following.username)}>Ver perfil</Button>
                             </List.Content>
-                            <Image avatar src={following.picture ? following.picture : 'https://ik.imagekit.io/mublin/sample-folder/avatar-undefined_Kblh5CBKPp.jpg'} onClick={() => goToProfile(following.username)} style={{cursor:'pointer'}} />
+                            <Image avatar src={following.picture ? following.picture : cdnBaseURL+'/sample-folder/avatar-undefined_Kblh5CBKPp.jpg'} onClick={() => goToProfile(following.username)} style={{cursor:'pointer'}} />
                             <List.Content onClick={() => goToProfile(following.username)}>
                                 <List.Header style={{cursor:'pointer'}}>{following.name}<br/><span style={{fontWeight:'400'}}>{'@'+following.username}</span></List.Header>
                             </List.Content>
@@ -917,13 +928,13 @@ function ProfilePage (props) {
                 )}
             </Modal.Content>
         </Modal>
-        { (!profile.requesting && !profile.id) && 
+        { (!profile.requesting && profile.requested && !profile.success && !profile.id) && 
             <main className='_404'>
             <div className="ui container" style={{ height: '100%' }}>
                 <Grid centered columns={1} verticalAlign='middle'>
                     <Grid.Column mobile={16} computer={10} className="pb-0">
                         <Segment basic textAlign='center'>
-                            <Image as='a' href='/' centered src='https://ik.imagekit.io/mublin/logos/mublin-logo-text-black_xyGjcfis_.png' className='mb-1' /> Erro 404
+                            <Image as='a' href='/' centered src={cdnBaseURL+'/logos/mublin-logo-text-black_xyGjcfis_.png'} className='mb-1' /> Erro 404
                         </Segment>
                         <Segment basic textAlign='center'>
                             <Header as='h1' className='mb-0'>Ops!</Header>

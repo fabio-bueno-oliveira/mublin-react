@@ -165,6 +165,10 @@ body, html {
 
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
 
+.logoFont {
+  font-family: 'Baloo';
+}
+
 /* Custom Semantic UI styles */
 
 .ui.header, .ui.button { 
@@ -234,6 +238,8 @@ body, html {
 
   li {
     list-style: none;
+    display: flex;
+    align-items: center;
     margin-right: 6px;
 
     img {
@@ -290,3 +296,4 @@ body, html {
 .mainColor {
   color: #5555ff!important;
 }
+

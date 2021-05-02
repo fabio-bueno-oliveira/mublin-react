@@ -2,6 +2,8 @@ import { profileTypes } from '../types/profile';
 
 const initialState = {
   requesting: false,
+  requested: false,
+  success: false,
   id: '',
   name: '',
   lastname: '',
@@ -111,6 +113,9 @@ const initialState = {
       price: ''
     }
   ],
+  gearCategories: [
+    { category: '', macroCategory: ''}
+  ],
   partners: [
     {
       featured: '',
@@ -161,12 +166,16 @@ export function profile(state = initialState, action) {
         region: '',
         city: '',
         website: '',
-        requesting: true
+        requesting: true,
+        requested: false,
+        success: false
       };
     case profileTypes.GET_PROFILE_INFO_SUCCESS:
       return {
         ...state,
         requesting: false,
+        requested: true,
+        success: true,
         id: action.info.id,
         name: action.info.name,
         lastname: action.info.lastname,
@@ -191,6 +200,8 @@ export function profile(state = initialState, action) {
       return {
         ...state,
         requesting: false,
+        requested: true,
+        success: false,
         error: "A solicitação falhou"
       };
     // PROJECTS
@@ -303,7 +314,8 @@ export function profile(state = initialState, action) {
     case profileTypes.GET_PROFILE_GEAR_SUCCESS:
       return {
         ...state,
-        gear: action.list,
+        gear: action.list[0],
+        gearCategories: action.list[1],
         requesting: false,
       };
     case profileTypes.GET_PROFILE_GEAR_FAILURE:
@@ -323,6 +335,9 @@ export function profile(state = initialState, action) {
             forSale: '',
             price: ''
           }
+        ],
+        gearCategories: [
+          { category: '', macroCategory: ''}
         ],
         requesting: false,
         error: "A solicitação falhou"

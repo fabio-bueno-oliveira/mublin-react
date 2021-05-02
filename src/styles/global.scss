@@ -225,6 +225,23 @@ body, html {
   padding: 0px!important;
 }
 
+.rolesList {
+  display: flex;
+  font-size: 12px;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: center;
+
+  li {
+    list-style: none;
+    margin-right: 6px;
+
+    img {
+      margin-right: 1px;
+    }
+  }
+}
+
 @media only screen and (max-width: 767px) {
   .ui.stackable.grid>.row>.column.noPaddingForMobile, 
   .ui.stackable.grid>.row>.wide.column.noPaddingForMobile {

@@ -291,6 +291,8 @@ function ProfilePage (props) {
     // Posts
     const [modalPosts, setModalPosts] = useState(false)
 
+    const cdnBaseURL = 'https://ik.imagekit.io/mublin'
+
     return (
         <>
         <HeaderDesktop />
@@ -322,22 +324,32 @@ function ProfilePage (props) {
                                 </div>
                                 <div className="center aligned">
                                     { !profile.requesting &&
-                                    <>
-                                        <Header size="large" className="mb-1" style={{fontSize:'1.60428571em'}}>
-                                            {profile.name} <nobr>{profile.lastname} {!!profile.verified && <Icon name='check circle' color='blue' className='verifiedIcon' title='Verificado' />}</nobr>
-                                        </Header>
-                                        <Header className='my-0'>{profile.plan === 'Pro' && <Label size="medium" className="ml-1 p-2" style={{cursor:"default"}}>PRO</Label>}</Header>
-                                        <p className="mt-2 mb-0" style={{ fontSize: "13.5px" }}>
-                                            {profile.roles.map((role, key) =>
-                                                <span key={key}>{role.name}{key < (profile.roles.length-1) && ', '}</span>
-                                            )}
-                                        </p>
-                                        { profile.city &&
-                                            <p className="mb-0" style={{ fontSize: "12px" }}>
-                                                {profile.city} {profile.city !== profile.region && ', '+profile.region}
-                                            </p>
-                                        }
-                                    </>
+                                        <>
+                                            <Header as='h6' className='my-0'><span style={{fontWeight:'lighter'}}>{username}</span> {!!profile.verified && <Icon name='check circle' color='blue' className='verifiedIcon' title='Verificado' />} {profile.plan === 'Pro' && <Label size="small" className="ml-1 p-2" style={{cursor:"default"}}>PRO</Label>}</Header>
+                                            <Header size="large" className="mt-0 mb-1" style={{fontSize:'1.60428571em'}}>
+                                                {profile.name} {profile.lastname}
+                                            </Header>
+                                            <div id='followersInfo' className='mt-2' style={{display:'flex',justifyContent:'space-around'}}>
+                                                { profile.followers.length ? (
+                                                    <span style={{fontSize: '13px',fontWeight:'500',cursor:'pointer'}} onClick={() => setModalFollowersOpen(true)}>
+                                                        {profile.followers.length} seguidores
+                                                    </span>
+                                                ) : (
+                                                    <span style={{fontSize: '13px',fontWeight:'500',cursor:'default'}}>
+                                                        {profile.followers.length} seguidores
+                                                    </span>
+                                                )}
+                                                { profile.following.length ? (
+                                                    <span className='right floated' style={{fontSize:'13px',cursor:'pointer',fontWeight:'500',}} onClick={() => setModalFollowingOpen(true)}>
+                                                        {profile.following.length} seguindo
+                                                    </span>
+                                                ) : (
+                                                    <span className='right floated' style={{fontSize:'13px',fontWeight:'500',opacity:'0.6',cursor:'default'}}>
+                                                        {profile.following.length} seguindo
+                                                    </span>
+                                                )}
+                                            </div>
+                                        </>
                                     }
                                     <Button.Group fluid color="black" size="small" className="mt-3">
                                         {followedByMe.requesting ? (
@@ -352,19 +364,38 @@ function ProfilePage (props) {
                                         <Button content='Mensagem' as='a' href={`/messages/conversation/${profile.id}`} />
                                     </Button.Group>
                                 </div>
+                                <ul className="mt-3 mb-0 rolesList">
+                                    {profile.roles.map((role, key) =>
+                                        <li key={key}>{role.icon && <img src={cdnBaseURL+'/icons/music/tr:h-13,w-13,c-maintain_ratio/'+role.icon} loading='lazy' />}{role.name}{key < (profile.roles.length-1) && ', '}</li>
+                                    )}
+                                </ul>
                                 { (profile.bio && profile.bio !== 'null') && 
                                     <Card.Description className="center aligned mt-3" style={{ fontSize: "13px" }}>
                                         {profile.bio}
+                                        { profile.website &&
+                                            <p className='mt-2'><a href={profile.website.includes('http') ? profile.website : 'http://'+profile.website} target='_blank'>{profile.website.replace('http://','').replace('https://','')}</a></p>
+                                        }
                                     </Card.Description>
                                 }
                             </Card.Content>
+                            { profile.city &&
+                                <Card.Content className="mb-0 textCenter" style={{fontSize:'12px'}}>
+                                    <Icon name='map marker alternate' />{profile.city}{profile.city !== profile.region && ', '+profile.region}
+                                </Card.Content>
+                            }
                             { profile.availabilityId && 
                                 <Card.Content textAlign='center' style={{ fontSize: "13px" }}>
                                     <Label circular size='mini' color={profile.availabilityColor} empty key={profile.availabilityColor} /> {profile.availabilityTitle}
                                     { (profile.availabilityId === 1 || profile.availabilityId === 2) &&
                                     <>
                                         <p style={{ fontSize: "11px" }}>
-                                            {profile.availabilityFocus === 1 || profile.availabilityFocus === 3 && <span className='ml-2 mr-2'><Icon name='checkmark' size='small' />Projetos próprios</span>} {profile.availabilityFocus === 2 || profile.availabilityFocus === 3 && <span className='mr-2'><Icon name='checkmark' size='small' />Sideman</span>}
+                                            
+                                            {profile.availabilityFocus === 1 && <span className='ml-2 mr-2'><Icon name='checkmark' size='small' color='green' />Projetos próprios</span>} 
+                                            
+                                            {profile.availabilityFocus === 2 && <span className='mr-2'><Icon name='checkmark' size='small' color='green' />Sideman</span>}
+
+                                            {profile.availabilityFocus === 3 && <><span className='ml-2 mr-2'><Icon name='checkmark' size='small' color='green' />Projetos próprios</span> <span className='mr-2'><Icon name='checkmark' size='small' color='green' />Sideman</span></>}
+                                            
                                         </p>
                                         <p className='mt-1'>
                                             { profile.availabilityItems[0].id && profile.availabilityItems.map((item, key) =>
@@ -375,26 +406,6 @@ function ProfilePage (props) {
                                     }
                                 </Card.Content>
                             }
-                            <div className="content">
-                                { profile.following.length ? (
-                                    <span className="right floated" style={{fontSize:'13px',cursor:'pointer',fontWeight:'500',}} onClick={() => setModalFollowingOpen(true)}>
-                                        {profile.following.length} seguindo
-                                    </span>
-                                ) : (
-                                    <span className="right floated" style={{fontSize:'13px',fontWeight:'500',opacity:'0.6',cursor:'default'}}>
-                                        {profile.following.length} seguindo
-                                    </span>
-                                )}
-                                { profile.followers.length ? (
-                                    <span style={{fontSize: '13px',fontWeight:'500',cursor:'pointer'}} onClick={() => setModalFollowersOpen(true)}>
-                                        {profile.followers.length} seguidores
-                                    </span>
-                                ) : (
-                                    <span style={{fontSize: '13px',fontWeight:'500',cursor:'default'}}>
-                                        {profile.followers.length} seguidores
-                                    </span>
-                                )}
-                            </div>
                         </Card>
                     </Grid.Column>
                     <Grid.Column width={12}  className='noPaddingForMobile'>
@@ -514,35 +525,54 @@ function ProfilePage (props) {
                                 />
                             </Card.Content>
                         </Card>
-                        { profile.recentActivity[0].id && 
                         <Card id="posts" style={{ width: "100%" }}>
                             <Card.Content>
-                                <Header as='h3' className='mb-3'>Atividades recentes</Header>
-                                { profile.requesting ? (
-                                    <Icon loading name='spinner' size='large' />
-                                ) : ( 
-                                    <Feed>
-                                        {profile.recentActivity.slice(0,2).map((activity, key) =>
-                                            <Feed.Event key={key} className={key < (profile.recentActivity.length - 1) ? 'mb-2' : ''}>
-                                                <Feed.Label image={profile.picture} />
-                                                <Feed.Content className='mt-1'>
-                                                    <Feed.Date style={{fontSize:'11px',fontWeight:'500'}}>
-                                                        há {formatDistance(new Date(activity.created * 1000), new Date(), {locale:pt})}
-                                                    </Feed.Date>
-                                                    <Feed.Summary style={{fontWeight:'500',fontSize:'13px'}}>
-                                                        {activity.extraText}
-                                                    </Feed.Summary>
-                                                </Feed.Content>
-                                            </Feed.Event>
+                                <div className='cardTitle'>
+                                    <Header as='h3' className='pt-1'>Postagens recentes</Header>
+                                    { profile.id === user.id &&
+                                        <Button primary circular icon='plus' size='mini' 
+                                            style={{
+                                                height:'fit-content',
+                                                position:'absolute',
+                                                top:'-6px',
+                                                right:'10px',
+                                                border:'4px solid white'
+                                            }} 
+                                        />
+                                    }
+                                </div>
+                                { profile.recentActivity[0].id ? (
+                                    <>
+                                        { profile.requesting ? (
+                                            <Icon loading name='spinner' size='large' />
+                                        ) : ( 
+                                            <Feed>
+                                                {profile.recentActivity.slice(0,2).map((activity, key) =>
+                                                    <Feed.Event key={key} className={key < (profile.recentActivity.length - 1) ? 'mb-2' : ''}>
+                                                        <Feed.Label image={profile.picture} />
+                                                        <Feed.Content className='mt-1'>
+                                                            <Feed.Date style={{fontSize:'11px',fontWeight:'500'}}>
+                                                                há {formatDistance(new Date(activity.created * 1000), new Date(), {locale:pt})}
+                                                            </Feed.Date>
+                                                            <Feed.Summary style={{fontWeight:'500',fontSize:'13px'}}>
+                                                                {activity.extraText}
+                                                            </Feed.Summary>
+                                                        </Feed.Content>
+                                                    </Feed.Event>
+                                                )}
+                                            </Feed>
                                         )}
-                                    </Feed>
+                                        {profile.recentActivity.length >=2 &&
+                                            <Header size='tiny' as='a' className='mt-0' onClick={() => setModalPosts(true)}>Ver todas as atividades</Header>
+                                        }
+                                    </>
+                                ) : (
+                                    <>
+                                       Nenhuma postagem até o momento 
+                                    </>
                                 )}
-                                {profile.recentActivity.length >=2 &&
-                                    <Header size='tiny' as='a' className='mt-0' onClick={() => setModalPosts(true)}>Ver todas as atividades</Header>
-                                }
                             </Card.Content>
                         </Card>
-                        }
                         <Card id="strengths" style={{ width: "100%" }}>
                             <Card.Content>
                                 <div className='cardTitle'>

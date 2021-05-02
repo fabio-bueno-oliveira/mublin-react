@@ -16,7 +16,8 @@ const initialState = {
       id: '', 
       name: '',
       description: '',
-      main: ''
+      main: '',
+      icon: ''
     }
   ],
   availabilityId: '',
@@ -141,6 +142,7 @@ const initialState = {
   plan: '',
   legend: '',
   verified: '',
+  website: '',
   public: ''
 }
 
@@ -149,6 +151,16 @@ export function profile(state = initialState, action) {
     case profileTypes.GET_PROFILE_INFO_REQUEST:
       return {
         ...state,
+        id: '',
+        name: '',
+        lastname: '',
+        email: '',
+        picture: '',
+        bio: '',
+        country: '',
+        region: '',
+        city: '',
+        website: '',
         requesting: true
       };
     case profileTypes.GET_PROFILE_INFO_SUCCESS:
@@ -172,6 +184,7 @@ export function profile(state = initialState, action) {
         plan: action.info.plan,
         legend: action.info.legend,
         verified: action.info.verified,
+        website: action.info.website,
         public: action.info.public
       };
     case profileTypes.GET_PROFILE_INFO_FAILURE:

@@ -12,7 +12,7 @@ function SearchPage (props) {
 
     let searchedKeywords = (new URLSearchParams(window.location.search)).get("keywords")
  
-    document.title = searchedKeywords ? searchedKeywords+'" | Pesquisa | Mublin' : 'Pesquisa | Mublin'
+    document.title = searchedKeywords ? searchedKeywords+' | Pesquisa | Mublin' : 'Pesquisa | Mublin'
 
     const userSession = JSON.parse(localStorage.getItem('user'));
 

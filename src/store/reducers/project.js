@@ -99,6 +99,14 @@ const initialState = {
       method: '',
       price: ''
     }
+  ],
+  relatedProjects: [
+    {
+      id: '',
+      name: '',
+      username: '',
+      picture: ''
+    }
   ]
 }
 
@@ -276,6 +284,31 @@ export function project(state = initialState, action) {
           }
         ],
         error: "A solicitação falhou"
+      };
+    case projectTypes.GET_PROJECT_RELATED_REQUEST:
+      return {
+        ...state,
+        requesting: true
+      };
+    case projectTypes.GET_PROJECT_RELATED_SUCCESS:
+      return {
+        ...state,
+        requesting: false,
+        relatedProjects: action.list,
+      };
+    case projectTypes.GET_PROJECT_RELATED_FAILURE:
+      return {
+        ...state,
+        requesting: false,
+        error: "A solicitação falhou",
+        relatedProjects: [
+          {
+            id: '',
+            name: '',
+            username: '',
+            picture: ''
+          }
+        ]
       };
     default:
       return state

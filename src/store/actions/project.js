@@ -8,7 +8,8 @@ export const projectInfos = {
     getProjectMembersByProjectId: getProjectMembersByProjectId,
     getProjectOpportunities: getProjectOpportunities,
     getProjectNotes: getProjectNotes,
-    getProjectEvents: getProjectEvents
+    getProjectEvents: getProjectEvents,
+    getProjectRelatedProjects: getProjectRelatedProjects
 };
 
 function getProjectInfo(username) {
@@ -121,4 +122,20 @@ function getProjectEvents(username) {
     function request(username) { return { type: projectTypes.GET_PROJECT_EVENTS_REQUEST, username } }
     function success(list) { return { type: projectTypes.GET_PROJECT_EVENTS_SUCCESS, list } }
     function failure(username, error) { return { type: projectTypes.GET_PROJECT_EVENTS_FAILURE, username, error } }
+}
+
+function getProjectRelatedProjects(username) {
+    return dispatch => {
+        dispatch(request(username));
+
+        projectService.getProjectRelatedProjects(username)
+            .then(
+                list => dispatch(success(list)),
+                error => dispatch(failure(username, error.toString()))
+            );
+    };
+
+    function request(username) { return { type: projectTypes.GET_PROJECT_RELATED_REQUEST, username } }
+    function success(list) { return { type: projectTypes.GET_PROJECT_RELATED_SUCCESS, list } }
+    function failure(username, error) { return { type: projectTypes.GET_PROJECT_RELATED_FAILURE, username, error } }
 }

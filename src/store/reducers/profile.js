@@ -114,7 +114,7 @@ const initialState = {
     }
   ],
   gearCategories: [
-    { category: '', macroCategory: ''}
+    { category: '', macroCategory: '', total: 0 }
   ],
   partners: [
     {
@@ -337,7 +337,7 @@ export function profile(state = initialState, action) {
           }
         ],
         gearCategories: [
-          { category: '', macroCategory: ''}
+          { category: '', macroCategory: '', total: 0 }
         ],
         requesting: false,
         error: "A solicitação falhou"

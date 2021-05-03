@@ -82,10 +82,13 @@ function NewProjectPage () {
         color="green"
     }
 
+    const cdnPath = 'https://ik.imagekit.io/mublin/icons/music/tr:h-26,w-26,c-maintain_ratio/'
+
     const rolesList = roles.list.filter((role) => { return role.id !== 29 && role.id !== 30 && role.id !== 31 }).map(role => ({ 
         text: role.description,
         value: role.id,
-        key: role.id
+        key: role.id,
+        image: role.icon ? cdnPath+role.icon : null
     }));
 
     const handleSubmitNewProject = () => {

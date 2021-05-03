@@ -20,6 +20,8 @@ function ProjectPage (props) {
 
     const user = JSON.parse(localStorage.getItem('user'));
 
+    const project = useSelector(state => state.project);
+
     useEffect(() => {
         dispatch(projectInfos.getProjectInfo(props.match.params.username));
         dispatch(projectInfos.getProjectMembers(props.match.params.username));
@@ -27,13 +29,11 @@ function ProjectPage (props) {
         dispatch(userInfos.getUserProjects(user.id));
     }, []);
 
-    const project = useSelector(state => state.project);
     const members = project.members.filter((member) => { return member.confirmed === 1 });
     const opportunities = project.opportunities;
 
     const userProjects = useSelector(state => state.user.projects)
     const participationCheck = userProjects.filter((x) => { return x.projectid === project.id });
-    console.log(36, participationCheck)
 
     document.title = project.name+' | Mublin'
 
@@ -131,7 +131,7 @@ function ProjectPage (props) {
                         </Grid.Column>
                         <Grid.Column width={8} only='computer' textAlign='right'>
                             <p className='mb-2'>Projetos relacionados:</p>
-                            <Image.Group size='tiny'>
+                            <Image.Group size='mini'>
                                 <Popup
                                     content='Nome do Projeto'
                                     position='bottom center'

@@ -61,6 +61,10 @@ function ProfilePage (props) {
 
     const profile = useSelector(state => state.profile);
 
+    const [gearCategorySelected, setGearCategorySelected] = useState('')
+
+    const gear = useSelector(state => state.profile.gear).filter((product) => { return (gearCategorySelected) ? product.category === gearCategorySelected : product.productId > 0 })
+
     const myTestimonial = profile.testimonials.filter((testimonial) => { return testimonial.friendId === user.id}).map(testimonial => ({ 
         id: testimonial.id,
         title: testimonial.title,
@@ -529,7 +533,7 @@ function ProfilePage (props) {
                             <Card.Content>
                                 <div className='cardTitle'>
                                     <Header as='h3' className='pt-1'>Postagens recentes</Header>
-                                    { profile.id === user.id &&
+                                    {/* { profile.id === user.id &&
                                         <Button primary circular icon='pencil' size='medium' 
                                             style={{
                                                 height:'fit-content',
@@ -539,7 +543,7 @@ function ProfilePage (props) {
                                                 border:'4px solid white'
                                             }} 
                                         />
-                                    }
+                                    } */}
                                 </div>
                                 { profile.recentActivity[0].id ? (
                                     <>
@@ -620,15 +624,24 @@ function ProfilePage (props) {
                         { profile.plan === "Pro" && 
                         <Card id="gear" style={{ width: "100%" }}>
                             <Card.Content>
-                                <Header as='h3'>
-                                    Equipamento 
-                                    {/* {profile.gear[0].productId && <Label className='ml-1 p-2' style={{opacity:'0.4'}}>{profile.gear.length}</Label>} */}
-                                </Header>
-                                {/* {profile.gearCategories.map((gearCategory, key) =>
-                                    <Label size='mini' basic color='blue' key={key} style={{fontWeight:'lighter'}}>
-                                        {gearCategory.category}
-                                    </Label>
-                                )} */}
+                                <div className='cardTitle'>
+                                    <Header as='h3' className='pt-1'>Equipamento</Header>
+                                    <Form.Field 
+                                        label='Exibir '
+                                        control='select'
+                                        onChange={(e) => setGearCategorySelected(e.target.options[e.target.selectedIndex].value)}
+                                        className='mt-1 mt-md-0'
+                                    >
+                                        <option value=''>
+                                            {'Todos ('+profile.gear.length+')'}
+                                        </option>
+                                        {profile.gearCategories.map((gearCategory, key) =>
+                                            <option key={key} value={gearCategory.category}>
+                                                {gearCategory.category + '(' + gearCategory.total + ')'}
+                                            </option>
+                                        )}
+                                    </Form.Field>
+                                </div>
                                 { profile.requesting ? (
                                     <Icon loading name='spinner' size='large' />
                                 ) : ( 
@@ -640,7 +653,7 @@ function ProfilePage (props) {
                                             disableImagesLoaded={false}
                                             reloadOnUpdate
                                         >
-                                            {profile.gear.map((product, key) =>
+                                            {gear.map((product, key) =>
                                                 <div className='carousel-cell' key={key}>
                                                     {product.picture ? (
                                                         product.featured ? (
@@ -648,8 +661,7 @@ function ProfilePage (props) {
                                                                 src={product.picture} 
                                                                 rounded 
                                                                 // label={{ as: 'div', corner: 'left', icon: 'heart', size: 'mini' }} 
-                                                                as='a' 
-                                                                href={'/gear/product/'+product.productId}
+                                                                onClick={() => history.push('/gear/product/'+product.productId)}
                                                                 className='cpointer' 
                                                             />
                                                         ) : (

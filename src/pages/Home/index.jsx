@@ -401,9 +401,8 @@ function HomePage () {
                                 </List>
                             )}
                         </Flickity>
-
                         <div className='userSuggestionsCarouselMobile'>
-                            <Header size='tiny' className='mt-3 ml-0 ml-md-2' style={{opacity:"0.7"}}>
+                            <Header size='small' className='mt-3 ml-0 ml-md-2'>
                                 Sugestões de pessoas para seguir
                             </Header>
                             <Flickity
@@ -424,10 +423,9 @@ function HomePage () {
                                 )}
                             </Flickity>
                         </div>
-
                         <Feed className='pt-3'>
                             <Feed.Event className='mb-3 feed-item-wrapper' style={{height:'59px'}}>
-                                <Feed.Label image={userInfo.picture ? 'https://ik.imagekit.io/mublin/users/avatars/'+userInfo.id+'/'+userInfo.picture : undefinedAvatar} as='a' href={'/'+userInfo.username} />
+                                <Feed.Label image={userInfo.picture ? 'https://ik.imagekit.io/mublin/users/avatars/'+userInfo.id+'/'+userInfo.picture : undefinedAvatar} onClick={() => history.push('/'+userInfo.username)} className='cpointer' />
                                 <Feed.Content className='mb-0 mt-0'>
                                     <Feed.Summary className='mb-0'>
                                         <div>

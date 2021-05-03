@@ -17,9 +17,6 @@ function CreateNewItemPage () {
 
     let history = useHistory();
 
-    ////////////////////
-
-
     const [image, setImage] = useState(null);
     const [url, setUrl] = useState("");
     const [progress, setProgress] = useState(0);

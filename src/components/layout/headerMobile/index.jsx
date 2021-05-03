@@ -130,7 +130,7 @@ const HeaderMobile = (props) => {
                 onClose={() => setMobileMenuOpen(false)}
             >
                 <Modal.Content>
-                    <Menu vertical fluid size='large'>
+                    <Menu vertical fluid size='massive'>
                         <Menu.Item
                             key='profile'
                             onClick={goToProfile}

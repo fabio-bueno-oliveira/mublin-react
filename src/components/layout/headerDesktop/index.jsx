@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Menu, Container, Dropdown, Input, Image, Icon, Label, Form } from 'semantic-ui-react';
-import { useHistory } from 'react-router-dom';
+import { useHistory, Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { userInfos } from '../../../store/actions/user';
 import { miscInfos } from '../../../store/actions/misc';
@@ -94,6 +94,8 @@ const HeaderDesktop = () => {
 
     const [searchQuery, setSearchQuery] = useState(searchedKeywords)
 
+    const cdnPath = 'https://ik.imagekit.io/mublin'
+
     return (
         <>
             <Menu id='headerDesktop' fixed='top' inverted borderless>
@@ -132,14 +134,14 @@ const HeaderDesktop = () => {
                                     <Dropdown.Menu>
                                         <Dropdown.Item 
                                             // icon='user circle outline' 
+                                            description={project.username}
                                             text='Página do projeto' 
-                                            // description={project.username}
-                                            onClick={() => history.push("/new/project")} 
+                                            href={'/project/'+project.username}
                                         />
                                         <Dropdown.Item 
                                             // icon='setting' 
-                                            text='Gerenciar' 
                                             // description='gerenciar' 
+                                            text='Gerenciar' 
                                         />
                                     </Dropdown.Menu>
                                 </Dropdown.Item>
@@ -199,18 +201,16 @@ const HeaderDesktop = () => {
                             <Icon name='envelope outline' className='mr-0'/><span className="ui red circular mini label">2</span>
                         </Menu.Item>
                         <div className="ui simple dropdown item" key='userMenu'>
-                            { (!userInfo.requesting && userInfo.picture) ? (
-                                <IKImage 
-                                    path={'/users/avatars/'+userInfo.id+'/'+userInfo.picture}
-                                    transformation={[{ "height": "200", "width": "200", "r": "max" }]} 
+                            {(!userInfo.requesting && userInfo.picture) ? (
+                                <Image avatar
+                                    src={cdnPath+'/tr:h-200,w-200,r-max,c-maintain_ratio/users/avatars/'+userInfo.id+'/'+userInfo.picture}
                                 />
                             ) : (
-                                <IKImage 
-                                    path={'/sample-folder/avatar-undefined_Kblh5CBKPp.jpg'}
-                                    transformation={[{ "height": "200", "width": "200", "r": "max" }]} 
+                                <Image avatar
+                                    src={cdnPath+'/tr:h-200,w-200,r-max,c-maintain_ratio/sample-folder/avatar-undefined_Kblh5CBKPp.jpg'}
                                 />
                             )}
-                            {userInfo.plan === 'Pro' && <Label size='mini' content='PRO' />}<i className='dropdown icon' />
+                            {userInfo.plan === 'Pro' && <Label size='mini' color='grey' content='PRO' />}<i className='dropdown icon' />
                             <Dropdown.Menu>
                                 <Dropdown.Header>{userInfo.username}</Dropdown.Header>
                                 <Dropdown.Item icon='user circle' text='Meu Perfil' onClick={() => history.push('/'+userInfo.username)} />

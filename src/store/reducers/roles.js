@@ -3,7 +3,7 @@ import { rolesTypes } from '../types/roles';
 const initialState = {
   requesting: false,
   list: [
-    { id: '', name: '', description: '', instrumentalist: '' }
+    { id: '', name: '', description: '', instrumentalist: '', icon: '' }
   ]
 }
 

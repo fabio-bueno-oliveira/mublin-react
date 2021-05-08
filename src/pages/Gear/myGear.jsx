@@ -19,8 +19,6 @@ function MyGearPage () {
 
     let user = JSON.parse(localStorage.getItem('user'))
 
-    // const [isLoading, setIsLoading] = useState(false)
-
     useEffect(() => { 
         dispatch(userInfos.getInfo());
         dispatch(userInfos.getUserGearInfoById(user.id));
@@ -47,7 +45,6 @@ function MyGearPage () {
         getProducts(brandSelected,categoryId)
     }
 
-    const [error, setError] = useState(null);
     const [isLoaded, setIsLoaded] = useState(false);
     const [categories, setCategories] = useState([]);
     const [products, setProducts] = useState([]);
@@ -63,7 +60,7 @@ function MyGearPage () {
             },
             (error) => {
               setIsLoaded(true);
-              setError(error);
+              alert(error);
             }
           )
     }, [])
@@ -79,7 +76,7 @@ function MyGearPage () {
             },
             (error) => {
                 setIsLoaded(true);
-                setError(error);
+                alert(error);
             }
         )
     }
@@ -95,7 +92,7 @@ function MyGearPage () {
             },
             (error) => {
                 setIsLoaded(true);
-                setError(error);
+                alert(error);
             }
         )
     }
@@ -120,9 +117,6 @@ function MyGearPage () {
             setIsLoaded(true)
         })
     }
-
-    // Add product to my gear
-    const [modalEditProductOpen, setModalEditProductOpen] = useState(false)
 
     const addProductToGear = (productId, featured, for_sale, price, currently_using) => {
         setIsLoaded(false)
@@ -185,11 +179,10 @@ function MyGearPage () {
         setPrice(price)
         setCurrentlyUsing(currently_using)
     }
-    console.log(itemIdToEdit)
+
     const itemInfo = userInfo.gear.filter((item) => { return item.productId === modalItemManagementProductId })
 
     const editGearItem = (itemId, productId, featured, for_sale, price, currently_using) => {
-        console.log(itemId)
         setIsLoaded(false)
         setTimeout(() => {
             fetch('https://mublin.herokuapp.com/user/updateGearItem', {
@@ -221,15 +214,9 @@ function MyGearPage () {
                 <Grid.Row>
                     <Grid.Column mobile={16} computer={10}>
                         <Header as='h2' className='mb-4'>Meu equipamento</Header>
-                        <Segment color='green' className='cpointer' onClick={() => setModalAddNewProductOpen(true)}>
-                            <Header as='h5'>
-                                <Icon name='plus' color='green' />
-                                <Header.Content className='gear itemTitle'>
-                                    Novo
-                                    <Header.Subheader>Adicione um novo item à sua lista</Header.Subheader>
-                                </Header.Content>
-                            </Header>
-                        </Segment>
+                        <Button color='green' size='large' fluid onClick={() => setModalAddNewProductOpen(true)} disabled={!isLoaded}>
+                            <Icon name='plus' /> Adicionar novo item à lista
+                        </Button>
                         { !userInfo.requesting ? (
                             userInfo.gear.map((item, key) => (
                                 <>

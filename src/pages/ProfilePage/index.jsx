@@ -413,6 +413,7 @@ function ProfilePage (props) {
                         </Card>
                     </Grid.Column>
                     <Grid.Column width={12}  className='noPaddingForMobile'>
+
                         <Card id="projects" style={{ width: "100%" }}>
                             <Card.Content>
                                 <Header as='h3'>Projetos</Header>

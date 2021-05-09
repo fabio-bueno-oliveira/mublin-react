@@ -25,11 +25,14 @@ function SubmitNewProduct () {
     const [categories, setCategories] = useState([]);
     const [isMacroCategoriesLoaded, setIsMacroCategoriesLoaded] = useState(false);
     const [macroCategories, setMacroCategories] = useState([]);
+    const [colors, setColors] = useState([]);
+    const [isColorsLoaded, setIsColorsLoaded] = useState(false);
 
     // Form Fields
     const [name, setName] = useState(null)
     const [brandId, setBrandId] = useState(null)
     const [categoryId, setCategoryId] = useState(null)
+    const [colorId, setColorId] = useState(null)
     const [picture, setPicture] = useState(null)
     const [addNewProductToMyGear, setAddNewProductToMyGear] = useState(true)
 
@@ -52,9 +55,7 @@ function SubmitNewProduct () {
               setError(error);
             }
           )
-    }, [])
-
-    useEffect(() => {
+        
         fetch("https://mublin.herokuapp.com/gear/categories")
           .then(res => res.json())
           .then(
@@ -66,7 +67,20 @@ function SubmitNewProduct () {
               setIsCategoriesLoaded(true);
               setError(error);
             }
-          )
+        )
+
+        fetch("https://mublin.herokuapp.com/gear/product/colors")
+            .then(res => res.json())
+            .then(
+            (result) => {
+                setIsColorsLoaded(true);
+                setColors(result);
+            },
+            (error) => {
+                setIsColorsLoaded(true);
+                setError(error);
+            }
+        )
     }, [])
 
     // Upload product image to ImageKit.io
@@ -132,7 +146,7 @@ function SubmitNewProduct () {
                     'Content-Type': 'application/json',
                     'Authorization': 'Bearer ' + user.token
                 },
-                body: JSON.stringify({name: name, id_brand: brandId, id_category: categoryId, year: null, color: null, picture: picture, id_user_creator: user.id})
+                body: JSON.stringify({name: name, id_brand: brandId, id_category: categoryId, year: null, color: colorId, picture: picture, id_user_creator: user.id})
             }).then(res => res.json()).then((result) => {
                 setIsLoading(false)
                 setName(null)
@@ -182,11 +196,11 @@ function SubmitNewProduct () {
             <Grid as='main' centered columns={1} className="container">
                 <Grid.Row>
                     <Grid.Column mobile={16} computer={10}>
-                        <Header as='h2' className='mb-4'>
-                            Submeter novo equipamento
-                            <Header.Subheader>
+                        <Header as='h2' className='mb-3'>
+                            Submeter novo produto/equipamento
+                            {/* <Header.Subheader>
                                 Envie um produto à base do Mublin
-                            </Header.Subheader>
+                            </Header.Subheader> */}
                         </Header>
                         <Segment color='blue'>
                             <Header as='h5'>
@@ -250,14 +264,32 @@ function SubmitNewProduct () {
                                         </>
                                     )}
                                 </Form.Field>
-                                <Form.Input
-                                    label='Nome do produto (sem a marca)'
+                                <Form.Input 
+                                    label='Modelo (sem a marca)'
                                     placeholder='Ex: BD-2 Blues Driver'
                                     name="name" 
                                     fluid 
                                     value={name}
                                     onChange={(e, { value }) => setName(value)} 
                                 />
+                                <Form.Field 
+                                    className='mt-3 mt-md-0'
+                                    label='Cor do produto'
+                                    control='select'
+                                    onChange={(e) => setColorId(e.target.options[e.target.selectedIndex].value)}
+                                    value={colorId}
+                                    defaultValue={colorId}
+                                >
+                                    {(!isColorsLoaded) && 
+                                        <option>Carregando...</option>
+                                    }
+                                    { !colorId && 
+                                        <option>Selecione</option>
+                                    }
+                                    { colors.map((color,key) =>
+                                        <option key={key} value={color.id}>{color.name} {color.name_ptbr && '('+color.name_ptbr+')'}</option>
+                                    )}
+                                </Form.Field>
                             </Form.Group>
                             <Checkbox 
                                 label='Adicionar este produto ao Meu Equipamento'

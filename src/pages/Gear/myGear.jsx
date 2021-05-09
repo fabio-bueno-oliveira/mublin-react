@@ -312,7 +312,7 @@ function MyGearPage () {
                                 <option value=''>{!categorySelected ? 'Selecione primeiro a categoria' : 'Selecione o produto'}</option>
                             }
                             { products.map((product,key) =>
-                                <option key={key} value={product.id} disabled={!!userInfo.gear.filter((x) => { return x.productId === Number(product.id)}).length}>{product.name} {!!userInfo.gear.filter((x) => { return x.productId === Number(product.id)}).length && '(já adicionado)'}</option>
+                                <option key={key} value={product.id} disabled={!!userInfo.gear.filter((x) => { return x.productId === Number(product.id)}).length}>{product.name} {product.colorName && product.colorName} {!!userInfo.gear.filter((x) => { return x.productId === Number(product.id)}).length && '(já adicionado)'}</option>
                             )}
                         </Form.Field>
                         { (productSelected && productInfo) &&

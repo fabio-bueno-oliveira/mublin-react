@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { Menu, Container, Dropdown, Input, Image, Icon, Label, Form } from 'semantic-ui-react';
-import { useHistory, Link } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { userInfos } from '../../../store/actions/user';
-import { miscInfos } from '../../../store/actions/misc';
+// import { miscInfos } from '../../../store/actions/misc';
 import { userActions } from '../../../store/actions/authentication';
-import {IKImage} from "imagekitio-react";
 import MublinLogo from '../../../assets/img/logos/mublin-logo-text-white.png';
 
 const HeaderDesktop = () => {
@@ -94,7 +93,7 @@ const HeaderDesktop = () => {
 
     const [searchQuery, setSearchQuery] = useState(searchedKeywords)
 
-    const cdnPath = 'https://ik.imagekit.io/mublin'
+    const imageCdnPath = 'https://ik.imagekit.io/mublin'
 
     return (
         <>
@@ -197,17 +196,22 @@ const HeaderDesktop = () => {
                         /> */}
                     </Menu.Item>
                     <Menu.Menu position='right'>
+                        {userInfo.plan !== 'Pro' && 
+                            <Menu.Item key='plans' onClick={() => history.push("/plans")} active={window.location.pathname === "/plans"}>
+                                <Label color='blue' style={{fontWeight:'400'}}>Me tornar PRO</Label>
+                            </Menu.Item>
+                        }
                         <Menu.Item key='messages' onClick={() => history.push("/messages")} active={window.location.pathname === "/messages"}>
                             <Icon name='envelope outline' className='mr-0'/><span className="ui red circular mini label">2</span>
                         </Menu.Item>
                         <div className="ui simple dropdown item" key='userMenu'>
                             {(!userInfo.requesting && userInfo.picture) ? (
                                 <Image avatar
-                                    src={cdnPath+'/tr:h-200,w-200,r-max,c-maintain_ratio/users/avatars/'+userInfo.id+'/'+userInfo.picture}
+                                    src={imageCdnPath+'/tr:h-200,w-200,r-max,c-maintain_ratio/users/avatars/'+userInfo.id+'/'+userInfo.picture}
                                 />
                             ) : (
                                 <Image avatar
-                                    src={cdnPath+'/tr:h-200,w-200,r-max,c-maintain_ratio/sample-folder/avatar-undefined_Kblh5CBKPp.jpg'}
+                                    src={imageCdnPath+'/tr:h-200,w-200,r-max,c-maintain_ratio/sample-folder/avatar-undefined_Kblh5CBKPp.jpg'}
                                 />
                             )}
                             {userInfo.plan === 'Pro' && <Label size='mini' color='grey' content='PRO' />}<i className='dropdown icon' />

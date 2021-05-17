@@ -51,6 +51,11 @@ function NewProjectPage () {
         setProjectUserName(value.replace(/[^A-Z0-9]/ig, "").toLowerCase())
     }
 
+    const handleSetProjectName = (value) => {
+        setProjectName(value);
+        handleChangeProjectUserName(value);
+    }
+
     const handleTypeChange = (value) => {
         setType(value)
         if (value === 7) {
@@ -137,7 +142,7 @@ function NewProjectPage () {
     }
 
     // Image Upload to ImageKit.io
-    const userAvatarPath = "/projects/"
+    const projectImagePath = "/projects/"
     const onUploadError = err => {
         alert("Ocorreu um erro. Tente novamente em alguns minutos.");
     };
@@ -147,6 +152,11 @@ function NewProjectPage () {
         setProjectImage(fileName)
     };
 
+    const removeImage = () => {
+        setProjectImage('')
+        document.querySelector('#projectImage').value = null
+    }
+
     return (
         <>
             <HeaderDesktop />
@@ -155,13 +165,12 @@ function NewProjectPage () {
             <Grid as='main' centered columns={1} className="container">
                 <Grid.Row>
                     <Grid.Column mobile={16} computer={10}>
-                        <Header as='h1' className='mb-4 mt-3 mb-4 textCenter'>
-                            Criar novo projeto
-                            {/* <Header.Subheader></Header.Subheader> */}
+                        <Header as='h1' textAlign='center' className='mb-4 mt-3 mb-4'>
+                            Cadastrar novo projeto
                         </Header>
                         <Form>
                             <Form.Field>
-                                <Form.Input name="projectName" fluid placeholder="Nome do projeto ou banda" onChange={(e, { value }) => setProjectName(value)} />
+                                <Form.Input name="projectName" fluid placeholder="Nome do projeto ou banda" onChange={(e, { value }) => handleSetProjectName(value)} />
                             </Form.Field>
                             <Form.Field>
                                 <Input 
@@ -210,7 +219,7 @@ function NewProjectPage () {
                                 <IKUpload 
                                     id='projectImage'
                                     fileName="projectPicture.jpg"
-                                    folder={userAvatarPath}
+                                    folder={projectImagePath}
                                     tags={["tag1"]}
                                     useUniqueFileName={true}
                                     isPrivateFile= {false}
@@ -219,8 +228,10 @@ function NewProjectPage () {
                                     accept="image/x-png,image/gif,image/jpeg" 
                                 />
                             </div>
-                            { projectImage && 
-                                <Image src={'https://ik.imagekit.io/mublin/tr:h-200,w-200/projects/'+projectImage} size='tiny' rounded className="mt-2 mb-2" />
+                            {projectImage && 
+                                <>
+                                    <Image src={'https://ik.imagekit.io/mublin/tr:h-200,w-200/projects/'+projectImage} size='tiny' rounded className="mt-2 mb-2" /> <Button size='tiny' icon='trash' negative onClick={() => removeImage()}>Remover</Button>
+                                </>
                             }
                             <Form.Group widths='equal' className='mt-3'>
                                 <Form.Input name="foundation_year" type="number" fluid label="Ano de formação" error={foundation_year > currentYear && {content: 'O ano deve ser inferior ao atual' }} min="1900" max={currentYear} onChange={(e, { value }) => setFoundationYear(value)} value={foundation_year} />

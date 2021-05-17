@@ -114,7 +114,7 @@ const HeaderDesktop = () => {
                     <Dropdown text='Projetos' simple item active={window.location.pathname === "/my-projects"}>
                         <Dropdown.Menu>
                             <Dropdown.Header>Novo</Dropdown.Header>
-                            <Dropdown.Item icon='plus' text='Criar do zero' onClick={() => history.push("/new/project")} />
+                            <Dropdown.Item icon='plus' text='Cadastrar novo projeto' onClick={() => history.push("/new/project")} />
                             <Dropdown.Item icon='lightbulb' text='Nova ideia de projeto' onClick={() => history.push("/new/idea")} />
                             <Dropdown.Item icon='add user' text='Ingressar em um projeto'  onClick={() => history.push("/new/join")} />
                             <Dropdown.Item icon='envelope' text='Convidar alguém para um projeto' />

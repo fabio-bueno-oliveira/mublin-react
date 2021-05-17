@@ -2,14 +2,15 @@ import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useDebouncedCallback } from 'use-debounce';
 import { useHistory } from 'react-router-dom';
-import { Grid, Header, Form, Input, Radio, Select, Button, Label, Icon } from 'semantic-ui-react';
+import { Grid, Header, Form, Input, Radio, Select, Button, Label, Icon, Image } from 'semantic-ui-react';
 import { userInfos } from '../../store/actions/user';
 import { miscInfos } from '../../store/actions/misc';
 import { usernameCheckInfos } from '../../store/actions/usernameCheck';
 import HeaderDesktop from '../../components/layout/headerDesktop';
 import HeaderMobile from '../../components/layout/headerMobile';
 import FooterMenuMobile from '../../components/layout/footerMenuMobile';
-import Spacer from '../../components/layout/Spacer'
+import Spacer from '../../components/layout/Spacer';
+import {IKUpload} from "imagekitio-react";
 
 function NewProjectIdeaPage () {
     
@@ -33,9 +34,7 @@ function NewProjectIdeaPage () {
     const projectUsernameAvailability = useSelector(state => state.projectUsernameCheck);
     const [projectName, setProjectName] = useState('')
     const [projectUserName, setProjectUserName] = useState('')
-    const [foundation_year, setFoundationYear] = useState(currentYear)
-    const [checkboxProjectActive, setCheckboxProjectActive] = useState(true)
-    const [end_year, setEndYear] = useState(null)
+    const [projectImage, setProjectImage] = useState('')
     const [bio, setBio] = useState('')
     const [type, setType] = useState('7')
     const [kind, setKind] = useState('1')
@@ -46,6 +45,11 @@ function NewProjectIdeaPage () {
 
     const handleChangeProjectUserName = (value) => {
         setProjectUserName(value.replace(/[^A-Z0-9]/ig, "").toLowerCase())
+    }
+
+    const handleSetProjectName = (value) => {
+        setProjectName(value);
+        handleChangeProjectUserName(value);
     }
 
     const handleTypeChange = (value) => {
@@ -62,15 +66,6 @@ function NewProjectIdeaPage () {
             dispatch(usernameCheckInfos.checkProjectUsernameByString(string))
         }
     },1000);
-
-    const handleCheckboxProjectActive = (x) => {
-        setCheckboxProjectActive(value => !value)
-        if (x) {
-            setEndYear(foundation_year)
-        } else {
-            setEndYear('')
-        }
-    }
 
     let color
     if (projectUserName && projectUsernameAvailability.available === false) {
@@ -97,7 +92,7 @@ function NewProjectIdeaPage () {
                 'Content-Type': 'application/json',
                 'Authorization': 'Bearer ' + user.token
             },
-            body: JSON.stringify({ id_user_creator_fk: user.id, projectName: projectName, projectUserName: projectUserName, foundation_year: foundation_year, end_year: end_year, bio: bio, type: type, kind: kind, public: publicProject })
+            body: JSON.stringify({ id_user_creator_fk: user.id, projectName: projectName, projectUserName: projectUserName, projectImage: projectImage, foundation_year: currentYear, end_year: null, bio: bio, type: type, kind: kind, public: publicProject })
         })
         .then(response => {
             return response.json();
@@ -133,6 +128,22 @@ function NewProjectIdeaPage () {
         })
     }
 
+    // Image Upload to ImageKit.io
+    const projectImagePath = "/projects/"
+    const onUploadError = err => {
+        alert("Ocorreu um erro. Tente novamente em alguns minutos.");
+    };
+    const onUploadSuccess = res => {
+        let n = res.filePath.lastIndexOf('/');
+        let fileName = res.filePath.substring(n + 1);
+        setProjectImage(fileName)
+    };
+
+    const removeImage = () => {
+        setProjectImage('')
+        document.querySelector('#projectImage').value = null
+    }
+
     return (
         <>
             <HeaderDesktop />
@@ -141,13 +152,13 @@ function NewProjectIdeaPage () {
             <Grid as='main' centered columns={1} className="container">
                 <Grid.Row>
                     <Grid.Column mobile={16} computer={10}>
-                        <Header as='h1' className='mb-4 mt-3 mb-5 textCenter'>
+                        <Header as='h1' textAlign='center' className='mb-4 mt-3 mb-4'>
                             Criar nova ideia de projeto
-                            <Header.Subheader>Tem uma ideia de banda autoral, cover ou algum outro tipo de projeto? Cadastre e atraia outros artistas interessados em participar!</Header.Subheader>
+                            <Header.Subheader>Cadastre uma ideia de banda autoral, cover ou algum outro tipo de projeto e atraia outros artistas interessados em participar</Header.Subheader>
                         </Header>
                         <Form>
                             <Form.Field>
-                                <Form.Input name="projectName" fluid placeholder="Nome da ideia do projeto ou banda" onChange={(e, { value }) => setProjectName(value)} />
+                                <Form.Input name="projectName" fluid placeholder="Nome da ideia do projeto ou banda" onChange={(e, { value }) => handleSetProjectName(value)} />
                             </Form.Field>
                             <Form.Field>
                                 <Input 
@@ -172,12 +183,28 @@ function NewProjectIdeaPage () {
                                     mublin.com/project/{projectUserName}
                                 </Label>
                             </Form.Field>
-                            <Form.Group widths='equal'>
-                                <Form.Input name="foundation_year" type="number" fluid label="Ano de formação" error={foundation_year > currentYear && {content: 'O ano deve ser inferior ao atual' }} min="1900" max={currentYear} onChange={(e, { value }) => setFoundationYear(value)} value={foundation_year} />
-                                <Form.Input name="end_year" type="number" fluid label="Ano de encerramento" error={end_year > currentYear && {content: 'O ano deve ser inferior ao atual' }} min={foundation_year} max={currentYear} onChange={(e, { value }) => setEndYear(value)} value={end_year} disabled={checkboxProjectActive} />
-                            </Form.Group>
-                            <Form.Checkbox checked={checkboxProjectActive} label="Em atividade" onChange={() => handleCheckboxProjectActive(checkboxProjectActive)} />
-                            <div className='mb-3'>
+                            <Form.Field className='mb-0'>
+                                <label for='projectImage'>Foto</label>
+                            </Form.Field>
+                            <div className={projectImage ? 'd-none' : ''}>
+                                <IKUpload 
+                                    id='projectImage'
+                                    fileName="projectPicture.jpg"
+                                    folder={projectImagePath}
+                                    tags={["tag1"]}
+                                    useUniqueFileName={true}
+                                    isPrivateFile= {false}
+                                    onError={onUploadError}
+                                    onSuccess={onUploadSuccess}
+                                    accept="image/x-png,image/gif,image/jpeg" 
+                                />
+                            </div>
+                            {projectImage && 
+                                <>
+                                    <Image src={'https://ik.imagekit.io/mublin/tr:h-200,w-200/projects/'+projectImage} size='tiny' rounded className="mt-2 mb-2" /> <Button size='tiny' icon='trash' negative onClick={() => removeImage()}>Remover</Button>
+                                </>
+                            }
+                            <div className='my-3'>
                                 <Form.TextArea 
                                     className='mb-1'
                                     label='Bio' 
@@ -205,10 +232,10 @@ function NewProjectIdeaPage () {
                                     onChange={(e) => handleTypeChange(e.target.options[e.target.selectedIndex].value)}
                                     value={type}
                                 >
-                                    <option value='7'>Ideia de projeto</option>
+                                    <option value='7'>Ideia</option>
                                 </Form.Field>
                                 <Form.Field 
-                                    label='Conteúdo principal' 
+                                    label='Conteúdo' 
                                     control='select'
                                     onChange={(e) => setKind(e.target.options[e.target.selectedIndex].value)}
                                     value={kind}
@@ -241,7 +268,7 @@ function NewProjectIdeaPage () {
                                 className='mt-4'
                                 color="black" 
                                 onClick={handleSubmitNewProject}
-                                disabled={(projectName && projectUserName && foundation_year && type && kind && publicProject && npMain_role_fk && projectUsernameAvailability.available) ? false : true }
+                                disabled={(projectName && projectUserName && type && kind && publicProject && npMain_role_fk && projectUsernameAvailability.available) ? false : true }
                             >
                                 Cadastrar
                             </Button>

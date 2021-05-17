@@ -13,7 +13,6 @@ import Flickity from 'react-flickity-component';
 import { formatDistance } from 'date-fns';
 import pt from 'date-fns/locale/pt-BR';
 import LogoMublinCircular from '../../assets/img/logos/logo-mublin-circle-black.png';
-import LogoMublin from '../../assets/img/logos/mublin-logo-text-black.png';
 import {IKUpload} from "imagekitio-react";
 import './styles.scss';
 
@@ -341,7 +340,7 @@ function HomePage () {
                                         <div className="carousel-cell compact" key={key}>
                                             <Link to={{ pathname: '/project/'+project.username }}>
                                                 {project.yearLeftTheProject && 
-                                                    <Label color='black' floating size='mini' style={{top: '0', left: '21%',width:'fit-content'}}>
+                                                    <Label color='black' floating size='mini' style={{top: '0', left: '20%',width:'fit-content'}}>
                                                         {project.joined_in+' a '+project.yearLeftTheProject}
                                                     </Label>
                                                 }
@@ -359,11 +358,11 @@ function HomePage () {
                                                     </Header.Content>
                                                 </Header>
                                                 { project.confirmed === 1 ? (
-                                                    <div className="mt-2" style={{fontWeight: '400',fontSize: '11px', color: 'black'}}>
+                                                    <div className="mt-1" style={{fontWeight: '400',fontSize: '11px', color: 'rgba(0,0,0,.6)'}}>
                                                         <Icon name={project.workIcon} />{project.workTitle}
                                                     </div>
                                                 ) : (
-                                                    <div className="mt-2" style={{fontWeight: '400',fontSize: '11px', color: 'black'}}>
+                                                    <div className="mt-1" style={{fontWeight: '400',fontSize: '11px', color: 'rgba(0,0,0,.6)'}}>
                                                         <Icon name='clock outline' />Pendente
                                                     </div>
                                                 )}
@@ -429,13 +428,15 @@ function HomePage () {
                                 <Feed.Content className='mb-0 mt-0'>
                                     <Feed.Summary className='mb-0'>
                                         <div>
-                                            <Header className='mb-0' 
-                                                style={{cursor:'pointer',opacity:'0.5',marginTop:'5px'}}
+                                            <Header 
+                                                as='h4'
+                                                className='mb-0' 
+                                                style={{cursor:'pointer',opacity:'0.5',marginTop:'7px'}}
                                                 onClick={() => setModalNewPost(true)}
                                             >
                                                 Publicar algo...
                                             </Header>
-                                            <Button primary circular icon='pencil' size='small'
+                                            <Button primary circular icon='pencil' size='tiny'
                                                 onClick={() => setModalNewPost(true)}
                                                 style={{
                                                     height:'fit-content',

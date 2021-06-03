@@ -127,6 +127,12 @@
   }
 }
 
+@media screen and (max-width: 601px) {
+  .newPost {
+    display: none !important;
+  }
+}
+
 .carousel-cell {
   h5 {
     white-space: nowrap;

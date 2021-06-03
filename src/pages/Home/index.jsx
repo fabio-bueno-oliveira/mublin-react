@@ -305,10 +305,10 @@ function HomePage () {
                                 </>
                             )}    
                         </div> */}
-                        <div className='mb-3 mt-2'>
+                        <div className='mb-3'>
                             <Header 
-                                as='h2' 
-                                className='mb-1 pt-md-1'
+                                as='h3' 
+                                className='mb-1'
                             >
                                 Meus Projetos 
                                 {/* <Label className='ml-1 p-2' style={{opacity:'0.8'}}>{(!userInfo.requesting && projects[0].id) && projects.length}</Label> */}
@@ -401,7 +401,7 @@ function HomePage () {
                             )}
                         </Flickity>
                         <div className='userSuggestionsCarouselMobile'>
-                            <Header size='small' className='mt-3 ml-0 ml-md-2'>
+                            <Header size='small' className='mt-2 ml-0 ml-md-2'>
                                 Sugestões de pessoas para seguir
                             </Header>
                             <Flickity
@@ -422,8 +422,8 @@ function HomePage () {
                                 )}
                             </Flickity>
                         </div>
-                        <Feed className='pt-3'>
-                            <Feed.Event className='mb-3 feed-item-wrapper' style={{height:'59px'}}>
+                        <Feed className='pt-1 pt-md-3'>
+                            <Feed.Event className='mb-3 feed-item-wrapper newPost' style={{height:'59px'}}>
                                 <Feed.Label image={userInfo.picture ? 'https://ik.imagekit.io/mublin/users/avatars/'+userInfo.id+'/'+userInfo.picture : undefinedAvatar} onClick={() => history.push('/'+userInfo.username)} className='cpointer' />
                                 <Feed.Content className='mb-0 mt-0'>
                                     <Feed.Summary className='mb-0'>
@@ -445,19 +445,6 @@ function HomePage () {
                                                     right:'10px',
                                                 }} 
                                             />
-                                            {/* <Icon 
-                                                color='blue' 
-                                                name='plus' 
-                                                size='large'
-                                                onClick={() => setModalNewPost(true)} 
-                                                style={{
-                                                    cursor: 'pointer',
-                                                    height:'fit-content',
-                                                    position:'absolute',
-                                                    top:'20px',
-                                                    right:'14px',
-                                                }} 
-                                            /> */}
                                         </div>
                                     </Feed.Summary>
                                 </Feed.Content>

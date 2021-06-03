@@ -18,13 +18,13 @@ import './flickity.scss';
 
 function ProfilePage (props) {
 
-    let dispatch = useDispatch();
+    let dispatch = useDispatch()
 
-    let history = useHistory();
+    let history = useHistory()
 
-    const user = JSON.parse(localStorage.getItem('user'));
+    const user = JSON.parse(localStorage.getItem('user'))
 
-    const username = props.match.params.username;
+    const username = props.match.params.username
 
     useEffect(() => {
         dispatch(profileInfos.getProfileInfo(username));
@@ -59,7 +59,7 @@ function ProfilePage (props) {
           )
     }, [dispatch, username]);
 
-    const profile = useSelector(state => state.profile);
+    const profile = useSelector(state => state.profile)
 
     const [gearCategorySelected, setGearCategorySelected] = useState('')
 
@@ -75,13 +75,14 @@ function ProfilePage (props) {
         setTestimonialId(myTestimonial[0] ? myTestimonial[0].id : "")
         setTestimonialText(myTestimonial[0] ? myTestimonial[0].testimonial : "")
         setTestimonialTitle(myTestimonial[0] ? myTestimonial[0].title : "")
-    }, [profile.testimonials]);
+    }, [profile.testimonials])
 
     const followedByMe = useSelector(state => state.followedByMe)
 
     document.title = profile.requesting ? 'Carregando...' : profile.name+' '+profile.lastname+' | Mublin'
 
     const mainProjects = profile.projects.filter((project) => { return project.portfolio === 0 && project.confirmed === 1 })
+
     const portfolioProjects = profile.projects.filter((project) => { return project.portfolio === 1 && project.confirmed === 1 })
 
     const sliderOptions = {
@@ -94,14 +95,14 @@ function ProfilePage (props) {
         draggable: '>1',
         resize: true,
         contain: true
-    }
+    };
 
     const sliderTestimonialsOptions = {
         autoPlay: false,
         freeScroll: false,
         prevNextButtons: false,
         pageDots: true,
-    }
+    };
 
     const [loadingFollow, setLoadingFollow] = useState(false)
 
@@ -149,22 +150,27 @@ function ProfilePage (props) {
     // const [unfollowAlert, setUnfollowAlert] = useState(false)
 
     // Modals
+
+    // Modal Profile Picture
+    const [modalPictureOpen, setModalPictureOpen] = useState(false)
+    
     const goToProfile = (username) => {
         setModalFollowersOpen(false)
         setModalFollowingOpen(false)
         history.push({pathname: '/'+username})
     }
+
     // Modal Followers
     const [modalFollowersOpen, setModalFollowersOpen] = useState(false)
     // Modal Following
     const [modalFollowingOpen, setModalFollowingOpen] = useState(false)
 
     // Strengths (Pontos Fortes)
-    const [modalStrengthsOpen, setModalStrengthsOpen] = useState(false);
-    const [strengthsLoaded, setStrengthsLoaded] = useState(false);
-    const [strengths, setStrengths] = useState([]);
-    const [strengthVoted, setStrengthVoted] = useState(null);
-    const [strengthVotedName, setStrengthVotedName] = useState('');
+    const [modalStrengthsOpen, setModalStrengthsOpen] = useState(false)
+    const [strengthsLoaded, setStrengthsLoaded] = useState(false)
+    const [strengths, setStrengths] = useState([])
+    const [strengthVoted, setStrengthVoted] = useState(null)
+    const [strengthVotedName, setStrengthVotedName] = useState('')
 
     const myVotes = profile.strengthsRaw.filter((x) => { return x.idUserFrom === user.id}).map(x => ({ 
         id: x.id,
@@ -321,16 +327,16 @@ function ProfilePage (props) {
                             <Card.Content>
                                 <div className="center aligned mb-3 mt-2 mt-md-2">
                                     { profile.picture ? (
-                                        <Image src={profile.picture} size="small" circular />
+                                        <Image src={profile.picture} size="tiny" circular onClick={() => setModalPictureOpen(true)} />
                                     ) : (
-                                        <Image src={cdnBaseURL+'/sample-folder/tr:h-200,w-200,c-maintain_ratio/avatar-undefined_Kblh5CBKPp.jpg'} size="small" circular />
+                                        <Image src={cdnBaseURL+'/sample-folder/tr:h-200,w-200,c-maintain_ratio/avatar-undefined_Kblh5CBKPp.jpg'} size="tiny" circular onClick={() => setModalPictureOpen(true)} />
                                     )}
                                 </div>
-                                <div className="center aligned">
+                                <div className='center aligned'>
                                     { !profile.requesting &&
                                         <>
-                                            <Header as='h6' className='my-0'><span style={{fontWeight:'lighter'}}>@{username}</span> {!!profile.verified && <Icon name='check circle' color='blue' className='verifiedIcon' title='Verificado' />} {profile.plan === 'Pro' && <Label size="mini" className="ml-0 p-1" style={{cursor:"default"}}>PRO</Label>}</Header>
-                                            <Header size="large" className="mt-0 mb-1" style={{fontSize:'1.60428571em'}}>
+                                            <Header as='h6' className='my-0'><span style={{fontWeight:'lighter'}}>@{username}</span> {!!profile.verified && <Icon name='check circle' color='blue' className='verifiedIcon' title='Verificado' />} {profile.plan === 'Pro' && <Label size='mini' className="ml-0 p-1" style={{cursor:'default'}}>PRO</Label>}</Header>
+                                            <Header size='large' className='mt-0 mb-1' style={{fontSize:'1.60428571em'}}>
                                                 {profile.name} {profile.lastname}
                                             </Header>
                                             <div id='followersInfo' className='mt-2' style={{display:'flex',justifyContent:'space-around'}}>
@@ -376,19 +382,30 @@ function ProfilePage (props) {
                                 { (profile.bio && profile.bio !== 'null') && 
                                     <Card.Description className="center aligned mt-3" style={{ fontSize: "13px" }}>
                                         {profile.bio}
-                                        { profile.website &&
-                                            <p className='mt-2'><a href={profile.website.includes('http') ? profile.website : 'http://'+profile.website} target='_blank'>{profile.website.replace('http://','').replace('https://','')}</a></p>
+                                        {profile.instagram &&
+                                            <p className='mt-2'>
+                                                <a href={'https://instagram.com/'+profile.instagram} target='_blank' style={{color:'rgba(0,0,0,.87)',fontSize:'12px'}}>
+                                                    <Icon name='instagram' color='blue' />{profile.instagram}
+                                                </a>
+                                            </p>
+                                        }
+                                        { profile.website && 
+                                            <p className='mt-2'>
+                                                <a href={profile.website.includes('http') ? profile.website : 'http://'+profile.website} target='_blank' style={{color:'rgba(0,0,0,.87)',fontSize:'12px'}}>
+                                                    <Icon name='globe' color='blue' />{profile.website.replace('http://','').replace('https://','')}
+                                                </a>
+                                            </p>
                                         }
                                     </Card.Description>
                                 }
                             </Card.Content>
-                            { profile.city &&
+                            {profile.city &&
                                 <Card.Content className="mb-0 textCenter" style={{fontSize:'12px'}}>
                                     <Icon name='map marker alternate' />{profile.city}{profile.city !== profile.region && ', '+profile.region}
                                 </Card.Content>
                             }
-                            { profile.availabilityId && 
-                                <Card.Content textAlign='center' style={{ fontSize: "13px" }}>
+                            {profile.availabilityId && 
+                                <Card.Content textAlign='center' style={{ fontSize: '13px' }}>
                                     <Label circular size='mini' color={profile.availabilityColor} empty key={profile.availabilityColor} /> {profile.availabilityTitle}
                                     { (profile.availabilityId === 1 || profile.availabilityId === 2) &&
                                     <>
@@ -783,6 +800,20 @@ function ProfilePage (props) {
             }
             </>
         )}
+        <Modal
+            basic
+            onClose={() => setModalPictureOpen(false)}
+            open={modalPictureOpen}
+            size='large'
+        >
+            <Modal.Content>
+                { profile.picture ? (
+                    <Image src={profile.pictureLarge} size="large" circular centered />
+                ) : (
+                    <Image src={cdnBaseURL+'/sample-folder/tr:h-580,w-580,c-maintain_ratio/avatar-undefined_Kblh5CBKPp.jpg'} size="large" circular centered />
+                )}
+            </Modal.Content>
+        </Modal>
         <Modal
             size='mini'
             open={modalStrengthsOpen}

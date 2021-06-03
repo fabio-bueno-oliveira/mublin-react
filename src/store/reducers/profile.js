@@ -9,6 +9,7 @@ const initialState = {
   lastname: '',
   email: '',
   picture: '',
+  pictureLarge: '',
   bio: '',
   country: '',
   region: '',
@@ -147,6 +148,7 @@ const initialState = {
   plan: '',
   legend: '',
   verified: '',
+  instagram: '',
   website: '',
   public: ''
 }
@@ -161,10 +163,12 @@ export function profile(state = initialState, action) {
         lastname: '',
         email: '',
         picture: '',
+        pictureLarge: '',
         bio: '',
         country: '',
         region: '',
         city: '',
+        instagram: '',
         website: '',
         requesting: true,
         requested: false,
@@ -181,6 +185,7 @@ export function profile(state = initialState, action) {
         lastname: action.info.lastname,
         email: action.info.email,
         picture: action.info.picture,
+        pictureLarge: action.info.pictureLarge,
         bio: action.info.bio,
         country: action.info.country,
         region: action.info.region,
@@ -193,6 +198,7 @@ export function profile(state = initialState, action) {
         plan: action.info.plan,
         legend: action.info.legend,
         verified: action.info.verified,
+        instagram: action.info.instagram,
         website: action.info.website,
         public: action.info.public
       };

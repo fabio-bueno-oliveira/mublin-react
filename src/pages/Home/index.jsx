@@ -355,16 +355,22 @@ function HomePage () {
                                                 <Image
                                                     floated='left'
                                                     size='tiny'
-                                                    src={project.picture ? 'https://ik.imagekit.io/mublin/projects/tr:h-70,w-70,c-maintain_ratio/'+project.picture : 'https://ik.imagekit.io/mublin/sample-folder/avatar-undefined_-dv9U6dcv3.jpg'}
-                                                    className='mb-0'
+                                                    src={project.picture ? 'https://ik.imagekit.io/mublin/projects/tr:h-160,w-160,c-maintain_ratio/'+project.picture : 'https://ik.imagekit.io/mublin/sample-folder/avatar-undefined_-dv9U6dcv3.jpg'}
+                                                    className='mb-0 cpointer'
+                                                    onClick={() => history.push('/project/'+project.username)}
                                                 />
-                                                <Card.Header>{project.name} {project.portfolio === 1 && <Icon name='tag' color='black' style={{fontSize:'10px',verticalAlign: 'text-top'}} title='Portfolio' />}</Card.Header>
+                                                <Card.Header
+                                                    className='cpointer'
+                                                    onClick={() => history.push('/project/'+project.username)}
+                                                >
+                                                    {project.name} {project.portfolio === 1 && <Icon name='tag' color='black' style={{fontSize:'10px',verticalAlign: 'text-top'}} title='Portfolio' />}
+                                                </Card.Header>
                                                 {/* <Card.Meta>{project.ptname}</Card.Meta> */}
                                                 <Card.Description className='pt-2' style={{fontSize:'11.5px',display:'inline'}}>
-                                                    {project.ptname} • { project.confirmed === 1 ? ( <><Icon name={project.workIcon} />{project.workTitle}</> ) : ( <><Icon name='clock outline' />Pendente</> )}
+                                                    {project.ptname} • { project.confirmed === 1 ? ( <><Icon name={project.workIcon} />{project.workTitle}</> ) : ( <><Icon name='clock outline' />Participação pendente</> )}
                                                 </Card.Description>
                                                 <Card.Description className='pt-3' style={{display:'table-cell'}}>
-                                                    <Button basic size='mini'>
+                                                    <Button basic size='mini' onClick={() => history.push('/project/'+project.username)}>
                                                         Ver página
                                                     </Button>
                                                     <Button basic size='mini'>
@@ -462,6 +468,7 @@ function HomePage () {
                                     )}
                                 </Flickity>
                             </div>
+
                             <Feed className='pt-1 mt-0'>
                                 <Feed.Event className='mb-3 feed-item-wrapper newPost' style={{height:'59px'}}>
                                     <Feed.Label image={userInfo.picture ? 'https://ik.imagekit.io/mublin/users/avatars/'+userInfo.id+'/'+userInfo.picture : undefinedAvatar} onClick={() => history.push('/'+userInfo.username)} className='cpointer' />

@@ -320,7 +320,7 @@ function ProfilePage (props) {
             profile.id && 
             <>
             <Spacer compact />
-            <Grid id="info" columns={2} stackable className="container pb-5 pb-md-0 mb-5 mb-md-0">
+            <Grid id="profilePage" columns={2} stackable className="container pb-5 pb-md-0 mb-5 mb-md-0">
                 <Grid.Row>
                     <Grid.Column width={4} className='noPaddingForMobile main'>
                         <Card id="card" style={{width:"100%"}}>

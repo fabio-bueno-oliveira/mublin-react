@@ -25,8 +25,11 @@ function ConversationPage (props) {
     const [messageSubmitted, setMessageSubmitted] = useState(false)
 
     useEffect(() => {
-        dispatch(userInfos.getInfo());
         window.scrollTo(0,document.body.scrollHeight);
+    }, [document.body.scrollHeight]);
+
+    useEffect(() => {
+        dispatch(userInfos.getInfo());
 
         fetch(BASE_URL+"/messages/"+profileId+"/basicInfo", {
             method: 'GET',
@@ -48,7 +51,7 @@ function ConversationPage (props) {
             }
         )
 
-        fetch(BASE_URL+"/messages/"+profileId+"/conversation", {
+        const getAPIData = async () => fetch(BASE_URL+"/messages/"+profileId+"/conversation", {
             method: 'GET',
             headers: {
                 'Accept': 'application/json, text/plain, */*',
@@ -71,6 +74,12 @@ function ConversationPage (props) {
                 setError(error);
             }
         )
+
+        getAPIData();
+        const interval = setInterval (() => {
+            getAPIData()
+        }, 60000);
+        return () => clearInterval(interval);
     }, [messageSubmitted]);
 
     const userInfo = useSelector(state => state.user);
@@ -135,7 +144,7 @@ function ConversationPage (props) {
             <Spacer />
             <Grid centered verticalAlign='middle' columns={1} as='main' columns={1} className="container mb-2 px-1 px-md-3">
                 <Grid.Row>
-                    <Grid.Column mobile={16} computer={10}>
+                    <Grid.Column mobile={16} computer={10} className='mb-5 pb-4'>
                         <div>
                             <Icon name='arrow left' onClick={() => history.goBack()} className='cpointer' /> 
                             <Image src={profileInfo.picture} avatar onClick={() => history.push("/"+profileInfo.username)} className='cpointer ml-2'/>
@@ -167,7 +176,7 @@ function ConversationPage (props) {
                                         </Header>
                                     </Segment>
                                 )}
-                                <Form reply className='pt-3'>
+                                <Form reply className='pt-2 mb-5'>
                                     <Form.Input
                                         value={message}
                                         onChange={e => setMessage(e.target.value)}
@@ -181,6 +190,7 @@ function ConversationPage (props) {
                                         size='small' 
                                         loading={isLoading} 
                                         onClick={() => submitMessage()}
+                                        floated='right'
                                     />
                                 </Form>
                             </Comment.Group>

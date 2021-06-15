@@ -114,6 +114,14 @@ const initialState = {
       price: ''
     }
   ],
+  gearSetups: [
+    { 
+      id: '',
+      name: '',
+      created: '',
+      image: ''
+    }
+  ],
   gearCategories: [
     { category: '', macroCategory: '', total: 0 }
   ],
@@ -348,6 +356,32 @@ export function profile(state = initialState, action) {
         requesting: false,
         error: "A solicitação falhou"
       };
+    // GEAR SETUPS
+    case profileTypes.GET_PROFILE_GEARSETUPS_REQUEST:
+      return {
+        ...state,
+        requesting: true
+      };
+    case profileTypes.GET_PROFILE_GEARSETUPS_SUCCESS:
+      return {
+        ...state,
+        gearSetups: action.list,
+        requesting: false,
+      };
+    case profileTypes.GET_PROFILE_GEARSETUPS_FAILURE:
+      return {
+        ...state,
+        gearSetups: [
+          {
+            id: '',
+            name: '',
+            created: '',
+            image: ''
+          }
+        ],
+        requesting: false,
+        error: "A solicitação falhou"
+    };
     // PARTNERS
     case profileTypes.GET_PROFILE_PARTNERS_REQUEST:
       return {

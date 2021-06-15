@@ -10,6 +10,7 @@ export const profileInfos = {
     checkProfileFollowing: checkProfileFollowing,
     getProfilePosts: getProfilePosts,
     getProfileGear: getProfileGear,
+    getProfileGearSetups: getProfileGearSetups,
     getProfilePartners: getProfilePartners,
     getProfileStrengths: getProfileStrengths,
     getProfileStrengthsRaw: getProfileStrengthsRaw,
@@ -143,6 +144,22 @@ function getProfileGear(username) {
     function request(username) { return { type: profileTypes.GET_PROFILE_GEAR_REQUEST, username } }
     function success(list) { return { type: profileTypes.GET_PROFILE_GEAR_SUCCESS, list } }
     function failure(username, error) { return { type: profileTypes.GET_PROFILE_GEAR_FAILURE, username, error } }
+}
+
+function getProfileGearSetups(username) {
+    return dispatch => {
+        dispatch(request(username));
+
+        profileService.getProfileGearSetups(username)
+            .then(
+                list => dispatch(success(list)),
+                error => dispatch(failure(username, error.toString()))
+            );
+    };
+
+    function request(username) { return { type: profileTypes.GET_PROFILE_GEARSETUPS_REQUEST, username } }
+    function success(list) { return { type: profileTypes.GET_PROFILE_GEARSETUPS_SUCCESS, list } }
+    function failure(username, error) { return { type: profileTypes.GET_PROFILE_GEARSETUPS_FAILURE, username, error } }
 }
 
 function getProfilePartners(username) {

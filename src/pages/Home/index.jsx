@@ -308,9 +308,9 @@ function HomePage () {
                             )}    
                         </div>
 
-                        <div className='mb-3' style={{display:'flex'}}>
+                        <div className='mt- mb-4' style={{display:'flex'}}>
                             <Header 
-                                as='h3' 
+                                as='h2' 
                                 floated='left' 
                                 className='cpointer mb-0'
                                 disabled={tab === 1 ? false : true}
@@ -319,7 +319,7 @@ function HomePage () {
                                 Meus Projetos
                             </Header>
                             <Header 
-                                as='h3' 
+                                as='h2' 
                                 floated='left' 
                                 className='cpointer ml-2 mb-0'
                                 disabled={tab === 2 ? false : true}
@@ -344,110 +344,75 @@ function HomePage () {
                                     style={{fontSize:'12px',marginLeft:'10px'}}
                                 />
                             </div>
-
-
-                                { !userInfo.requesting ? (
-                                    projectsToShow.length ? (
-                                        projectsToShow.map((project, key) =>
-
-                                        <Card fluid>
-                                            <Card.Content>
-                                                <Image
-                                                    floated='left'
-                                                    size='tiny'
-                                                    src={project.picture ? 'https://ik.imagekit.io/mublin/projects/tr:h-160,w-160,c-maintain_ratio/'+project.picture : 'https://ik.imagekit.io/mublin/sample-folder/avatar-undefined_-dv9U6dcv3.jpg'}
-                                                    className='mb-0 cpointer'
-                                                    onClick={() => history.push('/project/'+project.username)}
-                                                />
-                                                <Card.Header
-                                                    className='cpointer'
-                                                    onClick={() => history.push('/project/'+project.username)}
-                                                >
-                                                    {project.name} {project.portfolio === 1 && <Icon name='tag' color='black' style={{fontSize:'10px',verticalAlign: 'text-top'}} title='Portfolio' />}
-                                                </Card.Header>
-                                                {/* <Card.Meta>{project.ptname}</Card.Meta> */}
-                                                <Card.Description className='pt-2' style={{fontSize:'11.5px',display:'inline'}}>
-                                                    {project.ptname} • { project.confirmed === 1 ? ( <><Icon name={project.workIcon} />{project.workTitle}</> ) : ( <><Icon name='clock outline' />Participação pendente</> )}
-                                                </Card.Description>
-                                                <Card.Description className='pt-3' style={{display:'table-cell'}}>
-                                                    <Button basic size='mini' onClick={() => history.push('/project/'+project.username)}>
-                                                        Ver página
-                                                    </Button>
-                                                    <Button basic size='mini'>
-                                                        Gerenciar
-                                                    </Button>
-                                                </Card.Description>
-                                            </Card.Content>
-                                        </Card>
-
-                                            // <Segment key={key} inverted color='black'>
-                                            //     <Link to={{ pathname: '/project/'+project.username }}>
-                                            //         {project.yearLeftTheProject && 
-                                            //             <Label color='black' floating size='mini' style={{top: '0', left: '20%',width:'fit-content'}}>
-                                            //                 {project.joined_in+' a '+project.yearLeftTheProject}
-                                            //             </Label>
-                                            //         }
-                                            //         {project.picture ? (
-                                            //             <Image src={'https://ik.imagekit.io/mublin/projects/tr:h-85,w-95,c-maintain_ratio/'+project.picture} rounded />
-                                            //         ) : (
-                                            //             <Image src={'https://ik.imagekit.io/mublin/sample-folder/avatar-undefined_-dv9U6dcv3.jpg'} height='85' width='85' rounded />
-                                            //         )}
-                                            //         <Header as='h5' className='mt-2 mb-0'>
-                                            //             <Header.Content>
-                                            //                 {project.portfolio === 1 && <Icon name='tag' color='black' circular inverted style={{fontSize:'10px',position:'absolute',top:'62px',right:'11px'}} className='mr-1' title='Portfolio' />}{project.name}
-                                            //                 <Header.Subheader style={{fontSize:'11.5px'}}>
-                                            //                     {project.ptname}
-                                            //                 </Header.Subheader>
-                                            //             </Header.Content>
-                                            //         </Header>
-                                            //         { project.confirmed === 1 ? (
-                                            //             <div className="mt-1" style={{fontWeight: '400',fontSize: '11px', color: 'rgba(0,0,0,.6)'}}>
-                                            //                 <Icon name={project.workIcon} />{project.workTitle}
-                                            //             </div>
-                                            //         ) : (
-                                            //             <div className="mt-1" style={{fontWeight: '400',fontSize: '11px', color: 'rgba(0,0,0,.6)'}}>
-                                            //                 <Icon name='clock outline' />Pendente
-                                            //             </div>
-                                            //         )}
-                                            //     </Link>
-                                            // </Segment>
-                                        )
-                                    ) : (
-                                        <Segment>
-                                            <Label size='massive' style={{width:'94px',height:'94px',display:'flex',alignItems:'center',justifyContent:'center'}}>
-                                                <Icon name='broken chain' className='m-0' style={{opacity:'0.3'}} />
-                                            </Label>
-                                            {/* <h5 className="ui header mt-2 mb-0">
-                                                <div className="sub header mt-1">Nenhum projeto</div>
-                                            </h5> */}
-                                        </Segment> 
+                            { !userInfo.requesting ? (
+                                projectsToShow.length ? (
+                                    projectsToShow.map((project, key) =>
+                                    <Card key={key} fluid>
+                                        <Card.Content>
+                                            <Image
+                                                floated='left'
+                                                size='tiny'
+                                                src={project.picture ? 'https://ik.imagekit.io/mublin/projects/tr:h-160,w-160,c-maintain_ratio/'+project.picture : 'https://ik.imagekit.io/mublin/sample-folder/avatar-undefined_-dv9U6dcv3.jpg'}
+                                                className='mb-0 cpointer'
+                                                onClick={() => history.push('/project/'+project.username)}
+                                            />
+                                            <Card.Header
+                                                className='cpointer'
+                                                onClick={() => history.push('/project/'+project.username)}
+                                                style={{fontSize:'12px'}}
+                                            >
+                                                {project.name} {project.portfolio === 1 && <Icon name='tag' color='black' style={{fontSize:'10px',verticalAlign: 'text-top'}} title='Portfolio' />}
+                                            </Card.Header>
+                                            {/* <Card.Meta>{project.ptname}</Card.Meta> */}
+                                            <Card.Description className='pt-2' style={{fontSize:'11.5px',display:'inline'}}>
+                                                {project.ptname} • { project.confirmed === 1 ? ( <><Icon name={project.workIcon} />{project.workTitle}</> ) : ( <><Icon name='clock outline' />Participação pendente</> )}
+                                            </Card.Description>
+                                            <Card.Description className='pt-3' style={{display:'table-cell'}}>
+                                                <Button basic size='mini' onClick={() => history.push('/project/'+project.username)}>
+                                                    Ver página
+                                                </Button>
+                                                <Button basic size='mini'>
+                                                    Gerenciar
+                                                </Button>
+                                            </Card.Description>
+                                        </Card.Content>
+                                    </Card>
                                     )
                                 ) : (
-                                    <List horizontal>
-                                        <List.Item as='div'>
-                                            <Placeholder style={{ height: 100, width: 100 }}>
-                                                <Placeholder.Image />
-                                                <Placeholder.Line length='very short' />
-                                            </Placeholder>
-                                        </List.Item>
-                                        <List.Item as='div'>
-                                            <Placeholder style={{ height: 100, width: 100 }}>
-                                                <Placeholder.Image />
-                                            </Placeholder>
-                                        </List.Item>
-                                        <List.Item as='div'>
-                                            <Placeholder style={{ height: 100, width: 100 }}>
-                                                <Placeholder.Image />
-                                            </Placeholder>
-                                        </List.Item>
-                                    </List>
-                                )}
-
+                                    <Segment>
+                                        <Label size='massive' style={{width:'94px',height:'94px',display:'flex',alignItems:'center',justifyContent:'center'}}>
+                                            <Icon name='broken chain' className='m-0' style={{opacity:'0.3'}} />
+                                        </Label>
+                                        {/* <h5 className="ui header mt-2 mb-0">
+                                            <div className="sub header mt-1">Nenhum projeto</div>
+                                        </h5> */}
+                                    </Segment> 
+                                )
+                            ) : (
+                                <List horizontal>
+                                    <List.Item as='div'>
+                                        <Placeholder style={{ height: 100, width: 100 }}>
+                                            <Placeholder.Image />
+                                            <Placeholder.Line length='very short' />
+                                        </Placeholder>
+                                    </List.Item>
+                                    <List.Item as='div'>
+                                        <Placeholder style={{ height: 100, width: 100 }}>
+                                            <Placeholder.Image />
+                                        </Placeholder>
+                                    </List.Item>
+                                    <List.Item as='div'>
+                                        <Placeholder style={{ height: 100, width: 100 }}>
+                                            <Placeholder.Image />
+                                        </Placeholder>
+                                    </List.Item>
+                                </List>
+                            )}
                         </section>
 
                         <section id='tab2' style={tab === 2 ? null : {display:'none'}}>
                             <div className='userSuggestionsCarouselMobile mb-3'>
-                                <Header size='small' className='mt-2 ml-0 ml-md-2'>
+                                <Header size='tiny' className='mt-2 ml-0 ml-md-2'>
                                     Sugestões de pessoas para seguir
                                 </Header>
                                 <Flickity

@@ -75,7 +75,8 @@ function ProductPage (props) {
                     <Segment>
                         <Header as='h2'>
                             <Header.Content>
-                                <Header.Subheader>{product.brandName}</Header.Subheader>
+                                {/* <Image size='tiny' src={'https://ik.imagekit.io/mublin/products/brands/tr:h-100,w-100/'+product.brandLogo} /> */}
+                                <Header.Subheader>{!isLoaded ? 'Carregando...' : product.categoryName + ' • ' + product.brandName}</Header.Subheader>
                                 {!isLoaded ? 'Carregando...' : product.name}
                             </Header.Content>
                         </Header>

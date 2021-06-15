@@ -22,6 +22,9 @@ function ProfilePage (props) {
 
     let history = useHistory()
 
+    const cdnBaseURL = 'https://ik.imagekit.io/mublin'
+    const backendBaseURL = 'https://mublin.herokuapp.com'
+
     const user = JSON.parse(localStorage.getItem('user'))
 
     const username = props.match.params.username
@@ -34,6 +37,7 @@ function ProfilePage (props) {
         dispatch(profileInfos.getProfileFollowing(username));
         dispatch(profileInfos.getProfilePosts(username));
         dispatch(profileInfos.getProfileGear(username));
+        dispatch(profileInfos.getProfileGearSetups(username));
         dispatch(profileInfos.getProfilePartners(username));
         dispatch(profileInfos.getProfileAvailabilityItems(username));
         dispatch(profileInfos.getProfileStrengths(username));
@@ -50,20 +54,48 @@ function ProfilePage (props) {
           .then(res => res.json())
           .then(
             (result) => {
-                setStrengthsLoaded(true);
-                setStrengths(result);
+                setStrengthsLoaded(true)
+                setStrengths(result)
             },
             (error) => {
-                setStrengthsLoaded(true);
+                setStrengthsLoaded(true)
             }
           )
     }, [dispatch, username]);
 
     const profile = useSelector(state => state.profile)
 
+    const [gearSetupProducts, setGearSetupProducts] = useState('')
+
     const [gearCategorySelected, setGearCategorySelected] = useState('')
 
-    const gear = useSelector(state => state.profile.gear).filter((product) => { return (gearCategorySelected) ? product.category === gearCategorySelected : product.productId > 0 })
+    const gearTotal = useSelector(state => state.profile.gear).filter((product) => { return (gearSetupProducts) ? gearSetupProducts.find(x => x.productId === product.productId) : product.productId > 0 })
+
+    const gear = gearTotal.filter((product) => { return (gearCategorySelected) ? product.category === gearCategorySelected : product.productId > 0 })
+
+    console.log(76, gear)
+
+    const getSetupProducts = (setupId) => {
+        if (setupId === 'all') {
+            setGearSetupProducts('')
+        } else {
+            fetch(backendBaseURL+'/profile/'+username+'/'+setupId+'/gearSetupProducts', {
+                method: 'GET',
+                headers: {
+                    'Accept': 'application/json, text/plain, */*',
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + user.token
+                }
+            })
+            .then(res => res.json())
+            .then((result) => {
+                setGearSetupProducts(result)
+            }).catch(err => {
+                console.error(err)
+                alert("Ocorreu um erro ao buscar os produtos do Setup selecionado. Tente novamente em instantes.")
+            })
+        }
+    }
 
     const myTestimonial = profile.testimonials.filter((testimonial) => { return testimonial.friendId === user.id}).map(testimonial => ({ 
         id: testimonial.id,
@@ -300,8 +332,6 @@ function ProfilePage (props) {
 
     // Posts
     const [modalPosts, setModalPosts] = useState(false)
-
-    const cdnBaseURL = 'https://ik.imagekit.io/mublin'
 
     return (
         <>
@@ -643,22 +673,40 @@ function ProfilePage (props) {
                         <Card id="gear" style={{ width: "100%" }}>
                             <Card.Content>
                                 <div className='cardTitle'>
-                                    <Header as='h3' className='pt-1'>Equipamento</Header>
-                                    <Form.Field 
-                                        label='Exibir '
-                                        control='select'
-                                        onChange={(e) => setGearCategorySelected(e.target.options[e.target.selectedIndex].value)}
-                                        className='mt-1 mt-md-0'
-                                    >
-                                        <option value=''>
-                                            {'Todos ('+profile.gear.length+')'}
-                                        </option>
-                                        {profile.gearCategories.map((gearCategory, key) =>
-                                            <option key={key} value={gearCategory.category}>
-                                                {gearCategory.category + '(' + gearCategory.total + ')'}
+                                    <Header as='h3' className='pt-1 mb-1 mb-md-3'>Equipamento</Header>
+                                    <div style={{display:'flex'}} className='mb-3 mb-md-0'>
+                                        {!profile.requesting && 
+                                            <Form.Field 
+                                                control='select'
+                                                className='mt-1 mt-md-0 mr-2'
+                                                onChange={(e) => getSetupProducts(e.target.options[e.target.selectedIndex].value)}
+                                            >
+                                                <option value='all'>
+                                                    Setup completo
+                                                </option>
+                                                {profile.gearSetups[0].id && profile.gearSetups.map((setup, key) =>
+                                                    <option key={key} value={setup.id}>
+                                                        {setup.name}
+                                                    </option>
+                                                )}
+                                            </Form.Field>
+                                        }
+                                        <Form.Field 
+                                            // label='Exibir '
+                                            control='select'
+                                            onChange={(e) => setGearCategorySelected(e.target.options[e.target.selectedIndex].value)}
+                                            className='mt-1 mt-md-0'
+                                        >
+                                            <option value=''>
+                                                {'Tudo ('+gear.length+')'}
                                             </option>
-                                        )}
-                                    </Form.Field>
+                                            {profile.gearCategories.map((gearCategory, key) =>
+                                                <option key={key} value={gearCategory.category}>
+                                                    {gearCategory.category + '(' + gearCategory.total + ')'}
+                                                </option>
+                                            )}
+                                        </Form.Field>
+                                    </div>
                                 </div>
                                 { profile.requesting ? (
                                     <Icon loading name='spinner' size='large' />

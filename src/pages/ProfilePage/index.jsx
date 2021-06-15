@@ -73,8 +73,6 @@ function ProfilePage (props) {
 
     const gear = gearTotal.filter((product) => { return (gearCategorySelected) ? product.category === gearCategorySelected : product.productId > 0 })
 
-    console.log(76, gear)
-
     const getSetupProducts = (setupId) => {
         if (setupId === 'all') {
             setGearSetupProducts('')

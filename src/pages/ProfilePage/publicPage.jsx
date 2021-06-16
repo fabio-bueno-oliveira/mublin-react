@@ -45,7 +45,7 @@ function PublicProfilePage (props) {
                                     <Button 
                                         color='black' 
                                         size='small' 
-                                        onClick={() => history.push("/login")}
+                                        onClick={() => history.push("/")}
                                         className='mr-2'
                                     >
                                         Entre
@@ -169,7 +169,7 @@ function PublicProfilePage (props) {
                                         <Button 
                                             color='black' 
                                             size='small' 
-                                            onClick={() => history.push("/login")}
+                                            onClick={() => history.push("/")}
                                             className='mr-2'
                                         >
                                             Entre

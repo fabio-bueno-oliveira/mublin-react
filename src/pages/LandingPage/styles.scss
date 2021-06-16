@@ -1,39 +1,54 @@
 main.landingPage {
   background-image: url('https://ik.imagekit.io/mublin/hero/male-singer_wDoBBq5LZ.jpg');
-  // background-image: url(../../assets/img/heros/male-singer.jpg);
   background-repeat: no-repeat;
   background-position: center;
   background-size: cover;
   min-height: 100%;
   padding: 16px 0 0 0;
 
-  h1 {
-    color: #FFF;
-    font-family: 'Baloo';
-    font-size: 32px;
-  }
-
-  header {
+  @media only screen and (min-width: 600px) {
+    min-height: 100%;
     display: flex;
-    justify-content: space-between;
-    width: 100%;
+    justify-content: center;
+    align-items: center;
 
-    .action {
-      padding: 8px 0 0 0;
-
+    h1.ui.header {
+      margin-top: 0px;
+      i {
+        font-size: 76px!important;
+      }
+      .content {
+        font-size: 76px!important;
+      }
     }
   }
 
-  section#cta {
-    margin: 160px 0 0 0;
-    @media only screen and (min-width: 600px) {
-      margin: 240px 0 0 0;
+  h1.ui.header {
+    margin-top: 40px;
+
+    i {
+      background: -webkit-linear-gradient(#7b4397 , #dc2430);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      font-size: 42px;
     }
 
-    h2 {
-      font-weight: 400!important;
-      margin: 0 0 36px 0!important;
+    .content {
+      color: #FFF;
+      font-family: 'Baloo'!important;
+      font-size: 54px;
     }
+  }
+
+  h2.ui.inverted.header {
+    font-size: 18px!important;
+  }
+
+  .formWrapper {
+    background-color:rgba(0, 0, 0, 0.5);
+    border-radius: 16px;
+    padding-top: 54px;
+    padding-bottom: 54px;
   }
 
   footer {

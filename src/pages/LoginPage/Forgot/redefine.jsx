@@ -169,7 +169,7 @@ function RedefinePasswordPage () {
                 ) : (
                     <div className='textCenter'> 
                         <Message positive>Senha atualizada com sucesso!</Message>
-                        <Button positive onClick={() => history.push("/login")}>Ir para login</Button>
+                        <Button positive onClick={() => history.push("/")}>Ir para login</Button>
                     </div>
                 )}                
             </div>

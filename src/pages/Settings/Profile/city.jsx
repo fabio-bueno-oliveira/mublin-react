@@ -103,7 +103,7 @@ function ProfilePage (props) {
         .then(res => res.json())
         // .then(res => localStorage.setItem('user', JSON.stringify(res)))
         .then(
-            history.push("/login?info=firstAccess")
+            history.push("/?info=firstAccess")
         )
     }
 

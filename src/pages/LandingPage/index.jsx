@@ -1,130 +1,181 @@
 import React, { useState } from 'react';
-import { useHistory, Redirect } from 'react-router-dom';
-import { useSelector } from 'react-redux';
-import { Link } from 'react-router-dom';
-import { Grid, Form, Button, Input, Header, Icon } from 'semantic-ui-react';
+import { useHistory, Redirect, Link } from 'react-router-dom';
+import { useSelector, useDispatch } from 'react-redux';
+import { Container, Grid, Form, Button, Input, Header, Icon, Message } from 'semantic-ui-react';
+import { Formik } from 'formik';
+import { userActions } from '../../store/actions/authentication';
+import Loader from 'react-loader-spinner';
+import "react-loader-spinner/dist/loader/css/react-spinner-loader.css";
 import './styles.scss';
 
-function LandingPage () {
+function LandingPage (props) {
 
     document.title = 'Mublin — Otimize sua rotina na música';
 
     const loggedIn = useSelector(state => state.authentication.loggedIn);
 
+    const error = useSelector(state => state.authentication.error);
+
     let history = useHistory();
 
-    const [email, setEmail] = useState('');
+    const dispatch = useDispatch();
 
-    const handleSubmit = (e) => {
-        setEmail(e.target.value);
-        history.push({
-            pathname: '/signup',
-            state: { email: email }
-        });
-    }
+    const query = new URLSearchParams(props.location.search);
+
+    const urlInfo = query.get('info')
+
+    const [loading, setLoading] = useState(false);
+
+    const [hidePassword, setHidePassword] = useState(true);
+
+    // const validate = values => {
+    //     const errors = {};
+  
+    //     // if (!values.email) {
+    //     //     errors.email = 'Informe seu email ou username!';
+    //     // } 
+    //     // else if (!ValidateUtils.email(values.email)) {
+    //     //     errors.email = 'Email inválido!'
+    //     // }
+  
+    //     // if (!values.password) {
+    //     //   errors.password = 'Informe sua senha!';
+    //     // }
+  
+    //     return errors;
+    // };
 
     return (
         <>
         { loggedIn &&
             <Redirect to={{ pathname: '/home' }} />
         }
+        { (loading && !error) && 
+            <Loader
+                className="appLoadingIcon"
+                type="Audio"
+                color="#ffffff"
+                height={100}
+                width={100}
+                timeout={30000} //30 secs
+            />
+        }
         <main className='landingPage'>
-            {/* <Container> */}
-                <Grid padded as='header'>
-                    <Grid.Row columns={1} only='mobile'>
-                        <Grid.Column width={17} textAlign='center'>
-                            <h1>mublin</h1>
+            <Container style={{ height: '100%' }}>
+                <Grid padded verticalAlign='middle' columns={2} stackable>
+                    <Grid.Row className='p-4'>
+                        <Grid.Column mobile={16} tablet={10} computer={10}>
+                            <Header as='h1'>
+                                <Icon name='heartbeat' />
+                                <Header.Content>mublin</Header.Content>
+                            </Header>
+                            <Header as='h2' className='mt-0 mb-3 mb-md-0' inverted>Seus projetos de música, <br/>centralizados em um só lugar</Header>
                         </Grid.Column>
-                    </Grid.Row>
-                    <Grid.Row columns={2} only='tablet computer'>
-                        <Grid.Column width={3} textAlign='left'>
-                            <Link to={{ pathname: "/" }}>
-                                <h1 className='pl-4'>mublin</h1>
-                            </Link>
-                        </Grid.Column>
-                        <Grid.Column width={12} textAlign='right'>
-                            <Button 
-                                inverted 
-                                color='white' 
-                                size='large' 
-                                className="mr-2 mt-2"
-                                onClick={() => history.push("/login")}
-                            >
-                                Entrar
-                            </Button>
-                            <Button 
-                                inverted 
-                                primary
-                                size='large'
-                                className="mt-2"
-                                onClick={() => history.push("/signup")}
-                            >
-                                Cadastre-se
-                            </Button>
-                        </Grid.Column>
-                    </Grid.Row>
-                </Grid>
-                <Grid centered columns={1} as='section' id="cta" className="mr-0">
-                    <Grid.Column width={8} textAlign='center' only='computer'>
-                        <Header as='h1' inverted>Seus projetos de música, <br/>centralizados em um só lugar</Header>
-                        {/* <Header as='h3' inverted>Não possui uma conta?</Header> */}
-                        {/* <Form style={{ display: "flex", justifyContent: "center" }}>
-                            <Input 
-                                style={{ width: "70%" }}
-                                type='email'
-                                fluid
-                                action={{
-                                    color: 'blue',
-                                    icon: 'right arrow',
-                                    onClick: handleSubmit
+                        <Grid.Column mobile={16} tablet={6} computer={6} className='formWrapper px-0 px-md-5'>
+                            <Formik
+                                initialValues={{ email: '', password: '' }}
+                                // validate={validate}
+                                validateOnMount={true}
+                                validateOnBlur={true}
+                                onSubmit={(values, { setSubmitting }) => {
+                                setLoading(true);
+                                setTimeout(() => {
+                                    setSubmitting(false);
+                                    dispatch(userActions.login(values.email, values.password));
+                                }, 400);
                                 }}
-                                placeholder='cadastre-se com seu email'
-                                onChange={e => setEmail(e.target.value)}
-                                value={email}
-                            />
-                        </Form> */}
-                        <Button
-                            primary
-                            size='huge'
-                            onClick={() => history.push("/signup")}
-                        >
-                            Cadastre-se gratuitamente
-                        </Button>
-                        <p className='mt-4'>
-                            <Link style={{color:'white'}} to={{ pathname: "/login" }}>
-                                Já tem uma conta? Entrar
-                            </Link>
-                        </p>
-                    </Grid.Column>
-                    <Grid.Column width={16} textAlign='center' only='mobile tablet'>
-                        <Header as='h2' inverted>Seus projetos de música, <br/><nobr>centralizados em um só lugar</nobr></Header>
-                    </Grid.Column>
-                </Grid>
-                <Grid padded as='footer'>
-                    <Grid.Row columns={1} only='mobile tablet' style={{marginBottom:'110px'}}>
-                        <Grid.Column width={16} textAlign='center'>
-                            <Button 
-                                inverted 
-                                color='white' 
-                                size='large' 
-                                className="mr-2"
-                                onClick={() => history.push("/login")}
                             >
-                                Entrar
-                            </Button>
-                            <Button 
-                                inverted 
-                                color='blue' 
-                                size='large'
-                                onClick={() => history.push("/signup")}
-                            >
-                                Cadastro
-                            </Button>
+                                {({
+                                    values, errors, touched, handleChange, handleSubmit, handleBlur, isValid, isSubmitting
+                                }) => (
+                                    <Form
+                                        onSubmit={handleSubmit}
+                                        onKeyDown={(e) => {
+                                            if (e.key === 'Enter') {
+                                            handleSubmit();
+                                            }
+                                        }}
+                                        className='px-4 px-md-0'
+                                    >
+                                        <Header as='h2' inverted color='grey'>Entrar</Header>
+                                        { urlInfo === "firstAccess" &&
+                                            <Message
+                                                color='green'
+                                                header='Cadastro efetuado com sucesso!'
+                                                content='Para acessar, digite abaixo os dados de login'
+                                            />
+                                        }
+                                        {error && 
+                                            <Message
+                                                color='red'
+                                                header={error}
+                                                content='Verifique os dados e tente novamente'
+                                            />
+                                        }
+                                        <Form.Field
+                                            inverted
+                                            size='medium'
+                                            id='email'
+                                            name="email" 
+                                            control={Input}
+                                            placeholder='Nome de usuário ou email'
+                                            onChange={e => {
+                                                handleChange(e);
+                                            }}
+                                            onBlur={handleBlur}
+                                            value={values.email}
+                                            error={touched.email && errors.email ? ( {
+                                                content: touched.email ? errors.email : null,
+                                                pointing: 'below',
+                                                size: 'tiny',
+                                            }) : null }
+                                        />
+                                        <Form.Field
+                                            inverted
+                                            size='medium'
+                                            type={hidePassword ? 'password' : 'text'}
+                                            id='password'
+                                            name="password" 
+                                            control={Input}
+                                            placeholder='Senha'
+                                            onChange={e => {
+                                                handleChange(e);
+                                            }}
+                                            onBlur={handleBlur}
+                                            value={values.password}
+                                            error={touched.password && errors.password ? ( {
+                                                content: touched.password ? errors.password : null,
+                                                pointing: 'below',
+                                                size: 'tiny',
+                                            }) : null }
+                                            icon={{ name: hidePassword?'eye':'eye slash', link: true, onClick:() => setHidePassword(value => !value) }}
+                                        />
+                                        {/* <Form.Field>
+                                            <Checkbox label='Lembrar meus dados' />
+                                        </Form.Field> */}
+                                        <Link to={{ pathname: "/forgot-password" }}>
+                                            Esqueci minha senha
+                                        </Link>
+                                        <Button 
+                                            type="submit" 
+                                            fluid 
+                                            primary 
+                                            className="my-4" 
+                                            disabled={(!values.email || !values.password || isSubmitting) ? true : false}
+                                            size="medium"
+                                        >
+                                            Entrar
+                                        </Button>
+                                        <Link to="/signup">Cadastre-se gratuitamente</Link>
+                                    </Form>
+                                )}
+                            </Formik>
                         </Grid.Column>
                     </Grid.Row>
                 </Grid>
-            {/* </Container> */}
+            </Container>
         </main>
+
         <div class="landingPageFooter">
             <Link inverted to={{ pathname: "/about" }}>
                 Sobre o Mublin

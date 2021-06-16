@@ -59,7 +59,7 @@ function SignupPage (props) {
         .then(res => res.json())
         // .then(res => localStorage.setItem('user', JSON.stringify(res)))
         .then(
-            history.push("/login?info=firstAccess")
+            history.push("/?info=firstAccess")
         )
     }
 
@@ -341,7 +341,7 @@ function SignupPage (props) {
                             </Formik>
                         </Segment>
                         <Segment attached='bottom' textAlign='center' className='mb-0 mb-md-4'>
-                            <Link to={{ pathname: "/login" }}>
+                            <Link to={{ pathname: "/" }}>
                                 Já tem uma conta? Clique aqui para entrar
                             </Link>
                         </Segment>

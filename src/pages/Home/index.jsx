@@ -349,8 +349,8 @@ function HomePage () {
                             { !userInfo.requesting ? (
                                 projectsToShow.length ? (
                                     projectsToShow.map((project, key) =>
-                                    <Card key={key} fluid>
-                                        <Label basic attached='top' style={{fontWeight:'400',display:'flex',justifyContent:'space-between',border:'none',paddingBottom:'0'}}>
+                                    <Card key={key} fluid color={(!project.yearEnd && project.ptid !== 7) ? 'green' : 'grey'}>
+                                        <Label basic attached='top' style={{fontWeight:'400',display:'flex',justifyContent:'space-between',border:'none',paddingBottom:'0',    backgroundColor:'transparent'}}>
                                             <div>
                                                 {project.ptname}
                                             </div>
@@ -367,7 +367,7 @@ function HomePage () {
                                                 }
                                                 {(project.ptid === 7) &&
                                                     <p className='mb-0'>
-                                                        <Icon name='lightbulb outline' color='blue' />Ideia em desenvolvimento
+                                                        <Icon name='lightbulb outline' className='mr-0' />Ideia em desenvolvimento
                                                     </p>
                                                 }
                                             </div>
@@ -387,7 +387,7 @@ function HomePage () {
                                             >
                                                 {project.name} {project.portfolio === 1 && <Icon name='tag' color='black' style={{fontSize:'11px',verticalAlign: 'text-top'}} title='Portfolio' />}
                                             </Card.Header>
-                                            <Card.Description className='pt-1 pb-3' style={{fontSize:'11px',display:'inline'}}>
+                                            <Card.Description className='pt-1 pb-3' style={{fontSize:'11px',display:'inline',verticalAlign:'middle'}}>
                                                 { project.confirmed === 1 ? ( <><Icon className='mr-0' name={project.workIcon} />{project.workTitle}</> ) : ( <><Icon className='mr-0' name='clock outline' />Pendente</> )}
                                                 <Label circular color={(project.yearLeftTheProject || project.yearEnd) ? 'red' : 'green'} empty size='mini' className='ml-2 mr-1' />
                                                 {(project.joined_in && (project.joined_in !== project.yearLeftTheProject)) ? ( 
@@ -408,10 +408,8 @@ function HomePage () {
                                                 {/* {project.role1}{project.role2 && ', '+project.role2}{project.role3 && ', '+project.role3} */}
                                                 {project.role1 && <Label size='mini' style={{fontWeight:'500'}}>{project.role1.length > 11 ? `${project.role1.substring(0, 11)}...` : project.role1}</Label>} {project.role2 && <Label size='mini' style={{fontWeight:'500'}}>{project.role2.length > 11 ? `${project.role2.substring(0, 11)}...` : project.role2}</Label>} {project.role3 && <Label size='mini' style={{fontWeight:'500'}}>{project.role3.length > 11 ? `${project.role3.substring(0, 11)}...` : project.role3}</Label>}
                                             </Card.Meta>
-                                            <Card.Description className='pt-2' style={{display:'table-cell',fontSize:'11.3px'}}>
-                                                <>
-                                                    <Link to={{ pathname: '/project/'+project.username }} className='mr-2' style={{color:'rgba(0,0,0,.85)'}}><Icon name='dashboard' />Dashboard</Link> <Link to={{ pathname: '/project/'+project.username }} style={{color:'rgba(0,0,0,.85)'}}><Icon name='eye' />Ver página</Link>
-                                                </>
+                                            <Card.Description className='pt-2' style={{display:'table-cell',fontSize:'11.6px'}}>
+                                                <Link to={{ pathname: '/project/'+project.username }} className='mr-2' style={{color:'rgba(0,0,0,.85)'}}><Icon name='dashboard' />Dashboard</Link> <Link to={{ pathname: '/project/'+project.username }} style={{color:'rgba(0,0,0,.85)'}}><Icon name='eye' />Ver página</Link>
                                             </Card.Description>
                                         </Card.Content>
                                     </Card>

@@ -26,6 +26,8 @@ function HomePage () {
 
     const user = JSON.parse(localStorage.getItem('user'));
 
+    const currentYear = new Date().getFullYear()
+
     useEffect(() => {
         dispatch(userInfos.getUserProjects(user.id));
         dispatch(userInfos.getUserLastConnectedFriends());
@@ -330,7 +332,7 @@ function HomePage () {
                         </div>
 
                         <section id='tab1' style={tab === 1 ? null : {display:'none'}}>
-                            <div>
+                            <div className='pb-2'>
                                 <Checkbox 
                                     label={'Principais ('+projectsMain.length+')'}
                                     checked={showMain}
@@ -348,6 +350,28 @@ function HomePage () {
                                 projectsToShow.length ? (
                                     projectsToShow.map((project, key) =>
                                     <Card key={key} fluid>
+                                        <Label basic attached='top' style={{fontWeight:'400',display:'flex',justifyContent:'space-between',border:'none',paddingBottom:'0'}}>
+                                            <div>
+                                                {project.ptname}
+                                            </div>
+                                            <div className='ml-2'>
+                                                {(!project.yearEnd && project.ptid !== 7) &&
+                                                    <p className='mb-0'>
+                                                        <Icon name='toggle on' color='green' />Em atividade {project.yearFoundation && 'desde '+project.yearFoundation}
+                                                    </p>
+                                                }
+                                                {(project.yearEnd && project.yearEnd <= currentYear) &&
+                                                    <p className='mb-0'>
+                                                        <Icon name='toggle off' color='grey' />Encerrado em {project.yearEnd}
+                                                    </p>
+                                                }
+                                                {(project.ptid === 7) &&
+                                                    <p className='mb-0'>
+                                                        <Icon name='lightbulb outline' color='blue' />Ideia em desenvolvimento
+                                                    </p>
+                                                }
+                                            </div>
+                                        </Label>
                                         <Card.Content>
                                             <Image
                                                 floated='left'
@@ -359,21 +383,35 @@ function HomePage () {
                                             <Card.Header
                                                 className='cpointer'
                                                 onClick={() => history.push('/project/'+project.username)}
-                                                style={{fontSize:'12px'}}
+                                                style={{fontSize:'17.2px'}}
                                             >
-                                                {project.name} {project.portfolio === 1 && <Icon name='tag' color='black' style={{fontSize:'10px',verticalAlign: 'text-top'}} title='Portfolio' />}
+                                                {project.name} {project.portfolio === 1 && <Icon name='tag' color='black' style={{fontSize:'11px',verticalAlign: 'text-top'}} title='Portfolio' />}
                                             </Card.Header>
-                                            {/* <Card.Meta>{project.ptname}</Card.Meta> */}
-                                            <Card.Description className='pt-2' style={{fontSize:'11.5px',display:'inline'}}>
-                                                {project.ptname} • { project.confirmed === 1 ? ( <><Icon name={project.workIcon} />{project.workTitle}</> ) : ( <><Icon name='clock outline' />Participação pendente</> )}
+                                            <Card.Description className='pt-1 pb-3' style={{fontSize:'11px',display:'inline'}}>
+                                                { project.confirmed === 1 ? ( <><Icon className='mr-0' name={project.workIcon} />{project.workTitle}</> ) : ( <><Icon className='mr-0' name='clock outline' />Pendente</> )}
+                                                <Label circular color={(project.yearLeftTheProject || project.yearEnd) ? 'red' : 'green'} empty size='mini' className='ml-2 mr-1' />
+                                                {(project.joined_in && (project.joined_in !== project.yearLeftTheProject)) ? ( 
+                                                    <>
+                                                        { !project.yearEnd ? ( 
+                                                            project.joined_in +' ➜ '+(project.yearLeftTheProject ? project.yearLeftTheProject : 'atualmente')
+                                                        ) : (
+                                                            project.joined_in +' ➜ '+project.yearEnd
+                                                        )}
+                                                    </>
+                                                ) : (
+                                                    <>
+                                                        {project.joined_in} {project.yearEnd && ' ➜ '+project.yearEnd}
+                                                    </>
+                                                )}
                                             </Card.Description>
-                                            <Card.Description className='pt-3' style={{display:'table-cell'}}>
-                                                <Button basic size='mini' onClick={() => history.push('/project/'+project.username)}>
-                                                    Ver página
-                                                </Button>
-                                                <Button basic size='mini'>
-                                                    Gerenciar
-                                                </Button>
+                                            <Card.Meta style={{fontSize:'11px',color:'rgba(0,0,0,.68)'}}>
+                                                {/* {project.role1}{project.role2 && ', '+project.role2}{project.role3 && ', '+project.role3} */}
+                                                {project.role1 && <Label size='mini' style={{fontWeight:'500'}}>{project.role1.length > 11 ? `${project.role1.substring(0, 11)}...` : project.role1}</Label>} {project.role2 && <Label size='mini' style={{fontWeight:'500'}}>{project.role2.length > 11 ? `${project.role2.substring(0, 11)}...` : project.role2}</Label>} {project.role3 && <Label size='mini' style={{fontWeight:'500'}}>{project.role3.length > 11 ? `${project.role3.substring(0, 11)}...` : project.role3}</Label>}
+                                            </Card.Meta>
+                                            <Card.Description className='pt-2' style={{display:'table-cell',fontSize:'11.3px'}}>
+                                                <>
+                                                    <Link to={{ pathname: '/project/'+project.username }} className='mr-2' style={{color:'rgba(0,0,0,.85)'}}><Icon name='dashboard' />Dashboard</Link> <Link to={{ pathname: '/project/'+project.username }} style={{color:'rgba(0,0,0,.85)'}}><Icon name='eye' />Ver página</Link>
+                                                </>
                                             </Card.Description>
                                         </Card.Content>
                                     </Card>

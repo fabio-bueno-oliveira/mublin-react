@@ -114,7 +114,7 @@ function LandingPage (props) {
                                         }
                                         <Form.Field
                                             inverted
-                                            size='medium'
+                                            size='big'
                                             id='email'
                                             name="email" 
                                             control={Input}
@@ -132,7 +132,7 @@ function LandingPage (props) {
                                         />
                                         <Form.Field
                                             inverted
-                                            size='medium'
+                                            size='big'
                                             type={hidePassword ? 'password' : 'text'}
                                             id='password'
                                             name="password" 
@@ -162,7 +162,7 @@ function LandingPage (props) {
                                             primary 
                                             className="my-4" 
                                             disabled={(!values.email || !values.password || isSubmitting) ? true : false}
-                                            size="medium"
+                                            size="big"
                                         >
                                             Entrar
                                         </Button>

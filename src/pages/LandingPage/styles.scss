@@ -27,9 +27,10 @@ main.landingPage {
     margin-top: 40px;
 
     i {
-      background: -webkit-linear-gradient(#7b4397 , #dc2430);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
+      // background: -webkit-linear-gradient(#435297 , #dc2430);
+      // -webkit-background-clip: text;
+      // -webkit-text-fill-color: transparent;
+      color: #eb3349 ;
       font-size: 42px;
     }
 
@@ -37,6 +38,7 @@ main.landingPage {
       color: #FFF;
       font-family: 'Baloo'!important;
       font-size: 54px;
+      font-weight: 300;
     }
   }
 

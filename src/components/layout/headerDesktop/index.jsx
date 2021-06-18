@@ -105,20 +105,14 @@ const HeaderDesktop = () => {
                     <Menu.Item onClick={() => history.push("/home")} active={window.location.pathname === "/home"}>
                         <Icon name='home'/> Início
                     </Menu.Item>
-                    {/* <Menu.Item onClick={() => history.push("/feed")} active={window.location.pathname === "/feed"}>
-                        <i className="fas fa-globe-americas mr-2"></i> Feed
-                    </Menu.Item> */}
-                    {/* <Menu.Item onClick={() => history.push("/backstages")} active={window.location.pathname.includes("/backstage")}>
-                        <i className="fas fa-warehouse mr-2"></i> Backstages
-                    </Menu.Item> */}
-                    <Dropdown text='Projetos' simple item active={window.location.pathname === "/my-projects"}>
+                    <Dropdown text='Novo' simple item active={window.location.pathname === "/new"}>
                         <Dropdown.Menu>
-                            <Dropdown.Header>Novo</Dropdown.Header>
+                            {/* <Dropdown.Header>Novo</Dropdown.Header> */}
                             <Dropdown.Item icon='plus' text='Cadastrar novo projeto' onClick={() => history.push("/new/project")} />
                             <Dropdown.Item icon='lightbulb' text='Nova ideia de projeto' onClick={() => history.push("/new/idea")} />
                             <Dropdown.Item icon='add user' text='Ingressar em um projeto'  onClick={() => history.push("/new/join")} />
                             <Dropdown.Item icon='envelope' text='Convidar alguém para um projeto' />
-                            <Dropdown.Divider />
+                            {/* <Dropdown.Divider />
                             <Dropdown.Header>Meus projetos</Dropdown.Header>
                             <Dropdown.Item 
                                 icon='setting' 
@@ -132,20 +126,17 @@ const HeaderDesktop = () => {
                                     {project.name}
                                     <Dropdown.Menu>
                                         <Dropdown.Item 
-                                            // icon='user circle outline' 
                                             description={project.username}
                                             text='Página do projeto' 
                                             href={'/project/'+project.username}
                                         />
                                         <Dropdown.Item 
-                                            // icon='setting' 
-                                            // description='gerenciar' 
                                             text='Gerenciar' 
                                         />
                                     </Dropdown.Menu>
                                 </Dropdown.Item>
                                 </>
-                            )}
+                            )} */}
                         </Dropdown.Menu>
                     </Dropdown>
                     {/* <Menu.Item onClick={() => goToNotifications()}>

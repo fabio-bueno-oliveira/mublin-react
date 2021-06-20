@@ -199,12 +199,12 @@ function HomePage () {
         <Container className='px-3'>
             <Grid centered>
                 <Grid.Row columns={2}>
-                    <Grid.Column mobile={16} tablet={16} computer={4} className="only-computer"
+                    <Grid.Column mobile={16} tablet={16} computer={4} className="only-computer feed-item-wrapper"
                         style={{position:"-webkit-sticky",position:"sticky",top:"90px",display:"inline-table"}}
                     >
                         { !userInfo.requesting && 
                             <>
-                                <div className='feed-item-wrapper pb-3 mb-3'>
+                                <div className='pb-3 mb-3'>
                                     <a href={"/"+userInfo.username}>
                                         <Header as='h2'>
                                             { (!userInfo.requesting && userInfo.picture) ? (
@@ -227,8 +227,8 @@ function HomePage () {
                                         <Label.Detail>{userInfo.plan ? userInfo.plan.toUpperCase() : null}</Label.Detail>
                                     </Label>
                                 </div>
-                                <div className='feed-item-wrapper pb-3 mb-4'>
-                                    <Header as='h5' disabled>Sugestões para seguir</Header>
+                                <div className='pb-3 mb-4'>
+                                    <Header as='h5' disabled>Sugestões para você</Header>
                                     <div>
                                         <List size='large' relaxed>
                                             {suggestedUsers.map((user, key) =>
@@ -244,7 +244,7 @@ function HomePage () {
                                                             content={user.totalProjects + (user.totalProjects === 1 ? ' projeto' : ' projetos') + (user.availabilityTitle ? ' · ' + user.availabilityTitle : '')}
                                                             header={user.username}
                                                             size='tiny'
-                                                            trigger={<List.Header as='a' href={'/'+user.username} style={{width:'150px',whiteSpace:'nowrap',overflow:'hidden',textOverflow:'ellipsis',fontSize:'13px'}}>{user.name+' '+user.lastname} {!!user.verified && <Icon name='check circle' color='blue' className='verifiedIcon' title='Verificado' />}</List.Header>}
+                                                            trigger={<List.Header as='a' href={'/'+user.username} style={{width:'150px',whiteSpace:'nowrap',overflow:'hidden',textOverflow:'ellipsis',fontSize:'13px',color:'rgba(0, 0, 0, 0.85)'}}>{user.name+' '+user.lastname} {!!user.verified && <Icon name='check circle' color='blue' className='verifiedIcon' title='Verificado' />}</List.Header>}
                                                         />
                                                         {/* <List.Header as='a' href={'/'+user.username}>{user.name+' '+user.lastname} {!!user.verified && <Icon name='check circle' color='blue' className='verifiedIcon' title='Verificado' />}</List.Header> */}
                                                         <List.Description style={{fontSize:'11px',width:'160px',whiteSpace:'nowrap',overflow:'hidden',textOverflow:'ellipsis'}}>
@@ -258,10 +258,10 @@ function HomePage () {
                                 </div>
                             </>
                         }
-                        <p className='logoFont textCenter' style={{opacity:'0.3'}}>mublin ©2021</p>
+                        <p className='logoFont textCenter mb-3' style={{opacity:'0.3',fontWeight:'300'}}>mublin ©2021</p>
                     </Grid.Column>
                     <Grid.Column mobile={16} tablet={16} computer={12}>
-                        <div className='mt-0 mt-md-0'>
+                        <div className='mt-0 mt-md-2'>
                             {userInfo.requesting ? (
                                 <div style={{textAlign: 'center', width: '100%', height: '100px'}} className='py-3'>
                                     <Loader active inline='centered' />
@@ -349,7 +349,12 @@ function HomePage () {
                             { !userInfo.requesting ? (
                                 projectsToShow.length ? (
                                     projectsToShow.map((project, key) =>
-                                    <Card key={key} fluid color={(!project.yearEnd && project.ptid !== 7) ? 'green' : 'grey'}>
+                                    <Card 
+                                        key={key} 
+                                        fluid 
+                                        className='mb-4'
+                                        // color={(!project.yearEnd && project.ptid !== 7) ? 'green' : 'grey'} 
+                                    >
                                         <Label basic attached='top' style={{fontWeight:'400',display:'flex',justifyContent:'space-between',border:'none',paddingBottom:'0',    backgroundColor:'transparent'}}>
                                             <div>
                                                 {project.ptname}
@@ -383,7 +388,7 @@ function HomePage () {
                                             <Card.Header
                                                 className='cpointer'
                                                 onClick={() => history.push('/project/'+project.username)}
-                                                style={{fontSize:'17.2px'}}
+                                                style={{fontSize:'17.2px',display:'table-cell'}}
                                             >
                                                 {project.name} {project.portfolio === 1 && <Icon name='tag' color='black' style={{fontSize:'11px',verticalAlign: 'text-top'}} title='Portfolio' />}
                                             </Card.Header>

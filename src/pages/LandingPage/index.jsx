@@ -66,7 +66,6 @@ function LandingPage (props) {
                     <Grid.Row className='p-4'>
                         <Grid.Column mobile={16} tablet={10} computer={10}>
                             <Header as='h1'>
-                                <Icon name='heartbeat' />
                                 <Header.Content>mublin</Header.Content>
                             </Header>
                             <Header as='h2' className='mt-0 mb-3 mb-md-0' inverted>Seus projetos de música, <br/>centralizados em um só lugar</Header>

@@ -5,7 +5,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import { userInfos } from '../../../store/actions/user';
 // import { miscInfos } from '../../../store/actions/misc';
 import { userActions } from '../../../store/actions/authentication';
-import MublinLogo from '../../../assets/img/logos/mublin-logo-text-white.png';
 
 const HeaderDesktop = () => {
 
@@ -20,12 +19,12 @@ const HeaderDesktop = () => {
     useEffect(() => { 
         dispatch(userInfos.getInfo());
         // dispatch(miscInfos.getNotifications());
-        dispatch(userInfos.getUserProjects(user.id));
+        // dispatch(userInfos.getUserProjects(user.id));
     }, [dispatch]);
 
     const userInfo = useSelector(state => state.user);
 
-    const userProjects = useSelector(state => state.user.projects.sort((a, b) => a.name.localeCompare(b.name)))
+    // const userProjects = useSelector(state => state.user.projects.sort((a, b) => a.name.localeCompare(b.name)))
 
     // const unreadNotifications = useSelector(state => state.notifications.list.filter((item) => { return item.seen === 0 }).map(item => ({ 
     //     id: item.id,
@@ -99,11 +98,12 @@ const HeaderDesktop = () => {
         <>
             <Menu id='headerDesktop' fixed='top' inverted borderless>
                 <Container>
-                    <Menu.Item header onClick={() => history.push("/home")}>
-                        <Image src={MublinLogo} alt="Logo do Mublin" />
+                    <Menu.Item key='home-logo' header onClick={() => history.push("/home")}>
+                        <Image src={imageCdnPath+'/tr:h-60,w-154,c-maintain_ratio/logos/mublin-logo-text-white.png'} alt="Logo do Mublin" />
                     </Menu.Item>
-                    <Menu.Item onClick={() => history.push("/home")} active={window.location.pathname === "/home"}>
-                        <Icon name='home'/> Início
+                    <Menu.Item key='home' onClick={() => history.push("/home")} active={window.location.pathname === "/home"}>
+                        {/* <Icon name='home'/>  */}
+                        Início
                     </Menu.Item>
                     <Dropdown text='Novo' simple item active={window.location.pathname === "/new"}>
                         <Dropdown.Menu>
@@ -139,6 +139,9 @@ const HeaderDesktop = () => {
                             )} */}
                         </Dropdown.Menu>
                     </Dropdown>
+                    <Menu.Item key='explore' onClick={() => history.push("/search")} active={window.location.pathname === "/search"}>
+                        Explorar
+                    </Menu.Item>
                     {/* <Menu.Item onClick={() => goToNotifications()}>
                         <Icon name='bell outline' className='mr-0'/>
                         {!!unreadNotifications.length && <span className="ui red circular mini label">{unreadNotifications.length}</span>}

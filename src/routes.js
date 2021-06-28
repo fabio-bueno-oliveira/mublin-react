@@ -14,6 +14,7 @@ import StartStep2Page from './pages/StartPages/Step2';
 import StartStep3Page from './pages/StartPages/Step3';
 import StartStep4Page from './pages/StartPages/Step4';
 import Home from './pages/Home';
+import Career from './pages/Career';
 import Feed from './pages/Feed';
 import ProfilePage from './pages/ProfilePage';
 import PublicProfilePage from './pages/ProfilePage/publicPage';
@@ -84,6 +85,7 @@ function Routes (props) {
                 <PrivateRoute authed={loggedIn} path="/start/step3" component={StartStep3Page} />
                 <PrivateRoute authed={loggedIn} path="/start/step4" component={StartStep4Page} />
                 <PrivateRoute authed={loggedIn} path="/home" component={Home} />
+                <PrivateRoute authed={loggedIn} path="/career" component={Career} />
                 <PrivateRoute authed={loggedIn} path="/feed" component={Feed} />
                 <PrivateRoute authed={loggedIn} path="/new/event" component={NewEvent} />
                 <PrivateRoute authed={loggedIn} path="/new/event/step2/" component={NewEventStep2} />

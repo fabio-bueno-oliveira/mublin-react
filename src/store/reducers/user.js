@@ -22,7 +22,7 @@ const initialState = {
   legend: '',
   website: '',
   roles: [
-    { id: '', idRole: '', name: '', description: '', mainActivity: '' }
+    { id: '', idRole: '', name: '', description: '', mainActivity: '', icon: '' }
   ],
   genres: [
     { id: '', idGenre:'', name: '', mainGenre: '' }

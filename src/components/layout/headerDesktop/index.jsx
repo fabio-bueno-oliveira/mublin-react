@@ -96,14 +96,22 @@ const HeaderDesktop = () => {
 
     return (
         <>
-            <Menu id='headerDesktop' fixed='top' inverted borderless>
+            <Menu id='headerDesktop' size='small' fixed='top' inverted borderless>
                 <Container>
                     <Menu.Item key='home-logo' header onClick={() => history.push("/home")}>
-                        <Image src={imageCdnPath+'/tr:h-60,w-154,c-maintain_ratio/logos/mublin-logo-text-white.png'} alt="Logo do Mublin" />
+                        <Image src={imageCdnPath+'/tr:h-56,w-144,c-maintain_ratio/logos/mublin-logo-text-white.png'} alt="Logo do Mublin" />
                     </Menu.Item>
                     <Menu.Item key='home' onClick={() => history.push("/home")} active={window.location.pathname === "/home"}>
-                        {/* <Icon name='home'/>  */}
+                        <Icon name='home'/> 
                         Início
+                    </Menu.Item>
+                    <Menu.Item key='career' onClick={() => history.push("/career")} active={window.location.pathname === "/career"}>
+                        <Icon name='rocket'/> 
+                        Carreira
+                    </Menu.Item>
+                    <Menu.Item key='explore' onClick={() => history.push("/search")} active={window.location.pathname === "/search"}>
+                        <Icon name='compass'/>
+                        Explorar
                     </Menu.Item>
                     <Dropdown text='Novo' simple item active={window.location.pathname === "/new"}>
                         <Dropdown.Menu>
@@ -139,9 +147,6 @@ const HeaderDesktop = () => {
                             )} */}
                         </Dropdown.Menu>
                     </Dropdown>
-                    <Menu.Item key='explore' onClick={() => history.push("/search")} active={window.location.pathname === "/search"}>
-                        Explorar
-                    </Menu.Item>
                     {/* <Menu.Item onClick={() => goToNotifications()}>
                         <Icon name='bell outline' className='mr-0'/>
                         {!!unreadNotifications.length && <span className="ui red circular mini label">{unreadNotifications.length}</span>}

@@ -1,6 +1,6 @@
 .feed-item-wrapper {
   background-color: rgb(255, 255, 255)!important;
-  border-radius: 13px;
+  border-radius: 6px;
   box-shadow: 0 4px 7px 0 #e4e4e4;
   height: fit-content;
   padding: 14px 6px 2px 12px!important;
@@ -57,7 +57,7 @@
 
 .friends-carousel-cell {
   width: 70px;
-  height: 90px;
+  height: 80px;
   padding: 0px 0px;
   margin-right: 0px;
   counter-increment: gallery-cell;
@@ -89,7 +89,7 @@
 @media screen and (min-width: 601px) {
   .friends-carousel-cell {
     width: 66px!important;
-    height: 100px!important;
+    height: 80px!important;
     margin-right: 0px!important;
     padding: 0px 0px!important;
 
@@ -164,7 +164,7 @@ h2.ui.header .sub.header {
 }
 
 .ui.card {
-  border-radius: 13px;
+  border-radius: 6px;
   box-shadow: 0 7px 15px 0 rgba(0,0,0,.1);
 }
 
@@ -172,4 +172,43 @@ h2.ui.header .sub.header {
   font-weight: 500 !important;
   display: flex !important;
   width: fit-content !important;
+}
+
+.projectRoles {
+
+  img {
+    width: 13px!important;
+    vertical-align: sub!important;
+    height: 13px!important;
+  }
+}
+
+.homepage {
+
+  .projectRoles::-webkit-scrollbar {
+    height: 6px;
+  }
+
+  .projectRoles::-webkit-scrollbar-track {
+    background: white;        /* color of the tracking area */
+  }
+
+  .projectRoles::-webkit-scrollbar-thumb {
+    background-color: rgb(216, 216, 216);
+    border-radius: 14px;
+  }
+
+  .ui.attached.item.menu {
+    margin: 0!important;
+  }
+
+  .one.item.menu {
+    a.item {
+      flex-direction: row-reverse;
+
+      i {
+        margin-left: 4px;
+      }
+    }
+  }
 }

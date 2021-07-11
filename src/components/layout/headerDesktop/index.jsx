@@ -105,7 +105,7 @@ const HeaderDesktop = () => {
                         <Icon name='home'/> 
                         Início
                     </Menu.Item>
-                    <Menu.Item key='career' onClick={() => history.push("/career")} active={window.location.pathname === "/career"}>
+                    <Menu.Item key='career' onClick={() => history.push("/career")} active={window.location.pathname.includes("/career")}>
                         <Icon name='rocket'/> 
                         Carreira
                     </Menu.Item>

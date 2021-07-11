@@ -7,7 +7,7 @@ import FooterMenuMobile from '../../components/layout/footerMenuMobile';
 import Spacer from '../../components/layout/Spacer';
 import { userInfos } from '../../store/actions/user';
 import { searchInfos } from '../../store/actions/search';
-import { Container, Header, Grid, Card, Image, Icon, Label, List, Table, Loader, Placeholder, Segment, Checkbox } from 'semantic-ui-react';
+import { Container, Header, Grid, Card, Image, Icon, Label, List, Table, Loader, Placeholder, Menu, Segment, Checkbox } from 'semantic-ui-react';
 import Flickity from 'react-flickity-component';
 import './styles.scss';
 
@@ -21,7 +21,7 @@ function HomePage () {
 
     const user = JSON.parse(localStorage.getItem('user'));
 
-    const currentYear = new Date().getFullYear()
+    // const currentYear = new Date().getFullYear()
 
     useEffect(() => {
         dispatch(userInfos.getUserProjects(user.id));
@@ -70,7 +70,7 @@ function HomePage () {
         <HeaderDesktop />
         <HeaderMobile />
         <Spacer />
-        <Container className='px-3'>
+        <Container className='px-3 homepage'>
             <Grid centered>
                 <Grid.Row columns={2}>
                     <Grid.Column mobile={16} tablet={16} computer={4} className="only-computer" >
@@ -100,7 +100,7 @@ function HomePage () {
                                     <Table compact size='small' basic='very' className='mt-0' style={{fontSize:'11.5px'}}>
                                         <Table.Body>
                                             <Table.Row>
-                                                <Table.Cell style={{fontWeight:'500'}}>Principais atividades</Table.Cell>
+                                                <Table.Cell>Principais atividades:</Table.Cell>
                                                 <Table.Cell textAlign='right' className='pr-2' style={{display:'grid'}}>
                                                     {userInfo.roles.map((role, key) =>
                                                         <span key={key}><nobr>{role.icon && <img src={cdnBaseURL+'/icons/music/tr:h-26,w-26,c-maintain_ratio/'+role.icon} width='13' height='13' style={{verticalAlign:'sub'}} />}{role.name}{key < (userInfo.roles.length-1) && ', '}</nobr></span>
@@ -108,11 +108,11 @@ function HomePage () {
                                                 </Table.Cell>
                                             </Table.Row>
                                             <Table.Row>
-                                                <Table.Cell>Plano</Table.Cell>
+                                                <Table.Cell>Plano:</Table.Cell>
                                                 <Table.Cell textAlign='right' className='pr-2'>{userInfo.plan ? userInfo.plan.toUpperCase() : null} {userInfo.plan !== 'Pro' && <a href='/upgrade'>Me tornar PRO</a>}</Table.Cell>
                                             </Table.Row>
                                             <Table.Row>
-                                                <Table.Cell>Projetos</Table.Cell>
+                                                <Table.Cell>Projetos:</Table.Cell>
                                                 <Table.Cell textAlign='right' className='pr-2'>{userInfo.projects ? userInfo.projects.length : null}</Table.Cell>
                                             </Table.Row>
                                         </Table.Body>
@@ -178,7 +178,7 @@ function HomePage () {
                                                         color='green'
                                                         empty 
                                                         size='mini' 
-                                                        style={{position:'absolute',top:'42%',right:'23%'}} 
+                                                        style={{position:'absolute',top:'48%',right:'23%'}} 
                                                     />
                                                 </div>
                                             )}
@@ -190,7 +190,7 @@ function HomePage () {
                         </div>
                         <Header 
                             as='h2' 
-                            className='mt-0 mb-2'
+                            className='mt-3 mb-2'
                         >
                             Meus Projetos
                         </Header>
@@ -202,7 +202,8 @@ function HomePage () {
                                 style={{fontSize:'12px'}}
                             />
                             <Checkbox 
-                                label={['Portfolio ' , '('+projectsPortfolio.length+') ' , <Icon name='tag' style={{fontSize:'10px'}} />]}
+                                // label={['Portfolio ' , '('+projectsPortfolio.length+') ' , <Icon name='tag' style={{fontSize:'10px'}} />]}
+                                label={['Portfolio ' , '('+projectsPortfolio.length+')']}
                                 checked={showPortfolio}
                                 onClick={togglePortfolio}
                                 style={{fontSize:'12px',marginLeft:'10px'}}
@@ -221,7 +222,7 @@ function HomePage () {
                                         <div>
                                             {project.ptname}
                                         </div>
-                                        <div className='ml-2'>
+                                        {/* <div className='ml-2'>
                                             {(!project.yearEnd && project.ptid !== 7) &&
                                                 <p className='mb-0'>
                                                     <Icon name='toggle on' color='green' />Em atividade {project.yearFoundation && 'desde '+project.yearFoundation}
@@ -237,7 +238,7 @@ function HomePage () {
                                                     <Icon name='lightbulb outline' className='mr-0' />Ideia em desenvolvimento
                                                 </p>
                                             }
-                                        </div>
+                                        </div> */}
                                     </Label>
                                     <Card.Content>
                                         <Image
@@ -248,14 +249,14 @@ function HomePage () {
                                             onClick={() => history.push('/project/'+project.username)}
                                         />
                                         <Card.Header
-                                            className='cpointer'
+                                            className='cpointer pb-1'
                                             onClick={() => history.push('/project/'+project.username)}
                                             style={{fontSize:'17.2px',display:'table-cell'}}
                                         >
                                             {project.name} {project.portfolio === 1 && <Icon name='tag' color='black' style={{fontSize:'11px',verticalAlign: 'text-top'}} title='Portfolio' />}
                                         </Card.Header>
-                                        <Card.Description className='pt-1 pb-3' style={{fontSize:'11px',display:'inline',verticalAlign:'middle'}}>
-                                            { project.confirmed === 1 ? ( <><Icon className='mr-0' name={project.workIcon} />{project.workTitle}</> ) : ( <><Icon className='mr-0' name='clock outline' />Pendente</> )}
+                                        <Card.Description style={{fontSize:'11.5px',display:'inline',verticalAlign:'middle'}}>
+                                            { project.confirmed === 1 ? ( <>{project.workTitle}</> ) : ( <><Icon className='mr-0' name='clock outline' />Pendente</> )}
                                             <Label circular color={(project.yearLeftTheProject || project.yearEnd) ? 'red' : 'green'} empty size='mini' className='ml-2 mr-1' />
                                             {(project.joined_in && (project.joined_in !== project.yearLeftTheProject)) ? ( 
                                                 <>
@@ -271,14 +272,18 @@ function HomePage () {
                                                 </>
                                             )}
                                         </Card.Description>
-                                        <Card.Meta style={{fontSize:'11px',color:'rgba(0,0,0,.68)'}}>
-                                            {/* {project.role1}{project.role2 && ', '+project.role2}{project.role3 && ', '+project.role3} */}
-                                            {project.role1 && <Label size='mini' style={{fontWeight:'500'}}>{project.role1.length > 11 ? `${project.role1.substring(0, 11)}...` : project.role1}</Label>} {project.role2 && <Label size='mini' style={{fontWeight:'500'}}>{project.role2.length > 11 ? `${project.role2.substring(0, 11)}...` : project.role2}</Label>} {project.role3 && <Label size='mini' style={{fontWeight:'500'}}>{project.role3.length > 11 ? `${project.role3.substring(0, 11)}...` : project.role3}</Label>}
+                                        <Card.Meta className='projectRoles mt-1 pb-1' style={{fontSize:'11.4px',color:'rgba(0,0,0,.68)',overflowX:'auto'}}>
+                                            {project.role1icon && <span style={{whiteSpace:'nowrap'}}><img src={cdnBaseURL+'/icons/music/tr:h-26,w-26,c-maintain_ratio/'+project.role1icon} />{project.role1}</span>}{project.role2 && <span style={{whiteSpace:'nowrap'}}>, {project.role2icon && <img src={cdnBaseURL+'/icons/music/tr:h-26,w-26,c-maintain_ratio/'+project.role2icon} />}{project.role2}</span>}{project.role3 && <span style={{whiteSpace:'nowrap'}}>, {project.role3icon && <img src={cdnBaseURL+'/icons/music/tr:h-26,w-26,c-maintain_ratio/'+project.role3icon} />}{project.role3}</span>}
+                                            {/* {project.role1 && <Label size='mini' style={{fontWeight:'500'}}>{project.role1icon && <img src={cdnBaseURL+'/icons/music/tr:h-26,w-26,c-maintain_ratio/'+project.role1icon} />} {project.role1.length > 11 ? `${project.role1.substring(0, 11)}...` : project.role1}</Label>} {project.role2 && <Label size='mini' style={{fontWeight:'500'}}>{project.role2.length > 11 ? `${project.role2.substring(0, 11)}...` : project.role2}</Label>} {project.role3 && <Label size='mini' style={{fontWeight:'500'}}>{project.role3.length > 11 ? `${project.role3.substring(0, 11)}...` : project.role3}</Label>} */}
                                         </Card.Meta>
-                                        <Card.Description className='pt-2' style={{display:'table-cell',fontSize:'11.6px'}}>
-                                            <Link to={{ pathname: '/project/'+project.username }} className='mr-2' style={{color:'rgba(0,0,0,.85)'}}><Icon name='setting' />Painel</Link> <Link to={{ pathname: '/project/'+project.username }} style={{color:'rgba(0,0,0,.85)'}}><Icon name='eye' />Ver página</Link>
-                                        </Card.Description>
                                     </Card.Content>
+                                    <Menu fluid widths={1} attached='bottom' borderless style={{border:'none'}} size='small'>
+                                        <Menu.Item
+                                            name='Acessar Projeto'
+                                            icon='arrow right'
+                                            onClick={() => history.push('/project/'+project.username)}
+                                        />
+                                    </Menu>
                                 </Card>
                                 )
                             ) : (

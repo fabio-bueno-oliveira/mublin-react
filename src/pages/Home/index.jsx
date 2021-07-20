@@ -270,7 +270,7 @@ function HomePage () {
                                         className='mb-2'
                                         // color={(!project.yearEnd && project.ptid !== 7) ? 'green' : 'grey'} 
                                     >
-                                        <Label color='red' icon='bell outline' floating as='a' content='Nova anotação' />
+                                        <Label circular color='red' icon='bell outline' floating as='a' title='Novas notificações' />
                                         <Card.Content>
                                             <Image
                                                 floated='left'
@@ -334,8 +334,8 @@ function HomePage () {
                                             </>
                                         ) : (
                                             <>
-                                                <Card.Content style={{fontSize:'11.8px',color:'rgba(0,0,0,.68)'}}>
-                                                    <Icon name='calendar alternate outline' /><strong>Próximo evento:</strong> Nenhum evento programado
+                                                <Card.Content style={{fontSize:'11.8px',color:'rgba(0,0,0,.68)'}} className='textEllipsis' title={project.nextEventTitle ? project.nextEventTitle + ' em ' + project.nextEventDateOpening + ' às ' + project.nextEventHourOpening : null}>
+                                                    <Icon name='calendar alternate outline' /><strong>Próximo evento:</strong> {project.nextEventTitle ? project.nextEventTitle + ' em ' + project.nextEventDateOpening + ' às ' + project.nextEventHourOpening : 'Nenhum evento programado'}
                                                 </Card.Content>
                                                 <Card.Content style={{fontSize:'11.8px',color:'rgba(0,0,0,.68)'}}>
                                                     <Icon name='bullseye' /><strong>Meta mais recente:</strong> Nenhuma meta cadastrada

@@ -63,7 +63,10 @@ const initialState = {
       genre2: '',
       genre3: '',
       yearFoundation: '',
-      yearEnd: ''
+      yearEnd: '',
+      nextEventTitle: '',
+      nextEventDateOpening: '',
+      nextEventHourOpening: ''
     }
   ],
   gear: [
@@ -257,6 +260,9 @@ export function user(state = initialState, action) {
             role1: '',
             role2: '',
             role3: '',
+            nextEventTitle: '',
+            nextEventDateOpening: '',
+            nextEventHourOpening: ''
           }
         ],
         error: "A solicitação falhou"

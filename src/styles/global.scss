@@ -296,3 +296,10 @@ body, html {
 .mainColor {
   color: #5555ff!important;
 }
+
+.textEllipsis {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}

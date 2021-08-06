@@ -7,7 +7,7 @@ import FooterMenuMobile from '../../components/layout/footerMenuMobile';
 import Spacer from '../../components/layout/Spacer';
 import { userInfos } from '../../store/actions/user';
 import { searchInfos } from '../../store/actions/search';
-import { Container, Header, Grid, Card, Image, Icon, Label, List, Table, Loader, Placeholder, Menu, Checkbox } from 'semantic-ui-react';
+import { Container, Header, Grid, Card, Image, Icon, Label, List, Button, Loader, Placeholder, Checkbox } from 'semantic-ui-react';
 import Flickity from 'react-flickity-component';
 import './styles.scss';
 
@@ -128,10 +128,18 @@ function HomePage () {
                     <Grid.Column mobile={16} tablet={16} computer={4} className="only-computer" >
                         <div style={{position:"-webkit-sticky",position:"sticky",display:"inline-table",width: '100%'}}>
                             { !userInfo.requesting ? ( 
-                                <div className="feed-item-wrapper pb-2">
-
-                                    <Image src={(!userInfo.requesting && userInfo.picture) ? 'https://ik.imagekit.io/mublin/users/avatars/'+userInfo.id+'/'+userInfo.picture : undefinedAvatar} size='medium' circular size='tiny' centered className='mb-3' />
-
+                                <>
+                                <div className="miniProfile pb-2">
+                                    <Image 
+                                        src={(!userInfo.requesting && userInfo.picture) ? 'https://ik.imagekit.io/mublin/tr:h-152,w-152,c-maintain_ratio/users/avatars/'+userInfo.id+'/'+userInfo.picture : undefinedAvatar} 
+                                        size='tiny' 
+                                        circular 
+                                        centered 
+                                        // as='a'
+                                        // href={"/"+userInfo.username}
+                                        className='mb-3 cpointer'
+                                        onClick={() => history.push('/'+userInfo.username)}
+                                    />
                                     <a href={"/"+userInfo.username}>
                                         <Header as='h3' textAlign='center'>
                                             <Header.Content>
@@ -140,34 +148,39 @@ function HomePage () {
                                             </Header.Content>
                                         </Header>
                                     </a>
-
                                     <Header as='h5' textAlign='center' className='mt-3 mb-3'>
                                         <Header.Subheader>
                                             {userInfo.bio}
                                         </Header.Subheader>
                                     </Header>
-
-                                    <Table compact size='small' basic='very' className='mt-0' style={{fontSize:'11.5px'}}>
-                                        <Table.Body>
-                                            <Table.Row>
-                                                <Table.Cell>Principais atividades:</Table.Cell>
-                                                <Table.Cell textAlign='right' className='pr-2' style={{display:'grid'}}>
-                                                    {userInfo.roles.map((role, key) =>
-                                                        <span key={key}><nobr>{role.icon && <img src={cdnBaseURL+'/icons/music/tr:h-26,w-26,c-maintain_ratio/'+role.icon} width='13' height='13' style={{verticalAlign:'sub'}} />}{role.name}{key < (userInfo.roles.length-1) && ', '}</nobr></span>
-                                                    )}
-                                                </Table.Cell>
-                                            </Table.Row>
-                                            <Table.Row>
-                                                <Table.Cell>Plano:</Table.Cell>
-                                                <Table.Cell textAlign='right' className='pr-2'>{userInfo.plan ? userInfo.plan.toUpperCase() : null} {userInfo.plan !== 'Pro' && <a href='/upgrade'>Me tornar PRO</a>}</Table.Cell>
-                                            </Table.Row>
-                                            <Table.Row>
-                                                <Table.Cell>Projetos:</Table.Cell>
-                                                <Table.Cell textAlign='right' className='pr-2'>{userInfo.projects ? userInfo.projects.length : null}</Table.Cell>
-                                            </Table.Row>
-                                        </Table.Body>
-                                    </Table>
                                 </div>
+                                <div className="miniProfile pb-2 mt-4">
+                                    <Header as='h5' textAlign='left' className='mb-3'>
+                                        Principais atividades
+                                        <Header.Subheader className='mt-1'>
+                                            {userInfo.roles.map((role, key) =>
+                                                <span key={key}>{role.icon && <img src={cdnBaseURL+'/icons/music/tr:h-26,w-26,c-maintain_ratio/'+role.icon} width='13' height='13' style={{verticalAlign:'sub'}} />}{role.name}{key < (userInfo.roles.length-1) && ', '}</span>
+                                            )}
+                                        </Header.Subheader>
+                                    </Header>
+                                    <Header as='h5' textAlign='left' className='mt-3 mb-3'>
+                                        Plano
+                                        <Header.Subheader className='mt-1'>
+                                            {userInfo.plan ? userInfo.plan.toUpperCase() : null} {userInfo.plan !== 'Pro' && <a href='/upgrade'>Me tornar PRO</a>}
+                                        </Header.Subheader>
+                                    </Header>
+                                    <Header as='h5' textAlign='left' className='mt-3 mb-3'>
+                                        {userInfo.projects ? userInfo.projects.length : null} projetos
+                                        <Header.Subheader className='mt-1'>
+                                            {userInfo.projects && 
+                                                userInfo.projects.map((project, key) =>
+                                                    <>{project.name}{key !== userInfo.projects.length - 1 && ', '}</>
+                                                )
+                                            }
+                                        </Header.Subheader>
+                                    </Header>
+                                </div>
+                                </>
                             ) : (
                                 <div className="feed-item-wrapper pb-3">
                                     <Placeholder>
@@ -270,7 +283,7 @@ function HomePage () {
                                         className='mb-2'
                                         // color={(!project.yearEnd && project.ptid !== 7) ? 'green' : 'grey'} 
                                     >
-                                        <Label circular color='red' icon='bell outline' floating as='a' title='Novas notificações' />
+                                        {/* <Label circular color='red' icon='bell outline' floating as='a' title='Novas notificações' /> */}
                                         <Card.Content>
                                             <Image
                                                 floated='left'
@@ -335,10 +348,10 @@ function HomePage () {
                                         ) : (
                                             <>
                                                 <Card.Content style={{fontSize:'11.8px',color:'rgba(0,0,0,.68)'}} className='textEllipsis' title={project.nextEventTitle ? project.nextEventTitle + ' em ' + project.nextEventDateOpening + ' às ' + project.nextEventHourOpening : null}>
-                                                    <Icon name='calendar alternate outline' /><strong>Próximo evento:</strong> {project.nextEventTitle ? project.nextEventTitle + ' em ' + project.nextEventDateOpening + ' às ' + project.nextEventHourOpening : 'Nenhum evento programado'}
+                                                    <Icon name='calendar alternate outline' title='Próximo evento' />{project.nextEventTitle ? <><strong>{project.nextEventTitle}</strong> em {project.nextEventDateOpening} às {project.nextEventHourOpening}</> : 'Nenhum evento programado'}
                                                 </Card.Content>
                                                 <Card.Content style={{fontSize:'11.8px',color:'rgba(0,0,0,.68)'}}>
-                                                    <Icon name='bullseye' /><strong>Meta mais recente:</strong> Nenhuma meta cadastrada
+                                                    <Icon name='bullseye' title='Meta mais recente' />Nenhuma meta cadastrada
                                                 </Card.Content>
                                             </>
                                         )}

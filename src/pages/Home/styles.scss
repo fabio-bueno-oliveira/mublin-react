@@ -16,6 +16,33 @@
   }
 }
 
+.miniProfile {
+  background: rgb(255,255,255);
+  border-radius: 6px;
+  box-shadow: 0 4px 7px 0 #e4e4e4;
+  height: fit-content;
+  padding: 18px 6px 2px 12px!important;
+  position: relative;
+
+  &.featured {
+    // background: linear-gradient(0deg, rgba(255,255,255,1) 84%, #1b1c1d 84%);
+    // background-color: rgb(255, 255, 255)!important;
+    background-image: url('https://ik.imagekit.io/mublin/bg/grey-dark.jpg?updatedAt=1628214942212');
+    background-repeat: repeat-x;
+    background-blend-mode: luminosity;
+  }
+
+  >img {
+    border: 2px white solid;
+  }
+}
+
+@media only screen and (min-width: 600px) {
+  .miniProfile {
+    width: 100%!important;
+  }
+}
+
 .ui.attached.tabular.menu {
   .item,
   .active.item {

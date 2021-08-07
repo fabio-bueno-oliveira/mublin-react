@@ -128,34 +128,22 @@ function HomePage () {
                     <Grid.Column mobile={16} tablet={16} computer={4} className="only-computer" >
                         <div style={{position:"-webkit-sticky",position:"sticky",display:"inline-table",width: '100%'}}>
                             { !userInfo.requesting ? ( 
-                                <>
-                                <div className="miniProfile pb-2">
-                                    <Image 
-                                        src={(!userInfo.requesting && userInfo.picture) ? 'https://ik.imagekit.io/mublin/tr:h-152,w-152,c-maintain_ratio/users/avatars/'+userInfo.id+'/'+userInfo.picture : undefinedAvatar} 
-                                        size='tiny' 
-                                        circular 
-                                        centered 
-                                        // as='a'
-                                        // href={"/"+userInfo.username}
-                                        className='mb-3 cpointer'
-                                        onClick={() => history.push('/'+userInfo.username)}
-                                    />
+                                <div className="miniProfile pb-2 mt-2">
                                     <a href={"/"+userInfo.username}>
-                                        <Header as='h3' textAlign='center'>
+                                        <Header as='h3'>
+                                            <Image circular src={(!userInfo.requesting && userInfo.picture) ? 'https://ik.imagekit.io/mublin/tr:h-70,w-70,c-maintain_ratio/users/avatars/'+userInfo.id+'/'+userInfo.picture : undefinedAvatar} />
                                             <Header.Content>
-                                                {userInfo.name} {userInfo.lastname}
-                                                <Header.Subheader>@{userInfo.username}</Header.Subheader>
+                                                Olá, {userInfo.name}!
+                                                {/* <Header.Subheader>@{userInfo.username}</Header.Subheader> */}
                                             </Header.Content>
                                         </Header>
                                     </a>
-                                    <Header as='h5' textAlign='center' className='mt-3 mb-3'>
-                                        <Header.Subheader>
+                                    <Header as='h5' textAlign='left' className='mt-3'>
+                                        <Header.Subheader className='mt-1'>
                                             {userInfo.bio}
                                         </Header.Subheader>
                                     </Header>
-                                </div>
-                                <div className="miniProfile pb-2 mt-4">
-                                    <Header as='h5' textAlign='left' className='mb-3'>
+                                    <Header as='h5' textAlign='left' className='mb-3 mt-2'>
                                         Principais atividades
                                         <Header.Subheader className='mt-1'>
                                             {userInfo.roles.map((role, key) =>
@@ -180,7 +168,6 @@ function HomePage () {
                                         </Header.Subheader>
                                     </Header>
                                 </div>
-                                </>
                             ) : (
                                 <div className="feed-item-wrapper pb-3">
                                     <Placeholder>
@@ -198,6 +185,7 @@ function HomePage () {
                                 </div>
                             )}
 
+                            {userInfo.lastConnectedFriends[0].username &&
                             <div className='feed-item-wrapper mt-0 mt-md-4 pb-2'>
                                 {userInfo.requesting ? (
                                     <div style={{textAlign: 'center', width: '100%', height: '100px'}} className='py-3'>
@@ -246,6 +234,7 @@ function HomePage () {
                                     </>
                                 )}    
                             </div>
+                            }
 
                             <Header disabled className='logoFont textCenter mt-3' style={{fontSize:'12px'}} as='h5'>
                                 mublin ©2021
@@ -269,9 +258,10 @@ function HomePage () {
                             <Checkbox 
                                 // label={['Portfolio ' , '('+projectsPortfolio.length+') ' , <Icon name='tag' style={{fontSize:'10px'}} />]}
                                 label={['Portfolio ' , '('+projectsPortfolio.length+')']}
-                                checked={showPortfolio}
+                                checked={projectsPortfolio.length === 0 ? false : showPortfolio}
                                 onClick={togglePortfolio}
                                 style={{fontSize:'12px',marginLeft:'10px'}}
+                                disabled={projectsPortfolio.length === 0 ? true : false}
                             />
                         </div>
                         { !userInfo.requesting ? (

@@ -42,6 +42,16 @@ function CareerTimelinePage () {
         contain: true
     }
 
+    const currentYear = new Date().getFullYear()
+
+    const showYears = (years) => {
+        if (years > 0) {
+            return years === 1 ? '(1 ano)' : '('+years+' anos)'
+        } else {
+            return '(menos de 1 ano)'
+        }
+    }
+
     return (
         <>
         <HeaderDesktop />
@@ -67,11 +77,6 @@ function CareerTimelinePage () {
                         </div>
                     ) : (
                         <>
-                        <Header as='h6'>
-                            <Header.Subheader>
-                                Ordenada por participação mais recente
-                            </Header.Subheader>
-                        </Header>
                         <VerticalTimeline
                             layout="1-column-left"
                         >
@@ -93,21 +98,16 @@ function CareerTimelinePage () {
                                         </Header.Content>
                                     </Header>
                                     <div>
-                                        {project.role1 && <Label size='mini' style={{fontWeight:'500'}}>{project.role1.length > 11 ? `${project.role1.substring(0, 11)}...` : project.role1}</Label>} {project.role2 && <Label size='mini' style={{fontWeight:'500'}}>{project.role2.length > 11 ? `${project.role2.substring(0, 11)}...` : project.role2}</Label>} {project.role3 && <Label size='mini' style={{fontWeight:'500'}}>{project.role3.length > 11 ? `${project.role3.substring(0, 11)}...` : project.role3}</Label>}
+                                        <Label size='mini' color='black' className='mr-1'>{project.workTitle}</Label> 
+                                        {project.role1 && <Label size='mini'>{project.role1.length > 11 ? `${project.role1.substring(0, 11)}...` : project.role1}</Label>} {project.role2 && <Label size='mini'>{project.role2.length > 11 ? `${project.role2.substring(0, 11)}...` : project.role2}</Label>} {project.role3 && <Label size='mini'>{project.role3.length > 11 ? `${project.role3.substring(0, 11)}...` : project.role3}</Label>}
                                     </div>
-                                    {(project.joined_in && (project.joined_in !== project.yearLeftTheProject)) ? ( 
-                                        <span class="vertical-timeline-element-date pt-2 pb-0">
-                                            { !project.yearEnd ? ( 
-                                                project.joined_in +' ➜ '+(project.yearLeftTheProject ? project.yearLeftTheProject : 'atualmente')
-                                            ) : (
-                                                project.joined_in +' ➜ '+project.yearEnd
-                                            )}
-                                        </span>
-                                    ) : (
-                                        <span class="vertical-timeline-element-date pt-2 pb-0">
-                                            {project.joined_in} {project.yearEnd && ' ➜ '+project.yearEnd}
-                                        </span>
-                                    )}
+                                    <span class="vertical-timeline-element-date pt-2 pb-0">
+                                        {!project.yearEnd ? ( 
+                                            <><Label circular color={project.yearLeftTheProject ? 'red' : 'green'} empty size='mini' className='ml-2 mr-1' /> {project.joined_in +' ➜ '+(project.yearLeftTheProject ? project.yearLeftTheProject : 'atualmente')} {project.yearLeftTheProject ? showYears(project.yearLeftTheProject - project.joined_in) : showYears(currentYear - project.joined_in)}</>
+                                        ) : (
+                                            <><Label circular color='red' empty size='mini' className='ml-2 mr-1' /> {project.joined_in +' ➜ '+project.yearEnd} {showYears(project.yearEnd - project.joined_in)}</>
+                                        )}
+                                    </span>
                                 </VerticalTimelineElement>
                             )}
                         </VerticalTimeline>

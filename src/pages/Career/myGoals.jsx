@@ -6,7 +6,7 @@ import HeaderMobile from '../../components/layout/headerMobile';
 import FooterMenuMobile from '../../components/layout/footerMenuMobile';
 import Spacer from '../../components/layout/Spacer';
 import { userInfos } from '../../store/actions/user';
-import { Container, Header, Grid, Segment, Checkbox, List, Icon, Label, Image, Button, Loader } from 'semantic-ui-react';
+import { Container, Header, Grid, Segment, Checkbox, List, Icon, Button } from 'semantic-ui-react';
 import Flickity from 'react-flickity-component';
 import './styles.scss';
 
@@ -27,14 +27,15 @@ function CareerGoalsPage () {
 
     const sliderOptions = {
         autoPlay: false,
-        cellAlign: 'left',
+        cellAlign: 'center',
         freeScroll: true,
         prevNextButtons: false,
         pageDots: false,
         wrapAround: false,
         draggable: '>1',
         resize: true,
-        contain: true
+        contain: true,
+        initialIndex: 1
     }
 
     return (
@@ -50,17 +51,17 @@ function CareerGoalsPage () {
                 disableImagesLoaded={false}
                 reloadOnUpdate
             >
-                <Button circular size='tiny' content='Timeline de Projetos' className='mr-2' onClick={() => history.push('/career')} basic />
+                <Button circular size='tiny' content='Timeline de Projetos' className='mr-2' basic onClick={() => history.push('/career')} />
                 <Button circular size='tiny' content='Minhas Metas' className='mr-2' secondary />
-                <Button circular size='tiny' content='Meus Equipamentos' basic />
+                <Button circular size='tiny' content='Meu Equipamento' basic onClick={() => history.push('/career/my-gear')} style={{width:'fit-content'}} />
             </Flickity>
-            <Grid centered columns={1}>
-                <Grid.Column width={16}>
-                    <Segment basic textAlign='center'>
-                        <Button centered primary icon className='mb-2'>
-                            <Icon name='plus' className='mr-1' /> Criar nova meta
-                        </Button>
-                    </Segment>
+        </Container>
+        <Grid as='main' centered columns={1} className="container">
+            <Grid.Row>
+                <Grid.Column mobile={16} computer={10} className='mb-5 mb-md-0 pb-2 pb-md-0'>
+                    <Button centered primary icon className='mb-2'>
+                        <Icon name='plus' className='mr-1' /> Criar nova meta
+                    </Button>
                     <List id="myGoals">
                         <List.Item>
                             <Checkbox label='Make my profile visible' />
@@ -70,8 +71,8 @@ function CareerGoalsPage () {
                         </List.Item>
                     </List>
                 </Grid.Column>
-            </Grid>
-        </Container>
+            </Grid.Row>
+        </Grid>
         <Spacer />
         <FooterMenuMobile />
         </>

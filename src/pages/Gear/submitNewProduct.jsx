@@ -156,7 +156,7 @@ function SubmitNewProduct () {
                 if (addNewProductToMyGear) {
                     addProductToMyGear(result.id)
                 } else {
-                    history.push("/gear")
+                    history.push("/career/my-gear")
                 }
             }).catch(err => {
                 console.error(err)
@@ -179,7 +179,7 @@ function SubmitNewProduct () {
                 body: JSON.stringify({productId: newProductId, featured: 0, for_sale: 0, price: null, currently_using: 1})
             }).then((response) => {
                 setIsLoading(false)
-                history.push("/gear")
+                history.push("/career/my-gear")
             }).catch(err => {
                 console.error(err)
                 alert("Ocorreu um erro ao adicionar o produto à sua lista de equipamentos")

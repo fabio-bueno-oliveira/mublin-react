@@ -3,11 +3,13 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useHistory, Link } from 'react-router-dom';
 import HeaderDesktop from '../../components/layout/headerDesktop';
 import HeaderMobile from '../../components/layout/headerMobile';
+import FooterMenuMobile from '../../components/layout/footerMenuMobile';
 import Spacer from '../../components/layout/Spacer'
 import { userInfos } from '../../store/actions/user';
-import { Form, Segment, Image, Modal, Header, Label, Grid, Button, Icon, Loader } from 'semantic-ui-react';
+import { Container, Form, Segment, Image, Modal, Header, Grid, Button, Icon, Loader } from 'semantic-ui-react';
 import IntlCurrencyInput from "react-intl-currency-input";
-import './styles.scss'
+import Flickity from 'react-flickity-component';
+import './styles.scss';
 
 function MyGearPage () {
 
@@ -205,22 +207,52 @@ function MyGearPage () {
         }, 300);
     }
 
+    const sliderOptions = {
+        autoPlay: false,
+        cellAlign: 'center',
+        freeScroll: true,
+        prevNextButtons: false,
+        pageDots: false,
+        wrapAround: false,
+        draggable: '>1',
+        resize: true,
+        contain: true,
+        initialIndex: 2
+    }
+
     return (
         <>
-            <HeaderDesktop />
-            <HeaderMobile />
-            <Spacer />
-            <Grid as='main' centered columns={1} className="container">
-                <Grid.Row>
-                    <Grid.Column mobile={16} computer={10}>
-                        <Header as='h2' className='mb-4'>Meu equipamento</Header>
-                        <Button color='green' size='large' fluid onClick={() => setModalAddNewProductOpen(true)} disabled={!isLoaded}>
-                            <Icon name='plus' /> Adicionar novo item à lista
-                        </Button>
-                        { !userInfo.requesting ? (
-                            userInfo.gear.map((item, key) => (
+        <HeaderDesktop />
+        <HeaderMobile />
+        <Spacer />
+        <Container className='px-3'>
+            <Flickity
+                className={'carousel mb-4 mb-md-5'}
+                elementType={'div'}
+                options={sliderOptions}
+                disableImagesLoaded={false}
+                reloadOnUpdate
+            >
+                <Button circular size='tiny' content='Timeline de Projetos' className='mr-2' basic onClick={() => history.push('/career')} />
+                <Button circular size='tiny' content='Minhas Metas' className='mr-2' basic onClick={() => history.push('/career/my-goals')} />
+                <Button circular size='tiny' content='Meu Equipamento' secondary style={{width:'fit-content'}} />
+            </Flickity>
+        </Container>
+        <Grid as='main' centered columns={1} className="container">
+            <Grid.Row>
+                <Grid.Column mobile={16} computer={10} className='mb-5 mb-md-0 pb-2 pb-md-0'>
+                    {userInfo.requesting ? (
+                        <div style={{textAlign: 'center', width: '100%', height: '100px'}} className='pt-5'>
+                            <Loader active inline='centered' />
+                        </div>
+                    ) : (
+                        <>
+                            <Button primary icon onClick={() => setModalAddNewProductOpen(true)} disabled={!isLoaded}>
+                                <Icon name='plus' /> Adicionar novo item à lista
+                            </Button>
+                            {userInfo.gear.map((item, key) => (
                                 <>
-                                    { item.id && 
+                                    {item.id && 
                                     <Segment.Group horizontal key={key}>
                                         <Segment className='gear itemDescriptionColumn'>
                                             <Header as='h5'>
@@ -252,180 +284,180 @@ function MyGearPage () {
                                     </Segment.Group>
                                     }
                                 </>
-                            ))
-                        ) : (
-                            <p>Carregando...</p>
+                            ))}
+                        </>
+                    )}
+                </Grid.Column>
+            </Grid.Row>
+        </Grid>
+        <FooterMenuMobile />
+        <Modal
+            size='mini'
+            open={modalAddNewProductOpen}
+            onClose={() => setModalAddNewProductOpen(false)}
+        >
+            <Modal.Header>Adicionar novo item</Modal.Header>
+            <Modal.Content>
+                <Form className='mb-1'>
+                    <Form.Field 
+                        label='Marca' 
+                        control='select'
+                        onChange={(e) => selectBrand(e.target.options[e.target.selectedIndex].value)}
+                        value={brandSelected}
+                        defaultValue={brandSelected}
+                    >
+                        { !brandSelected &&
+                            <option>Selecione</option>
+                        } 
+                        { brands.map((brand,key) =>
+                            <option key={key} value={brand.id}>{brand.name}</option>
                         )}
-                    </Grid.Column>
-                </Grid.Row>
-            </Grid>
-            <Modal
-                size='mini'
-                open={modalAddNewProductOpen}
-                onClose={() => setModalAddNewProductOpen(false)}
-            >
-                <Modal.Header>Adicionar novo item</Modal.Header>
-                <Modal.Content>
-                    <Form className='mb-1'>
-                        <Form.Field 
-                            label='Marca' 
-                            control='select'
-                            onChange={(e) => selectBrand(e.target.options[e.target.selectedIndex].value)}
-                            value={brandSelected}
-                            defaultValue={brandSelected}
-                        >
-                            { !brandSelected &&
-                                <option>Selecione</option>
-                            } 
-                            { brands.map((brand,key) =>
-                                <option key={key} value={brand.id}>{brand.name}</option>
-                            )}
-                        </Form.Field>
-                        <Form.Field 
-                            label='Categoria' 
-                            control='select'
-                            onChange={(e) => selectCategory(e.target.options[e.target.selectedIndex].value)}
-                            value={categorySelected}
-                            defaultValue={categorySelected}
-                        >
-                            {!isLoaded && 
-                                <option>Carregando...</option>
-                            }
-                            { !categorySelected && 
-                                <option>{!brandSelected ? 'Selecione primeiro a marca' : 'Selecione a categoria'}</option>
-                            } 
-                            { categories.map((category,key) =>
-                                <option key={key} value={category.id}>{category.name}</option>
-                            )}
-                        </Form.Field>
-                        <Form.Field 
-                            className='mb-3'
-                            label='Produto' 
-                            control='select'
-                            onChange={(e) => setProductSelected(e.target.options[e.target.selectedIndex].value)}
-                            value={productSelected}
-                        >
-                            {!isLoaded && 
-                                <option>Carregando...</option>
-                            }
-                            { !productSelected && 
-                                <option value=''>{!categorySelected ? 'Selecione primeiro a categoria' : 'Selecione o produto'}</option>
-                            }
-                            { products.map((product,key) =>
-                                <option key={key} value={product.id} disabled={!!userInfo.gear.filter((x) => { return x.productId === Number(product.id)}).length}>{product.name} {product.colorName && product.colorName} {!!userInfo.gear.filter((x) => { return x.productId === Number(product.id)}).length && '(já adicionado)'}</option>
-                            )}
-                        </Form.Field>
-                        { (productSelected && productInfo) &&
-                            <Image src={productInfo[0].picture} size='small' centered className='mb-1' />
+                    </Form.Field>
+                    <Form.Field 
+                        label='Categoria' 
+                        control='select'
+                        onChange={(e) => selectCategory(e.target.options[e.target.selectedIndex].value)}
+                        value={categorySelected}
+                        defaultValue={categorySelected}
+                    >
+                        {!isLoaded && 
+                            <option>Carregando...</option>
                         }
-                    </Form>
-                    <div style={{fontSize:'12px',width:'100%',textAlign:"right"}}>
-                        <Link as='a' to={{ pathname: '/gear/submit/product' }}>
-                            Não encontrei meu produto na lista
-                        </Link>
-                    </div>
-                </Modal.Content>
-                <Modal.Actions>
-                    <Button size='tiny' onClick={() => setModalAddNewProductOpen(false)}>
-                        Cancelar
-                    </Button>
-                    <Button size='tiny' secondary onClick={() => addProductToGear(productSelected, 0, 0, null, 1)} disabled={!productSelected ? true : false} loading={!isLoaded}>
-                        Adicionar
-                    </Button>
-                </Modal.Actions>
-            </Modal>
-            <Modal
-                size='mini'
-                open={modalEditItemOpen}
-                onClose={() => setModalEditItemOpen(false)}
-            >
-                <Modal.Header>Editar detalhes do item</Modal.Header>
-                <Modal.Content>
-                    <Form className='mb-1'>
-                        { modalItemManagementProductId && itemInfo.map((item, key) =>
-                            <>
-                                <Header as='h5'>
-                                    <Image src={item.picture} />
-                                    <Header.Content>
-                                        {item.productName}
-                                        <Header.Subheader className='mb-1'>{item.brandName}</Header.Subheader>
-                                    </Header.Content>
-                                </Header>
-                                <Form.Group widths='equal'>
-                                    <Form.Field 
-                                        label='Manter em destaque' 
-                                        control='select'
-                                        onChange={(e) => 
-                                            setFeatured(e.target.options[e.target.selectedIndex].value)
-                                        }
-                                        value={featured}
-                                    >
-                                        <option value='1'>Sim</option>
-                                        <option value='0'>Não</option>
-                                    </Form.Field>
-                                    <Form.Field 
-                                        label='Em uso atualmente' 
-                                        control='select'
-                                        onChange={(e) => 
-                                            setCurrentlyUsing(e.target.options[e.target.selectedIndex].value)
-                                        }
-                                        value={currently_using}
-                                    >
-                                        <option value='1'>Sim</option>
-                                        <option value='0'>Não</option>
-                                    </Form.Field>
-                                </Form.Group>
-                                <Form.Group widths='equal'>
-                                    <Form.Field 
-                                        label='À venda' 
-                                        control='select'
-                                        onChange={(e) => 
-                                            setForSale(e.target.options[e.target.selectedIndex].value)
-                                        }
-                                        value={for_sale}
-                                    >
-                                        <option value='1'>Sim</option>
-                                        <option value='0'>Não</option>
-                                    </Form.Field>
-                                    {/* <Form.Field
+                        { !categorySelected && 
+                            <option>{!brandSelected ? 'Selecione primeiro a marca' : 'Selecione a categoria'}</option>
+                        } 
+                        { categories.map((category,key) =>
+                            <option key={key} value={category.id}>{category.name}</option>
+                        )}
+                    </Form.Field>
+                    <Form.Field 
+                        className='mb-3'
+                        label='Produto' 
+                        control='select'
+                        onChange={(e) => setProductSelected(e.target.options[e.target.selectedIndex].value)}
+                        value={productSelected}
+                    >
+                        {!isLoaded && 
+                            <option>Carregando...</option>
+                        }
+                        { !productSelected && 
+                            <option value=''>{!categorySelected ? 'Selecione primeiro a categoria' : 'Selecione o produto'}</option>
+                        }
+                        { products.map((product,key) =>
+                            <option key={key} value={product.id} disabled={!!userInfo.gear.filter((x) => { return x.productId === Number(product.id)}).length}>{product.name} {product.colorName && product.colorName} {!!userInfo.gear.filter((x) => { return x.productId === Number(product.id)}).length && '(já adicionado)'}</option>
+                        )}
+                    </Form.Field>
+                    { (productSelected && productInfo) &&
+                        <Image src={productInfo[0].picture} size='small' centered className='mb-1' />
+                    }
+                </Form>
+                <div style={{fontSize:'12px',width:'100%',textAlign:"right"}}>
+                    <Link as='a' to={{ pathname: '/gear/submit/product' }}>
+                        Não encontrei meu produto na lista
+                    </Link>
+                </div>
+            </Modal.Content>
+            <Modal.Actions>
+                <Button size='tiny' onClick={() => setModalAddNewProductOpen(false)}>
+                    Cancelar
+                </Button>
+                <Button size='tiny' secondary onClick={() => addProductToGear(productSelected, 0, 0, null, 1)} disabled={!productSelected ? true : false} loading={!isLoaded}>
+                    Adicionar
+                </Button>
+            </Modal.Actions>
+        </Modal>
+        <Modal
+            size='mini'
+            open={modalEditItemOpen}
+            onClose={() => setModalEditItemOpen(false)}
+        >
+            <Modal.Header>Editar detalhes do item</Modal.Header>
+            <Modal.Content>
+                <Form className='mb-1'>
+                    { modalItemManagementProductId && itemInfo.map((item, key) =>
+                        <>
+                            <Header as='h5'>
+                                <Image src={item.picture} />
+                                <Header.Content>
+                                    {item.productName}
+                                    <Header.Subheader className='mb-1'>{item.brandName}</Header.Subheader>
+                                </Header.Content>
+                            </Header>
+                            <Form.Group widths='equal'>
+                                <Form.Field 
+                                    label='Manter em destaque' 
+                                    control='select'
+                                    onChange={(e) => 
+                                        setFeatured(e.target.options[e.target.selectedIndex].value)
+                                    }
+                                    value={featured}
+                                >
+                                    <option value='1'>Sim</option>
+                                    <option value='0'>Não</option>
+                                </Form.Field>
+                                <Form.Field 
+                                    label='Em uso atualmente' 
+                                    control='select'
+                                    onChange={(e) => 
+                                        setCurrentlyUsing(e.target.options[e.target.selectedIndex].value)
+                                    }
+                                    value={currently_using}
+                                >
+                                    <option value='1'>Sim</option>
+                                    <option value='0'>Não</option>
+                                </Form.Field>
+                            </Form.Group>
+                            <Form.Group widths='equal'>
+                                <Form.Field 
+                                    label='À venda' 
+                                    control='select'
+                                    onChange={(e) => 
+                                        setForSale(e.target.options[e.target.selectedIndex].value)
+                                    }
+                                    value={for_sale}
+                                >
+                                    <option value='1'>Sim</option>
+                                    <option value='0'>Não</option>
+                                </Form.Field>
+                                {/* <Form.Field
+                                    disabled={(for_sale === '1' || for_sale === 1) ? false : true}
+                                    label='Preço de venda'
+                                    id='price'
+                                    name='price'
+                                    control='input'
+                                    value={price}
+                                    onChange={e => setPrice(e.target.value)}
+                                /> */}
+                                <Form.Field className='mb-0 mt-3'>
+                                    <label for='eventTicketPrice'>Preço de venda</label>
+                                    <IntlCurrencyInput 
                                         disabled={(for_sale === '1' || for_sale === 1) ? false : true}
-                                        label='Preço de venda'
+                                        currency='BRL' 
+                                        config={currencyConfig}
                                         id='price'
                                         name='price'
-                                        control='input'
                                         value={price}
-                                        onChange={e => setPrice(e.target.value)}
-                                    /> */}
-                                    <Form.Field className='mb-0 mt-3'>
-                                        <label for='eventTicketPrice'>Preço de venda</label>
-                                        <IntlCurrencyInput 
-                                            disabled={(for_sale === '1' || for_sale === 1) ? false : true}
-                                            currency='BRL' 
-                                            config={currencyConfig}
-                                            id='price'
-                                            name='price'
-                                            value={price}
-                                            onChange={handleChangePrice} 
-                                            className='mb-3'
-                                        />
-                                    </Form.Field>
-                                </Form.Group>
-                            </>
-                        )}
-                        { (productSelected && productInfo) &&
-                            <Image src={productInfo[0].picture} size='small' centered className='mb-1' />
-                        }
-                    </Form>
-                </Modal.Content>
-                <Modal.Actions>
-                    <Button size='tiny' onClick={() => setModalEditItemOpen(false)}>
-                        Cancelar
-                    </Button>
-                    <Button size='tiny' disabled={(for_sale === '1' && !price) ? true : false} secondary onClick={() => editGearItem(itemIdToEdit, modalItemManagementProductId, featured, for_sale, price, currently_using)} loading={!isLoaded}>
-                        Salvar
-                    </Button>
-                </Modal.Actions>
-            </Modal>
+                                        onChange={handleChangePrice} 
+                                        className='mb-3'
+                                    />
+                                </Form.Field>
+                            </Form.Group>
+                        </>
+                    )}
+                    { (productSelected && productInfo) &&
+                        <Image src={productInfo[0].picture} size='small' centered className='mb-1' />
+                    }
+                </Form>
+            </Modal.Content>
+            <Modal.Actions>
+                <Button size='tiny' onClick={() => setModalEditItemOpen(false)}>
+                    Cancelar
+                </Button>
+                <Button size='tiny' disabled={(for_sale === '1' && !price) ? true : false} secondary onClick={() => editGearItem(itemIdToEdit, modalItemManagementProductId, featured, for_sale, price, currently_using)} loading={!isLoaded}>
+                    Salvar
+                </Button>
+            </Modal.Actions>
+        </Modal>
         </>
     );
 };

@@ -17,7 +17,7 @@ const FooterMenuMobile = () => {
                     <Icon name='home' className='mr-0' />
                     <span>Home</span>
                   </div>
-                  <div className={currentPath === '/career' && 'active'} onClick={() => history.push("/career")}>
+                  <div className={currentPath.includes("/career") && 'active'} onClick={() => history.push("/career")}>
                     <Icon name='rocket' className='mr-0' />
                     <span>Carreira</span>
                   </div>

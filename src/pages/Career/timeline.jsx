@@ -6,7 +6,7 @@ import HeaderMobile from '../../components/layout/headerMobile';
 import FooterMenuMobile from '../../components/layout/footerMenuMobile';
 import Spacer from '../../components/layout/Spacer';
 import { userInfos } from '../../store/actions/user';
-import { Container, Header, Grid, Segment, Checkbox, List, Label, Image, Button, Loader } from 'semantic-ui-react';
+import { Container, Header, Grid, Label, Image, Button, Loader } from 'semantic-ui-react';
 import { VerticalTimeline, VerticalTimelineElement }  from 'react-vertical-timeline-component';
 import 'react-vertical-timeline-component/style.min.css';
 import Flickity from 'react-flickity-component';
@@ -32,14 +32,15 @@ function CareerTimelinePage () {
 
     const sliderOptions = {
         autoPlay: false,
-        cellAlign: 'left',
+        cellAlign: 'center',
         freeScroll: true,
         prevNextButtons: false,
         pageDots: false,
         wrapAround: false,
         draggable: '>1',
         resize: true,
-        contain: true
+        contain: true,
+        initialIndex: 0
     }
 
     const currentYear = new Date().getFullYear()
@@ -64,10 +65,12 @@ function CareerTimelinePage () {
                 options={sliderOptions}
                 disableImagesLoaded={false}
                 reloadOnUpdate
+                cellAlign={'center'}
+                initialIndex={1}
             >
                 <Button circular size='tiny' content='Timeline de Projetos' className='mr-2' secondary />
-                <Button circular size='tiny' content='Minhas Metas' className='mr-2' onClick={() => history.push('/career/my-goals')} basic />
-                <Button circular size='tiny' content='Meus Equipamentos' basic />
+                <Button circular size='tiny' content='Minhas Metas' className='mr-2' basic onClick={() => history.push('/career/my-goals')} />
+                <Button circular size='tiny' content='Meu Equipamento' basic onClick={() => history.push('/career/my-gear')} style={{width:'fit-content'}} />
             </Flickity>
             <Grid centered columns={1}>
                 <Grid.Column mobile={16} tablet={16} computer={8}>

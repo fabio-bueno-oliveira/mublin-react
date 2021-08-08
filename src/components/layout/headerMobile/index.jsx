@@ -138,12 +138,6 @@ const HeaderMobile = (props) => {
                             <Icon name='user circle' /> Ver meu perfil
                         </Menu.Item>
                         <Menu.Item
-                            key='gear'
-                            onClick={goToGear}
-                        >
-                            <Icon name='box' /> Meu equipamento
-                        </Menu.Item>
-                        <Menu.Item
                             key='settings'
                             onClick={goToSettings}
                         >

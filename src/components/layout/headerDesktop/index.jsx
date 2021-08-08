@@ -217,10 +217,6 @@ const HeaderDesktop = () => {
                             <Dropdown.Menu>
                                 <Dropdown.Header>{userInfo.username}</Dropdown.Header>
                                 <Dropdown.Item icon='user circle' text='Meu Perfil' onClick={() => history.push('/'+userInfo.username)} />
-                                {userInfo.plan === 'Pro' && 
-                                    <Dropdown.Item icon='box' text='Meu Equipamento' onClick={() => history.push('/gear')} />
-                                }
-                                <Dropdown.Item icon='warehouse' text='Meus Backstages' onClick={() => history.push('/backstages')} />
                                 <Dropdown.Item icon='setting' text='Configurações' onClick={() => history.push('/settings')} />
                                 <Dropdown.Divider />
                                 { userInfo.level === 1 &&

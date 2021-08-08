@@ -87,6 +87,7 @@ function Routes (props) {
                 <PrivateRoute authed={loggedIn} path="/start/step4" component={StartStep4Page} />
                 <PrivateRoute authed={loggedIn} path="/home" component={Home} />
                 <PrivateRoute authed={loggedIn} path="/career/my-goals" component={CareerMyGoals} />
+                <PrivateRoute authed={loggedIn} path="/career/my-gear" component={MyGearPage} />
                 <PrivateRoute authed={loggedIn} path="/career" component={Career} />
                 <PrivateRoute authed={loggedIn} path="/feed" component={Feed} />
                 <PrivateRoute authed={loggedIn} path="/new/event" component={NewEvent} />

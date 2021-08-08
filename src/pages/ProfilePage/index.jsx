@@ -408,17 +408,22 @@ function ProfilePage (props) {
                                     )}
                                 </ul>
                                 { (profile.bio && profile.bio !== 'null') && 
-                                    <Card.Description className="center aligned mt-3" style={{ fontSize: "13px" }}>
+                                    <Card.Description className="left aligned mt-3" style={{ fontSize: "13px" }}>
                                         {profile.bio}
-                                        {profile.instagram &&
+                                        {profile.city &&
                                             <p className='mt-2'>
+                                                <Icon name='map marker alternate' />{profile.city}{profile.city !== profile.region && ', '+profile.region}
+                                            </p>
+                                        }
+                                        {profile.instagram &&
+                                            <p className='mt-2 fw500'>
                                                 <a href={'https://instagram.com/'+profile.instagram} target='_blank' style={{color:'rgba(0,0,0,.87)',fontSize:'12px'}}>
                                                     <Icon name='instagram' color='blue' />{profile.instagram}
                                                 </a>
                                             </p>
                                         }
-                                        { profile.website && 
-                                            <p className='mt-2'>
+                                        {profile.website && 
+                                            <p className='mt-2 fw500'>
                                                 <a href={profile.website.includes('http') ? profile.website : 'http://'+profile.website} target='_blank' style={{color:'rgba(0,0,0,.87)',fontSize:'12px'}}>
                                                     <Icon name='globe' color='blue' />{profile.website.replace('http://','').replace('https://','')}
                                                 </a>
@@ -427,11 +432,6 @@ function ProfilePage (props) {
                                     </Card.Description>
                                 }
                             </Card.Content>
-                            {profile.city &&
-                                <Card.Content className="mb-0 textCenter" style={{fontSize:'12px'}}>
-                                    <Icon name='map marker alternate' />{profile.city}{profile.city !== profile.region && ', '+profile.region}
-                                </Card.Content>
-                            }
                             {profile.availabilityId && 
                                 <Card.Content textAlign='center' style={{ fontSize: '13px' }}>
                                     <Label circular size='mini' color={profile.availabilityColor} empty key={profile.availabilityColor} /> {profile.availabilityTitle}
@@ -439,11 +439,11 @@ function ProfilePage (props) {
                                     <>
                                         <p style={{ fontSize: "11px" }}>
                                             
-                                            {profile.availabilityFocus === 1 && <span className='ml-2 mr-2'><Icon name='checkmark' size='small' color='green' />Projetos próprios</span>} 
+                                            {profile.availabilityFocus === 1 && <span className='ml-2 mr-2'><Icon name='checkmark' size='small' />Projetos autorais</span>} 
                                             
-                                            {profile.availabilityFocus === 2 && <span className='mr-2'><Icon name='checkmark' size='small' color='green' />Sideman</span>}
+                                            {profile.availabilityFocus === 2 && <span className='mr-2'><Icon name='checkmark' size='small' />Sideman</span>}
 
-                                            {profile.availabilityFocus === 3 && <><span className='ml-2 mr-2'><Icon name='checkmark' size='small' color='green' />Projetos próprios</span> <span className='mr-2'><Icon name='checkmark' size='small' color='green' />Sideman</span></>}
+                                            {profile.availabilityFocus === 3 && <><span className='ml-2 mr-2'><Icon name='checkmark' size='small' />Projetos autorais</span> <span className='mr-2'><Icon name='checkmark' size='small' />Sideman</span></>}
                                             
                                         </p>
                                         <p className='mt-1'>

@@ -335,7 +335,7 @@ function ProfilePage (props) {
         <>
         <HeaderDesktop />
         <HeaderMobile profile={true} pageType='profile' profilePicture={profile.picture} />
-        { profile.requesting ? (
+        {profile.requesting ? (
             <Loader
                 className="appLoadingIcon"
                 type="Audio"
@@ -725,14 +725,21 @@ function ProfilePage (props) {
                                                                 src={product.picture} 
                                                                 rounded 
                                                                 // label={{ as: 'div', corner: 'left', icon: 'heart', size: 'mini' }} 
-                                                                onClick={() => history.push('/gear/product/'+product.productId)}
+                                                                onClick={() => history.push('/gear/product/'+product.   productId)}
                                                                 className='cpointer' 
                                                             />
                                                         ) : (
                                                             <Image src={product.picture} rounded as='a' href={'/gear/product/'+product.productId} />
                                                         )
                                                     ) : (
-                                                        <Image src={cdnBaseURL+'/misc/tr:h-200,w-200,c-maintain_ratio/no-picture_pKZ8CRarWks.jpg'} height='85' width='85' rounded label={{ as: 'a', corner: 'left', icon: 'heart' }} as='a' href={'/gear/product/'+product.productId} />
+                                                        <Image 
+                                                            as='a' 
+                                                            src={cdnBaseURL+'/misc/tr:h-200,w-200,c-maintain_ratio/no-picture_pKZ8CRarWks.jpg'} 
+                                                            height='85' width='85' 
+                                                            rounded 
+                                                            label={{ as: 'a', corner: 'left', icon: 'heart' }} 
+                                                            onClick={() => history.push('/gear/product/'+product.   productId)}
+                                                        />
                                                     )}
                                                     <Popup inverted size='mini' content={product.category+' '+product.brandName+' '+product.productName} trigger={<Header as='h5' className='mt-2 mb-0' style={{cursor:'default'}}><Header.Content><Link to={{pathname: '/gear/product/'+product.productId}} style={{color:'black'}}>{product.productName}</Link></Header.Content></Header>} />
                                                     <Header.Subheader style={{fontWeight: '500',fontSize: '11px',whiteSpace:'nowrap',overflow:'hidden',textOverflow:'ellipsis',width:'99%'}}><Link to={{pathname: '/gear/product/'+product.productId}} style={{color:'gray'}}>{product.brandName}</Link></Header.Subheader>

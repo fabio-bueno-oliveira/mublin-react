@@ -6,7 +6,7 @@ import HeaderMobile from '../../components/layout/headerMobile';
 import FooterMenuMobile from '../../components/layout/footerMenuMobile';
 import Spacer from '../../components/layout/Spacer'
 import { userInfos } from '../../store/actions/user';
-import { Container, Form, Segment, Image, Modal, Header, Grid, Button, Icon, Loader } from 'semantic-ui-react';
+import { Container, Form, Segment, Image, Modal, Header, Grid, Button, Icon, Loader, Message } from 'semantic-ui-react';
 import IntlCurrencyInput from "react-intl-currency-input";
 import Flickity from 'react-flickity-component';
 import './styles.scss';
@@ -247,9 +247,21 @@ function MyGearPage () {
                         </div>
                     ) : (
                         <>
-                            <Button primary icon onClick={() => setModalAddNewProductOpen(true)} disabled={!isLoaded}>
-                                <Icon name='plus' /> Adicionar novo item à lista
-                            </Button>
+                            {userInfo.plan === 'Pro' ? (
+                                <Button className='mb-2' primary icon onClick={() => setModalAddNewProductOpen(true)} disabled={!isLoaded}>
+                                    <Icon name='plus' /> Adicionar novo item à lista
+                                </Button>
+                            ) : (
+                                <>
+                                    <Button icon disabled>
+                                        <Icon name='plus' /> Adicionar novo item à lista
+                                    </Button>
+                                    <Message error size='tiny' className='mb-2'>
+                                        {/* <Message.Header>Ops...</Message.Header> */}
+                                        <p>Apenas usuários com plano Pro podem adicionar novos produtos ao equipamento</p>
+                                    </Message>
+                                </>
+                            )}
                             {userInfo.gear.map((item, key) => (
                                 <>
                                     {item.id && 
@@ -347,11 +359,15 @@ function MyGearPage () {
                             <option key={key} value={product.id} disabled={!!userInfo.gear.filter((x) => { return x.productId === Number(product.id)}).length}>{product.name} {product.colorName && product.colorName} {!!userInfo.gear.filter((x) => { return x.productId === Number(product.id)}).length && '(já adicionado)'}</option>
                         )}
                     </Form.Field>
-                    { (productSelected && productInfo) &&
+                    {(productSelected && productInfo) ? (
                         <Image src={productInfo[0].picture} size='small' centered className='mb-1' />
-                    }
+                    ) : (
+                        <Segment secondary size='tiny' textAlign='center' basic>
+                            Selecione o produto para carregar a imagem
+                        </Segment>
+                    )}
                 </Form>
-                <div style={{fontSize:'12px',width:'100%',textAlign:"right"}}>
+                <div style={{fontSize:'12px',width:'100%',textAlign:"right",marginTop:'10px'}}>
                     <Link as='a' to={{ pathname: '/gear/submit/product' }}>
                         Não encontrei meu produto na lista
                     </Link>

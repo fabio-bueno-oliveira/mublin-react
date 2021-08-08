@@ -517,7 +517,7 @@ function ProfilePage (props) {
                                         }, 
                                         {
                                             menuItem: (
-                                                <Menu.Item key='portfolio'>
+                                                <Menu.Item key='portfolio' disabled={portfolioProjects.length === 0 ? true : false}>
                                                     <Icon name='tags' className="mr-2" /> Portfolio ({portfolioProjects.length})
                                                 </Menu.Item>
                                                 ),
@@ -892,7 +892,7 @@ function ProfilePage (props) {
                                     }}
                                 />
                                 <label for={'strengthsGroup_'+strength.id} className={myVotes.filter((x) => { return x.strengthId === strength.id}).length && 'voted'}>
-                                    <span><i className={strength.icon+' fa-fw ml-1'}></i> {strength.title}</span> {!!myVotes.filter((x) => { return x.strengthId === strength.id}).length && <Icon name='times' onClick={() => unVoteProfileStrength(myVotes.filter((x) => { return x.strengthId === strength.id})[0].id)} title='Remover meu voto' />}
+                                    <span><i className={strength.icon+' fa-fw ml-1'}></i> {strength.title}</span> {!!myVotes.filter((x) => { return x.strengthId === strength.id}).length && <><Icon name='times' onClick={() => unVoteProfileStrength(myVotes.filter((x) => { return x.strengthId === strength.id})[0].id)} title='X' className='mr-0' />Remover voto</>}
                                 </label>
                             </div>
                         </Form.Field>

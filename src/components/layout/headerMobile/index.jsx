@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Menu, Container, Image, Icon, Modal } from 'semantic-ui-react';
-import { useHistory, Link } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { userInfos } from '../../../store/actions/user';
 import { userActions } from '../../../store/actions/authentication';
-import MublinLogo from '../../../assets/img/logos/mublin-logo-text-white.png';
 
 const HeaderMobile = (props) => {
 
@@ -19,7 +18,7 @@ const HeaderMobile = (props) => {
         dispatch(userInfos.getInfo());
     }, [dispatch]);
 
-    const userInfo = useSelector(state => state.user);
+    const userInfo = useSelector(state => state.user)
 
     const [mobilMenuOpen, setMobileMenuOpen] = useState(false)
 
@@ -28,24 +27,14 @@ const HeaderMobile = (props) => {
         history.push('/'+userInfo.username)
     }
 
-    const goToGear = () => {
-        setMobileMenuOpen(false)
-        history.push('/gear')
-    }
-
     const goToSettings = () => {
         setMobileMenuOpen(false)
         history.push('/settings')
     }
 
-    // const goToFeed = () => {
-    //     setMobileMenuOpen(false)
-    //     history.push('/feed')
-    // }
-
-    const goToSearch = () => {
+    const goToNew = () => {
         setMobileMenuOpen(false)
-        history.push('/search')
+        history.push('/new')
     }
 
     const goToMessages = () => {
@@ -69,23 +58,31 @@ const HeaderMobile = (props) => {
         return () => window.removeEventListener("scroll", onScroll);
     }, [scrollTop]);
 
+    const MublinLogoURL = 'https://ik.imagekit.io/mublin/logos/tr:h-60,w-160,c-maintain_ratio/mublin-logo-text-white.png?updatedAt=1624813840231'
     const AvatarUndefined = 'https://ik.imagekit.io/mublin/sample-folder/tr:h-200,w-200,c-maintain_ratio/avatar-undefined_Kblh5CBKPp.jpg'
+
+    function truncate(input) {
+        if (input.length > 15) {
+           return input.replace(/^\//,'').replace("project/", "").substring(0, 15) + '...';
+        }
+        return input.replace(/^\//,'').replace("project/", "");
+     };
 
     return (
         <>
             <Menu id='headerMobile' fixed='top' inverted size='mini' borderless>
-                <Container>
-                    <Menu.Item header>
-                        { !props.pageType &&
-                            <Image onClick={() => history.push("/home")} size='tiny' src={MublinLogo} style={{ marginRight: '1.5em' }} alt="Logo do Mublin" />      
+                <Container className='py-2 py-md-0'>
+                    <Menu.Item header className='p-0'>
+                        {!props.pageType &&
+                            <Image onClick={() => history.push("/home")} size='tiny' src={MublinLogoURL} style={{ marginRight: '1.5em' }} alt="Logo do Mublin" className='ml-2' />
                         }
-                        { (props.pageType === 'profile' || props.pageType === 'project') &&
-                            <div style={{fontFamily:"'Poppins'",fontSize:'16px',fontWeight:'400',color:'white',width:'170px',whiteSpace:'nowrap',overflow:'hidden',textOverflow:'ellipsis',paddingBottom:'2px'}}>
-                                <Icon name='arrow left' className='mr-3' onClick={() => history.goBack()} /> {scrollTop > 100 ? <Image src={props.profilePicture ? props.profilePicture : AvatarUndefined} avatar /> : null} {usernameUrl.replace(/^\//,'').replace("project/", "")}
+                        {(props.pageType === 'profile' || props.pageType === 'project') &&
+                            <div style={{fontFamily:"'Poppins'",fontSize:'16px',fontWeight:'400',color:'white',width:'236px',whiteSpace:'nowrap',overflow:'hidden',textOverflow:'ellipsis',paddingBottom:'2px',paddingLeft:'12px',display:'flex',alignItems:'center'}}>
+                                <Icon name='arrow left' className='mr-3' onClick={() => history.goBack()} /> {scrollTop > 100 ? <Image className='mr-2' src={props.profilePicture ? props.profilePicture : AvatarUndefined} avatar /> : null} {truncate(usernameUrl)}
                             </div>      
                         }
                     </Menu.Item>
-                    <Menu.Menu position='right'>
+                    <Menu.Menu position='right' className='mr-2'>
                         {/* <Menu.Item
                             name='feed'
                             onClick={() => goToFeed(true)}
@@ -103,22 +100,20 @@ const HeaderMobile = (props) => {
                             <Icon name='search' size='large' />
                         </Menu.Item> */}
                         <Menu.Item
+                            name='new'
+                            onClick={() => goToNew(true)}
+                            className='pr-2'
+                            active={window.location.pathname === "/new"}
+                        >
+                            <Icon name='plus square outline' size='large' />
+                        </Menu.Item>
+                        <Menu.Item
                             name='message'
                             onClick={() => goToMessages(true)}
                             className='pr-2'
                             active={window.location.pathname === "/messages"}
                         >
                             <Icon name='mail outline' size='large' />
-                        </Menu.Item>
-                        <Menu.Item
-                            name='menu'
-                            onClick={() => setMobileMenuOpen(true)}
-                        >
-                            { userInfo.picture ? (
-                                <Image size='mini' circular src={'https://ik.imagekit.io/mublin/tr:h-200,w-200,c-maintain_ratio/users/avatars/'+userInfo.id+'/'+userInfo.picture} alt="Foto de perfil" />
-                            ) : (
-                                <Image size='mini' circular src='https://ik.imagekit.io/mublin/tr:h-200,w-200,c-maintain_ratio/sample-folder/avatar-undefined_Kblh5CBKPp.jpg' alt="Foto de perfil" />
-                            )}
                         </Menu.Item>
                     </Menu.Menu>
                 </Container>

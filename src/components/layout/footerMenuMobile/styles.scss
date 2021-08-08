@@ -40,7 +40,10 @@ footer.menuMobile > div {
     flex-basis: 100%;
     align-items: center;
     padding-top: 14px;
-    opacity: 0.6;
+
+    &:not(.userPicture) {
+      opacity: 0.6;
+    }
 
     &.active {
       opacity: 1;

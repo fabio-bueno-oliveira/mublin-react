@@ -379,7 +379,7 @@ function HomePage () {
                                                         <div className='textEllipsis' style={{flexGrow:'2'}} title={project.nextEventTitle ? project.nextEventDateOpening + ' às ' + project.nextEventHourOpening + ' · ' + project.nextEventTitle  : null}>
                                                             {project.nextEventDateOpening ? <><strong>{project.nextEventDateOpening} às {project.nextEventHourOpening}</strong> · {project.nextEventTitle}</> : 'Nenhum evento programado'}
                                                         </div>
-                                                        {project.nextEventDateOpening && 
+                                                        {(project.nextEventDateOpening && project.nextEventInvitationId) && 
                                                             <div>
                                                                 <Popup
                                                                     trigger={<Icon name='thumbs up outline' className='cpointer' onClick={() => setModalAcceptEvent(key)} color={project.nextEventInvitationResponse === 1 ? 'green' : null} />}

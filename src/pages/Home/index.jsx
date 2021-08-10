@@ -7,7 +7,7 @@ import FooterMenuMobile from '../../components/layout/footerMenuMobile';
 import Spacer from '../../components/layout/Spacer';
 import { userInfos } from '../../store/actions/user';
 import { searchInfos } from '../../store/actions/search';
-import { Container, Header, Grid, Card, Image, Icon, Label, List, Popup, Modal, Button, Form, Loader, Placeholder, Checkbox } from 'semantic-ui-react';
+import { Container, Header, Grid, Card, Image, Icon, Label, List, Modal, Button, Form, Loader, Placeholder, Checkbox } from 'semantic-ui-react';
 import Flickity from 'react-flickity-component';
 import './styles.scss';
 
@@ -376,25 +376,13 @@ function HomePage () {
                                                 <>
                                                     <Card.Content style={{fontSize:'11.8px',color:'rgba(0,0,0,.68)',display:'flex',justifyContent:'space-between',alignItems:'baseline'}}>
                                                         <Icon name='calendar alternate outline' title='Próximo evento' />
-                                                        <div className='textEllipsis' style={{flexGrow:'2'}} title={project.nextEventTitle ? project.nextEventDateOpening + ' às ' + project.nextEventHourOpening + ' · ' + project.nextEventTitle  : null}>
-                                                            {project.nextEventDateOpening ? <><strong>{project.nextEventDateOpening} às {project.nextEventHourOpening}</strong> · {project.nextEventTitle}</> : 'Nenhum evento programado'}
+                                                        <div className='textEllipsis' style={{flexGrow:'2'}} title={project.nextEventTitle ? project.nextEventDateOpening + ' às ' + project.nextEventHourOpening.substr(0,5) + ' · ' + project.nextEventTitle  : null}>
+                                                            {project.nextEventDateOpening ? <><strong>{project.nextEventDateOpening} às {project.nextEventHourOpening.substr(0,5)}</strong> · {project.nextEventTitle}</> : 'Nenhum evento programado'}
                                                         </div>
                                                         {(project.nextEventDateOpening && project.nextEventInvitationId) && 
-                                                            <div>
-                                                                <Popup
-                                                                    trigger={<Icon name='thumbs up outline' className='cpointer' onClick={() => setModalAcceptEvent(key)} color={project.nextEventInvitationResponse === 1 ? 'green' : null} />}
-                                                                    content='Confirmar presença'
-                                                                    size='mini'
-                                                                    position='top center'
-                                                                    inverted
-                                                                /> 
-                                                                <Popup
-                                                                    trigger={<Icon name='thumbs down outline' className='cpointer' onClick={() => setModalDeclineEvent(key)} color={project.nextEventInvitationResponse === 0 ? 'red' : null} />}
-                                                                    content='Recusar convite'
-                                                                    size='mini'
-                                                                    position='top center'
-                                                                    inverted
-                                                                />
+                                                            <div style={{display:'flex',paddingLeft:'10px'}}>
+                                                                <Icon name='thumbs up outline' className='cpointer' onClick={() => setModalAcceptEvent(key)} color={project.nextEventInvitationResponse === 1 ? 'green' : null} title='Aceitar convite' />
+                                                                <Icon name='thumbs down outline' className='cpointer ml-1' onClick={() => setModalDeclineEvent(key)} color={project.nextEventInvitationResponse === 0 ? 'red' : null} title='Recusar convite' />
                                                             </div>
                                                         }
                                                     </Card.Content>
@@ -411,7 +399,7 @@ function HomePage () {
                                         >
                                             <Modal.Content>
                                                 <div className='mb-3'>
-                                                    Confirma sua presença no evento "<span style={{fontWeight:'500'}}>{project.nextEventTitle}</span>" de {project.name} em <nobr>{project.nextEventDateOpening }?</nobr>
+                                                    Confirma sua presença no evento "<span style={{fontWeight:'500'}}>{project.nextEventTitle}</span>" de {project.name} em <nobr>{project.nextEventDateOpening}?</nobr>
                                                 </div>
                                             </Modal.Content>
                                             <Modal.Actions>
@@ -430,7 +418,7 @@ function HomePage () {
                                         >
                                             <Modal.Content>
                                                 <div className='mb-3'>
-                                                    Confirme sua ausência no evento "<span style={{fontWeight:'500'}}>{project.nextEventTitle}</span>" de {project.name} em <nobr>{project.nextEventDateOpening }</nobr>
+                                                    Confirme sua ausência no evento "<span style={{fontWeight:'500'}}>{project.nextEventTitle}</span>" de {project.name} em <nobr>{project.nextEventDateOpening}</nobr>
                                                 </div>
                                                 <Form>
                                                     <Form.TextArea 

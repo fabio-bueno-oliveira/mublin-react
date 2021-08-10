@@ -64,9 +64,12 @@ const initialState = {
       genre3: '',
       yearFoundation: '',
       yearEnd: '',
+      nextEventId: '',
       nextEventTitle: '',
       nextEventDateOpening: '',
-      nextEventHourOpening: ''
+      nextEventHourOpening: '',
+      nextEventInvitationId: '',
+      nextEventInvitationResponse: ''
     }
   ],
   gear: [
@@ -260,9 +263,12 @@ export function user(state = initialState, action) {
             role1: '',
             role2: '',
             role3: '',
+            nextEventId: '',
             nextEventTitle: '',
             nextEventDateOpening: '',
-            nextEventHourOpening: ''
+            nextEventHourOpening: '',
+            nextEventInvitationId: '',
+            nextEventInvitationResponse: ''
           }
         ],
         error: "A solicitação falhou"

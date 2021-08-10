@@ -16,6 +16,16 @@
   }
 }
 
+.defaultShadow {
+  box-shadow: none!important;
+  border: 1px solid rgba(34,36,38,.1)!important;
+  border-radius: 4px!important;
+
+  &:hover {
+    border: 1px solid #c2c2c2!important;
+  }
+}
+
 .miniProfile {
   background: rgb(255,255,255);
   border-radius: 6px;

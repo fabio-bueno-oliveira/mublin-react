@@ -280,3 +280,13 @@ h2.ui.header .sub.header {
   font-size: 13px!important;
   font-weight: 500!important;
 }
+
+.textEventEllipsis {
+  max-width: 100%;
+
+  @media screen and (min-width: 601px) {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}

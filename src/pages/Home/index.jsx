@@ -310,7 +310,7 @@ function HomePage () {
                                                 {project.labelShow === 1 && 
                                                     <Label tag color={project.labelColor} size="tiny" style={{ fontWeight: 'normal' }}>{project.labelText}</Label>
                                                 }
-                                                <List divided relaxed size='small'>
+                                                <List divided relaxed size='tiny'>
                                                     {!project.yearEnd ? ( 
                                                         <>
                                                             <List.Item>
@@ -318,24 +318,31 @@ function HomePage () {
                                                                 <List.Content>
                                                                     <List.Header className='itemTitle'>Próximo evento</List.Header>
                                                                     <List.Description style={{maxWidth:'90%'}}>
-                                                                        <div className='textEllipsis'>
+                                                                        <div className='textEventEllipsis'>
                                                                             {project.nextEventDateOpening ? <><strong>{project.nextEventDateOpening} às {project.nextEventHourOpening.substr(0,5)}</strong> · {project.nextEventTitle}</> : 'Nenhum evento programado'}
                                                                         </div>
                                                                         {(project.nextEventDateOpening && project.nextEventInvitationId) && 
                                                                             <div style={{display:'flex',marginTop:'5px'}}>
-                                                                                <Button size='tiny' icon onClick={project.nextEventInvitationResponse === 1 ? () => submitInvitationResponse(key,project.nextEventInvitationId,2,currentDate,'') : () => setModalAcceptEvent(key)} basic={project.nextEventInvitationResponse === 1 ? false : true} color={project.nextEventInvitationResponse === 1 ? 'green' : null} className='mr-1' loading={isEventLoading.key === key && isEventLoading.response === 2 ? true : false}><Icon name='thumbs up outline' />Irei</Button>
-                                                                                <Button size='tiny' icon basic={project.nextEventInvitationResponse === 0 ? false : true} color={project.nextEventInvitationResponse === 0 ? 'red' : null} onClick={project.nextEventInvitationResponse === 0 ? () => submitInvitationResponse(key,project.nextEventInvitationId,2,currentDate,'') : () => setModalDeclineEvent(key)} loading={isEventLoading.key === key && isEventLoading.response === 2 ? true : false}><Icon name='thumbs down outline' />Não irei</Button>
-                                                                                <Button size='tiny' basic icon><Icon name='plus' /> Infos</Button>
+                                                                                <Button size='mini' icon onClick={project.nextEventInvitationResponse === 1 ? () => submitInvitationResponse(key,project.nextEventInvitationId,2,currentDate,'') : () => setModalAcceptEvent(key)} basic={project.nextEventInvitationResponse === 1 ? false : true} color={project.nextEventInvitationResponse === 1 ? 'green' : null} className='mr-1' loading={isEventLoading.key === key && isEventLoading.response === 2 ? true : false}><Icon name='thumbs up outline' />Irei</Button>
+                                                                                <Button size='mini' icon basic={project.nextEventInvitationResponse === 0 ? false : true} color={project.nextEventInvitationResponse === 0 ? 'red' : null} onClick={project.nextEventInvitationResponse === 0 ? () => submitInvitationResponse(key,project.nextEventInvitationId,2,currentDate,'') : () => setModalDeclineEvent(key)} loading={isEventLoading.key === key && isEventLoading.response === 2 ? true : false}><Icon name='thumbs down outline' />Não irei</Button>
+                                                                                <Button size='mini' basic icon><Icon name='plus' /> Infos</Button>
                                                                             </div>
                                                                         }
                                                                     </List.Description>
                                                                 </List.Content>
                                                             </List.Item>
                                                             <List.Item>
-                                                                <List.Icon name='bullseye' size='large' verticalAlign='middle' />
-                                                                <List.Content>
-                                                                    <List.Header className='itemTitle'>Próxima meta</List.Header>
+                                                                <List.Icon name='flag checkered' size='large' verticalAlign='middle' className='pr-1' />
+                                                                <List.Content style={{paddingLeft:'5px'}}>
+                                                                    <List.Header className='itemTitle'>Próxima meta geral</List.Header>
                                                                     <List.Description>Nenhuma meta cadastrada</List.Description>
+                                                                </List.Content>
+                                                            </List.Item>
+                                                            <List.Item>
+                                                                <List.Icon name='bookmark outline' size='large' verticalAlign='middle' />
+                                                                <List.Content>
+                                                                    <List.Header className='itemTitle'>Minha lição de casa</List.Header>
+                                                                    <List.Description>Nenhuma atividade pendente pra mim</List.Description>
                                                                 </List.Content>
                                                             </List.Item>
                                                         </>

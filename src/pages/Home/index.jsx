@@ -163,36 +163,31 @@ function HomePage () {
                         <div style={{position:"-webkit-sticky",position:"sticky",display:"inline-table",width: '100%'}}>
                             { !userInfo.requesting ? ( 
                                 <div className="pb-2 mt-2">
-                                    <a href={"/"+userInfo.username}>
-                                        <Header as='h3'>
-                                            <Image circular src={(!userInfo.requesting && userInfo.picture) ? 'https://ik.imagekit.io/mublin/tr:h-70,w-70,c-maintain_ratio/users/avatars/'+userInfo.id+'/'+userInfo.picture : undefinedAvatar} />
-                                            <Header.Content>
-                                                Olá, {userInfo.name}!
-                                                {/* <Header.Subheader>@{userInfo.username}</Header.Subheader> */}
-                                            </Header.Content>
-                                        </Header>
-                                    </a>
-                                    <Header as='h5' textAlign='left' className='mt-3'>
+                                    <Image centered circular src={(!userInfo.requesting && userInfo.picture) ? 'https://ik.imagekit.io/mublin/tr:h-70,w-70,c-maintain_ratio/users/avatars/'+userInfo.id+'/'+userInfo.picture : undefinedAvatar} />
+                                    <Header as='h3' textAlign='center' className='mt-2'>
+                                        <Header.Content>
+                                            Olá, {userInfo.name}!
+                                            <Header.Subheader className='mt-2'>
+                                                {userInfo.roles.map((role, key) =>
+                                                    <span key={key}>{role.icon && <img src={cdnBaseURL+'/icons/music/tr:h-26,w-26,c-maintain_ratio/'+role.icon} width='13' height='13' style={{verticalAlign:'sub'}} />}{role.name}{key < (userInfo.roles.length-1) && ', '}</span>
+                                                )}
+                                            </Header.Subheader>
+                                        </Header.Content>
+                                    </Header>
+                                    <Header as='h5' textAlign='center' className='mt-3'>
                                         <Header.Subheader className='mt-1'>
                                             {userInfo.bio}
                                         </Header.Subheader>
                                     </Header>
-                                    <Header as='h5' textAlign='left' className='mb-3 mt-2'>
-                                        Principais atividades
-                                        <Header.Subheader className='mt-1'>
-                                            {userInfo.roles.map((role, key) =>
-                                                <span key={key}>{role.icon && <img src={cdnBaseURL+'/icons/music/tr:h-26,w-26,c-maintain_ratio/'+role.icon} width='13' height='13' style={{verticalAlign:'sub'}} />}{role.name}{key < (userInfo.roles.length-1) && ', '}</span>
-                                            )}
-                                        </Header.Subheader>
-                                    </Header>
-                                    <Header as='h5' textAlign='left' className='mt-3 mb-3'>
+                                    <Header as='h5' textAlign='center' className='mt-3 mb-3'>
                                         Plano
                                         <Header.Subheader className='mt-1'>
                                             {userInfo.plan ? userInfo.plan.toUpperCase() : null} {userInfo.plan !== 'Pro' && <a href='/upgrade'>Me tornar PRO</a>}
                                         </Header.Subheader>
                                     </Header>
-                                    <Header as='h5' textAlign='left' className='mt-3 mb-3'>
+                                    <Header as='h5' textAlign='center' className='mt-3'>
                                         {userInfo.projects ? userInfo.projects.length : null} projetos
+                                        {!!userInfo.projects && 
                                         <Header.Subheader className='mt-1'>
                                             {userInfo.projects && 
                                                 userInfo.projects.map((project, key) =>
@@ -200,6 +195,7 @@ function HomePage () {
                                                 )
                                             }
                                         </Header.Subheader>
+                                        }
                                     </Header>
                                 </div>
                             ) : (
@@ -302,6 +298,7 @@ function HomePage () {
                                     {projectsToShow.map((project, key) =>
                                     <>
                                         <Segment.Group key={key}>
+                                            {project.confirmed === 1 ? ( null ) : ( <Label attached='top' color='black' style={{fontWeight:'300'}}><Icon className='mr-0' name='clock outline' /> Pendente de aprovação</Label> )}
                                             <Segment>
                                                 <Header as='h3' className='mb-2'>
                                                     <Image rounded src={project.picture ? 'https://ik.imagekit.io/mublin/projects/tr:h-160,w-160,c-maintain_ratio/'+project.picture : 'https://ik.imagekit.io/mublin/sample-folder/avatar-undefined_-dv9U6dcv3.jpg'} />
@@ -356,7 +353,7 @@ function HomePage () {
                                                     <Image circular src={(!userInfo.requesting && userInfo.picture) ? 'https://ik.imagekit.io/mublin/tr:h-70,w-70,c-maintain_ratio/users/avatars/'+userInfo.id+'/'+userInfo.picture : undefinedAvatar} />
                                                     <Header.Content className='projectRoles'>
                                                         <Header.Subheader className='mb-1'>
-                                                            {project.confirmed === 1 ? ( <span className='mr-1'>{project.workTitle}</span> ) : ( <><Icon className='mr-0' name='clock outline' /><span className='mr-1'>Pendente</span></> )}
+                                                            <span className='mr-1'>{project.workTitle}</span>
                                                             <Label circular color={(project.yearLeftTheProject || project.yearEnd) ? 'red' : 'green'} empty size='mini' className='ml-0 mr-1' />
                                                             {(project.joined_in && (project.joined_in !== project.yearLeftTheProject)) ? ( 
                                                                 <>

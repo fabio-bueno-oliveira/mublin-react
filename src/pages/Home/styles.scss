@@ -214,9 +214,15 @@ h2.ui.header .sub.header {
 .projectRoles {
 
   img {
-    width: 13px!important;
-    vertical-align: sub!important;
-    height: 13px!important;
+    // width: 13px!important;
+    // vertical-align: sub!important;
+    // height: 13px!important;
+    padding: 3px;
+    margin-right: 0px!important;
+  }
+
+  .ui.label {
+    margin-left: 0!important;
   }
 }
 
@@ -267,4 +273,10 @@ h2.ui.header .sub.header {
       left: 96%;
     }
   }
+}
+
+.itemTitle {
+  font-family: 'Poppins', sans-serif!important;
+  font-size: 13px!important;
+  font-weight: 500!important;
 }

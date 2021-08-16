@@ -7,7 +7,7 @@ import FooterMenuMobile from '../../components/layout/footerMenuMobile';
 import Spacer from '../../components/layout/Spacer';
 import { userInfos } from '../../store/actions/user';
 import { searchInfos } from '../../store/actions/search';
-import { Container, Header, Grid, Card, Image, Icon, Label, List, Modal, Button, Form, Loader, Placeholder, Checkbox } from 'semantic-ui-react';
+import { Container, Segment, Header, Grid, Card, Image, Icon, Label, List, Modal, Button, Form, Loader, Placeholder, Checkbox } from 'semantic-ui-react';
 import Flickity from 'react-flickity-component';
 import './styles.scss';
 
@@ -65,9 +65,9 @@ function HomePage () {
     const [modalDeclineEvent, setModalDeclineEvent] = useState(false)
     const [modalAcceptEvent, setModalAcceptEvent] = useState(false)
     const [declineComment, setDeclineComment] = useState('Minha agenda estará comprometida nesta data')
-    const [isEventLoading, setEventIsLoading] = useState(null)
+    const [isEventLoading, setEventIsLoading] = useState({key: null, response: null})
     const submitInvitationResponse = (key,invitationId,response,response_modified,response_comments) => {
-        setEventIsLoading(key)
+        setEventIsLoading({key: key, response: response})
         setTimeout(() => {
             fetch('https://mublin.herokuapp.com/user/'+user.id+'/eventInvitationResponse', {
                 method: 'PUT',
@@ -79,7 +79,7 @@ function HomePage () {
                 body: JSON.stringify({invitationId: invitationId, response: response, response_modified:response_modified, response_comments: response_comments})
             }).then((response) => {
                 dispatch(userInfos.getUserProjects(user.id));
-                setEventIsLoading(null)
+                setEventIsLoading({key: null, response: null})
                 setModalAcceptEvent(false)
                 setModalDeclineEvent(false)
                 setDeclineComment('Minha agenda estará comprometida nesta data')
@@ -89,10 +89,8 @@ function HomePage () {
             })
         }, 400);
     }
-
     const [confirmPresence, setConfirmPresence] = useState(false)
     const [refuseInvitation, setRefuseInvitation] = useState(false)
-
     // END Event RSVP
 
     const undefinedAvatar = 'https://ik.imagekit.io/mublin/sample-folder/avatar-undefined_Kblh5CBKPp.jpg';
@@ -119,7 +117,7 @@ function HomePage () {
                                 <>
                                 {userInfo.lastConnectedFriends[0].username &&
                                     <>
-                                        <Header disabled as='h5'>Conectados recentemente</Header>
+                                        <Header as='h4'>Conectados recentemente</Header>
                                         <Flickity
                                             className={'carousel'}
                                             style={{height: '200px'}}
@@ -164,7 +162,7 @@ function HomePage () {
                     <Grid.Column mobile={16} tablet={16} computer={4} className="only-computer" >
                         <div style={{position:"-webkit-sticky",position:"sticky",display:"inline-table",width: '100%'}}>
                             { !userInfo.requesting ? ( 
-                                <div className="miniProfile pb-2 mt-2">
+                                <div className="pb-2 mt-2">
                                     <a href={"/"+userInfo.username}>
                                         <Header as='h3'>
                                             <Image circular src={(!userInfo.requesting && userInfo.picture) ? 'https://ik.imagekit.io/mublin/tr:h-70,w-70,c-maintain_ratio/users/avatars/'+userInfo.id+'/'+userInfo.picture : undefinedAvatar} />
@@ -268,10 +266,9 @@ function HomePage () {
                                         </>
                                     }
                                     </>
-                                )}    
+                                )}
                             </div>
                             }
-
                             <Header disabled className='logoFont textCenter mt-3' style={{fontSize:'12px'}} as='h5'>
                                 mublin ©2021
                             </Header>
@@ -292,7 +289,6 @@ function HomePage () {
                                 style={{fontSize:'12px'}}
                             />
                             <Checkbox 
-                                // label={['Portfolio ' , '('+projectsPortfolio.length+') ' , <Icon name='tag' style={{fontSize:'10px'}} />]}
                                 label={['Portfolio ' , '('+projectsPortfolio.length+')']}
                                 checked={projectsPortfolio.length === 0 ? false : showPortfolio}
                                 onClick={togglePortfolio}
@@ -302,96 +298,85 @@ function HomePage () {
                         </div>
                         { !userInfo.requesting ? (
                             projectsToShow.length ? (
-                                <Card.Group>
+                                <div>
                                     {projectsToShow.map((project, key) =>
                                     <>
-                                        <Card 
-                                            key={key}
-                                            className='mb-2 defaultShadow'
-                                            // color={(!project.yearEnd && project.ptid !== 7) ? 'green' : 'grey'}
-                                        >
-                                            {/* <Label circular color='red' icon='bell outline' floating as='a' title='Novas notificações' /> */}
-                                            <Card.Content>
-                                                <Image
-                                                    floated='left'
-                                                    size='tiny'
-                                                    src={project.picture ? 'https://ik.imagekit.io/mublin/projects/tr:h-160,w-160,c-maintain_ratio/'+project.picture : 'https://ik.imagekit.io/mublin/sample-folder/avatar-undefined_-dv9U6dcv3.jpg'}
-                                                    className='mb-0 cpointer'
-                                                    onClick={() => history.push('/project/'+project.username)}
-                                                    rounded
-                                                />
-                                                <Card.Header
-                                                    className='cpointer'
-                                                    onClick={() => history.push('/project/'+project.username)}
-                                                    style={{fontSize:'17.4px',display:'table-cell'}}
-                                                >
-                                                    {project.name} {project.portfolio === 1 && <Icon name='tag' color='black' style={{fontSize:'11px',verticalAlign: 'text-top'}} title='Portfolio' />}
-                                                </Card.Header>
-
-                                                <div style={{fontSize:'11.5px'}}>
-                                                    {project.ptname} {project.genre1 ? ' · '+project.genre1 : null }
-                                                </div>
-
-                                                <Card.Description style={{fontSize:'11.5px',display:'inline',verticalAlign:'middle'}}>
-                                                    { project.confirmed === 1 ? ( <>{project.workTitle}</> ) : ( <><Icon className='mr-0' name='clock outline' />Pendente</> )}
-                                                    <Label circular color={(project.yearLeftTheProject || project.yearEnd) ? 'red' : 'green'} empty size='mini' className='ml-2 mr-1' />
-                                                    {(project.joined_in && (project.joined_in !== project.yearLeftTheProject)) ? ( 
+                                        <Segment.Group key={key}>
+                                            <Segment>
+                                                <Header as='h3' className='mb-2'>
+                                                    <Image rounded src={project.picture ? 'https://ik.imagekit.io/mublin/projects/tr:h-160,w-160,c-maintain_ratio/'+project.picture : 'https://ik.imagekit.io/mublin/sample-folder/avatar-undefined_-dv9U6dcv3.jpg'} />
+                                                    <Header.Content>
+                                                        {project.name}
+                                                        <Header.Subheader>{project.ptname} {project.genre1 ? ' · '+project.genre1 : null }</Header.Subheader>
+                                                    </Header.Content>
+                                                </Header>
+                                                {project.labelShow === 1 && 
+                                                    <Label tag color={project.labelColor} size="tiny" style={{ fontWeight: 'normal' }}>{project.labelText}</Label>
+                                                }
+                                                <List divided relaxed size='small'>
+                                                    {!project.yearEnd ? ( 
                                                         <>
-                                                            { !project.yearEnd ? ( 
-                                                                project.joined_in +' ➜ '+(project.yearLeftTheProject ? project.yearLeftTheProject : 'atualmente')
-                                                            ) : (
-                                                                project.joined_in +' ➜ '+project.yearEnd
-                                                            )}
+                                                            <List.Item>
+                                                                <List.Icon name='calendar alternate outline' size='large' verticalAlign='middle' />
+                                                                <List.Content>
+                                                                    <List.Header className='itemTitle'>Próximo evento</List.Header>
+                                                                    <List.Description style={{maxWidth:'90%'}}>
+                                                                        <div className='textEllipsis'>
+                                                                            {project.nextEventDateOpening ? <><strong>{project.nextEventDateOpening} às {project.nextEventHourOpening.substr(0,5)}</strong> · {project.nextEventTitle}</> : 'Nenhum evento programado'}
+                                                                        </div>
+                                                                        {(project.nextEventDateOpening && project.nextEventInvitationId) && 
+                                                                            <div style={{display:'flex',marginTop:'5px'}}>
+                                                                                <Button size='tiny' icon onClick={project.nextEventInvitationResponse === 1 ? () => submitInvitationResponse(key,project.nextEventInvitationId,2,currentDate,'') : () => setModalAcceptEvent(key)} basic={project.nextEventInvitationResponse === 1 ? false : true} color={project.nextEventInvitationResponse === 1 ? 'green' : null} className='mr-1' loading={isEventLoading.key === key && isEventLoading.response === 2 ? true : false}><Icon name='thumbs up outline' />Irei</Button>
+                                                                                <Button size='tiny' icon basic={project.nextEventInvitationResponse === 0 ? false : true} color={project.nextEventInvitationResponse === 0 ? 'red' : null} onClick={project.nextEventInvitationResponse === 0 ? () => submitInvitationResponse(key,project.nextEventInvitationId,2,currentDate,'') : () => setModalDeclineEvent(key)} loading={isEventLoading.key === key && isEventLoading.response === 2 ? true : false}><Icon name='thumbs down outline' />Não irei</Button>
+                                                                                <Button size='tiny' basic icon><Icon name='plus' /> Infos</Button>
+                                                                            </div>
+                                                                        }
+                                                                    </List.Description>
+                                                                </List.Content>
+                                                            </List.Item>
+                                                            <List.Item>
+                                                                <List.Icon name='bullseye' size='large' verticalAlign='middle' />
+                                                                <List.Content>
+                                                                    <List.Header className='itemTitle'>Próxima meta</List.Header>
+                                                                    <List.Description>Nenhuma meta cadastrada</List.Description>
+                                                                </List.Content>
+                                                            </List.Item>
                                                         </>
                                                     ) : (
-                                                        <>
-                                                            {project.joined_in} {project.yearEnd && ' ➜ '+project.yearEnd}
-                                                        </>
+                                                        <List.Item>
+                                                            <List.Content>
+                                                                <List.Description>Projeto encerrado em {project.yearEnd}</List.Description>
+                                                            </List.Content>
+                                                        </List.Item>
                                                     )}
-                                                </Card.Description>
-                                                <Card.Meta className='projectRoles mt-1 pb-1' style={{fontSize:'11.4px',color:'rgba(0,0,0,.68)'}}>
-                                                    <Flickity
-                                                        className={'carousel'}
-                                                        style={{height: '200px'}}
-                                                        elementType={'div'}
-                                                        options={sliderOptions}
-                                                        disableImagesLoaded={false}
-                                                        reloadOnUpdate
-                                                    >
-                                                        {project.role1icon && <span style={{whiteSpace:'nowrap'}}><img src={cdnBaseURL+'/icons/music/tr:h-26,w-26,c-maintain_ratio/'+project.role1icon} />{project.role1}</span>}{project.role2 && <span style={{whiteSpace:'nowrap'}}>, {project.role2icon && <img src={cdnBaseURL+'/icons/music/tr:h-26,w-26,c-maintain_ratio/'+project.role2icon} />}{project.role2}</span>}{project.role3 && <span style={{whiteSpace:'nowrap'}}>, {project.role3icon && <img src={cdnBaseURL+'/icons/music/tr:h-26,w-26,c-maintain_ratio/'+project.role3icon} />}{project.role3}</span>}
-                                                    </Flickity>
-                                                    {/* {project.role1 && <Label size='mini' style={{fontWeight:'500'}}>{project.role1icon && <img src={cdnBaseURL+'/icons/music/tr:h-26,w-26,c-maintain_ratio/'+project.role1icon} />} {project.role1.length > 11 ? `${project.role1.substring(0, 11)}...` : project.role1}</Label>} {project.role2 && <Label size='mini' style={{fontWeight:'500'}}>{project.role2.length > 11 ? `${project.role2.substring(0, 11)}...` : project.role2}</Label>} {project.role3 && <Label size='mini' style={{fontWeight:'500'}}>{project.role3.length > 11 ? `${project.role3.substring(0, 11)}...` : project.role3}</Label>} */}
-                                                </Card.Meta>
-                                            </Card.Content>
-                                            {(project.yearEnd && project.yearEnd <= currentYear) ? (
-                                                <>
-                                                <Card.Content style={{fontSize:'11.8px',color:'rgba(0,0,0,.68)'}}>
-                                                    Projeto encerrado
-                                                </Card.Content>
-                                                <Card.Content style={{fontSize:'11.8px',color:'rgba(0,0,0,.68)'}}>
-                                                Fundação: {project.yearFoundation} · Encerramento: {project.yearEnd}
-                                                </Card.Content>
-                                                </>
-                                            ) : (
-                                                <>
-                                                    <Card.Content style={{fontSize:'11.8px',color:'rgba(0,0,0,.68)',display:'flex',justifyContent:'space-between',alignItems:'baseline'}}>
-                                                        <Icon name='calendar alternate outline' title='Próximo evento' />
-                                                        <div className='textEllipsis' style={{flexGrow:'2'}} title={project.nextEventTitle ? project.nextEventDateOpening + ' às ' + project.nextEventHourOpening.substr(0,5) + ' · ' + project.nextEventTitle  : null}>
-                                                            {project.nextEventDateOpening ? <><strong>{project.nextEventDateOpening} às {project.nextEventHourOpening.substr(0,5)}</strong> · {project.nextEventTitle}</> : 'Nenhum evento programado'}
-                                                        </div>
-                                                        {(project.nextEventDateOpening && project.nextEventInvitationId) && 
-                                                            <div style={{display:'flex',paddingLeft:'10px'}}>
-                                                                <Icon name='thumbs up outline' className='cpointer' onClick={() => setModalAcceptEvent(key)} color={project.nextEventInvitationResponse === 1 ? 'green' : null} title='Aceitar convite' />
-                                                                <Icon name='thumbs down outline' className='cpointer ml-1' onClick={() => setModalDeclineEvent(key)} color={project.nextEventInvitationResponse === 0 ? 'red' : null} title='Recusar convite' />
-                                                            </div>
-                                                        }
-                                                    </Card.Content>
-                                                    <Card.Content style={{fontSize:'11.8px',color:'rgba(0,0,0,.68)'}}>
-                                                        <Icon name='bullseye' title='Meta mais recente' />Nenhuma meta cadastrada
-                                                    </Card.Content>
-                                                </>
-                                            )}
-                                        </Card>
+                                                </List>
+                                            </Segment>
+                                            <Segment secondary>
+                                                <Header as='h5' className='mt-0'>
+                                                    <Image circular src={(!userInfo.requesting && userInfo.picture) ? 'https://ik.imagekit.io/mublin/tr:h-70,w-70,c-maintain_ratio/users/avatars/'+userInfo.id+'/'+userInfo.picture : undefinedAvatar} />
+                                                    <Header.Content className='projectRoles'>
+                                                        <Header.Subheader className='mb-1'>
+                                                            {project.confirmed === 1 ? ( <span className='mr-1'>{project.workTitle}</span> ) : ( <><Icon className='mr-0' name='clock outline' /><span className='mr-1'>Pendente</span></> )}
+                                                            <Label circular color={(project.yearLeftTheProject || project.yearEnd) ? 'red' : 'green'} empty size='mini' className='ml-0 mr-1' />
+                                                            {(project.joined_in && (project.joined_in !== project.yearLeftTheProject)) ? ( 
+                                                                <>
+                                                                    { !project.yearEnd ? ( 
+                                                                        project.joined_in +' ➜ '+(project.yearLeftTheProject ? project.yearLeftTheProject : 'atualmente')
+                                                                    ) : (
+                                                                        project.joined_in +' ➜ '+project.yearEnd
+                                                                    )}
+                                                                </>
+                                                            ) : (
+                                                                <>
+                                                                    {project.joined_in} {project.yearEnd && ' ➜ '+project.yearEnd}
+                                                                </>
+                                                            )}
+                                                        </Header.Subheader>
+                                                        {project.role1icon && <Label size='mini' image style={{whiteSpace:'nowrap'}}><img src={cdnBaseURL+'/icons/music/tr:h-26,w-26,c-maintain_ratio/'+project.role1icon} width='13px' />{project.role1}</Label>}{project.role2 && <Label size='mini' image style={{whiteSpace:'nowrap'}}>{project.role2icon && <img src={cdnBaseURL+'/icons/music/tr:h-26,w-26,c-maintain_ratio/'+project.role2icon} />}{project.role2}</Label>}{project.role3 && <Label size='mini' image style={{whiteSpace:'nowrap'}}>{project.role3icon && <img src={cdnBaseURL+'/icons/music/tr:h-26,w-26,c-maintain_ratio/'+project.role3icon} />}{project.role3}</Label>}
+                                                    </Header.Content>
+                                                </Header>
+                                            </Segment>
+                                        </Segment.Group>
                                         <Modal
                                             size='mini'
                                             open={modalAcceptEvent === key}
@@ -406,7 +391,7 @@ function HomePage () {
                                                 <Button size='small' onClick={() => setModalAcceptEvent(false)}>
                                                     Voltar
                                                 </Button>
-                                                <Button size='small' positive onClick={() => submitInvitationResponse(key, project.nextEventInvitationId, 1, currentDate, '')} loading={isEventLoading === key && true}>
+                                                <Button size='small' positive onClick={() => submitInvitationResponse(key, project.nextEventInvitationId, 1, currentDate, '')} loading={isEventLoading.key === key && true}>
                                                     Confirmar
                                                 </Button>
                                             </Modal.Actions>
@@ -435,14 +420,14 @@ function HomePage () {
                                                 <Button size='small' onClick={() => setModalDeclineEvent(false)}>
                                                     Voltar
                                                 </Button>
-                                                <Button size='small' negative onClick={() => submitInvitationResponse(key, project.nextEventInvitationId, 0, currentDate, declineComment)} loading={isEventLoading === key && true}>
+                                                <Button size='small' negative onClick={() => submitInvitationResponse(key, project.nextEventInvitationId, 0, currentDate, declineComment)} loading={isEventLoading.key === key ? true : false}>
                                                     Declinar
                                                 </Button>
                                             </Modal.Actions>
                                         </Modal>
                                     </>
                                     )}
-                                </Card.Group>
+                                </div>
                             ) : (
                                 <Header as='h3' className='my-0'>
                                     <Header.Content>

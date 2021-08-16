@@ -69,7 +69,10 @@ const initialState = {
       nextEventDateOpening: '',
       nextEventHourOpening: '',
       nextEventInvitationId: '',
-      nextEventInvitationResponse: ''
+      nextEventInvitationResponse: '',
+      labelShow: '',
+      labelColor: '',
+      labelText: ''
     }
   ],
   gear: [
@@ -268,7 +271,10 @@ export function user(state = initialState, action) {
             nextEventDateOpening: '',
             nextEventHourOpening: '',
             nextEventInvitationId: '',
-            nextEventInvitationResponse: ''
+            nextEventInvitationResponse: '',
+            labelShow: '',
+            labelColor: '',
+            labelText: ''
           }
         ],
         error: "A solicitação falhou"

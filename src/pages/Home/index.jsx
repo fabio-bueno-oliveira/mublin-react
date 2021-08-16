@@ -7,8 +7,10 @@ import FooterMenuMobile from '../../components/layout/footerMenuMobile';
 import Spacer from '../../components/layout/Spacer';
 import { userInfos } from '../../store/actions/user';
 import { searchInfos } from '../../store/actions/search';
-import { Container, Segment, Header, Grid, Card, Image, Icon, Label, List, Modal, Button, Form, Loader, Placeholder, Checkbox } from 'semantic-ui-react';
+import { Container, Segment, Header, Grid, Image, Icon, Label, List, Modal, Button, Form, Loader, Placeholder, Checkbox } from 'semantic-ui-react';
 import Flickity from 'react-flickity-component';
+import { formatDistance } from 'date-fns';
+import pt from 'date-fns/locale/pt-BR';
 import './styles.scss';
 
 function HomePage () {
@@ -93,7 +95,7 @@ function HomePage () {
     const [refuseInvitation, setRefuseInvitation] = useState(false)
     // END Event RSVP
 
-    const undefinedAvatar = 'https://ik.imagekit.io/mublin/sample-folder/avatar-undefined_Kblh5CBKPp.jpg';
+    const undefinedAvatar = 'https://ik.imagekit.io/mublin/tr:h-70,w-70,c-maintain_ratio/sample-folder/avatar-undefined_Kblh5CBKPp.jpg';
 
     const cdnBaseURL = 'https://ik.imagekit.io/mublin';
 
@@ -180,9 +182,8 @@ function HomePage () {
                                         </Header.Subheader>
                                     </Header>
                                     <Header as='h5' textAlign='center' className='mt-3 mb-3'>
-                                        Plano
                                         <Header.Subheader className='mt-1'>
-                                            {userInfo.plan ? userInfo.plan.toUpperCase() : null} {userInfo.plan !== 'Pro' && <a href='/upgrade'>Me tornar PRO</a>}
+                                            <Label>Plano {userInfo.plan ? userInfo.plan.toUpperCase() : null}</Label> {userInfo.plan !== 'Pro' && <a href='/upgrade'>Me tornar PRO</a>}
                                         </Header.Subheader>
                                     </Header>
                                     <Header as='h5' textAlign='center' className='mt-3'>
@@ -199,19 +200,21 @@ function HomePage () {
                                     </Header>
                                 </div>
                             ) : (
-                                <div className="feed-item-wrapper pb-3">
-                                    <Placeholder>
-                                        <Placeholder.Header image>
-                                            <Placeholder.Line />
-                                            <Placeholder.Line />
-                                        </Placeholder.Header>
-                                        <Placeholder.Paragraph>
-                                            <Placeholder.Line />
-                                            <Placeholder.Line />
-                                            <Placeholder.Line />
-                                            <Placeholder.Line />
-                                        </Placeholder.Paragraph>
-                                    </Placeholder>
+                                <div className="pb-2 mt-2">
+                                    <Image centered circular src={undefinedAvatar} />
+                                    <Header as='h3' textAlign='center' className='mt-2'>
+                                        <Header.Content>
+                                            Carregando...
+                                            <Header.Subheader className='mt-2'>
+                                                <span>Carregando...</span>
+                                            </Header.Subheader>
+                                        </Header.Content>
+                                    </Header>
+                                    <Header as='h5' textAlign='center' className='mt-3'>
+                                        <Header.Subheader className='mt-1'>
+                                            Carregando...
+                                        </Header.Subheader>
+                                    </Header>
                                 </div>
                             )}
 
@@ -322,11 +325,17 @@ function HomePage () {
                                                                             {project.nextEventDateOpening ? <><strong>{project.nextEventDateOpening} às {project.nextEventHourOpening.substr(0,5)}</strong> · {project.nextEventTitle}</> : 'Nenhum evento programado'}
                                                                         </div>
                                                                         {(project.nextEventDateOpening && project.nextEventInvitationId) && 
+                                                                            <>
+                                                                            <div className='mt-2 d-flex' style={{alignItems:'center', fontSize:'10.5px'}}>
+                                                                                <Image src={'https://ik.imagekit.io/mublin/tr:h-12,w-12,r-max,c-maintain_ratio/users/avatars/'+project.nextEventInvitationUserIdWhoInvited+'/'+project.nextEventInvitationPictureWhoInvited} rounded title={project.nextEventInvitationUsernameWhoInvited} className='mr-1' />
+                                                                                {project.nextEventInvitationNameWhoInvited} te convidou em {project.nextEventInvitationDate.substr(0,11)} 
+                                                                            </div>
                                                                             <div style={{display:'flex',marginTop:'5px'}}>
                                                                                 <Button size='mini' icon onClick={project.nextEventInvitationResponse === 1 ? () => submitInvitationResponse(key,project.nextEventInvitationId,2,currentDate,'') : () => setModalAcceptEvent(key)} basic={project.nextEventInvitationResponse === 1 ? false : true} color={project.nextEventInvitationResponse === 1 ? 'green' : null} className='mr-1' loading={isEventLoading.key === key && isEventLoading.response === 2 ? true : false}><Icon name='thumbs up outline' />Irei</Button>
                                                                                 <Button size='mini' icon basic={project.nextEventInvitationResponse === 0 ? false : true} color={project.nextEventInvitationResponse === 0 ? 'red' : null} onClick={project.nextEventInvitationResponse === 0 ? () => submitInvitationResponse(key,project.nextEventInvitationId,2,currentDate,'') : () => setModalDeclineEvent(key)} loading={isEventLoading.key === key && isEventLoading.response === 2 ? true : false}><Icon name='thumbs down outline' />Não irei</Button>
-                                                                                <Button size='mini' basic icon><Icon name='plus' /> Infos</Button>
+                                                                                <Button size='mini' basic icon><Icon name='plus' /> detalhes</Button>
                                                                             </div>
+                                                                            </>
                                                                         }
                                                                     </List.Description>
                                                                 </List.Content>
@@ -335,14 +344,14 @@ function HomePage () {
                                                                 <List.Icon name='flag checkered' size='large' verticalAlign='middle' className='pr-1' />
                                                                 <List.Content style={{paddingLeft:'5px'}}>
                                                                     <List.Header className='itemTitle'>Próxima meta geral</List.Header>
-                                                                    <List.Description>Nenhuma meta cadastrada</List.Description>
+                                                                    <List.Description>{project.nextGoalDescription ? project.nextGoalCompleted ? <Icon name='checkmark' color='green' className='mr-0' /> : <Icon name='clock outline' className='mr-0' /> : null } {project.nextGoalDescription ? project.nextGoalDate + ' - ' + project.nextGoalDescription + ' (restam ' + formatDistance(new Date(project.nextGoalDate.split('/').reverse().join('-')), new Date(), {locale:pt}) + ')' : 'Nenhuma meta cadastrada'}</List.Description>
                                                                 </List.Content>
                                                             </List.Item>
                                                             <List.Item>
                                                                 <List.Icon name='bookmark outline' size='large' verticalAlign='middle' />
-                                                                <List.Content>
+                                                                <List.Content style={{paddingLeft:'7px'}}>
                                                                     <List.Header className='itemTitle'>Minha lição de casa</List.Header>
-                                                                    <List.Description>Nenhuma atividade pendente pra mim</List.Description>
+                                                                    <List.Description>{project.nextUserGoalDescription ? project.nextUserGoalCompleted ? <Icon name='checkmark' color='green' className='mr-0' /> : <Icon name='clock outline' className='mr-0' /> : null } {project.nextUserGoalDescription ? project.nextUserGoalDate + ' - ' + project.nextUserGoalDescription + ' (restam ' + formatDistance(new Date(project.nextUserGoalDate.split('/').reverse().join('-')), new Date(), {locale:pt}) + ')' : 'Nenhuma atividade pendente pra mim'}</List.Description>
                                                                 </List.Content>
                                                             </List.Item>
                                                         </>
@@ -435,7 +444,7 @@ function HomePage () {
                             ) : (
                                 <Header as='h3' className='my-0'>
                                     <Header.Content>
-                                        <Header.Subheader as='a'>Nenhum projeto encontrado. <Link to="/new">Criar novo</Link></Header.Subheader>
+                                        <Header.Subheader as='a'>Nenhum projeto para exibir por aqui. <Link to="/new">Criar novo?</Link></Header.Subheader>
                                     </Header.Content>
                                 </Header>
                             )

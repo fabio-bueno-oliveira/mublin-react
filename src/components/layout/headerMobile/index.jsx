@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Menu, Container, Image, Icon, Modal } from 'semantic-ui-react';
+import { Menu, Container, Image, Icon, Modal, Button } from 'semantic-ui-react';
 import { useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { userInfos } from '../../../store/actions/user';
@@ -103,9 +103,9 @@ const HeaderMobile = (props) => {
                             name='new'
                             onClick={() => goToNew(true)}
                             className='pr-2'
-                            active={window.location.pathname === "/new"}
+                            // active={window.location.pathname === "/new"}
                         >
-                            <Icon name='plus square outline' size='large' />
+                            <Button primary circular icon='plus' content='Novo' />
                         </Menu.Item>
                         <Menu.Item
                             name='message'

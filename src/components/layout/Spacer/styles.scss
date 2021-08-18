@@ -1,8 +1,12 @@
 .spacer {
   height: 84px;
-  // background-color: greenyellow;
+
   &.compact {
     height: 84px;
+  }
+
+  &.supercompact {
+    height: 70px;
   }
 }
 
@@ -11,6 +15,10 @@
     height: 77px;
 
     &.compact {
+      height: 67px;
+    }
+
+    &.supercompact {
       height: 67px;
     }
   }

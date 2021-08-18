@@ -5,7 +5,7 @@ const Spacer = (props) => {
 
     return (
         <div 
-            className={`spacer` + (props.compact ? ' compact' : '') + ' ' + props.className}
+            className={`spacer` + (props.compact ? ' compact' : '') + (props.supercompact ? ' supercompact' : '') + ' ' + props.className}
         >
         </div>
     );

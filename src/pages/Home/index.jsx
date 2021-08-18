@@ -312,7 +312,7 @@ function HomePage () {
                                             {project.labelShow === 1 && 
                                                 <Label tag color={project.labelColor} size="tiny" style={{ fontWeight: 'normal' }}>{project.labelText}</Label>
                                             }
-                                            <List divided relaxed size='tiny'>
+                                            <List divided relaxed>
                                                 {!project.yearEnd ? ( 
                                                     <>
                                                         <List.Item>

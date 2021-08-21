@@ -296,14 +296,18 @@ body, html {
 }
 
 /* UI Colors */
-
 .mainColor {
   color: #5555ff!important;
 }
 
+/* Text */
 .textEllipsis {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
   max-width: 100%;
+}
+
+.textCenter {
+  text-align: center;
 }

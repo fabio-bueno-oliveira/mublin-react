@@ -63,6 +63,7 @@ const initialState = {
       lastname: '',
       username: '',
       picture: '',
+      bio: '',
       roleName: '',
       mainRole: '',
       instrumentalist: '',

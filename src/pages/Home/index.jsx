@@ -180,7 +180,7 @@ function HomePage () {
                                 <p className='mt-4 textCenter' style={{fontSize:'13px'}}>
                                     {userInfo.bio}
                                 </p>
-                                {!!userInfo.projects && 
+                                {/* {!!userInfo.projects && 
                                     <p className='mt-4 textCenter' style={{fontSize:'13px'}}>
                                         <b style={{fontWeight:'500'}}>{userInfo.projects ? userInfo.projects.length : null} projetos: </b>
                                         {userInfo.projects && 
@@ -189,7 +189,7 @@ function HomePage () {
                                             )
                                         }
                                     </p>
-                                }
+                                } */}
                             </div>
                         ) : (
                             <div className="pb-2 mt-2">

@@ -1,0 +1,19 @@
+main.searchPage {
+
+    .ui.card.default {
+        margin: 0 16px 0 0;
+        width: 200px!important;
+    }
+
+    .quickSearches {
+
+        button {
+            margin-bottom: 0;
+            width: fit-content;
+
+            &:not(:last-child) {
+                margin-right: 6px;
+            }
+        }
+    }
+}

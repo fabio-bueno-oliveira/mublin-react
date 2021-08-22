@@ -3,19 +3,22 @@ import { useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { searchInfos } from '../../store/actions/search';
 import { miscInfos } from '../../store/actions/misc';
-import { Grid, Form, List, Loader, Segment, Header, Placeholder, Modal, Input, Feed, Tab, Image, Label, Icon, Card, Confirm } from 'semantic-ui-react'
+import { Grid, Form, Loader, Segment, Header, Modal, Input, Feed, Tab, Button, Image, Label, Icon, Card, Confirm } from 'semantic-ui-react'
 import HeaderDesktop from '../../components/layout/headerDesktop';
 import HeaderMobile from '../../components/layout/headerMobile';
 import FooterMenuMobile from '../../components/layout/footerMenuMobile';
 import Spacer from '../../components/layout/Spacer';
 import { formatDistance } from 'date-fns';
 import pt from 'date-fns/locale/pt-BR';
+import Flickity from 'react-flickity-component';
 import {IKUpload} from "imagekitio-react";
 import LogoMublinCircular from '../../assets/img/logos/logo-mublin-circle-black.png';
+import './styles.scss'
 
 function SearchPage () {
 
     let searchedKeywords = (new URLSearchParams(window.location.search)).get("keywords")
+    let currentTab = (new URLSearchParams(window.location.search)).get("tab")
  
     document.title = searchedKeywords ? 'Pesquisar por "' + searchedKeywords+ '" | Mublin' : 'Explorar | Mublin'
 
@@ -31,17 +34,17 @@ function SearchPage () {
         dispatch(searchInfos.getSearchProjectsResults(searchedKeywords))
         dispatch(searchInfos.getSuggestedUsersResults())
         dispatch(miscInfos.getFeed());
-    }, [dispatch, searchedKeywords]);
+    }, [dispatch, searchedKeywords, currentTab]);
 
     const userInfo = useSelector(state => state.user)
     const searchResults = useSelector(state => state.search);
     const suggestedUsers = useSelector(state => state.search.suggestedUsers);
     const feed = useSelector(state => state.feed);
 
-    const handleSearch = (query) => {
+    const handleSearch = (query,tab) => {
         history.push({
             pathname: '/search',
-            search: '?keywords='+query
+            search: tab ? '?keywords='+query+'&tab='+tab : '?keywords='+query
         })
     }
 
@@ -176,12 +179,26 @@ function SearchPage () {
         })
     }
 
+    const sliderOptions = {
+        autoPlay: false,
+        cellAlign: 'left',
+        freeScroll: true,
+        prevNextButtons: false,
+        pageDots: false,
+        wrapAround: false,
+        draggable: '>1',
+        resize: true,
+        contain: true
+    }
+
+    const [filterOpen, setFilterOpen] = useState(false)
+
     return (
         <>
             <HeaderDesktop />
             <HeaderMobile />
             <Spacer />
-            <Grid stackable as='main' columns={1} className="container">
+            <Grid as='main' columns={1} className="container searchPage">
                 <Grid.Row columns={1} only='mobile'>
                     <Grid.Column width={16}>
                         <Form
@@ -196,7 +213,7 @@ function SearchPage () {
                             <Input 
                                 fluid
                                 size='large'
-                                action={{ icon: 'search', onClick: () => handleSearch(searchQuery) }} 
+                                action={{ icon: 'search', onClick: () => handleSearch(searchQuery,null) }} 
                                 placeholder='Pesquisar...'
                                 value={searchQuery} 
                                 onChange={e => setSearchQuery(e.target.value)}
@@ -204,11 +221,54 @@ function SearchPage () {
                         </Form>
                     </Grid.Column>
                 </Grid.Row>
+                <Grid.Row columns={1} className='pt-1 pt-md-4 pb-md-4'>
+                    <Grid.Column width={16}>
+                        <Header size='tiny'>Pesquisas rápidas</Header>
+                        <Flickity
+                            className={'quickSearches mt-3'}
+                            elementType={'div'}
+                            options={sliderOptions}
+                            disableImagesLoaded={false}
+                            reloadOnUpdate
+                        >
+                            <Button 
+                                size='tiny'
+                                circular
+                                content='Artistas minha cidade'
+                                secondary
+                                onClick={() => {
+                                        handleSearch(userInfo.cityName,'people')
+                                        setSearchQuery(userInfo.cityName)
+                                }}
+                            />
+                            <Button 
+                                size='tiny'
+                                circular
+                                content='Projetos minha cidade'
+                                secondary
+                                onClick={() => {
+                                        handleSearch(userInfo.cityName,'projects')
+                                        setSearchQuery(userInfo.cityName)
+                                }}
+                            />
+                        </Flickity>
+                    </Grid.Column>
+                </Grid.Row>
                 {searchedKeywords ? ( 
-                    <Grid.Row>
+                    <Grid.Row className='pt-0'>
                         <Grid.Column width={16}>
                             {searchedKeywords && 
-                                <Tab menu={{ secondary: true, pointing: true, size:'large' }} panes={
+                                <Tab 
+                                    defaultActiveIndex={
+                                        {
+                                          'people': 0,
+                                          'projects': 1,
+                                          'gear': 2,
+                                          null: 0
+                                        }[currentTab]
+                                    }
+                                    menu={{ secondary: true, pointing: true, size:'large' }} 
+                                    panes={
                                     [
                                         {
                                             menuItem: searchResults.users[0].id ? 'Pessoas ('+searchResults.users.length+')' : 'Pessoas (0)',
@@ -333,209 +393,166 @@ function SearchPage () {
                         </Grid.Column>
                     </Grid.Row>
                 ) : (
-                    <Grid.Row sta style={{justifyContent:'center'}} className='pb-5 pt-0'>
-                        <Grid.Column width={10}>
-                            { searchResults.requesting ? (
-                                <Loader active inline='centered' />
+                    <Grid.Row className='pb-5 pt-0'>
+                        <Grid.Column mobile={16} tablet={16} computer={12}>
+                            {searchResults.requesting ? (
+                                <div style={{textAlign:'center',width:'100%',height:'100px'}} className='py-3'>
+                                    <Loader active inline='centered' />
+                                </div>
                             ) : (
-                                <Card fluid className=' p-3 mt-0 mt-md-3' style={{maxWidth:'100%'}}>
-                                    <Header as='h4' className='mb-1'>Pessoas para seguir</Header>
-                                    <List relaxed='very' divided size='large'>
-                                        { suggestedUsers.map((user, key) =>
-                                            <List.Item key={key}>
-                                                <Image avatar style={{width:'3em',height:'3em'}} src={user.picture ? user.picture : 'https://ik.imagekit.io/mublin/sample-folder/avatar-undefined_Kblh5CBKPp.jpg'} />
-                                                <List.Content>
-                                                    <List.Header as='a' style={{fontSize:'14px'}}>
-                                                        {user.name+' '+user.lastname} {!!user.verified && <Icon name='check circle' color='blue' className='verifiedIcon' title='Verificado' />}
-                                                    </List.Header>
-                                                    <List.Description style={{fontSize:'12.5px'}}>
-                                                        {user.mainRole}
-                                                    </List.Description>
-                                                    <List.Description style={{color:'grey',fontSize:'12px'}}>
-                                                        {user.city && user.city+' - '+user.region}
-                                                    </List.Description>
-                                                    <List.Description style={{color:'grey',fontSize:'11px'}}>
-                                                        {user.totalProjects} projetos { user.availabilityTitle && <><Label circular color={user.availabilityColor} empty size='mini' className='ml-2' /> {user.availabilityTitle}</>}
-                                                    </List.Description>
-                                                </List.Content>
-                                            </List.Item>
-                                        )}
-                                    </List>
-                                </Card>
-                            )}
-                        </Grid.Column>
-                        <Grid.Column width={6}>
-                            <Card fluid className='p-3 mt-0 mt-md-3 mb-4 mb-md-0'>
-                                <Header as='h4'>Postagens recentes</Header>
-                                <Feed className='pt-1 mt-0'>
-                                    {/* <Feed.Event className='mb-3 feed-item-wrapper newPost' style={{height:'59px'}}>
-                                        <Feed.Label image={userInfo.picture ? 'https://ik.imagekit.io/mublin/users/avatars/'+userInfo.id+'/'+userInfo.picture : undefinedAvatar} onClick={() => history.push('/'+userInfo.username)} className='cpointer' />
-                                        <Feed.Content className='mb-0 mt-0'>
-                                            <Feed.Summary className='mb-0'>
-                                                <div>
-                                                    <Header 
-                                                        as='h4'
-                                                        className='mb-0' 
-                                                        style={{cursor:'pointer',opacity:'0.5',marginTop:'7px'}}
-                                                        onClick={() => setModalNewPost(true)}
-                                                    >
-                                                        Publicar algo...
-                                                    </Header>
-                                                    <Button primary circular icon='pencil' size='tiny'
-                                                        onClick={() => setModalNewPost(true)}
-                                                        style={{
-                                                            height:'fit-content',
-                                                            position:'absolute',
-                                                            top:'13px',
-                                                            right:'10px',
-                                                        }} 
-                                                    />
-                                                </div>
-                                            </Feed.Summary>
-                                        </Feed.Content>
-                                    </Feed.Event> */}
-                                    {/* <Modal
-                                        size='tiny'
-                                        open={modalNewPost}
-                                        onClose={() => setModalNewPost(false)}
+                                <>
+                                    <Header size='medium' className='mt-1 mt-md-4'>Sugestões para seguir</Header>
+                                    <Flickity
+                                        className={'carousel'}
+                                        elementType={'div'}
+                                        options={sliderOptions}
+                                        disableImagesLoaded={false}
+                                        reloadOnUpdate
                                     >
-                                        <Modal.Content>
-                                            <div className='mb-3'>
-                                                <Image avatar src={userInfo.picture ? 'https://ik.imagekit.io/mublin/users/avatars/'+userInfo.id+'/'+userInfo.picture : undefinedAvatar} />
-                                                <span>Publicar como {userInfo.name}</span>
-                                            </div>
-                                            <Form>
-                                                <Form.TextArea
-                                                    value={postText}
-                                                    onChange={(e) => setPostText(e.target.value)}
-                                                />
-                                            </Form>
-                                            <div>
-                                                <Header as='h6' className='mt-3 mb-1'>
-                                                    <Icon name='image outline' />
-                                                    <Header.Content>Enviar imagem</Header.Content>
-                                                </Header>
-                                                <div className="customFileUpload">
-                                                    {!imagePostUrl ? ( 
-                                                        <>
-                                                            <IKUpload 
-                                                                fileName="img"
-                                                                folder={uploadPath}
-                                                                tags={["post","feed"]}
-                                                                useUniqueFileName={true}
-                                                                isPrivateFile= {false}
-                                                                onError={onUploadError}
-                                                                onSuccess={onUploadSuccess}
-                                                            />
-                                                        </>
-                                                    ) : (
-                                                        <><Image src={'https://ik.imagekit.io/mublin/posts/'+imagePostUrl} size='small' /> <Icon className='cpointer mt-1' color='red' name='trash alternate outline' onClick={() => setImagePostUrl(null)} /></>
-                                                    )}
-                                                </div>
-                                            </div>
-                                            <div className='mt-4 mb-3 pb-3'>
-                                                <Button
-                                                    floated='right'
-                                                    content={isLoading ? 'Publicando...' : 'Publicar'} 
-                                                    size='small' 
-                                                    primary 
-                                                    disabled={(!postText || isLoading) ? true : false}
-                                                    onClick={submitPost}
-                                                />
-                                                <Button floated='right' size='small' onClick={() => setModalNewPost(false)}>
-                                                    Fechar
-                                                </Button>
-                                            </div>
-                                        </Modal.Content>
-                                    </Modal> */}
-                                    {feed.requesting ? (
-                                        <Segment>
-                                            <Placeholder>
-                                            <Placeholder.Header image>
-                                                <Placeholder.Line />
-                                                <Placeholder.Line />
-                                            </Placeholder.Header>
-                                            <Placeholder.Paragraph>
-                                                <Placeholder.Line length='medium' />
-                                                <Placeholder.Line length='short' />
-                                            </Placeholder.Paragraph>
-                                            </Placeholder>
-                                        </Segment>
-                                    ) : (
-                                        <>
-                                            {!feed.error && feed.list.map((item, key) =>
-                                                <Feed.Event key={key} className='mb-3'>
-                                                    <Feed.Label>
-                                                        <img src={item.relatedUserPicture ? item.relatedUserPicture : undefinedAvatar} alt={'Foto de '+item.relatedUserName} style={{cursor:'pointer'}} onClick={() => history.push('/'+item.relatedUserUsername)} />
-                                                        {item.relatedUserPlan === 'Pro' && <Label size="mini" className="ml-2 p-1">Pro</Label>}
-                                                        {item.relatedUserUsername === userInfo.username &&
-                                                            <Icon name='trash alternate outline' style={{fontSize:'0.8em',marginTop:'14px'}} className='cpointer' onClick={() => showModalPost(item.id)} />
-                                                        }
-                                                    </Feed.Label>
-                                                    <Feed.Content className='mt-1' style={{fontSize:'12.3px'}}>
-                                                        {feed.requesting ? (
-                                                            <Feed.Date style={{fontWeight:'500'}}>
-                                                                Carregando...
-                                                            </Feed.Date>
-                                                        ) : (
-                                                            <Feed.Date style={{fontWeight:'500'}} title={Date(item.created)}>
-                                                                há {formatDistance(new Date(item.created * 1000), new Date(), {locale:pt})}
-                                                            </Feed.Date>
-                                                        )}
-                                                        <Feed.Summary>
-                                                            <Feed.User style={{fontWeight:'600'}} onClick={() => history.push('/'+item.relatedUserUsername)}>{item.relatedUserName+' '+item.relatedUserLastname} {!!item.relatedUserVerified && <Icon name='check circle' color='blue' className='verifiedIcon' title='Verificado' />}</Feed.User> <span style={{fontWeight:'500'}}>{item.action}</span>
-                                                        </Feed.Summary>
-                                                        { (item.categoryId === 8) && 
-                                                            <Feed.Extra text content={item.extraText} />
-                                                        }
-                                                        {item.image && 
-                                                            <Feed.Extra images>
-                                                                <a onClick={() => {
-                                                                    showImage('https://ik.imagekit.io/mublin/posts/'+item.image)
-                                                                }}>
-                                                                    <img src={'https://ik.imagekit.io/mublin/posts/'+item.image} />
-                                                                </a>
-                                                            </Feed.Extra>
-                                                        }
-                                                        {!feed.requesting &&
-                                                            <Feed.Meta>
-                                                                <Feed.Like onClick={!item.likedByMe ? () => likeFeedPost(item.id) : () => unlikeFeedPost(item.id)}>
-                                                                    <Icon loading={likeFeedPostLoading === item.id || unlikeFeedPostLoading === item.id} name={(likeFeedPostLoading === item.id || unlikeFeedPostLoading === item.id) ? 'spinner' : 'like'} color={item.likedByMe ? 'red' : ''}/>
-                                                                </Feed.Like> {item.likes}
-                                                            </Feed.Meta>
-                                                        }
-                                                    </Feed.Content>
-                                                </Feed.Event>
-                                            )}
-                                            <Modal
-                                                size='tiny'
-                                                basic
-                                                closeIcon
-                                                open={modalImage}
-                                                onClose={() => setModalImage(false)}
-                                            >
-                                                <Modal.Content>
-                                                    <Image src={imageToShow} />
-                                                </Modal.Content>
-                                            </Modal>
-                                            <Feed.Event>
+                                        {suggestedUsers.map((user, key) =>
+                                            <Card className='default'>
+                                                <Card.Content>
+                                                    <Image
+                                                        floated='left'
+                                                        size='mini'
+                                                        src={user.picture ? user.picture : 'https://ik.imagekit.io/mublin/sample-folder/avatar-undefined_Kblh5CBKPp.jpg'}
+                                                    />
+                                                    <Card.Header style={{fontSize:"16px"}} className='textEllipsis'>
+                                                        {user.name+' '+user.lastname} {!!user.verified && <Icon name='check circle' color='blue' className='verifiedIcon' title='Verificado' />}
+                                                    </Card.Header>
+                                                    <Card.Meta style={{fontSize:"12px"}} className='textEllipsis'>
+                                                        {user.city && user.city+' - '+user.region}
+                                                    </Card.Meta>
+                                                    <Card.Description style={{fontSize:"12.5px"}} className='textEllipsis'>
+                                                        {user.mainRole ? user.mainRole : user.bio}
+                                                    </Card.Description>
+                                                </Card.Content>
+                                                {/* <Card.Content extra style={{fontSize:"11px"}}>
+                                                    { user.availabilityTitle && <><Label circular color={user.availabilityColor} empty size='mini' className='ml-2' /> {user.availabilityTitle}</>}
+                                                </Card.Content> */}
+                                            </Card>
+                                        )}
+                                    </Flickity>
+                                </>
+                            )}
+                            <Header size='medium' className='mt-4'>Postagens Recentes</Header>
+                            <Feed className='pt-1 mt-0'>
+                                {feed.requesting ? (
+                                    <div style={{textAlign:'center',width:'100%',height:'100px'}} className='py-3'>
+                                        <Loader active inline='centered' />
+                                    </div>
+                                ) : (
+                                    <>
+                                        {!feed.error && feed.list.map((item, key) =>
+                                            <Feed.Event key={key} className='mb-3'>
                                                 <Feed.Label>
-                                                    <img src={LogoMublinCircular} alt='Mublin' />
+                                                    <img src={item.relatedUserPicture ? item.relatedUserPicture : undefinedAvatar} alt={'Foto de '+item.relatedUserName} style={{cursor:'pointer'}} onClick={() => history.push('/'+item.relatedUserUsername)} />
+                                                    {item.relatedUserPlan === 'Pro' && <Label size="mini" className="ml-2 p-1">Pro</Label>}
+                                                    {item.relatedUserUsername === userInfo.username &&
+                                                        <Icon name='trash alternate outline' style={{fontSize:'0.8em',marginTop:'14px'}} className='cpointer' onClick={() => showModalPost(item.id)} />
+                                                    }
                                                 </Feed.Label>
-                                                <Feed.Content className='mt-1' style={{fontSize:'12.3px'}}>
-                                                    <Feed.Date style={{fontWeight:'500'}}>
-                                                        há {formatDistance(new Date('2021-03-04'), new Date(), {locale:pt})}
-                                                    </Feed.Date>
+                                                <Feed.Content className='mt-1'>
+                                                    {feed.requesting ? (
+                                                        <Feed.Date style={{fontWeight:'500'}}>
+                                                            Carregando...
+                                                        </Feed.Date>
+                                                    ) : (
+                                                        <Feed.Date style={{fontWeight:'500'}} title={Date(item.created)}>
+                                                            há {formatDistance(new Date(item.created * 1000), new Date(), {locale:pt})}
+                                                        </Feed.Date>
+                                                    )}
                                                     <Feed.Summary>
-                                                        <Feed.User style={{fontWeight:'600',cursor:'default'}}>Mublin <Icon name='check circle' color='blue' className='verifiedIcon' title='Verificado' /></Feed.User> <span style={{fontWeight:'500'}}>escreveu</span>
+                                                        <Feed.User style={{fontWeight:'600'}} onClick={() => history.push('/'+item.relatedUserUsername)}>{item.relatedUserName+' '+item.relatedUserLastname} {!!item.relatedUserVerified && <Icon name='check circle' color='blue' className='verifiedIcon' title='Verificado' />}</Feed.User> <span style={{fontWeight:'500'}}>{item.action}</span>
                                                     </Feed.Summary>
-                                                    <Feed.Extra text content="Bem-vindo à versão Beta do Mublin! Você faz parte de um seleto grupo de pessoas que estão fazendo parte dos primeiros testes neste pré-lançamento. Este é um espaço feito para trazer mais facilidade à rotina de pessoas que amam música e que estão de alguma forma envolvidos com projetos de música. Esperamos que goste!" />
+                                                    { (item.categoryId === 8) && 
+                                                        <Feed.Extra text content={item.extraText} />
+                                                    }
+                                                    {item.image && 
+                                                        <Feed.Extra images>
+                                                            <a onClick={() => {
+                                                                showImage('https://ik.imagekit.io/mublin/posts/'+item.image)
+                                                            }}>
+                                                                <img src={'https://ik.imagekit.io/mublin/posts/'+item.image} />
+                                                            </a>
+                                                        </Feed.Extra>
+                                                    }
+                                                    {!feed.requesting &&
+                                                        <Feed.Meta>
+                                                            <Feed.Like onClick={!item.likedByMe ? () => likeFeedPost(item.id) : () => unlikeFeedPost(item.id)}>
+                                                                <Icon loading={likeFeedPostLoading === item.id || unlikeFeedPostLoading === item.id} name={(likeFeedPostLoading === item.id || unlikeFeedPostLoading === item.id) ? 'spinner' : 'like'} color={item.likedByMe ? 'red' : ''}/>
+                                                            </Feed.Like> {item.likes}
+                                                        </Feed.Meta>
+                                                    }
                                                 </Feed.Content>
                                             </Feed.Event>
-                                        </>
-                                    )}
-                                </Feed>
-                            </Card>
+                                        )}
+                                        <Modal
+                                            size='tiny'
+                                            basic
+                                            closeIcon
+                                            open={modalImage}
+                                            onClose={() => setModalImage(false)}
+                                        >
+                                            <Modal.Content>
+                                                <Image src={imageToShow} />
+                                            </Modal.Content>
+                                        </Modal>
+                                        <Feed.Event>
+                                            <Feed.Label>
+                                                <img src={LogoMublinCircular} alt='Mublin' />
+                                            </Feed.Label>
+                                            <Feed.Content className='mt-1' style={{fontSize:'12.3px'}}>
+                                                <Feed.Date style={{fontWeight:'500'}}>
+                                                    há {formatDistance(new Date('2021-03-04'), new Date(), {locale:pt})}
+                                                </Feed.Date>
+                                                <Feed.Summary>
+                                                    <Feed.User style={{fontWeight:'600',cursor:'default'}}>Mublin <Icon name='check circle' color='blue' className='verifiedIcon' title='Verificado' /></Feed.User> <span style={{fontWeight:'500'}}>escreveu</span>
+                                                </Feed.Summary>
+                                                <Feed.Extra text content="Bem-vindo à versão Beta do Mublin! Você faz parte de um seleto grupo de pessoas que estão fazendo parte dos primeiros testes neste pré-lançamento. Este é um espaço feito para trazer mais facilidade à rotina de pessoas que amam música e que estão de alguma forma envolvidos com projetos de música. Esperamos que goste!" />
+                                            </Feed.Content>
+                                        </Feed.Event>
+                                    </>
+                                )}
+                            </Feed>
+                        </Grid.Column>
+                        <Grid.Column only='computer' width={4}>
+                            <Segment fluid className='p-3 mt-0 mt-md-3 mb-4 mb-md-0'>
+                                <Header className='mt-4'>Filtrar pesquisa</Header>
+                                <Form>
+                                    <Form.Group widths='equal'>
+                                        <Form.Field label='An HTML <input>' control='input' />
+                                        <Form.Field label='An HTML <select>' control='select'>
+                                            <option value='male'>Male</option>
+                                            <option value='female'>Female</option>
+                                        </Form.Field>
+                                    </Form.Group>
+                                    <Form.Group grouped>
+                                        <label>HTML radios</label>
+                                        <Form.Field
+                                            label='This one'
+                                            control='input'
+                                            type='radio'
+                                            name='htmlRadios'
+                                        />
+                                        <Form.Field
+                                            label='That one'
+                                            control='input'
+                                            type='radio'
+                                            name='htmlRadios'
+                                        />
+                                    </Form.Group>
+                                    <Form.Group grouped>
+                                        <label>HTML checkboxes</label>
+                                        <Form.Field label='This one' control='input' type='checkbox' />
+                                        <Form.Field label='That one' control='input' type='checkbox' />
+                                    </Form.Group>
+                                    <Form.Field label='An HTML <textarea>' control='textarea' rows='3' />
+                                    <Form.Field label='An HTML <button>' control='button'>
+                                        HTML Button
+                                    </Form.Field>
+                                </Form>
+                            </Segment>
                         </Grid.Column>
                     </Grid.Row>
                 )}

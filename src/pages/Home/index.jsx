@@ -296,7 +296,6 @@ function HomePage () {
                                 {projectsToShow.map((project, key) =>
                                 <>
                                     <Segment.Group key={key}>
-                                        {project.confirmed === 1 ? ( null ) : ( <Label attached='top' color='black' style={{fontWeight:'300'}}><Icon className='mr-0' name='clock outline' /> Participação pendente de aprovação</Label> )}
                                         <Segment>
                                             <Header as='h3' className='mb-2'>
                                                 <Image rounded src={project.picture ? 'https://ik.imagekit.io/mublin/projects/tr:h-160,w-160,c-maintain_ratio/'+project.picture : 'https://ik.imagekit.io/mublin/sample-folder/avatar-undefined_-dv9U6dcv3.jpg'} />
@@ -388,6 +387,7 @@ function HomePage () {
                                                 <Button size='mini' secondary><Icon name='setting' /> Painel</Button> <Button size='mini'><Icon name='plus' /> Evento</Button> <Button size='mini'><Icon name='plus' /> Meta</Button>
                                             </div>
                                         </Segment>
+                                        {project.confirmed === 1 ? ( null ) : ( <div className='pt-4 mt-2'><Label attached='bottom' color='grey' style={{fontWeight:'300'}}><Icon className='mr-0' name='clock outline' /> Participação pendente de aprovação</Label></div> )}
                                     </Segment.Group>
                                     <Modal
                                         size='mini'

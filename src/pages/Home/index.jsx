@@ -377,7 +377,7 @@ function HomePage () {
                                                 )}
                                             </List>
                                             <div>
-                                                <Button size='mini'><Icon name='setting' /> Painel</Button> <Button size='mini'><Icon name='plus' /> Evento</Button> <Button size='mini'><Icon name='plus' /> Meta</Button>
+                                                <Button size='mini' secondary><Icon name='setting' /> Painel</Button> <Button size='mini'><Icon name='plus' /> Evento</Button> <Button size='mini'><Icon name='plus' /> Meta</Button>
                                             </div>
                                         </Segment>
                                     </Segment.Group>

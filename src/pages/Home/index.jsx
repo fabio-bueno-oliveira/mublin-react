@@ -25,7 +25,7 @@ function HomePage () {
 
     let currentDate = new Date(new Date().toString().split('GMT')[0]+' UTC').toISOString().split('.')[0].replace('T',' ')
 
-    const currentYear = new Date().getFullYear()
+    // const currentYear = new Date().getFullYear()
 
     useEffect(() => {
         dispatch(userInfos.getUserProjects(user.id));
@@ -308,6 +308,10 @@ function HomePage () {
                                             {project.labelShow === 1 && 
                                                 <Label tag color={project.labelColor} size="tiny" style={{ fontWeight: 'normal' }}>{project.labelText}</Label>
                                             }
+                                            <div className='mt-2 d-flex' style={{alignItems:'center', fontSize:'11.5px'}}>
+                                                <Image src={'https://ik.imagekit.io/mublin/tr:h-18,w-18,r-max,c-maintain_ratio/users/avatars/'+userInfo.id+'/'+userInfo.picture} rounded className='mr-1' />
+                                                {project.role1icon && <Label size='mini' style={{whiteSpace:'nowrap',fontWeight:'500'}}>{project.role1}</Label>}{project.role2 && <Label size=  'mini' style={{whiteSpace:'nowrap',fontWeight:'500'}}>{project.role2}</Label>}{project.role3 && <Label size='mini' style={{whiteSpace:'nowrap',fontWeight:'500'}}>{project.role3}</Label>}
+                                            </div>
                                             <List divided relaxed='very'>
                                                 {!project.yearEnd ? ( 
                                                     <>
@@ -372,37 +376,10 @@ function HomePage () {
                                                     </List.Item>
                                                 )}
                                             </List>
+                                            <div>
+                                                <Button size='mini'><Icon name='setting' /> Painel</Button> <Button size='mini'><Icon name='plus' /> Evento</Button> <Button size='mini'><Icon name='plus' /> Meta</Button>
+                                            </div>
                                         </Segment>
-                                        <Segment attached>
-                                            <Header as='h5' className='mt-0'>
-                                                {/* <Image circular src={(!userInfo.requesting && userInfo.picture) ? 'https://ik.imagekit.io/mublin/tr:h-70,w-70,c-maintain_ratio/users/avatars/'+userInfo.id+'/'+userInfo.picture : undefinedAvatar} /> */}
-                                                <Header.Content className='projectRoles'>
-                                                    <Header.Subheader className='mb-1' style={{fontSize:'12px'}}>
-                                                        Meus papéis neste projeto 
-                                                        {(project.joined_in && (project.joined_in !== project.yearLeftTheProject)) ? ( 
-                                                            <>
-                                                                { !project.yearEnd ? ( 
-                                                                    ' (' + project.joined_in +' ➝ ' + (project.yearLeftTheProject ? project.yearLeftTheProject : 'atualmente)')
-                                                                ) : (
-                                                                    ' (' + project.joined_in + ' ➝ ' + project.yearEnd + ')'
-                                                                )}
-                                                            </>
-                                                        ) : (
-                                                            <>
-                                                                {project.joined_in} {project.yearEnd && ' ➝ '+project.yearEnd}
-                                                            </>
-                                                        )}:
-                                                    </Header.Subheader>
-                                                    <Label.Group circular size='tiny'>
-                                                        <Label style={{whiteSpace:'nowrap',fontWeight:'500',color:'rgba(0,0,0,.87)'}}>
-                                                            {project.workTitle} 
-                                                        </Label>
-                                                        {project.role1icon && <Label style={{whiteSpace:'nowrap',fontWeight:'500'}}>{project.role1}</Label>}{project.role2 && <Label style={{whiteSpace:'nowrap',fontWeight:'500'}}>{project.role2}</Label>}{project.role3 && <Label style={{whiteSpace:'nowrap',fontWeight:'500'}}>{project.role3}</Label>}
-                                                    </Label.Group>
-                                                </Header.Content>
-                                            </Header>
-                                        </Segment>
-                                        <Button attached='bottom'>Acessar Painel de {project.name}</Button>
                                     </Segment.Group>
                                     <Modal
                                         size='mini'

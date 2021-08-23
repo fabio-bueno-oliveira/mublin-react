@@ -92,9 +92,9 @@ function FeedPage () {
                                     <Feed.Event key={key} className='mb-3'>
                                         <Feed.Label style={{cursor:'pointer'}} onClick={() => history.push('/'+item.relatedUserUsername)}>
                                             { item.relatedUserPicture ? (
-                                                <img src={item.relatedUserPicture} alt={'Foto de '+item.relatedUserName} alt='Foto do usuário' />
+                                                <img src={item.relatedUserPicture} alt={'Foto de '+item.relatedUserName} />
                                             ) : (
-                                                <img src='https://ik.imagekit.io/mublin/sample-folder/tr:h-200,w-200,c-maintain_ratio/avatar-undefined_Kblh5CBKPp.jpg' alt='Foto do usuário' />
+                                                <img src='https://ik.imagekit.io/mublin/sample-folder/tr:h-200,w-200,c-maintain_ratio/avatar-undefined_Kblh5CBKPp.jpg' alt='Avatar genérico de usuário' />
                                             )}
                                             {item.relatedUserPlan === 'Pro' && <Label size="mini" className="ml-2 p-1">Pro</Label>}
                                         </Feed.Label>

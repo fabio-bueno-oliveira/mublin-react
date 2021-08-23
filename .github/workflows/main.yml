@@ -32,6 +32,8 @@ jobs:
           path: build # Upload content of `dist` folder
       - name: Debug Files
         run: ls
+      - name: Debug Build Files
+        run: ls build
   deploy:
     name: Deploy App
     runs-on: [ubuntu-latest]

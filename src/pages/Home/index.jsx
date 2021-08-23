@@ -310,7 +310,7 @@ function HomePage () {
                                             }
                                             <div className='mt-3 d-flex' style={{alignItems:'center', fontSize:'11.5px'}}>
                                                 <Image src={'https://ik.imagekit.io/mublin/tr:h-36,w-36,r-max,c-maintain_ratio/users/avatars/'+userInfo.id+'/'+userInfo.picture} rounded className='mr-1' width='18' height='18' />
-                                                {project.role1icon && <Label size='mini' style={{whiteSpace:'nowrap',fontWeight:'500'}}>{project.role1}</Label>}{project.role2 && <Label size=  'mini' style={{whiteSpace:'nowrap',fontWeight:'500'}}>{project.role2}</Label>}{project.role3 && <Label size='mini' style={{whiteSpace:'nowrap',fontWeight:'500'}}>{project.role3}</Label>}
+                                                {project.role1}{project.role2 && ', '+project.role2}{project.role3 && ', '+project.role3}
                                             </div>
                                             <List divided relaxed='very'>
                                                 {!project.yearEnd ? ( 

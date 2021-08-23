@@ -308,8 +308,8 @@ function HomePage () {
                                             {project.labelShow === 1 && 
                                                 <Label tag color={project.labelColor} size="tiny" style={{ fontWeight: 'normal' }}>{project.labelText}</Label>
                                             }
-                                            <div className='mt-2 d-flex' style={{alignItems:'center', fontSize:'11.5px'}}>
-                                                <Image src={'https://ik.imagekit.io/mublin/tr:h-18,w-18,r-max,c-maintain_ratio/users/avatars/'+userInfo.id+'/'+userInfo.picture} rounded className='mr-1' />
+                                            <div className='mt-3 d-flex' style={{alignItems:'center', fontSize:'11.5px'}}>
+                                                <Image src={'https://ik.imagekit.io/mublin/tr:h-36,w-36,r-max,c-maintain_ratio/users/avatars/'+userInfo.id+'/'+userInfo.picture} rounded className='mr-1' width='18' height='18' />
                                                 {project.role1icon && <Label size='mini' style={{whiteSpace:'nowrap',fontWeight:'500'}}>{project.role1}</Label>}{project.role2 && <Label size=  'mini' style={{whiteSpace:'nowrap',fontWeight:'500'}}>{project.role2}</Label>}{project.role3 && <Label size='mini' style={{whiteSpace:'nowrap',fontWeight:'500'}}>{project.role3}</Label>}
                                             </div>
                                             <List divided relaxed='very'>
@@ -331,7 +331,15 @@ function HomePage () {
                                                                         <>
                                                                         <div className='mt-2 d-flex' style={{alignItems:'center', fontSize:'11.5px'}}>
                                                                             <Image src={'https://ik.imagekit.io/mublin/tr:h-12,w-12,r-max,c-maintain_ratio/users/avatars/'+project.nextEventInvitationUserIdWhoInvited+'/'+project.nextEventInvitationPictureWhoInvited} rounded title={project.nextEventInvitationUsernameWhoInvited} className='mr-1' />
-                                                                            {project.nextEventInvitationNameWhoInvited} te convidou em {project.nextEventInvitationDate.substr(0,11)} 
+                                                                            {(userInfo.id !== project.nextEventInvitationUserIdWhoInvited) ? 
+                                                                                <>
+                                                                                    {project.nextEventInvitationNameWhoInvited} te convidou em {project.nextEventInvitationDate.substr(0,11)}
+                                                                                </>
+                                                                            :
+                                                                                <>
+                                                                                    Você criou este evento em {project.nextEventInvitationDate.substr(0,11)}
+                                                                                </>
+                                                                            }
                                                                         </div>
                                                                         <div style={{display:'flex',marginTop:'5px'}}>
                                                                             <Button size='mini' icon onClick={project.nextEventInvitationResponse === 1 ? () => submitInvitationResponse(key,project.nextEventInvitationId,2,currentDate,'') : () => setModalAcceptEvent(key)} basic={project.nextEventInvitationResponse === 1 ? false : true} color={project.nextEventInvitationResponse === 1 ? 'green' : null} className='mr-1' loading={isEventLoading.key === key && isEventLoading.response === 2 ? true : false}><Icon name='thumbs up outline' />Irei</Button>

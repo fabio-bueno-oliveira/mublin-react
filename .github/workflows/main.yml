@@ -24,7 +24,7 @@ jobs:
       - name: Install Dependencies
         run: yarn install
       - name: Build
-        run: yarn build
+        run: CI= yarn build
       - name: dist-to-ft
         uses: actions/upload-artifact@master
         with:

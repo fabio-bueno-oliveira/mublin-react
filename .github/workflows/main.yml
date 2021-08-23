@@ -29,7 +29,7 @@ jobs:
         uses: actions/upload-artifact@master
         with:
           name: my_artifact_name # Upload artifact with name `dist`
-          path: dist # Upload content of `dist` folder
+          path: build # Upload content of `dist` folder
       - name: Debug Files
         run: ls
   deploy:

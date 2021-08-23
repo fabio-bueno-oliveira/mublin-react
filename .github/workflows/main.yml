@@ -26,7 +26,7 @@ jobs:
       - name: Build
         run: yarn build
       - name: dist-to-ft
-        uses: actions/upload-artifact@dist-to-ftp@v1
+        uses: actions/upload-artifact@master
         with:
           name: my_artifact_name # Upload artifact with name `dist`
           path: dist # Upload content of `dist` folder

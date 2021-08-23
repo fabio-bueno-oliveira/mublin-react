@@ -225,8 +225,7 @@ h2.ui.header .sub.header {
     margin-left: 0!important;
   }
 }
-
-.homepage {
+main.homepage {
   padding-top: 0!important;
 
   .ui.attached.item.menu {
@@ -272,6 +271,13 @@ h2.ui.header .sub.header {
   @media screen and (min-width: 601px) {
     .ui.red.floating.label {
       left: 96%;
+    }
+  }
+
+  .ui.segment {
+   
+    @media screen and (max-width: 601px) {
+      border-radius: 0px!important;
     }
   }
 }

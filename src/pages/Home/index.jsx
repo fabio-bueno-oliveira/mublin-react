@@ -105,7 +105,7 @@ function HomePage () {
         <>
         <HeaderDesktop />
         <HeaderMobile />
-        <Grid centered className='px-3 homepage'>
+        <Grid as='main' centered className='px-3 homepage'>
             <Grid.Row columns={1} only='mobile'>
                 <Grid.Column mobile={16} tablet={16} computer={16} className='pr-0'>
                     <div className='mt-4 mt-md-2 pt-5 mt-md-0'>
@@ -265,28 +265,30 @@ function HomePage () {
                         </Header>
                     </div>
                 </Grid.Column>
-                <Grid.Column mobile={16} tablet={16} computer={12} className='px-3 px-md-5'>
+                <Grid.Column mobile={16} tablet={16} computer={12} className='px-0 px-md-4'>
                     <div className='py-0 py-md-4 mt-0 mt-md-5'></div>
-                    <Header 
-                        as='h2' 
-                        className='mt-1 mt-md-4 mb-2'
-                    >
-                        Meus Projetos
-                    </Header>
-                    <div className='pb-4'>
-                        <Checkbox 
-                            label={'Principais ('+projectsMain.length+')'}
-                            checked={showMain}
-                            onClick={toggleMain}
-                            style={{fontSize:'12px'}}
-                        />
-                        <Checkbox 
-                            label={['Portfolio ' , '('+projectsPortfolio.length+')']}
-                            checked={projectsPortfolio.length === 0 ? false : showPortfolio}
-                            onClick={togglePortfolio}
-                            style={{fontSize:'12px',marginLeft:'10px'}}
-                            disabled={projectsPortfolio.length === 0 ? true : false}
-                        />
+                    <div className='px-3 px-md-0'>
+                        <Header 
+                            as='h2'
+                            className='mt-1 mt-md-4 mb-2'
+                        >
+                            Meus Projetos
+                        </Header>
+                        <div className='pb-4'>
+                            <Checkbox 
+                                label={'Principais ('+projectsMain.length+')'}
+                                checked={showMain}
+                                onClick={toggleMain}
+                                style={{fontSize:'12px'}}
+                            />
+                            <Checkbox 
+                                label={['Portfolio ' , '('+projectsPortfolio.length+')']}
+                                checked={projectsPortfolio.length === 0 ? false : showPortfolio}
+                                onClick={togglePortfolio}
+                                style={{fontSize:'12px',marginLeft:'10px'}}
+                                disabled={projectsPortfolio.length === 0 ? true : false}
+                            />
+                        </div>
                     </div>
                     {!userInfo.requesting ? (
                         projectsToShow.length ? (
@@ -371,7 +373,7 @@ function HomePage () {
                                                 )}
                                             </List>
                                         </Segment>
-                                        <Segment>
+                                        <Segment attached>
                                             <Header as='h5' className='mt-0'>
                                                 {/* <Image circular src={(!userInfo.requesting && userInfo.picture) ? 'https://ik.imagekit.io/mublin/tr:h-70,w-70,c-maintain_ratio/users/avatars/'+userInfo.id+'/'+userInfo.picture : undefinedAvatar} /> */}
                                                 <Header.Content className='projectRoles'>
@@ -400,6 +402,7 @@ function HomePage () {
                                                 </Header.Content>
                                             </Header>
                                         </Segment>
+                                        <Button attached='bottom'>Acessar Painel de {project.name}</Button>
                                     </Segment.Group>
                                     <Modal
                                         size='mini'

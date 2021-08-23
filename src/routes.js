@@ -18,6 +18,7 @@ import Career from './pages/Career/timeline';
 import CareerMyGoals from './pages/Career/myGoals';
 import Feed from './pages/Feed';
 import ProfilePage from './pages/ProfilePage';
+import ProfileGearPage from './pages/ProfilePage/gear';
 import PublicProfilePage from './pages/ProfilePage/publicPage';
 import New from './pages/New';
 import NewProject from './pages/New/project';
@@ -116,6 +117,7 @@ function Routes (props) {
                 <PrivateRoute authed={loggedIn} path="/gear" component={MyGearPage} />
                 <PrivateRoute authed={loggedIn} path="/admin" component={AdminPage} />
                 <Route exact path="/:username/public" component={PublicProfilePage} />
+                <Route exact path="/:username/gear" component={ProfileGearPage} />
                 <PublicVersion authed={loggedIn} path="/:username" component={ProfilePage} />
             </Switch>
         </BrowserRouter>

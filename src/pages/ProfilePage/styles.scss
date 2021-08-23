@@ -46,3 +46,20 @@ main._404 {
   align-items: center;
   margin-top: -50px;
 }
+
+#profileGearPage {
+  
+  .gearGallery {
+    display: flex;
+
+    >div {
+      width: 50%;
+    }
+
+    @media only screen and (min-width:600px) {
+      >div {
+        width: 50%;
+      }
+    }
+  }
+}

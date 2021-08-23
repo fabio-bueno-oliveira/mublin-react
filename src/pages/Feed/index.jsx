@@ -92,9 +92,9 @@ function FeedPage () {
                                     <Feed.Event key={key} className='mb-3'>
                                         <Feed.Label style={{cursor:'pointer'}} onClick={() => history.push('/'+item.relatedUserUsername)}>
                                             { item.relatedUserPicture ? (
-                                                <img src={item.relatedUserPicture} alt={'Foto de '+item.relatedUserName} />
+                                                <img src={item.relatedUserPicture} alt={'Foto de '+item.relatedUserName} alt='Foto do usuário' />
                                             ) : (
-                                                <img src='https://ik.imagekit.io/mublin/sample-folder/tr:h-200,w-200,c-maintain_ratio/avatar-undefined_Kblh5CBKPp.jpg' />
+                                                <img src='https://ik.imagekit.io/mublin/sample-folder/tr:h-200,w-200,c-maintain_ratio/avatar-undefined_Kblh5CBKPp.jpg' alt='Foto do usuário' />
                                             )}
                                             {item.relatedUserPlan === 'Pro' && <Label size="mini" className="ml-2 p-1">Pro</Label>}
                                         </Feed.Label>
@@ -109,7 +109,7 @@ function FeedPage () {
                                                 </Feed.Date>
                                             )}
                                             <Feed.Summary>
-                                                <Feed.User style={{fontWeight:'600'}} onClick={() => history.push('/'+item.relatedUserUsername)}>{item.relatedUserName+' '+item.relatedUserLastname}</Feed.User> <span style={{fontWeight:'500'}}>{item.action} {item.category === 'project' ? item.relatedProjectName+' ('+item.relatedProjectType+')' : (<a>{item.relatedEventTitle}</a>)}</span>
+                                                <Feed.User style={{fontWeight:'600'}} onClick={() => history.push('/'+item.relatedUserUsername)}>{item.relatedUserName+' '+item.relatedUserLastname}</Feed.User> <span style={{fontWeight:'500'}}>{item.action} {item.category === 'project' ? item.relatedProjectName+' ('+item.relatedProjectType+')' : (<a href='/'>{item.relatedEventTitle}</a>)}</span>
                                             </Feed.Summary>
                                             { (item.categoryId === 8) && 
                                                 <Feed.Extra text content={item.extraText} />
@@ -118,7 +118,7 @@ function FeedPage () {
                                                 <Feed.Extra images>
                                                     <Link as='a' to={{ pathname: '/project/'+item.relatedProjectUsername }}>
                                                         { item.relatedProjectPicture ? (
-                                                            <img src={item.relatedProjectPicture} />
+                                                            <img src={item.relatedProjectPicture} alt='Foto do projeto' />
                                                         ) : (
                                                             <img src='https://ik.imagekit.io/mublin/sample-folder/avatar-undefined_-dv9U6dcv3.jpg' alt={'Foto de '+item.relatedUserName} />
                                                         )}

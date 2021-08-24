@@ -7,7 +7,7 @@ import FooterMenuMobile from '../../components/layout/footerMenuMobile';
 import Spacer from '../../components/layout/Spacer';
 import { userInfos } from '../../store/actions/user';
 import { searchInfos } from '../../store/actions/search';
-import { Segment, Header, Grid, Image, Icon, Label, List, Modal, Button, Form, Input, Loader, Placeholder, Checkbox } from 'semantic-ui-react';
+import { Segment, Header, Grid, Image, Icon, Label, List, Modal, Button, Form, Input, Loader, Placeholder } from 'semantic-ui-react';
 import Flickity from 'react-flickity-component';
 import { formatDistance } from 'date-fns';
 import pt from 'date-fns/locale/pt-BR';
@@ -35,25 +35,28 @@ function HomePage () {
     }, [user.id, dispatch]);
 
     const userInfo = useSelector(state => state.user)
+
     // const suggestedUsers = useSelector(state => state.search.suggestedUsers)
 
-    const [showMain, setShowMain] = useState(true)
-    const toggleMain = () => setShowMain(value => !value)
+    // const [showMain, setShowMain] = useState(true)
 
-    const [showPortfolio, setShowPortfolio] = useState(true)
-    const togglePortfolio = () => setShowPortfolio(value => !value)
+    // const toggleMain = () => setShowMain(value => !value)
 
-    // const projects = useSelector(state => state.user.projects)
+    // const [showPortfolio, setShowPortfolio] = useState(true)
 
-    const projectsMain = useSelector(state => state.user.projects).filter((project) => { return project.portfolio === 0 })
+    // const togglePortfolio = () => setShowPortfolio(value => !value)
 
-    const projectsPortfolio = useSelector(state => state.user.projects).filter((project) => { return project.portfolio === 1 })
+    const projects = useSelector(state => state.user.projects)
 
-    const projectsToShow = useSelector(state => state.user.projects).filter((project) => { return project.confirmed !== 0 && (showPortfolio) && project.portfolio === 1 || (showMain) && project.portfolio === 0 }).sort((a, b) => parseFloat(b.featured) - parseFloat(a.featured))
+    // const projectsMain = useSelector(state => state.user.projects).filter((project) => { return project.portfolio === 0 })
+
+    // const projectsPortfolio = useSelector(state => state.user.projects).filter((project) => { return project.portfolio === 1 })
+
+    // const projectsToShow = useSelector(state => state.user.projects).filter((project) => { return project.confirmed !== 0 && (showPortfolio) && project.portfolio === 1 || (showMain) && project.portfolio === 0 }).sort((a, b) => parseFloat(b.featured) - parseFloat(a.featured))
 
     const [filteredByName, setFilteredByName] = useState('')
 
-    const filteredProjects = filteredByName ? projectsToShow.filter((project) => { return project.name.includes(filteredByName) }) : projectsToShow
+    const filteredProjects = filteredByName ? projects.filter((project) => { return project.name.toLowerCase().includes(filteredByName.toLowerCase()) }) : projects
 
     const sliderOptions = {
         autoPlay: false,
@@ -274,12 +277,12 @@ function HomePage () {
                     <div className='px-3 px-md-0'>
                         <Header 
                             as='h2'
-                            className='mt-1 mt-md-4 mb-2'
+                            className='mt-0 mt-md-4 mb-2'
                         >
                             Meus Projetos
                         </Header>
                         <div className='pb-4'>
-                            <Checkbox 
+                            {/* <Checkbox 
                                 label={'Principais ('+projectsMain.length+')'}
                                 checked={showMain}
                                 onClick={toggleMain}
@@ -291,12 +294,13 @@ function HomePage () {
                                 onClick={togglePortfolio}
                                 style={{fontSize:'12px',marginLeft:'10px'}}
                                 disabled={projectsPortfolio.length === 0 ? true : false}
-                            />
+                            /> */}
                             <Input 
                                 icon='search'
                                 placeholder='Filtrar por nome...'
                                 transparent
-                                onChange={(e, { value }) => setFilteredByName(value)}
+                                value={filteredByName}
+                                onChange={e => setFilteredByName(e.target.value)}
                             />
                         </div>
                     </div>

@@ -7,7 +7,7 @@ import FooterMenuMobile from '../../components/layout/footerMenuMobile';
 import Spacer from '../../components/layout/Spacer';
 import { userInfos } from '../../store/actions/user';
 import { searchInfos } from '../../store/actions/search';
-import { Segment, Header, Grid, Image, Icon, Label, List, Modal, Button, Form, Loader, Placeholder, Checkbox } from 'semantic-ui-react';
+import { Segment, Header, Grid, Image, Icon, Label, List, Modal, Button, Form, Input, Loader, Placeholder, Checkbox } from 'semantic-ui-react';
 import Flickity from 'react-flickity-component';
 import { formatDistance } from 'date-fns';
 import pt from 'date-fns/locale/pt-BR';
@@ -50,6 +50,10 @@ function HomePage () {
     const projectsPortfolio = useSelector(state => state.user.projects).filter((project) => { return project.portfolio === 1 })
 
     const projectsToShow = useSelector(state => state.user.projects).filter((project) => { return project.confirmed !== 0 && (showPortfolio) && project.portfolio === 1 || (showMain) && project.portfolio === 0 }).sort((a, b) => parseFloat(b.featured) - parseFloat(a.featured))
+
+    const [filteredByName, setFilteredByName] = useState('')
+
+    const filteredProjects = filteredByName ? projectsToShow.filter((project) => { return project.name.includes(filteredByName) }) : projectsToShow
 
     const sliderOptions = {
         autoPlay: false,
@@ -220,7 +224,7 @@ function HomePage () {
                                 <>
                                 {userInfo.lastConnectedFriends[0].username &&
                                     <>
-                                        <Header as='h5' textAlign='center'>Conectados recentemente</Header>
+                                        <Header as='h5' textAlign='center'>Contatos conectados recentemente</Header>
                                         <Flickity
                                             className={'carousel'}
                                             style={{height: '200px'}}
@@ -288,12 +292,18 @@ function HomePage () {
                                 style={{fontSize:'12px',marginLeft:'10px'}}
                                 disabled={projectsPortfolio.length === 0 ? true : false}
                             />
+                            <Input 
+                                icon='search'
+                                placeholder='Filtrar por nome...'
+                                transparent
+                                onChange={(e, { value }) => setFilteredByName(value)}
+                            />
                         </div>
                     </div>
                     {!userInfo.requesting ? (
-                        projectsToShow.length ? (
+                        filteredProjects.length ? (
                             <div>
-                                {projectsToShow.map((project, key) =>
+                                {filteredProjects.map((project, key) =>
                                 <>
                                     <Segment.Group key={key}>
                                         <Segment>
@@ -387,7 +397,7 @@ function HomePage () {
                                                 <Button size='mini' secondary><Icon name='setting' /> Painel</Button> <Button size='mini'><Icon name='plus' /> Evento</Button> <Button size='mini'><Icon name='plus' /> Meta</Button>
                                             </div>
                                         </Segment>
-                                        {project.confirmed === 1 ? ( null ) : ( <div className='pt-4 mt-2'><Label attached='bottom' color='grey' style={{fontWeight:'300'}}><Icon className='mr-0' name='clock outline' /> Participação pendente de aprovação</Label></div> )}
+                                        {project.confirmed === 1 ? ( null ) : ( <div className='pt-4 mt-2'><Label attached='bottom' color='red' style={{fontWeight:'300'}}><Icon className='mr-0' name='clock outline' /> Participação pendente de aprovação</Label></div> )}
                                     </Segment.Group>
                                     <Modal
                                         size='mini'

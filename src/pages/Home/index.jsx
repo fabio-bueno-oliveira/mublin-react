@@ -7,7 +7,7 @@ import FooterMenuMobile from '../../components/layout/footerMenuMobile';
 import Spacer from '../../components/layout/Spacer';
 import { userInfos } from '../../store/actions/user';
 import { searchInfos } from '../../store/actions/search';
-import { Segment, Header, Grid, Image, Icon, Label, List, Modal, Button, Form, Input, Loader, Placeholder } from 'semantic-ui-react';
+import { Segment, Header, Grid, Image, Icon, Label, List, Modal, Button, Form, Input, Loader, Placeholder, Message } from 'semantic-ui-react';
 import Flickity from 'react-flickity-component';
 import { formatDistance } from 'date-fns';
 import pt from 'date-fns/locale/pt-BR';
@@ -329,6 +329,15 @@ function HomePage () {
                                                 {!project.yearEnd ? ( 
                                                     <>
                                                         <List.Item>
+                                                            <List.Icon name='bullhorn' size='large' verticalAlign='middle' className='pr-1' />
+                                                            <List.Content style={{paddingLeft:'5px'}}>
+                                                                <List.Header className='itemTitle'>Recado do Líder</List.Header>
+                                                                <List.Description>
+                                                                    Nenhum recado disponível
+                                                                </List.Description>
+                                                            </List.Content>
+                                                        </List.Item>
+                                                        <List.Item>
                                                             <List.Icon name='calendar alternate outline' size='large' verticalAlign='middle' />
                                                             <List.Content>
                                                                 <List.Header className='itemTitle'>Próximo evento{project.nextEventDateOpening ? ': ' + project.nextEventDateOpening + ' às ' + project.nextEventHourOpening.substr(0,5) : null}</List.Header>
@@ -398,10 +407,14 @@ function HomePage () {
                                                 )}
                                             </List>
                                             <div>
-                                                <Button size='mini' secondary><Icon name='setting' /> Painel</Button> <Button size='mini'><Icon name='plus' /> Evento</Button> <Button size='mini'><Icon name='plus' /> Meta</Button>
+                                                <Button size='mini'><Icon name='setting' /> Acessar painel de controle</Button>
                                             </div>
+                                            {project.confirmed === 1 ? ( null ) : ( 
+                                                <Message negative size='small'>
+                                                    <p><Icon name='exclamation circle' /> Participação pendente de aprovação</p>
+                                                </Message>
+                                            )}
                                         </Segment>
-                                        {project.confirmed === 1 ? ( null ) : ( <div className='pt-4 mt-2'><Label attached='bottom' color='red' style={{fontWeight:'300'}}><Icon className='mr-0' name='clock outline' /> Participação pendente de aprovação</Label></div> )}
                                     </Segment.Group>
                                     <Modal
                                         size='mini'

@@ -7,7 +7,7 @@ import FooterMenuMobile from '../../components/layout/footerMenuMobile';
 import Spacer from '../../components/layout/Spacer';
 import { userInfos } from '../../store/actions/user';
 import { searchInfos } from '../../store/actions/search';
-import { Segment, Header, Grid, Image, Icon, Label, List, Modal, Button, Form, Input, Card, Loader, Placeholder, Message } from 'semantic-ui-react';
+import { Header, Grid, Image, Icon, Label, List, Button, Input, Card, Loader, Placeholder } from 'semantic-ui-react';
 import Flickity from 'react-flickity-component';
 import Masonry from 'react-masonry-css';
 import { formatDistance } from 'date-fns';
@@ -41,7 +41,7 @@ function HomePage () {
 
     const [filteredByName, setFilteredByName] = useState('')
 
-    const filteredProjects = filteredByName ? projects.filter((project) => { return project.name.toLowerCase().includes(filteredByName.toLowerCase()) }) : projects
+    const filteredProjects = filteredByName ? projects.filter((project) => { return project.name.toLowerCase().includes(filteredByName.toLowerCase()) || project.username.toLowerCase().includes(filteredByName.toLowerCase()) }) : projects
 
     const sliderOptions = {
         autoPlay: false,
@@ -99,13 +99,30 @@ function HomePage () {
         900: 2,
         700: 1,
         500: 1
-    };      
+    };
+
+    const placeholderCard = <Card>
+        <Card.Content>
+            <Placeholder>
+                <Placeholder.Header image>
+                    <Placeholder.Line />
+                    <Placeholder.Line />
+                </Placeholder.Header>
+                <Placeholder.Paragraph>
+                    <Placeholder.Line />
+                    <Placeholder.Line />
+                    <Placeholder.Line />
+                    <Placeholder.Line />
+                </Placeholder.Paragraph>
+            </Placeholder>
+        </Card.Content>
+    </Card>
 
     return (
         <>
         <HeaderDesktop />
         <HeaderMobile />
-        <Grid as='main' centered className='px-3 homepage'>
+        <Grid centered className='px-3 homepage'>
             <Grid.Row columns={1} only='mobile'>
                 <Grid.Column mobile={16} tablet={16} computer={16} className='pr-0'>
                     <div className='mt-4 mt-md-2 pt-5 mt-md-0'>
@@ -159,7 +176,7 @@ function HomePage () {
                 </Grid.Column>
             </Grid.Row>
             <Grid.Row columns={2} className='pt-0 pt-md-0'>
-                <Grid.Column mobile={16} tablet={16} computer={4} className="only-computer" style={{backgroundColor:'white'}}>
+                <Grid.Column as='aside' mobile={16} tablet={16} computer={4} className="only-computer" style={{backgroundColor:'white'}}>
                     <div className='px-3 pb-4' style={{position:'sticky',top:'0',paddingTop:'82px'}}>
                         { !userInfo.requesting ? ( 
                             <div className="pb-2 mt-3">
@@ -265,12 +282,12 @@ function HomePage () {
                         </Header>
                     </div>
                 </Grid.Column>
-                <Grid.Column mobile={16} tablet={16} computer={12} className='px-0 px-md-4'>
+                <Grid.Column as='main' mobile={16} tablet={16} computer={12}>
                     <div className='py-0 py-md-4 mt-0 mt-md-5'></div>
                     <div className='px-3 px-md-0'>
                         <Header 
                             as='h2'
-                            className='mt-0 mt-md-4 mb-2'
+                            className='mt-0 mt-md-3 mb-2'
                         >
                             Meus Projetos
                         </Header>
@@ -286,7 +303,6 @@ function HomePage () {
                             />
                         </div>
                     </div>
-
                     {!userInfo.requesting ? (
                         filteredProjects.length ? (
                             <Masonry
@@ -297,7 +313,7 @@ function HomePage () {
                                 {filteredProjects.map((project, key) =>
                                     <Card key={key}>
                                         <Card.Content>
-                                            <Header as='h3' className='mb-2'>
+                                            <Header as='h3'>
                                                 <Image rounded src={project.picture ? 'https://ik.imagekit.io/mublin/projects/tr:h-160,w-160,c-maintain_ratio/'+project.picture : 'https://ik.imagekit.io/mublin/sample-folder/avatar-undefined_-dv9U6dcv3.jpg'} />
                                                 <Header.Content>
                                                     {project.name}
@@ -309,9 +325,14 @@ function HomePage () {
                                             {project.labelShow === 1 && 
                                                 <Label tag color={project.labelColor} size="tiny" style={{ fontWeight: 'normal' }}>{project.labelText}</Label>
                                             }
-                                            <div className='mt-3 d-flex' style={{alignItems:'center', fontSize:'11.5px'}}>
+                                        </Card.Content>
+                                        <Card.Content>
+                                            <div className='d-flex' style={{alignItems:'center', fontSize:'11.5px'}}>
                                                 <Image src={'https://ik.imagekit.io/mublin/tr:h-36,w-36,r-max,c-maintain_ratio/users/avatars/'+userInfo.id+'/'+userInfo.picture} rounded className='mr-1' width='18' height='18' />
                                                 {project.role1}{project.role2 && ', '+project.role2}{project.role3 && ', '+project.role3}
+                                            </div>
+                                            <div className='mt-1 badges'>
+                                                <Label circular size="tiny"><Icon name='id badge outline' className='mr-0' color='black' /> {project.workTitle}</Label> {!!(project.active && !project.yearLeftTheProject && !project.yearEnd) && <Label circular size="tiny"><Icon color='green' name='check circle' className='mr-0' /> Ativo atualmente no projeto</Label>} {!!project.yearLeftTheProject && <Label color='red' circular size="tiny"><Icon name='sign out' className='mr-0' /> Deixei o projeto em {project.yearLeftTheProject}</Label>} {!!project.touring && <Label circular size="tiny"><Icon name='road' color='blue' className='mr-0' /> Em turnê com este projeto</Label>}
                                             </div>
                                         </Card.Content>
                                         <Card.Content>
@@ -401,8 +422,8 @@ function HomePage () {
                                         </Card.Content>
                                         <Card.Content extra textAlign='center'>
                                             <a>
-                                                <Icon name='chevron right' />
                                                 Acessar Painel de {project.name}
+                                                <Icon name='chevron right' />
                                             </a>
                                         </Card.Content>
                                     </Card>
@@ -416,22 +437,15 @@ function HomePage () {
                             </Header>
                         )
                     ) : (
-                        <Segment>
-                            <Placeholder fluid>
-                                <Placeholder.Header image>
-                                    <Placeholder.Line />
-                                    <Placeholder.Line />
-                                </Placeholder.Header>
-                                <Placeholder.Paragraph>
-                                    <Placeholder.Line />
-                                    <Placeholder.Line />
-                                    <Placeholder.Line />
-                                    <Placeholder.Line />
-                                    <Placeholder.Line />
-                                    <Placeholder.Line />
-                                </Placeholder.Paragraph>
-                            </Placeholder>
-                        </Segment>
+                        <Masonry
+                            breakpointCols={breakpointColumnsObj}
+                            className="my-masonry-grid"
+                            columnClassName="my-masonry-grid_column"
+                        >
+                            {placeholderCard}
+                            {placeholderCard}
+                            {placeholderCard}
+                        </Masonry>
                     )}
                 </Grid.Column>
             </Grid.Row>

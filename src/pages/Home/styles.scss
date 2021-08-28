@@ -275,35 +275,48 @@ main.homepage {
     }
   }
 
-  .ui.segment {
+  .ui.card {
    
     @media screen and (max-width: 601px) {
       border-radius: 0px!important;
     }
   }
 
-  .ui.transparent.input {
-    margin-left: 16px;
-
-    @media screen and (max-width: 601px) {
-      display: block;
-      margin: 12px 0 0 0;
-      width: 180px;
-    }
-  }
-
-  .ui.segments {
+  .ui.card {
 
     &:last-child {
       margin-bottom: 70px;
     }
   }
-}
 
-.itemTitle {
-  font-family: 'Poppins', sans-serif!important;
-  font-size: 13px!important;
-  font-weight: 500!important;
+  .my-masonry-grid {
+    display: -webkit-box; /* Not needed if autoprefixing */
+    display: -ms-flexbox; /* Not needed if autoprefixing */
+    display: flex;
+    margin-left: -30px; /* gutter size offset */
+    width: auto;
+
+    .my-masonry-grid_column {
+      padding-left: 30px; /* gutter size */
+      background-clip: padding-box;
+
+      &:last-child {
+        margin-bottom: 70px;
+      }
+    }
+
+    .card {
+      height: fit-content;
+      width: 100%;
+      margin: 0 0 30px 0!important;
+    }
+  }
+
+  .itemTitle {
+    font-family: 'Poppins', sans-serif!important;
+    font-size: 13px!important;
+    font-weight: 500!important;
+  }
 }
 
 .textEventEllipsis {

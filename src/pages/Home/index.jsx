@@ -7,8 +7,9 @@ import FooterMenuMobile from '../../components/layout/footerMenuMobile';
 import Spacer from '../../components/layout/Spacer';
 import { userInfos } from '../../store/actions/user';
 import { searchInfos } from '../../store/actions/search';
-import { Segment, Header, Grid, Image, Icon, Label, List, Modal, Button, Form, Input, Loader, Placeholder, Message } from 'semantic-ui-react';
+import { Segment, Header, Grid, Image, Icon, Label, List, Modal, Button, Form, Input, Card, Loader, Placeholder, Message } from 'semantic-ui-react';
 import Flickity from 'react-flickity-component';
+import Masonry from 'react-masonry-css';
 import { formatDistance } from 'date-fns';
 import pt from 'date-fns/locale/pt-BR';
 import './styles.scss';
@@ -36,23 +37,7 @@ function HomePage () {
 
     const userInfo = useSelector(state => state.user)
 
-    // const suggestedUsers = useSelector(state => state.search.suggestedUsers)
-
-    // const [showMain, setShowMain] = useState(true)
-
-    // const toggleMain = () => setShowMain(value => !value)
-
-    // const [showPortfolio, setShowPortfolio] = useState(true)
-
-    // const togglePortfolio = () => setShowPortfolio(value => !value)
-
     const projects = useSelector(state => state.user.projects)
-
-    // const projectsMain = useSelector(state => state.user.projects).filter((project) => { return project.portfolio === 0 })
-
-    // const projectsPortfolio = useSelector(state => state.user.projects).filter((project) => { return project.portfolio === 1 })
-
-    // const projectsToShow = useSelector(state => state.user.projects).filter((project) => { return project.confirmed !== 0 && (showPortfolio) && project.portfolio === 1 || (showMain) && project.portfolio === 0 }).sort((a, b) => parseFloat(b.featured) - parseFloat(a.featured))
 
     const [filteredByName, setFilteredByName] = useState('')
 
@@ -107,6 +92,14 @@ function HomePage () {
     const cdnBaseURL = 'https://ik.imagekit.io/mublin';
 
     var today = new Date();
+
+    const breakpointColumnsObj = {
+        default: 3,
+        1300: 3,
+        900: 2,
+        700: 1,
+        500: 1
+    };      
 
     return (
         <>
@@ -282,40 +275,35 @@ function HomePage () {
                             Meus Projetos
                         </Header>
                         <div className='pb-4'>
-                            {/* <Checkbox 
-                                label={'Principais ('+projectsMain.length+')'}
-                                checked={showMain}
-                                onClick={toggleMain}
-                                style={{fontSize:'12px'}}
-                            />
-                            <Checkbox 
-                                label={['Portfolio ' , '('+projectsPortfolio.length+')']}
-                                checked={projectsPortfolio.length === 0 ? false : showPortfolio}
-                                onClick={togglePortfolio}
-                                style={{fontSize:'12px',marginLeft:'10px'}}
-                                disabled={projectsPortfolio.length === 0 ? true : false}
-                            /> */}
                             <Input 
                                 icon='search'
+                                iconPosition='left'
                                 placeholder='Filtrar por nome...'
                                 transparent
                                 value={filteredByName}
                                 onChange={e => setFilteredByName(e.target.value)}
+                                size='big'
                             />
                         </div>
                     </div>
+
                     {!userInfo.requesting ? (
                         filteredProjects.length ? (
-                            <div>
+                            <Masonry
+                                breakpointCols={breakpointColumnsObj}
+                                className="my-masonry-grid"
+                                columnClassName="my-masonry-grid_column"
+                            >
                                 {filteredProjects.map((project, key) =>
-                                <>
-                                    <Segment.Group key={key}>
-                                        <Segment>
+                                    <Card key={key}>
+                                        <Card.Content>
                                             <Header as='h3' className='mb-2'>
                                                 <Image rounded src={project.picture ? 'https://ik.imagekit.io/mublin/projects/tr:h-160,w-160,c-maintain_ratio/'+project.picture : 'https://ik.imagekit.io/mublin/sample-folder/avatar-undefined_-dv9U6dcv3.jpg'} />
                                                 <Header.Content>
                                                     {project.name}
-                                                    <Header.Subheader>{project.ptname} {project.genre1 ? ' · '+project.genre1 : null }</Header.Subheader>
+                                                    <Header.Subheader>
+                                                        {!!project.portfolio && <Label circular size='mini' className='ml-0'><Icon name='tag' className='mr-1' />Portfolio</Label>} {project.ptname} {project.genre1 ? ' · '+project.genre1 : null }
+                                                    </Header.Subheader>
                                                 </Header.Content>
                                             </Header>
                                             {project.labelShow === 1 && 
@@ -325,148 +313,101 @@ function HomePage () {
                                                 <Image src={'https://ik.imagekit.io/mublin/tr:h-36,w-36,r-max,c-maintain_ratio/users/avatars/'+userInfo.id+'/'+userInfo.picture} rounded className='mr-1' width='18' height='18' />
                                                 {project.role1}{project.role2 && ', '+project.role2}{project.role3 && ', '+project.role3}
                                             </div>
-                                            <List divided relaxed='very'>
-                                                {!project.yearEnd ? ( 
-                                                    <>
-                                                        <List.Item>
-                                                            <List.Icon name='bullhorn' size='large' verticalAlign='middle' className='pr-1' />
-                                                            <List.Content style={{paddingLeft:'5px'}}>
-                                                                <List.Header className='itemTitle'>Recado do Líder</List.Header>
-                                                                <List.Description>
-                                                                    Nenhum recado disponível
-                                                                </List.Description>
-                                                            </List.Content>
-                                                        </List.Item>
-                                                        <List.Item>
-                                                            <List.Icon name='calendar alternate outline' size='large' verticalAlign='middle' />
-                                                            <List.Content>
-                                                                <List.Header className='itemTitle'>Próximo evento{project.nextEventDateOpening ? ': ' + project.nextEventDateOpening + ' às ' + project.nextEventHourOpening.substr(0,5) : null}</List.Header>
-                                                                <List.Description style={{maxWidth:'90%'}}>
-                                                                    <div>
-                                                                        {project.nextEventDateOpening ? 
-                                                                            <>{project.nextEventTitle}</> 
-                                                                        : 
-                                                                            'Nenhum evento programado'
-                                                                        }
-                                                                    </div>
-                                                                    {(project.nextEventDateOpening && project.nextEventInvitationId) && 
-                                                                        <>
-                                                                        <div className='mt-2 d-flex' style={{alignItems:'center', fontSize:'11.5px'}}>
-                                                                            <Image src={'https://ik.imagekit.io/mublin/tr:h-12,w-12,r-max,c-maintain_ratio/users/avatars/'+project.nextEventInvitationUserIdWhoInvited+'/'+project.nextEventInvitationPictureWhoInvited} rounded title={project.nextEventInvitationUsernameWhoInvited} className='mr-1' />
-                                                                            {(userInfo.id !== project.nextEventInvitationUserIdWhoInvited) ? 
-                                                                                <>
-                                                                                    {project.nextEventInvitationNameWhoInvited} te convidou em {project.nextEventInvitationDate.substr(0,11)}
-                                                                                </>
-                                                                            :
-                                                                                <>
-                                                                                    Você criou este evento em {project.nextEventInvitationDate.substr(0,11)}
-                                                                                </>
+                                        </Card.Content>
+                                        <Card.Content>
+                                            <Card.Description>
+                                                <List divided relaxed='very'>
+                                                    {!project.yearEnd ? ( 
+                                                        <>
+                                                            <List.Item>
+                                                                <List.Icon name='bullhorn' size='large' verticalAlign='middle' className='pr-1' />
+                                                                <List.Content style={{paddingLeft:'5px'}}>
+                                                                    <List.Header className='itemTitle'>Recado do Líder</List.Header>
+                                                                    <List.Description>
+                                                                        Nenhum recado disponível
+                                                                    </List.Description>
+                                                                </List.Content>
+                                                            </List.Item>
+                                                            <List.Item>
+                                                                <List.Icon name='calendar alternate outline' size='large' verticalAlign='middle' />
+                                                                <List.Content>
+                                                                    <List.Header className='itemTitle'>Próximo evento{project.nextEventDateOpening ? ': ' + project.nextEventDateOpening + ' às ' + project.nextEventHourOpening.substr(0,5) : null}</List.Header>
+                                                                    <List.Description style={{maxWidth:'90%'}}>
+                                                                        <div>
+                                                                            {project.nextEventDateOpening ? 
+                                                                                <>{project.nextEventTitle}</> 
+                                                                            : 
+                                                                                'Nenhum evento programado'
                                                                             }
                                                                         </div>
-                                                                        <div style={{display:'flex',marginTop:'5px'}}>
-                                                                            <Button size='mini' icon onClick={project.nextEventInvitationResponse === 1 ? () => submitInvitationResponse(key,project.nextEventInvitationId,2,currentDate,'') : () => setModalAcceptEvent(key)} basic={project.nextEventInvitationResponse === 1 ? false : true} color={project.nextEventInvitationResponse === 1 ? 'green' : null} className='mr-1' loading={isEventLoading.key === key && isEventLoading.response === 2 ? true : false}><Icon name='thumbs up outline' />Irei</Button>
-                                                                            <Button size='mini' icon basic={project.nextEventInvitationResponse === 0 ? false : true} color={project.nextEventInvitationResponse === 0 ? 'red' : null} onClick={project.nextEventInvitationResponse === 0 ? () => submitInvitationResponse(key,project.nextEventInvitationId,2,currentDate,'') : () => setModalDeclineEvent(key)} loading={isEventLoading.key === key && isEventLoading.response === 2 ? true : false}><Icon name='thumbs down outline' />Não irei</Button>
-                                                                            <Button size='mini' basic icon><Icon name='plus' /> detalhes</Button>
-                                                                        </div>
-                                                                        </>
-                                                                    }
-                                                                </List.Description>
-                                                            </List.Content>
-                                                        </List.Item>
+                                                                        {(project.nextEventDateOpening && project.nextEventInvitationId) && 
+                                                                            <>
+                                                                            <div className='mt-2 d-flex' style={{alignItems:'center', fontSize:'11.5px'}}>
+                                                                                <Image src={'https://ik.imagekit.io/mublin/tr:h-12,w-12,r-max,c-maintain_ratio/users/avatars/'+project.nextEventInvitationUserIdWhoInvited+'/'+project.nextEventInvitationPictureWhoInvited} rounded title={project.nextEventInvitationUsernameWhoInvited} className='mr-1' />
+                                                                                {(userInfo.id !== project.nextEventInvitationUserIdWhoInvited) ? 
+                                                                                    <>
+                                                                                        {project.nextEventInvitationNameWhoInvited} te convidou em {project.nextEventInvitationDate.substr(0,11)}
+                                                                                    </>
+                                                                                :
+                                                                                    <>
+                                                                                        Você criou este evento em {project.nextEventInvitationDate.substr(0,11)}
+                                                                                    </>
+                                                                                }
+                                                                            </div>
+                                                                            <div style={{display:'flex',marginTop:'5px'}}>
+                                                                                <Button size='mini' icon onClick={project.nextEventInvitationResponse === 1 ? () => submitInvitationResponse(key,project.nextEventInvitationId,2,currentDate,'') : () => setModalAcceptEvent(key)} basic={project.nextEventInvitationResponse === 1 ? false : true} color={project.nextEventInvitationResponse === 1 ? 'green' : null} className='mr-1' loading={isEventLoading.key === key && isEventLoading.response === 2 ? true : false}><Icon name='thumbs up outline' />Irei</Button>
+                                                                                <Button size='mini' icon basic={project.nextEventInvitationResponse === 0 ? false : true} color={project.nextEventInvitationResponse === 0 ? 'red' : null} onClick={project.nextEventInvitationResponse === 0 ? () => submitInvitationResponse(key,project.nextEventInvitationId,2,currentDate,'') : () => setModalDeclineEvent(key)} loading={isEventLoading.key === key && isEventLoading.response === 2 ? true : false}><Icon name='thumbs down outline' />Não irei</Button>
+                                                                                <Button size='mini' basic icon><Icon name='plus' /> detalhes</Button>
+                                                                            </div>
+                                                                            </>
+                                                                        }
+                                                                    </List.Description>
+                                                                </List.Content>
+                                                            </List.Item>
+                                                            <List.Item>
+                                                                <List.Icon name='flag checkered' size='large' verticalAlign='middle' className='pr-1' />
+                                                                <List.Content style={{paddingLeft:'5px'}}>
+                                                                    <List.Header className='itemTitle'>Próxima meta do projeto</List.Header>
+                                                                    <List.Description>
+                                                                        {(project.nextGoalDescription && project.nextGoalCompleted) ? <Icon name='check' color='green' className='mr-0' /> : <Icon name='clock outline' className='mr-0' />} {project.nextGoalDescription ? project.nextGoalDescription : 'Nenhuma meta cadastrada'}
+                                                                    </List.Description>
+                                                                    <List.Description style={{fontSize:'11.5px'}}>
+                                                                        Prevista para {project.nextGoalDescription ? project.nextGoalDate +  ' (restam ' + formatDistance(new Date(project.nextGoalDate.split('/').reverse().join('-')), new Date(), {locale:pt}) + ')' : 'Nenhuma atividade pendente pra mim'}
+                                                                    </List.Description>
+                                                                </List.Content>
+                                                            </List.Item>
+                                                            <List.Item>
+                                                                <List.Icon name='edit' size='large' verticalAlign='middle' />
+                                                                <List.Content style={{paddingLeft:'7px'}}>
+                                                                    <List.Header className='itemTitle'>Minha lição de casa</List.Header>
+                                                                    <List.Description>
+                                                                        {(project.nextUserGoalDescription && project.nextUserGoalCompleted) ? <Icon name='check' color='green' className='mr-0' /> : <Icon name='clock outline' className='mr-0' />} {project.nextUserGoalDescription ? project.nextUserGoalDescription : 'Nenhuma meta cadastrada'}
+                                                                    </List.Description>
+                                                                    <List.Description style={{fontSize:'11.5px'}}>
+                                                                        Prevista para {project.nextUserGoalDescription ? project.nextUserGoalDate +  ' (restam ' + formatDistance(new Date(project.nextUserGoalDate.split('/').reverse().join('-')), new Date(), {locale:pt}) + ')' : 'Nenhuma atividade pendente pra mim'}
+                                                                    </List.Description>
+                                                                </List.Content>
+                                                            </List.Item>
+                                                        </>
+                                                    ) : (
                                                         <List.Item>
-                                                            <List.Icon name='flag checkered' size='large' verticalAlign='middle' className='pr-1' />
-                                                            <List.Content style={{paddingLeft:'5px'}}>
-                                                                <List.Header className='itemTitle'>Próxima meta do projeto</List.Header>
-                                                                <List.Description>
-                                                                    {(project.nextGoalDescription && project.nextGoalCompleted) ? <Icon name='check' color='green' className='mr-0' /> : <Icon name='clock outline' className='mr-0' />} {project.nextGoalDescription ? project.nextGoalDescription : 'Nenhuma meta cadastrada'}
-                                                                </List.Description>
-                                                                <List.Description style={{fontSize:'11.5px'}}>
-                                                                    Prevista para {project.nextGoalDescription ? project.nextGoalDate +  ' (restam ' + formatDistance(new Date(project.nextGoalDate.split('/').reverse().join('-')), new Date(), {locale:pt}) + ')' : 'Nenhuma atividade pendente pra mim'}
-                                                                </List.Description>
+                                                            <List.Content>
+                                                                <List.Description>Projeto encerrado em {project.yearEnd}</List.Description>
                                                             </List.Content>
                                                         </List.Item>
-                                                        <List.Item>
-                                                            <List.Icon name='edit' size='large' verticalAlign='middle' />
-                                                            <List.Content style={{paddingLeft:'7px'}}>
-                                                                <List.Header className='itemTitle'>Minha lição de casa</List.Header>
-                                                                <List.Description>
-                                                                    {(project.nextUserGoalDescription && project.nextUserGoalCompleted) ? <Icon name='check' color='green' className='mr-0' /> : <Icon name='clock outline' className='mr-0' />} {project.nextUserGoalDescription ? project.nextUserGoalDescription : 'Nenhuma meta cadastrada'}
-                                                                </List.Description>
-                                                                <List.Description style={{fontSize:'11.5px'}}>
-                                                                    Prevista para {project.nextUserGoalDescription ? project.nextUserGoalDate +  ' (restam ' + formatDistance(new Date(project.nextUserGoalDate.split('/').reverse().join('-')), new Date(), {locale:pt}) + ')' : 'Nenhuma atividade pendente pra mim'}
-                                                                </List.Description>
-                                                            </List.Content>
-                                                        </List.Item>
-                                                    </>
-                                                ) : (
-                                                    <List.Item>
-                                                        <List.Content>
-                                                            <List.Description>Projeto encerrado em {project.yearEnd}</List.Description>
-                                                        </List.Content>
-                                                    </List.Item>
-                                                )}
-                                            </List>
-                                            <div>
-                                                <Button size='mini'><Icon name='setting' /> Acessar painel de controle</Button>
-                                            </div>
-                                            {project.confirmed === 1 ? ( null ) : ( 
-                                                <Message negative size='small'>
-                                                    <p><Icon name='exclamation circle' /> Participação pendente de aprovação</p>
-                                                </Message>
-                                            )}
-                                        </Segment>
-                                    </Segment.Group>
-                                    <Modal
-                                        size='mini'
-                                        open={modalAcceptEvent === key}
-                                        onClose={() => setModalAcceptEvent(false)}
-                                    >
-                                        <Modal.Content>
-                                            <div className='mb-3'>
-                                                Confirma sua presença no evento "<span style={{fontWeight:'500'}}>{project.nextEventTitle}</span>" de {project.name} em <nobr>{project.nextEventDateOpening}?</nobr>
-                                            </div>
-                                        </Modal.Content>
-                                        <Modal.Actions>
-                                            <Button size='small' onClick={() => setModalAcceptEvent(false)}>
-                                                Voltar
-                                            </Button>
-                                            <Button size='small' positive onClick={() => submitInvitationResponse(key, project.nextEventInvitationId, 1, currentDate, '')} loading={isEventLoading.key === key && true}>
-                                                Confirmar
-                                            </Button>
-                                        </Modal.Actions>
-                                    </Modal>
-                                    <Modal
-                                        size='mini'
-                                        open={modalDeclineEvent === key}
-                                        onClose={() => setModalDeclineEvent(false)}
-                                    >
-                                        <Modal.Content>
-                                            <div className='mb-3'>
-                                                Confirme sua ausência no evento "<span style={{fontWeight:'500'}}>{project.nextEventTitle}</span>" de {project.name} em <nobr>{project.nextEventDateOpening}</nobr>
-                                            </div>
-                                            <Form>
-                                                <Form.TextArea 
-                                                    label='Motivo do declínio:' 
-                                                    placeholder='Ex: Minha agenda estará comprometida nesta data...'
-                                                    value={declineComment}
-                                                    onChange={e => setDeclineComment(e.target.value)}
-                                                    rows={3}
-                                                    maxLength={300}
-                                                />
-                                            </Form>
-                                        </Modal.Content>
-                                        <Modal.Actions>
-                                            <Button size='small' onClick={() => setModalDeclineEvent(false)}>
-                                                Voltar
-                                            </Button>
-                                            <Button size='small' negative onClick={() => submitInvitationResponse(key, project.nextEventInvitationId, 0, currentDate, declineComment)} loading={isEventLoading.key === key ? true : false}>
-                                                Declinar
-                                            </Button>
-                                        </Modal.Actions>
-                                    </Modal>
-                                </>
+                                                    )}
+                                                </List>
+                                            </Card.Description>
+                                        </Card.Content>
+                                        <Card.Content extra textAlign='center'>
+                                            <a>
+                                                <Icon name='chevron right' />
+                                                Acessar Painel de {project.name}
+                                            </a>
+                                        </Card.Content>
+                                    </Card>
                                 )}
-                            </div>
+                            </Masonry>
                         ) : (
                             <Header as='h3' className='my-0'>
                                 <Header.Content>

@@ -40,6 +40,10 @@ function HomePage () {
 
     const projects = useSelector(state => state.userProjects)
 
+    const totalProjects = useSelector(state => state.userProjects.summary).length
+    const totalMainProjects = useSelector(state => state.userProjects.summary).filter((project) => { return project.portfolio === 0 }).length
+    const totalPortfolioProjects = useSelector(state => state.userProjects.summary).filter((project) => { return project.portfolio === 1 }).length
+
     const [filteredByName, setFilteredByName] = useState('')
 
     const filteredProjects = filteredByName ? projects.list.filter((project) => { return project.name.toLowerCase().includes(filteredByName.toLowerCase()) || project.username.toLowerCase().includes(filteredByName.toLowerCase()) }) : projects.list
@@ -134,30 +138,35 @@ function HomePage () {
     const homeFeedOptions = [
         {
             key: 'Meus Projetos',
-            text: 'Meus Projetos',
-            value: 'Meus Projetos'
+            text: <>Meus Projetos <Label size='mini' circular>{totalProjects}</Label></>,
+            value: 'Meus Projetos',
+            icon: 'folder open outline'
         },
         {
-            key: 'Projetos Principais',
-            text: 'Projetos Principais',
-            value: 'Projetos Principais',
-            icon: 'folder open outline'
+            key: 'Principais',
+            text: <>Meus Projetos › Principais <Label size='mini' circular>{totalMainProjects}</Label></>,
+            value: 'Principais',
+            icon: 'folder open outline',
+            disabled: totalMainProjects === 0 ? true : false
         },
         {
             key: 'Portfolio',
-            text: 'Portfolio',
+            text: <>Meus Projetos › Portfolio <Label size='mini' circular>{totalPortfolioProjects}</Label></>,
             value: 'Portfolio',
-            icon: 'folder open outline'
+            icon: 'folder open outline',
+            disabled: totalPortfolioProjects === 0 ? true : false
         },
         {
             key: 'Projetos que sigo',
             text: 'Projetos que sigo',
-            value: 'Projetos que sigo'
+            value: 'Projetos que sigo',
+            icon: 'feed'
         },
         {
             key: 'Postagens',
             text: 'Postagens',
-            value: 'Postagens'
+            value: 'Postagens',
+            icon: 'unordered list'
         }
     ]
 
@@ -225,7 +234,7 @@ function HomePage () {
                             <div className="pb-2 mt-3">
                                 <Image centered circular src={(!userInfo.requesting && userInfo.picture) ? 'https://ik.imagekit.io/mublin/tr:h-70,w-70,c-maintain_ratio/users/avatars/'+userInfo.id+'/'+userInfo.picture : undefinedAvatar} />
 
-                                <Header as='h3' textAlign='center' className='mt-3'>
+                                <Header as='h2' textAlign='center' className='mt-3 mb-1'>
                                     Olá, {userInfo.name}!
                                 </Header>
 

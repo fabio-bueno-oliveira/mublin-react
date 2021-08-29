@@ -65,7 +65,18 @@ const initialState = {
       regionName: '',
       regionUf: ''
     }
-  ]
+  ],
+  summary: [
+    {
+      confirmed: '',
+      joined_in: '',
+      left_in: '',
+      portfolio: '',
+      projectid: '',
+      name: '',
+      username: ''
+    }
+  ] 
 }
 
 export function userProjects(state = initialState, action) {
@@ -83,7 +94,8 @@ export function userProjects(state = initialState, action) {
         requesting: false,
         success: true,
         error: '',
-        list: action.list
+        list: action.list[0],
+        summary: action.list[1]
       };
     case userProjectsTypes.GET_USER_PROJECTS_FAILURE:
       return {
@@ -135,6 +147,17 @@ export function userProjects(state = initialState, action) {
             cityName: '',
             regionName: '',
             regionUf: ''
+          }
+        ],
+        summary: [
+          {
+            confirmed: '',
+            joined_in: '',
+            left_in: '',
+            portfolio: '',
+            projectid: '',
+            name: '',
+            username: ''
           }
         ],
         error: "A solicitação falhou"

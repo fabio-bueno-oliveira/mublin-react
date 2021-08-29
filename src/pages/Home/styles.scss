@@ -239,6 +239,21 @@ div.homepage {
     }
   }
 
+  .categoryLabel {
+    border-bottom-width: 0px!important;
+    color: rgb(150, 150, 150)!important;
+    cursor: default;
+    font-weight: 500;
+    position: absolute;
+    right: 12px;
+    top: -11px;
+    width: fit-content;
+
+    i {
+      margin-right: 4px!important;
+    }
+  }
+
   .ui.attached.item.menu {
     margin: 0!important;
   }
@@ -327,7 +342,7 @@ div.homepage {
 
       .badges {
         .label {
-          margin-top: 4px;
+          margin-top: 6px;
         }
       }
     }

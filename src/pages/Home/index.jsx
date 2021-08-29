@@ -134,7 +134,7 @@ function HomePage () {
                             <>
                             {userInfo.lastConnectedFriends[0].username &&
                                 <>
-                                    <Header as='h4' className='mt-2'>Conectados recentemente</Header>
+                                    <Header as='h4' className='mt-2'>Contatos conectados recentemente</Header>
                                     <Flickity
                                         className={'carousel'}
                                         style={{height: '200px'}}
@@ -287,9 +287,10 @@ function HomePage () {
                     <div className='px-3 px-md-0'>
                         <Header 
                             as='h2'
-                            className='mt-0 mt-md-3 mb-2'
+                            className='mt-0 mt-md-3 mb-3'
+                            style={{display:'flex',alignItems:'flex-end'}}
                         >
-                            Meus Projetos
+                            Meus Projetos {!userInfo.requesting ? <Label content={projects.length} /> : null}
                         </Header>
                         <div className='pb-4'>
                             <Input 
@@ -312,13 +313,20 @@ function HomePage () {
                             >
                                 {filteredProjects.map((project, key) =>
                                     <Card key={key}>
+                                        <Label 
+                                            size='tiny' 
+                                            className='categoryLabel'
+                                            basic
+                                        >
+                                            <Icon name='folder open outline' />{project.portfolio ? 'Portfolio' : 'Projetos principais'}
+                                        </Label>
                                         <Card.Content>
                                             <Header as='h3'>
                                                 <Image rounded src={project.picture ? 'https://ik.imagekit.io/mublin/projects/tr:h-160,w-160,c-maintain_ratio/'+project.picture : 'https://ik.imagekit.io/mublin/sample-folder/avatar-undefined_-dv9U6dcv3.jpg'} />
                                                 <Header.Content>
                                                     {project.name}
                                                     <Header.Subheader>
-                                                        {!!project.portfolio && <Label circular size='mini' className='ml-0'><Icon name='tag' className='mr-1' />Portfolio</Label>} {project.ptname} {project.genre1 ? ' · '+project.genre1 : null }
+                                                        {project.ptname} {project.genre1 ? ' · '+project.genre1 : null }
                                                     </Header.Subheader>
                                                 </Header.Content>
                                             </Header>
@@ -332,7 +340,7 @@ function HomePage () {
                                                 {project.role1}{project.role2 && ', '+project.role2}{project.role3 && ', '+project.role3}
                                             </div>
                                             <div className='mt-1 badges'>
-                                                <Label circular size="tiny"><Icon name='id badge outline' className='mr-0' color='black' /> {project.workTitle}</Label> {!!(project.active && !project.yearLeftTheProject && !project.yearEnd) && <Label circular size="tiny"><Icon color='green' name='check circle' className='mr-0' /> Ativo atualmente no projeto</Label>} {!!project.yearLeftTheProject && <Label color='red' circular size="tiny"><Icon name='sign out' className='mr-0' /> Deixei o projeto em {project.yearLeftTheProject}</Label>} {!!project.touring && <Label circular size="tiny"><Icon name='road' color='blue' className='mr-0' /> Em turnê com este projeto</Label>}
+                                                <Label circular size="tiny"><Icon name={project.workIcon}  className='mr-0' color='black' /> {project.workTitle}</Label> {!!(project.active && !project.yearLeftTheProject && !project.yearEnd) && <Label circular size="tiny"><Icon color='green' name='check circle' className='mr-0' /> Ativo atualmente no projeto</Label>} {!!project.yearLeftTheProject && <Label color='red' circular size="tiny"><Icon name='sign out' className='mr-0' /> Deixei o projeto em {project.yearLeftTheProject}</Label>} {!!(project.touring && !project.yearLeftTheProject && !project.yearEnd) && <Label circular size="tiny"><Icon name='road' color='blue' className='mr-0' /> Em turnê com este projeto</Label>}
                                             </div>
                                         </Card.Content>
                                         <Card.Content>

@@ -315,7 +315,7 @@ function HomePage () {
                                     <Card key={key}>
                                         <Card.Content>
                                             <div className='headerMenu'>
-                                                <Header as='h3'>
+                                                <Header as='h3' className='mb-0'>
                                                     <Image rounded src={project.picture ? 'https://ik.imagekit.io/mublin/projects/tr:h-160,w-160,c-maintain_ratio/'+project.picture : 'https://ik.imagekit.io/mublin/sample-folder/avatar-undefined_-dv9U6dcv3.jpg'} />
                                                     <Header.Content>
                                                         {project.name}
@@ -338,13 +338,13 @@ function HomePage () {
                                                 </div>
                                             </div>
                                             {project.labelShow === 1 && 
-                                                <Label tag color={project.labelColor} size="tiny" style={{ fontWeight: 'normal' }}>{project.labelText}</Label>
+                                                <Label className='mt-3' tag color={project.labelColor} size="tiny" style={{ fontWeight: 'normal' }}>{project.labelText}</Label>
                                             }
                                         </Card.Content>
                                         <Card.Content>
                                             <div className='d-flex' style={{alignItems:'center', fontSize:'11.5px'}}>
                                                 <Image src={'https://ik.imagekit.io/mublin/tr:h-36,w-36,r-max,c-maintain_ratio/users/avatars/'+userInfo.id+'/'+userInfo.picture} rounded className='mr-1' width='18' height='18' />
-                                                {project.role1}{project.role2 && ', '+project.role2}{project.role3 && ', '+project.role3} {(!project.left_in && !project.yearEnd) ? '· desde ' + project.joined_in : null}
+                                                {project.role1}{project.role2 && ', '+project.role2}{project.role3 && ', '+project.role3} {(project.id && !project.left_in && !project.yearEnd) ? '· desde ' + project.joined_in : null}
                                             </div>
                                             <div className='mt-1 badges'>
                                                 <Label circular size="tiny"><Icon name={project.workIcon}  className='mr-0' color='black' /> {project.workTitle}</Label> {!!(project.active && !project.yearLeftTheProject && !project.yearEnd) && <Label circular size="tiny"><Icon color='green' name='check circle' className='mr-0' /> Ativo atualmente no projeto</Label>} {!!project.yearLeftTheProject && <Label color='red' circular size="tiny"><Icon name='sign out' className='mr-0' /> Deixei o projeto em {project.yearLeftTheProject}</Label>} {!!(project.touring && !project.yearLeftTheProject && !project.yearEnd) && <Label circular size="tiny"><Icon name='road' color='blue' className='mr-0' /> Em turnê com este projeto</Label>}

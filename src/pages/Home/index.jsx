@@ -7,7 +7,7 @@ import FooterMenuMobile from '../../components/layout/footerMenuMobile';
 import Spacer from '../../components/layout/Spacer';
 import { userInfos } from '../../store/actions/user';
 import { searchInfos } from '../../store/actions/search';
-import { Header, Grid, Image, Icon, Label, List, Button, Input, Card, Loader, Placeholder } from 'semantic-ui-react';
+import { Header, Grid, Image, Icon, Label, List, Button, Input, Card, Loader, Placeholder, Dropdown } from 'semantic-ui-react';
 import Flickity from 'react-flickity-component';
 import Masonry from 'react-masonry-css';
 import { formatDistance } from 'date-fns';
@@ -314,18 +314,29 @@ function HomePage () {
                                 {filteredProjects.map((project, key) =>
                                     <Card key={key}>
                                         <Card.Content>
-                                            <Header as='h3'>
-                                                <Image rounded src={project.picture ? 'https://ik.imagekit.io/mublin/projects/tr:h-160,w-160,c-maintain_ratio/'+project.picture : 'https://ik.imagekit.io/mublin/sample-folder/avatar-undefined_-dv9U6dcv3.jpg'} />
-                                                <Header.Content>
-                                                    {project.name}
-                                                    <Header.Subheader>
-                                                        {project.ptname} {project.genre1 ? ' · '+project.genre1 : null }
-                                                    </Header.Subheader>
-                                                    <Header.Subheader className='categoryLabel'>
-                                                        <Icon name='folder open outline' />{project.portfolio ? 'Portfolio' : 'Projetos principais'}
-                                                    </Header.Subheader>
-                                                </Header.Content>
-                                            </Header>
+                                            <div className='headerMenu'>
+                                                <Header as='h3'>
+                                                    <Image rounded src={project.picture ? 'https://ik.imagekit.io/mublin/projects/tr:h-160,w-160,c-maintain_ratio/'+project.picture : 'https://ik.imagekit.io/mublin/sample-folder/avatar-undefined_-dv9U6dcv3.jpg'} />
+                                                    <Header.Content>
+                                                        {project.name}
+                                                        <Header.Subheader>
+                                                            {project.ptname} {project.genre1 ? ' · '+project.genre1 : null }
+                                                        </Header.Subheader>
+                                                        <Header.Subheader className='categoryLabel'>
+                                                            <Icon name='folder open outline' />{project.portfolio ? 'Portfolio' : 'Projetos principais'}
+                                                        </Header.Subheader>
+                                                    </Header.Content>
+                                                </Header>
+                                                <div>
+                                                    <Dropdown icon='ellipsis horizontal' direction='left'>
+                                                        <Dropdown.Menu>
+                                                            <Dropdown.Item icon='setting' text='Acessar Painel' />
+                                                            <Dropdown.Item icon='eye' text='Acessar Perfil' />
+                                                            <Dropdown.Item icon='user outline' text='Gerenciar participação' />
+                                                        </Dropdown.Menu>
+                                                    </Dropdown>
+                                                </div>
+                                            </div>
                                             {project.labelShow === 1 && 
                                                 <Label tag color={project.labelColor} size="tiny" style={{ fontWeight: 'normal' }}>{project.labelText}</Label>
                                             }
@@ -424,12 +435,12 @@ function HomePage () {
                                                 </List>
                                             </Card.Description>
                                         </Card.Content>
-                                        <Card.Content extra textAlign='center'>
+                                        {/* <Card.Content extra textAlign='center'>
                                             <a>
                                                 Acessar Painel de {project.name}
                                                 <Icon name='chevron right' />
                                             </a>
-                                        </Card.Content>
+                                        </Card.Content> */}
                                     </Card>
                                 )}
                             </Masonry>

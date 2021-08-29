@@ -83,7 +83,10 @@ const initialState = {
       nextUserGoalCompleted: '',
       labelShow: '',
       labelColor: '',
-      labelText: ''
+      labelText: '',
+      cityName: '',
+      regionName: '',
+      regionUf: ''
     }
   ],
   gear: [
@@ -296,7 +299,10 @@ export function user(state = initialState, action) {
             nextUserGoalCompleted: '',
             labelShow: '',
             labelColor: '',
-            labelText: ''
+            labelText: '',
+            cityName: '',
+            regionName: '',
+            regionUf: ''
           }
         ],
         error: "A solicitação falhou"

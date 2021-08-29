@@ -240,14 +240,9 @@ div.homepage {
   }
 
   .categoryLabel {
-    border-bottom-width: 0px!important;
-    color: rgb(150, 150, 150)!important;
-    cursor: default;
-    font-weight: 500;
-    position: absolute;
-    right: 12px;
-    top: -11px;
-    width: fit-content;
+    font-size: 9.5px!important;
+    margin: 3px 0 0 0!important;
+    opacity: 1;
 
     i {
       margin-right: 4px!important;

@@ -257,12 +257,17 @@ div.homepage {
   }
 
   .categoryLabel {
-    font-size: 9.5px!important;
-    margin: 3px 0 0 0!important;
+    font-size: 10px!important;
+    margin: 4px 0 0 0!important;
     opacity: 1;
 
     i {
-      margin-right: 4px!important;
+      margin-right: 2px!important;
+    }
+
+    span {
+      cursor: default;
+      padding: 0 6px;
     }
   }
 

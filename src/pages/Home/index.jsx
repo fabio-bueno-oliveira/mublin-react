@@ -323,7 +323,7 @@ function HomePage () {
                                                             {project.ptname} {project.genre1 ? ' · '+project.genre1 : null }
                                                         </Header.Subheader>
                                                         <Header.Subheader className='categoryLabel'>
-                                                            <Icon name='folder open outline' />{project.portfolio ? 'Portfolio' : 'Projetos principais'}
+                                                            <Icon name='folder open outline' />{project.portfolio ? 'Portfolio' : 'Projetos principais'}{project.cityName ? <><span>·</span><Icon name='map marker alternate' />{project.cityName}, {project.regionUf}</> : null }
                                                         </Header.Subheader>
                                                     </Header.Content>
                                                 </Header>

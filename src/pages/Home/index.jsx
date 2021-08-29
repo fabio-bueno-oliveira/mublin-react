@@ -20,13 +20,13 @@ function HomePage () {
 
     let dispatch = useDispatch();
 
-    let history = useHistory();
+    // let history = useHistory();
 
     const user = JSON.parse(localStorage.getItem('user'));
 
     let currentDate = new Date(new Date().toString().split('GMT')[0]+' UTC').toISOString().split('.')[0].replace('T',' ')
 
-    // const currentYear = new Date().getFullYear()
+    const currentYear = new Date().getFullYear()
 
     useEffect(() => {
         dispatch(userInfos.getUserProjects(user.id));
@@ -101,7 +101,7 @@ function HomePage () {
         500: 1
     };
 
-    const placeholderCard = <Card>
+    const cardPlaceholder = <Card>
         <Card.Content>
             <Placeholder>
                 <Placeholder.Header image>
@@ -181,19 +181,23 @@ function HomePage () {
                         { !userInfo.requesting ? ( 
                             <div className="pb-2 mt-3">
                                 <Image centered circular src={(!userInfo.requesting && userInfo.picture) ? 'https://ik.imagekit.io/mublin/tr:h-70,w-70,c-maintain_ratio/users/avatars/'+userInfo.id+'/'+userInfo.picture : undefinedAvatar} />
+
                                 <Header as='h3' textAlign='center' className='mt-3'>
-                                    <Header.Content>
-                                        Olá, {userInfo.name}!
-                                        <Header.Subheader className='mt-2'>
-                                            <Label size='tiny'>Plano {userInfo.plan ? userInfo.plan.toUpperCase() : null}</Label> {userInfo.plan !== 'Pro' && <a href='/upgrade'>Me tornar PRO</a>}
-                                        </Header.Subheader>
-                                        <Header.Subheader className='mt-2'>
-                                            {userInfo.roles.map((role, key) =>
-                                                <span key={key}>{role.icon && <img src={cdnBaseURL+'/icons/music/tr:h-26,w-26,c-maintain_ratio/'+role.icon} width='13' height='13' style={{verticalAlign:'middle'}} />} {role.name}{key < (userInfo.roles.length-1) && ', '}</span>
-                                            )}
-                                        </Header.Subheader>
-                                    </Header.Content>
+                                    Olá, {userInfo.name}!
                                 </Header>
+
+                                <Header as='h6' textAlign='center' className='my-0'>
+                                    <span style={{fontWeight:'lighter'}}>@{userInfo.username}</span> {!!userInfo.verified && <Icon name='check circle' color='blue' className='verifiedIcon' title='Verificado' />} {userInfo.plan === 'Pro' && <Label size='mini' className="ml-0" style={{cursor:'default'}}>PRO</Label>}
+                                </Header>
+
+                                <Header as='h3' textAlign='center' className='mt-3'>
+                                    <Header.Subheader>
+                                        {userInfo.roles.map((role, key) =>
+                                            <span key={key}>{role.icon && <img src={cdnBaseURL+'/icons/music/tr:h-26,w-26,c-maintain_ratio/'+role.icon} width='13' height='13' style={{verticalAlign:'middle'}} />} {role.name}{key < (userInfo.roles.length-1) && ', '}</span>
+                                        )}
+                                    </Header.Subheader>
+                                </Header>
+
                                 <p className='mt-4 textCenter' style={{fontSize:'13px'}}>
                                     {userInfo.bio}
                                 </p>
@@ -344,10 +348,10 @@ function HomePage () {
                                         <Card.Content>
                                             <div className='d-flex' style={{alignItems:'center', fontSize:'11.5px'}}>
                                                 <Image src={'https://ik.imagekit.io/mublin/tr:h-36,w-36,r-max,c-maintain_ratio/users/avatars/'+userInfo.id+'/'+userInfo.picture} rounded className='mr-1' width='18' height='18' />
-                                                {project.role1}{project.role2 && ', '+project.role2}{project.role3 && ', '+project.role3} {(project.id && !project.left_in && !project.yearEnd) ? '· desde ' + project.joined_in : null}
+                                                {project.role1}{project.role2 && ', '+project.role2}{project.role3 && ', '+project.role3} {(project.id && !project.yearLeftTheProject && !project.yearEnd) ? '· desde ' + project.joined_in : null} {(project.id && project.yearLeftTheProject) ? '· até ' + project.yearLeftTheProject : null}
                                             </div>
                                             <div className='mt-1 badges'>
-                                                <Label circular size="tiny"><Icon name={project.workIcon}  className='mr-0' color='black' /> {project.workTitle}</Label> {!!(project.active && !project.yearLeftTheProject && !project.yearEnd) && <Label circular size="tiny"><Icon color='green' name='check circle' className='mr-0' /> Ativo atualmente no projeto</Label>} {!!project.yearLeftTheProject && <Label color='red' circular size="tiny"><Icon name='sign out' className='mr-0' /> Deixei o projeto em {project.yearLeftTheProject}</Label>} {!!(project.touring && !project.yearLeftTheProject && !project.yearEnd) && <Label circular size="tiny"><Icon name='road' color='blue' className='mr-0' /> Em turnê com este projeto</Label>}
+                                                <Label circular size="tiny"><Icon name={project.workIcon}  className='mr-0' color='black' /> {project.workTitle}</Label> {!!(project.active && !project.yearLeftTheProject && !project.yearEnd) && <Label circular size="tiny"><Icon color='green' name='check circle' className='mr-0' /> Ativo atualmente no projeto</Label>} {!!project.yearLeftTheProject && <Label color='red' circular size="tiny"><Icon name='sign out' className='mr-0' /> Deixei o projeto em {project.yearLeftTheProject}</Label>} {!!(project.touring && !project.yearLeftTheProject && !project.yearEnd) && <Label circular size="tiny"><Icon name='road' color='blue' className='mr-0' /> Em turnê com este projeto</Label>} {!!project.admin && <Label circular size="tiny"><Icon name='wrench' color='black' className='mr-0' /> Administrador</Label>} {!!(!project.yearLeftTheProject && !project.yearEnd && (currentYear - project.joined_in) >= 10) && <Label circular size="tiny"><Icon name='star' color='yellow' className='mr-0' /> há + de 10 anos ativo no projeto!</Label>} 
                                             </div>
                                         </Card.Content>
                                         <Card.Content>
@@ -413,7 +417,7 @@ function HomePage () {
                                                                 </List.Content>
                                                             </List.Item>
                                                             <List.Item>
-                                                                <List.Icon name='edit' size='large' verticalAlign='middle' />
+                                                                <List.Icon name='bookmark outline' size='large' verticalAlign='middle' />
                                                                 <List.Content style={{paddingLeft:'7px'}}>
                                                                     <List.Header className='itemTitle'>Minha lição de casa</List.Header>
                                                                     <List.Description>
@@ -457,9 +461,9 @@ function HomePage () {
                             className="my-masonry-grid"
                             columnClassName="my-masonry-grid_column"
                         >
-                            {placeholderCard}
-                            {placeholderCard}
-                            {placeholderCard}
+                            {cardPlaceholder}
+                            {cardPlaceholder}
+                            {cardPlaceholder}
                         </Masonry>
                     )}
                 </Grid.Column>

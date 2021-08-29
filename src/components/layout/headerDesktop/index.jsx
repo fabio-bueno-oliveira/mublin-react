@@ -96,7 +96,7 @@ const HeaderDesktop = () => {
 
     return (
         <>
-            <Menu id='headerDesktop' size='small' fixed='top' inverted borderless>
+            <Menu id='headerDesktop' fixed='top' inverted borderless>
                 <Container>
                     <Menu.Item key='home-logo' header onClick={() => history.push("/home")}>
                         <Image src={imageCdnPath+'/tr:h-56,w-144,c-maintain_ratio/logos/mublin-logo-text-white.png'} alt="Logo do Mublin" />
@@ -215,7 +215,7 @@ const HeaderDesktop = () => {
                             )}
                             {userInfo.plan === 'Pro' && <Label size='mini' color='grey' content='PRO' />}<i className='dropdown icon' />
                             <Dropdown.Menu>
-                                <Dropdown.Header>{userInfo.username}</Dropdown.Header>
+                                <Dropdown.Header>{userInfo.name} {userInfo.lastname}</Dropdown.Header>
                                 <Dropdown.Item icon='user circle' text='Meu Perfil' onClick={() => history.push('/'+userInfo.username)} />
                                 <Dropdown.Item icon='setting' text='Configurações' onClick={() => history.push('/settings')} />
                                 <Dropdown.Divider />

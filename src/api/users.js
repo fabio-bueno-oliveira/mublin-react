@@ -83,13 +83,13 @@ function getUserAvailabilityItemsById(id) {
     return fetch(`${BASE_URL}/userInfo/${id}/availabilityItems`, requestOptions).then(handleResponse);
 }
 
-function getUserProjects(id) {
+function getUserProjects(id,type) {
     const requestOptions = {
         method: 'GET',
         headers: authHeader()
     };
 
-    return fetch(`${BASE_URL}/user/${id}/projects`, requestOptions).then(handleResponse);
+    return fetch(`${BASE_URL}/user/${id}/projects?type=${type}`, requestOptions).then(handleResponse);
 }
 
 function getUserLastConnectedFriends() {

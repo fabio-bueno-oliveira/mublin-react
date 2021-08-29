@@ -6,6 +6,7 @@ import HeaderMobile from '../../components/layout/headerMobile';
 import FooterMenuMobile from '../../components/layout/footerMenuMobile';
 import Spacer from '../../components/layout/Spacer';
 import { userInfos } from '../../store/actions/user';
+import { userProjectsInfos } from '../../store/actions/userProjects';
 import { searchInfos } from '../../store/actions/search';
 import { Header, Grid, Image, Icon, Label, List, Button, Input, Card, Loader, Placeholder, Dropdown } from 'semantic-ui-react';
 import Flickity from 'react-flickity-component';
@@ -29,7 +30,7 @@ function HomePage () {
     const currentYear = new Date().getFullYear()
 
     useEffect(() => {
-        dispatch(userInfos.getUserProjects(user.id));
+        dispatch(userProjectsInfos.getUserProjects(user.id));
         dispatch(userInfos.getUserRolesInfoById(user.id));
         dispatch(userInfos.getUserLastConnectedFriends());
         dispatch(searchInfos.getSuggestedUsersResults());
@@ -37,11 +38,11 @@ function HomePage () {
 
     const userInfo = useSelector(state => state.user)
 
-    const projects = useSelector(state => state.user.projects)
+    const projects = useSelector(state => state.userProjects)
 
     const [filteredByName, setFilteredByName] = useState('')
 
-    const filteredProjects = filteredByName ? projects.filter((project) => { return project.name.toLowerCase().includes(filteredByName.toLowerCase()) || project.username.toLowerCase().includes(filteredByName.toLowerCase()) }) : projects
+    const filteredProjects = filteredByName ? projects.list.filter((project) => { return project.name.toLowerCase().includes(filteredByName.toLowerCase()) || project.username.toLowerCase().includes(filteredByName.toLowerCase()) }) : projects.list
 
     const sliderOptions = {
         autoPlay: false,
@@ -118,6 +119,18 @@ function HomePage () {
         </Card.Content>
     </Card>
 
+    const [homeFeedSelectedOption, setHomeFeedSelectedOption] = useState('Meus Projetos')
+
+    const handleChangeFeedFilter = (option) => {
+        setHomeFeedSelectedOption(option)
+        switch(option) {
+            case "Meus Projetos":   return dispatch(userProjectsInfos.getUserProjects(user.id,'all'));
+            case "Projetos Principais":      return dispatch(userProjectsInfos.getUserProjects(user.id,'main'));
+            case "Portfolio":       return dispatch(userProjectsInfos.getUserProjects(user.id,'portfolio'));
+            default:                return dispatch(userProjectsInfos.getUserProjects(user.id,'all'));
+        }
+    }
+
     const homeFeedOptions = [
         {
             key: 'Meus Projetos',
@@ -125,9 +138,9 @@ function HomePage () {
             value: 'Meus Projetos'
         },
         {
-            key: 'Projetos principais',
-            text: 'Projetos principais',
-            value: 'Projetos principais',
+            key: 'Projetos Principais',
+            text: 'Projetos Principais',
+            value: 'Projetos Principais',
             icon: 'folder open outline'
         },
         {
@@ -208,7 +221,7 @@ function HomePage () {
             <Grid.Row columns={2} className='pt-0 pt-md-0'>
                 <Grid.Column as='aside' mobile={16} tablet={16} computer={4} className="only-computer" style={{backgroundColor:'white'}}>
                     <div className='px-3 pb-4' style={{position:'sticky',top:'0',paddingTop:'82px'}}>
-                        { !userInfo.requesting ? ( 
+                        {!userInfo.requesting ? ( 
                             <div className="pb-2 mt-3">
                                 <Image centered circular src={(!userInfo.requesting && userInfo.picture) ? 'https://ik.imagekit.io/mublin/tr:h-70,w-70,c-maintain_ratio/users/avatars/'+userInfo.id+'/'+userInfo.picture : undefinedAvatar} />
 
@@ -319,18 +332,12 @@ function HomePage () {
                 <Grid.Column as='main' mobile={16} tablet={16} computer={12}>
                     <div className='py-0 py-md-4 mt-0 mt-md-5'></div>
                     <div className='px-3 px-md-0'>
-                        {/* <Header 
-                            as='h2'
-                            className='mt-0 mt-md-3 mb-3'
-                            style={{display:'flex',alignItems:'flex-end'}}
-                        >
-                            Meus Projetos
-                        </Header> */}
                         <Dropdown
+                            className='feedSelector mt-0 mt-md-3 mb-3'
                             inline
                             options={homeFeedOptions}
                             defaultValue={homeFeedOptions[0].value}
-                            className='feedSelector mt-0 mt-md-3 mb-3'
+                            onChange={(e, { value }) => handleChangeFeedFilter(value)}
                         />
                         <div className='pb-4'>
                             <Input 
@@ -344,7 +351,7 @@ function HomePage () {
                             />
                         </div>
                     </div>
-                    {!userInfo.requesting ? (
+                    {!projects.requesting ? (
                         filteredProjects.length ? (
                             <Masonry
                                 breakpointCols={breakpointColumnsObj}
@@ -363,7 +370,7 @@ function HomePage () {
                                                             {project.ptname} {project.genre1 ? ' · '+project.genre1 : null }
                                                         </Header.Subheader>
                                                         <Header.Subheader className='projectExtraInfo'>
-                                                         {project.cityName ? <><Icon name='map marker alternate' />{project.cityName}, {project.regionUf}<span>·</span></> : null}<Icon name='folder open outline' />{project.portfolio ? 'Portfolio' : 'Projetos principais'}
+                                                         {project.cityName ? <><Icon name='map marker alternate' />{project.cityName}, {project.regionUf}<span>·</span></> : null}<Icon name='folder open outline' />{project.portfolio ? 'Portfolio' : 'Projetos Principais'}
                                                         </Header.Subheader>
                                                     </Header.Content>
                                                 </Header>
@@ -386,9 +393,11 @@ function HomePage () {
                                                 <Image src={'https://ik.imagekit.io/mublin/tr:h-36,w-36,r-max,c-maintain_ratio/users/avatars/'+userInfo.id+'/'+userInfo.picture} rounded className='mr-1' width='18' height='18' />
                                                 {project.role1}{project.role2 && ', '+project.role2}{project.role3 && ', '+project.role3} {(project.id && !project.yearLeftTheProject && !project.yearEnd) ? '· desde ' + project.joined_in : null} {(project.id && project.yearLeftTheProject) ? '· até ' + project.yearLeftTheProject : null}
                                             </div>
-                                            <div className='mt-1 badges'>
-                                                <Label circular size="tiny"><Icon name={project.workIcon}  className='mr-0' color='black' /> {project.workTitle}</Label> {!!(project.active && !project.yearLeftTheProject && !project.yearEnd) && <Label circular size="tiny"><Icon color='green' name='check circle' className='mr-0' /> Ativo atualmente no projeto</Label>} {!!project.yearLeftTheProject && <Label color='red' circular size="tiny"><Icon name='sign out' className='mr-0' /> Deixei o projeto em {project.yearLeftTheProject}</Label>} {!!(project.touring && !project.yearLeftTheProject && !project.yearEnd) && <Label circular size="tiny"><Icon name='road' color='blue' className='mr-0' /> Em turnê com este projeto</Label>} {!!project.admin && <Label circular size="tiny"><Icon name='wrench' color='black' className='mr-0' /> Administrador</Label>} {!!(!project.yearLeftTheProject && !project.yearEnd && (currentYear - project.joined_in) >= 10) && <Label circular size="tiny"><Icon name='star' color='yellow' className='mr-0' /> há + de 10 anos ativo no projeto!</Label>} 
-                                            </div>
+                                            {!!project.id && 
+                                                <div className='mt-1 badges'>
+                                                    <Label circular size="tiny"><Icon name={project.workIcon}  className='mr-0' color='black' /> {project.workTitle}</Label> {!!(project.active && !project.yearLeftTheProject && !project.yearEnd) && <Label circular size="tiny"><Icon color='green' name='check circle' className='mr-0' /> Ativo atualmente no projeto</Label>} {!!project.yearLeftTheProject && <Label color='red' circular size="tiny"><Icon name='sign out' className='mr-0' /> Deixei o projeto em {project.yearLeftTheProject}</Label>} {!!(project.touring && !project.yearLeftTheProject && !project.yearEnd) && <Label circular size="tiny"><Icon name='road' color='blue' className='mr-0' /> Em turnê com este projeto</Label>} {!!project.admin && <Label circular size="tiny"><Icon name='wrench' color='black' className='mr-0' /> Administrador</Label>} {!!(!project.yearLeftTheProject && !project.yearEnd && (currentYear - project.joined_in) >= 10) && <Label circular size="tiny"><Icon name='star' color='yellow' className='mr-0' /> há + de 10 anos ativo no projeto!</Label>} 
+                                                </div>
+                                            }
                                         </Card.Content>
                                         <Card.Content>
                                             <Card.Description>

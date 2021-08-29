@@ -1,4 +1,5 @@
 import { userTypes } from '../types/users';
+import { userProjectsTypes } from '../types/userProjects';
 import { userService } from '../../api/users';
 import { createBrowserHistory } from 'history';
 
@@ -11,7 +12,6 @@ export const userInfos = {
     getUserRolesInfoById: getUserRolesInfoById,
     getUserGearInfoById: getUserGearInfoById,
     getUserAvailabilityItemsById: getUserAvailabilityItemsById,
-    getUserProjects: getUserProjects,
     getUserLastConnectedFriends: getUserLastConnectedFriends
     // delete: _delete
 };
@@ -110,22 +110,6 @@ function getUserAvailabilityItemsById(id) {
     function request(id) { return { type: userTypes.GET_USER_AVAILABILITY_ITEMS_REQUEST, id } }
     function success(list) { return { type: userTypes.GET_USER_AVAILABILITY_ITEMS_SUCCESS, list } }
     function failure(id, error) { return { type: userTypes.GET_USER_AVAILABILITY_ITEMS_FAILURE, id, error } }
-}
-
-function getUserProjects(id) {
-    return dispatch => {
-        dispatch(request(id));
-
-        userService.getUserProjects(id)
-            .then(
-                list => dispatch(success(list)),
-                error => dispatch(failure(id, error.toString()))
-            );
-    };
-
-    function request(id) { return { type: userTypes.GET_USER_PROJECTS_REQUEST, id } }
-    function success(list) { return { type: userTypes.GET_USER_PROJECTS_SUCCESS, list } }
-    function failure(id, error) { return { type: userTypes.GET_USER_PROJECTS_FAILURE, id, error } }
 }
 
 function getUserLastConnectedFriends() {

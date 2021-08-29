@@ -118,6 +118,36 @@ function HomePage () {
         </Card.Content>
     </Card>
 
+    const homeFeedOptions = [
+        {
+            key: 'Meus Projetos',
+            text: 'Meus Projetos',
+            value: 'Meus Projetos'
+        },
+        {
+            key: 'Projetos principais',
+            text: 'Projetos principais',
+            value: 'Projetos principais',
+            icon: 'folder open outline'
+        },
+        {
+            key: 'Portfolio',
+            text: 'Portfolio',
+            value: 'Portfolio',
+            icon: 'folder open outline'
+        },
+        {
+            key: 'Projetos que sigo',
+            text: 'Projetos que sigo',
+            value: 'Projetos que sigo'
+        },
+        {
+            key: 'Postagens',
+            text: 'Postagens',
+            value: 'Postagens'
+        }
+    ]
+
     return (
         <>
         <HeaderDesktop />
@@ -289,13 +319,19 @@ function HomePage () {
                 <Grid.Column as='main' mobile={16} tablet={16} computer={12}>
                     <div className='py-0 py-md-4 mt-0 mt-md-5'></div>
                     <div className='px-3 px-md-0'>
-                        <Header 
+                        {/* <Header 
                             as='h2'
                             className='mt-0 mt-md-3 mb-3'
                             style={{display:'flex',alignItems:'flex-end'}}
                         >
-                            Meus Projetos {!userInfo.requesting ? <Label content={projects.length} /> : null}
-                        </Header>
+                            Meus Projetos
+                        </Header> */}
+                        <Dropdown
+                            inline
+                            options={homeFeedOptions}
+                            defaultValue={homeFeedOptions[0].value}
+                            className='feedSelector mt-0 mt-md-3 mb-3'
+                        />
                         <div className='pb-4'>
                             <Input 
                                 icon='search'
@@ -326,8 +362,8 @@ function HomePage () {
                                                         <Header.Subheader>
                                                             {project.ptname} {project.genre1 ? ' · '+project.genre1 : null }
                                                         </Header.Subheader>
-                                                        <Header.Subheader className='categoryLabel'>
-                                                            <Icon name='folder open outline' />{project.portfolio ? 'Portfolio' : 'Projetos principais'}{project.cityName ? <><span>·</span><Icon name='map marker alternate' />{project.cityName}, {project.regionUf}</> : null }
+                                                        <Header.Subheader className='projectExtraInfo'>
+                                                         {project.cityName ? <><Icon name='map marker alternate' />{project.cityName}, {project.regionUf}<span>·</span></> : null}<Icon name='folder open outline' />{project.portfolio ? 'Portfolio' : 'Projetos principais'}
                                                         </Header.Subheader>
                                                     </Header.Content>
                                                 </Header>

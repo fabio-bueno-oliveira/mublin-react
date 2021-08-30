@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Link, useHistory } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import HeaderDesktop from '../../components/layout/headerDesktop';
 import HeaderMobile from '../../components/layout/headerMobile';
 import FooterMenuMobile from '../../components/layout/footerMenuMobile';
 import Spacer from '../../components/layout/Spacer';
+import MyFeed from '../../components/myFeed';
 import { userInfos } from '../../store/actions/user';
 import { userProjectsInfos } from '../../store/actions/userProjects';
 import { searchInfos } from '../../store/actions/search';
@@ -21,8 +22,6 @@ function HomePage () {
 
     let dispatch = useDispatch();
 
-    // let history = useHistory();
-
     const user = JSON.parse(localStorage.getItem('user'));
 
     let currentDate = new Date(new Date().toString().split('GMT')[0]+' UTC').toISOString().split('.')[0].replace('T',' ')
@@ -37,6 +36,8 @@ function HomePage () {
     }, [user.id, dispatch]);
 
     const userInfo = useSelector(state => state.user)
+
+    const feed = useSelector(state => state.feed);
 
     const projects = useSelector(state => state.userProjects)
 
@@ -118,8 +119,42 @@ function HomePage () {
                     <Placeholder.Line />
                     <Placeholder.Line />
                     <Placeholder.Line />
+                    <Placeholder.Line />
+                    <Placeholder.Line />
                 </Placeholder.Paragraph>
             </Placeholder>
+        </Card.Content>
+    </Card>
+
+    const cardNewProject = <Card color='green'>
+        <Card.Content>
+            <Header as='h2'>
+                <Header.Content>
+                    Criar Novo Projeto
+                </Header.Content>
+            </Header>
+        </Card.Content>
+        <Card.Content>
+            <List divided relaxed>
+                <List.Item>
+                    <List.Content>
+                        <List.Header as='a'>Cadastrar novo projeto</List.Header>
+                        <List.Description as='a'>Cadastre um novo projeto no Mublin</List.Description>
+                    </List.Content>
+                </List.Item>
+                <List.Item>
+                    <List.Content>
+                        <List.Header as='a'>Nova ideia de projeto</List.Header>
+                        <List.Description as='a'>Cadastre uma ideia de projeto e atraia artistas interessados em participar</List.Description>
+                    </List.Content>
+                </List.Item>
+                <List.Item>
+                    <List.Content>
+                        <List.Header as='a'>Ingressar em um projeto</List.Header>
+                        <List.Description as='a'>Entre em algum projeto já cadastrado no Mublin</List.Description>
+                    </List.Content>
+                </List.Item>
+            </List>
         </Card.Content>
     </Card>
 
@@ -128,17 +163,18 @@ function HomePage () {
     const handleChangeFeedFilter = (option) => {
         setHomeFeedSelectedOption(option)
         switch(option) {
-            case "Meus Projetos":   return dispatch(userProjectsInfos.getUserProjects(user.id,'all'));
-            case "Principais":      return dispatch(userProjectsInfos.getUserProjects(user.id,'main'));
-            case "Portfolio":       return dispatch(userProjectsInfos.getUserProjects(user.id,'portfolio'));
-            default:                return dispatch(userProjectsInfos.getUserProjects(user.id,'all'));
+            case "Meus Projetos":       return dispatch(userProjectsInfos.getUserProjects(user.id,'all'));
+            case "Principais":          return dispatch(userProjectsInfos.getUserProjects(user.id,'main'));
+            case "Portfolio":           return dispatch(userProjectsInfos.getUserProjects(user.id,'portfolio'));
+            case "Projetos que sigo":   return dispatch(userProjectsInfos.getUserProjects(user.id,'portfolio'));
+            case "Feed":                return dispatch(userProjectsInfos.getUserProjects(user.id,'portfolio'));
+            default:                    return dispatch(userProjectsInfos.getUserProjects(user.id,'all'));
         }
     }
 
     const homeFeedOptions = [
         {
             key: 'Meus Projetos',
-            // text: <>Meus Projetos <Label size='mini' circular>{totalProjects}</Label></>,
             text: 'Meus Projetos',
             value: 'Meus Projetos',
             icon: 'folder open outline',
@@ -146,7 +182,6 @@ function HomePage () {
         },
         {
             key: 'Principais',
-            // text: <>Meus Projetos › Principais <Label size='mini' circular>{totalMainProjects}</Label></>,
             text: 'Principais',
             value: 'Principais',
             icon: 'folder open outline',
@@ -155,7 +190,6 @@ function HomePage () {
         },
         {
             key: 'Portfolio',
-            // text: <>Meus Projetos › Portfolio <Label size='mini' circular>{totalPortfolioProjects}</Label></>,
             text: 'Portfolio',
             value: 'Portfolio',
             icon: 'folder open outline',
@@ -166,13 +200,13 @@ function HomePage () {
             key: 'Projetos que sigo',
             text: 'Projetos que sigo',
             value: 'Projetos que sigo',
-            icon: 'feed'
+            icon: 'folder open outline'
         },
         {
-            key: 'Postagens',
-            text: 'Postagens',
-            value: 'Postagens',
-            icon: 'unordered list'
+            key: 'Feed',
+            text: 'Feed',
+            value: 'Feed',
+            icon: 'feed'
         }
     ]
 
@@ -344,6 +378,7 @@ function HomePage () {
                         </Header>
                     </div>
                 </Grid.Column>
+
                 <Grid.Column as='main' mobile={16} tablet={16} computer={12}>
                     <div className='py-0 py-md-4 mt-0 mt-md-5'></div>
                     <div className='px-3 px-md-0'>
@@ -366,166 +401,174 @@ function HomePage () {
                             />
                         </div>
                     </div>
-                    {!projects.requesting ? (
-                        filteredProjects.length ? (
+
+                    {(homeFeedSelectedOption === "Meus Projetos" || homeFeedSelectedOption === "Principais" || homeFeedSelectedOption === "Portfolio") ? (
+                        !projects.requesting ? (
+                            filteredProjects.length ? (
+                                <Masonry
+                                    breakpointCols={breakpointColumnsObj}
+                                    className="my-masonry-grid"
+                                    columnClassName="my-masonry-grid_column"
+                                >
+                                    {filteredProjects.map((project, key) =>
+                                        <Card key={key}>
+                                            <Card.Content>
+                                                <div className='headerMenu'>
+                                                    <Header as='h3' className='mb-0'>
+                                                        <Image rounded src={project.picture ? 'https://ik.imagekit.io/mublin/projects/tr:h-160,w-160,c-maintain_ratio/'+project.picture : 'https://ik.imagekit.io/mublin/sample-folder/avatar-undefined_-dv9U6dcv3.jpg'} />
+                                                        <Header.Content>
+                                                            {project.name}
+                                                            <Header.Subheader>
+                                                                {project.ptname} {project.genre1 ? ' · '+project.genre1 : null }
+                                                            </Header.Subheader>
+                                                            <Header.Subheader className='projectExtraInfo'>
+                                                            {project.cityName ? <><Icon name='map marker alternate' />{project.cityName}, {project.regionUf}<span>·</span></> : null}<Icon name='folder open outline' />{project.portfolio ? 'Portfolio' : 'Projetos Principais'}
+                                                            </Header.Subheader>
+                                                        </Header.Content>
+                                                    </Header>
+                                                    <div>
+                                                        <Dropdown icon='ellipsis horizontal' direction='left'>
+                                                            <Dropdown.Menu>
+                                                                <Dropdown.Item text='Acessar Painel' />
+                                                                <Dropdown.Item text='Ver Perfil' />
+                                                                <Dropdown.Item text='Gerenciar participação' />
+                                                            </Dropdown.Menu>
+                                                        </Dropdown>
+                                                    </div>
+                                                </div>
+                                                {project.labelShow === 1 && 
+                                                    <Label className='mt-3' tag color={project.labelColor} size="tiny" style={{ fontWeight: 'normal' }}>{project.labelText}</Label>
+                                                }
+                                            </Card.Content>
+                                            <Card.Content>
+                                                <div className='d-flex' style={{alignItems:'center', fontSize:'11.5px'}}>
+                                                    <Image src={'https://ik.imagekit.io/mublin/tr:h-36,w-36,r-max,c-maintain_ratio/users/avatars/'+userInfo.id+'/'+userInfo.picture} rounded className='mr-1' width='18' height='18' />
+                                                    {project.role1}{project.role2 && ', '+project.role2}{project.role3 && ', '+project.role3} {(project.id && !project.yearLeftTheProject && !project.yearEnd) ? '· desde ' + project.joined_in : null} {(project.id && project.yearLeftTheProject) ? '· até ' + project.yearLeftTheProject : null}
+                                                </div>
+                                                {!!project.id && 
+                                                    <div className='mt-1 badges'>
+                                                        <Label circular size="tiny"><Icon name={project.workIcon}  className='mr-0' color='black' /> {project.workTitle}</Label> {!!(project.active && !project.yearLeftTheProject && !project.yearEnd) && <Label circular size="tiny"><Icon color='green' name='check circle' className='mr-0' /> Ativo atualmente no projeto</Label>} {!!project.yearLeftTheProject && <Label color='red' circular size="tiny"><Icon name='sign out' className='mr-0' /> Deixei o projeto em {project.yearLeftTheProject}</Label>} {!!(project.touring && !project.yearLeftTheProject && !project.yearEnd) && <Label circular size="tiny"><Icon name='road' color='blue' className='mr-0' /> Em turnê com este projeto</Label>} {!!project.admin && <Label circular size="tiny"><Icon name='wrench' color='black' className='mr-0' /> Administrador</Label>} {!!(!project.yearLeftTheProject && !project.yearEnd && (currentYear - project.joined_in) >= 10) && <Label circular size="tiny"><Icon name='star' color='yellow' className='mr-0' /> há + de 10 anos ativo no projeto!</Label>} 
+                                                    </div>
+                                                }
+                                            </Card.Content>
+                                            <Card.Content>
+                                                <Card.Description>
+                                                    <List divided relaxed='very'>
+                                                        {!project.yearEnd ? ( 
+                                                            <>
+                                                                <List.Item>
+                                                                    <List.Icon name='bullhorn' size='large' verticalAlign='middle' className='pr-1' />
+                                                                    <List.Content style={{paddingLeft:'5px'}}>
+                                                                        <List.Header className='itemTitle'>Recado do Líder</List.Header>
+                                                                        <List.Description>
+                                                                            Nenhum recado disponível
+                                                                        </List.Description>
+                                                                    </List.Content>
+                                                                </List.Item>
+                                                                <List.Item>
+                                                                    <List.Icon name='calendar alternate outline' size='large' verticalAlign='middle' />
+                                                                    <List.Content>
+                                                                        <List.Header className='itemTitle'>Próximo evento{project.nextEventDateOpening ? ': ' + project.nextEventDateOpening + ' às ' + project.nextEventHourOpening.substr(0,5) : null}</List.Header>
+                                                                        <List.Description style={{maxWidth:'90%'}}>
+                                                                            <div>
+                                                                                {project.nextEventDateOpening ? 
+                                                                                    <>{project.nextEventTitle}</> 
+                                                                                : 
+                                                                                    'Nenhum evento programado'
+                                                                                }
+                                                                            </div>
+                                                                            {(project.nextEventDateOpening && project.nextEventInvitationId) && 
+                                                                                <>
+                                                                                <div className='mt-2 d-flex' style={{alignItems:'center', fontSize:'11.5px'}}>
+                                                                                    <Image src={'https://ik.imagekit.io/mublin/tr:h-12,w-12,r-max,c-maintain_ratio/users/avatars/'+project.nextEventInvitationUserIdWhoInvited+'/'+project.nextEventInvitationPictureWhoInvited} rounded title={project.nextEventInvitationUsernameWhoInvited} className='mr-1' />
+                                                                                    {(userInfo.id !== project.nextEventInvitationUserIdWhoInvited) ? 
+                                                                                        <>
+                                                                                            {project.nextEventInvitationNameWhoInvited} te convidou em {project.nextEventInvitationDate.substr(0,11)}
+                                                                                        </>
+                                                                                    :
+                                                                                        <>
+                                                                                            Você criou este evento em {project.nextEventInvitationDate.substr(0,11)}
+                                                                                        </>
+                                                                                    }
+                                                                                </div>
+                                                                                <div style={{display:'flex',marginTop:'5px'}}>
+                                                                                    <Button size='mini' icon onClick={project.nextEventInvitationResponse === 1 ? () => submitInvitationResponse(key,project.nextEventInvitationId,2,currentDate,'') : () => setModalAcceptEvent(key)} basic={project.nextEventInvitationResponse === 1 ? false : true} color={project.nextEventInvitationResponse === 1 ? 'green' : null} className='mr-1' loading={isEventLoading.key === key && isEventLoading.response === 2 ? true : false}><Icon name='thumbs up outline' />Irei</Button>
+                                                                                    <Button size='mini' icon basic={project.nextEventInvitationResponse === 0 ? false : true} color={project.nextEventInvitationResponse === 0 ? 'red' : null} onClick={project.nextEventInvitationResponse === 0 ? () => submitInvitationResponse(key,project.nextEventInvitationId,2,currentDate,'') : () => setModalDeclineEvent(key)} loading={isEventLoading.key === key && isEventLoading.response === 2 ? true : false}><Icon name='thumbs down outline' />Não irei</Button>
+                                                                                    <Button size='mini' basic icon><Icon name='plus' /> detalhes</Button>
+                                                                                </div>
+                                                                                </>
+                                                                            }
+                                                                        </List.Description>
+                                                                    </List.Content>
+                                                                </List.Item>
+                                                                <List.Item>
+                                                                    <List.Icon name='flag checkered' size='large' verticalAlign='middle' className='pr-1' />
+                                                                    <List.Content style={{paddingLeft:'5px'}}>
+                                                                        <List.Header className='itemTitle'>Próxima meta do projeto</List.Header>
+                                                                        <List.Description>
+                                                                            {(project.nextGoalDescription && project.nextGoalCompleted) ? <Icon name='check' color='green' className='mr-0' /> : <Icon name='clock outline' className='mr-0' />} {project.nextGoalDescription ? project.nextGoalDescription : 'Nenhuma meta cadastrada'}
+                                                                        </List.Description>
+                                                                        <List.Description style={{fontSize:'11.5px'}}>
+                                                                            Prevista para {project.nextGoalDescription ? project.nextGoalDate +  ' (restam ' + formatDistance(new Date(project.nextGoalDate.split('/').reverse().join('-')), new Date(), {locale:pt}) + ')' : 'Nenhuma atividade pendente pra mim'}
+                                                                        </List.Description>
+                                                                    </List.Content>
+                                                                </List.Item>
+                                                                <List.Item>
+                                                                    <List.Icon name='bookmark outline' size='large' verticalAlign='middle' />
+                                                                    <List.Content style={{paddingLeft:'7px'}}>
+                                                                        <List.Header className='itemTitle'>Minha lição de casa</List.Header>
+                                                                        <List.Description>
+                                                                            {(project.nextUserGoalDescription && project.nextUserGoalCompleted) ? <Icon name='check' color='green' className='mr-0' /> : <Icon name='clock outline' className='mr-0' />} {project.nextUserGoalDescription ? project.nextUserGoalDescription : 'Nenhuma meta cadastrada'}
+                                                                        </List.Description>
+                                                                        <List.Description style={{fontSize:'11.5px'}}>
+                                                                            Prevista para {project.nextUserGoalDescription ? project.nextUserGoalDate +  ' (restam ' + formatDistance(new Date(project.nextUserGoalDate.split('/').reverse().join('-')), new Date(), {locale:pt}) + ')' : 'Nenhuma atividade pendente pra mim'}
+                                                                        </List.Description>
+                                                                    </List.Content>
+                                                                </List.Item>
+                                                            </>
+                                                        ) : (
+                                                            <List.Item>
+                                                                <List.Content>
+                                                                    <List.Description>Projeto encerrado em {project.yearEnd}</List.Description>
+                                                                </List.Content>
+                                                            </List.Item>
+                                                        )}
+                                                    </List>
+                                                </Card.Description>
+                                            </Card.Content>
+                                            {/* <Card.Content extra textAlign='center'>
+                                                <a>
+                                                    Acessar Painel de {project.name}
+                                                    <Icon name='chevron right' />
+                                                </a>
+                                            </Card.Content> */}
+                                        </Card>
+                                    )}
+                                </Masonry>
+                            ) : (
+                                cardNewProject
+                            )
+                        ) : (
                             <Masonry
                                 breakpointCols={breakpointColumnsObj}
                                 className="my-masonry-grid"
                                 columnClassName="my-masonry-grid_column"
                             >
-                                {filteredProjects.map((project, key) =>
-                                    <Card key={key}>
-                                        <Card.Content>
-                                            <div className='headerMenu'>
-                                                <Header as='h3' className='mb-0'>
-                                                    <Image rounded src={project.picture ? 'https://ik.imagekit.io/mublin/projects/tr:h-160,w-160,c-maintain_ratio/'+project.picture : 'https://ik.imagekit.io/mublin/sample-folder/avatar-undefined_-dv9U6dcv3.jpg'} />
-                                                    <Header.Content>
-                                                        {project.name}
-                                                        <Header.Subheader>
-                                                            {project.ptname} {project.genre1 ? ' · '+project.genre1 : null }
-                                                        </Header.Subheader>
-                                                        <Header.Subheader className='projectExtraInfo'>
-                                                         {project.cityName ? <><Icon name='map marker alternate' />{project.cityName}, {project.regionUf}<span>·</span></> : null}<Icon name='folder open outline' />{project.portfolio ? 'Portfolio' : 'Projetos Principais'}
-                                                        </Header.Subheader>
-                                                    </Header.Content>
-                                                </Header>
-                                                <div>
-                                                    <Dropdown icon='ellipsis horizontal' direction='left'>
-                                                        <Dropdown.Menu>
-                                                            <Dropdown.Item text='Acessar Painel' />
-                                                            <Dropdown.Item text='Ver Perfil' />
-                                                            <Dropdown.Item text='Gerenciar participação' />
-                                                        </Dropdown.Menu>
-                                                    </Dropdown>
-                                                </div>
-                                            </div>
-                                            {project.labelShow === 1 && 
-                                                <Label className='mt-3' tag color={project.labelColor} size="tiny" style={{ fontWeight: 'normal' }}>{project.labelText}</Label>
-                                            }
-                                        </Card.Content>
-                                        <Card.Content>
-                                            <div className='d-flex' style={{alignItems:'center', fontSize:'11.5px'}}>
-                                                <Image src={'https://ik.imagekit.io/mublin/tr:h-36,w-36,r-max,c-maintain_ratio/users/avatars/'+userInfo.id+'/'+userInfo.picture} rounded className='mr-1' width='18' height='18' />
-                                                {project.role1}{project.role2 && ', '+project.role2}{project.role3 && ', '+project.role3} {(project.id && !project.yearLeftTheProject && !project.yearEnd) ? '· desde ' + project.joined_in : null} {(project.id && project.yearLeftTheProject) ? '· até ' + project.yearLeftTheProject : null}
-                                            </div>
-                                            {!!project.id && 
-                                                <div className='mt-1 badges'>
-                                                    <Label circular size="tiny"><Icon name={project.workIcon}  className='mr-0' color='black' /> {project.workTitle}</Label> {!!(project.active && !project.yearLeftTheProject && !project.yearEnd) && <Label circular size="tiny"><Icon color='green' name='check circle' className='mr-0' /> Ativo atualmente no projeto</Label>} {!!project.yearLeftTheProject && <Label color='red' circular size="tiny"><Icon name='sign out' className='mr-0' /> Deixei o projeto em {project.yearLeftTheProject}</Label>} {!!(project.touring && !project.yearLeftTheProject && !project.yearEnd) && <Label circular size="tiny"><Icon name='road' color='blue' className='mr-0' /> Em turnê com este projeto</Label>} {!!project.admin && <Label circular size="tiny"><Icon name='wrench' color='black' className='mr-0' /> Administrador</Label>} {!!(!project.yearLeftTheProject && !project.yearEnd && (currentYear - project.joined_in) >= 10) && <Label circular size="tiny"><Icon name='star' color='yellow' className='mr-0' /> há + de 10 anos ativo no projeto!</Label>} 
-                                                </div>
-                                            }
-                                        </Card.Content>
-                                        <Card.Content>
-                                            <Card.Description>
-                                                <List divided relaxed='very'>
-                                                    {!project.yearEnd ? ( 
-                                                        <>
-                                                            <List.Item>
-                                                                <List.Icon name='bullhorn' size='large' verticalAlign='middle' className='pr-1' />
-                                                                <List.Content style={{paddingLeft:'5px'}}>
-                                                                    <List.Header className='itemTitle'>Recado do Líder</List.Header>
-                                                                    <List.Description>
-                                                                        Nenhum recado disponível
-                                                                    </List.Description>
-                                                                </List.Content>
-                                                            </List.Item>
-                                                            <List.Item>
-                                                                <List.Icon name='calendar alternate outline' size='large' verticalAlign='middle' />
-                                                                <List.Content>
-                                                                    <List.Header className='itemTitle'>Próximo evento{project.nextEventDateOpening ? ': ' + project.nextEventDateOpening + ' às ' + project.nextEventHourOpening.substr(0,5) : null}</List.Header>
-                                                                    <List.Description style={{maxWidth:'90%'}}>
-                                                                        <div>
-                                                                            {project.nextEventDateOpening ? 
-                                                                                <>{project.nextEventTitle}</> 
-                                                                            : 
-                                                                                'Nenhum evento programado'
-                                                                            }
-                                                                        </div>
-                                                                        {(project.nextEventDateOpening && project.nextEventInvitationId) && 
-                                                                            <>
-                                                                            <div className='mt-2 d-flex' style={{alignItems:'center', fontSize:'11.5px'}}>
-                                                                                <Image src={'https://ik.imagekit.io/mublin/tr:h-12,w-12,r-max,c-maintain_ratio/users/avatars/'+project.nextEventInvitationUserIdWhoInvited+'/'+project.nextEventInvitationPictureWhoInvited} rounded title={project.nextEventInvitationUsernameWhoInvited} className='mr-1' />
-                                                                                {(userInfo.id !== project.nextEventInvitationUserIdWhoInvited) ? 
-                                                                                    <>
-                                                                                        {project.nextEventInvitationNameWhoInvited} te convidou em {project.nextEventInvitationDate.substr(0,11)}
-                                                                                    </>
-                                                                                :
-                                                                                    <>
-                                                                                        Você criou este evento em {project.nextEventInvitationDate.substr(0,11)}
-                                                                                    </>
-                                                                                }
-                                                                            </div>
-                                                                            <div style={{display:'flex',marginTop:'5px'}}>
-                                                                                <Button size='mini' icon onClick={project.nextEventInvitationResponse === 1 ? () => submitInvitationResponse(key,project.nextEventInvitationId,2,currentDate,'') : () => setModalAcceptEvent(key)} basic={project.nextEventInvitationResponse === 1 ? false : true} color={project.nextEventInvitationResponse === 1 ? 'green' : null} className='mr-1' loading={isEventLoading.key === key && isEventLoading.response === 2 ? true : false}><Icon name='thumbs up outline' />Irei</Button>
-                                                                                <Button size='mini' icon basic={project.nextEventInvitationResponse === 0 ? false : true} color={project.nextEventInvitationResponse === 0 ? 'red' : null} onClick={project.nextEventInvitationResponse === 0 ? () => submitInvitationResponse(key,project.nextEventInvitationId,2,currentDate,'') : () => setModalDeclineEvent(key)} loading={isEventLoading.key === key && isEventLoading.response === 2 ? true : false}><Icon name='thumbs down outline' />Não irei</Button>
-                                                                                <Button size='mini' basic icon><Icon name='plus' /> detalhes</Button>
-                                                                            </div>
-                                                                            </>
-                                                                        }
-                                                                    </List.Description>
-                                                                </List.Content>
-                                                            </List.Item>
-                                                            <List.Item>
-                                                                <List.Icon name='flag checkered' size='large' verticalAlign='middle' className='pr-1' />
-                                                                <List.Content style={{paddingLeft:'5px'}}>
-                                                                    <List.Header className='itemTitle'>Próxima meta do projeto</List.Header>
-                                                                    <List.Description>
-                                                                        {(project.nextGoalDescription && project.nextGoalCompleted) ? <Icon name='check' color='green' className='mr-0' /> : <Icon name='clock outline' className='mr-0' />} {project.nextGoalDescription ? project.nextGoalDescription : 'Nenhuma meta cadastrada'}
-                                                                    </List.Description>
-                                                                    <List.Description style={{fontSize:'11.5px'}}>
-                                                                        Prevista para {project.nextGoalDescription ? project.nextGoalDate +  ' (restam ' + formatDistance(new Date(project.nextGoalDate.split('/').reverse().join('-')), new Date(), {locale:pt}) + ')' : 'Nenhuma atividade pendente pra mim'}
-                                                                    </List.Description>
-                                                                </List.Content>
-                                                            </List.Item>
-                                                            <List.Item>
-                                                                <List.Icon name='bookmark outline' size='large' verticalAlign='middle' />
-                                                                <List.Content style={{paddingLeft:'7px'}}>
-                                                                    <List.Header className='itemTitle'>Minha lição de casa</List.Header>
-                                                                    <List.Description>
-                                                                        {(project.nextUserGoalDescription && project.nextUserGoalCompleted) ? <Icon name='check' color='green' className='mr-0' /> : <Icon name='clock outline' className='mr-0' />} {project.nextUserGoalDescription ? project.nextUserGoalDescription : 'Nenhuma meta cadastrada'}
-                                                                    </List.Description>
-                                                                    <List.Description style={{fontSize:'11.5px'}}>
-                                                                        Prevista para {project.nextUserGoalDescription ? project.nextUserGoalDate +  ' (restam ' + formatDistance(new Date(project.nextUserGoalDate.split('/').reverse().join('-')), new Date(), {locale:pt}) + ')' : 'Nenhuma atividade pendente pra mim'}
-                                                                    </List.Description>
-                                                                </List.Content>
-                                                            </List.Item>
-                                                        </>
-                                                    ) : (
-                                                        <List.Item>
-                                                            <List.Content>
-                                                                <List.Description>Projeto encerrado em {project.yearEnd}</List.Description>
-                                                            </List.Content>
-                                                        </List.Item>
-                                                    )}
-                                                </List>
-                                            </Card.Description>
-                                        </Card.Content>
-                                        {/* <Card.Content extra textAlign='center'>
-                                            <a>
-                                                Acessar Painel de {project.name}
-                                                <Icon name='chevron right' />
-                                            </a>
-                                        </Card.Content> */}
-                                    </Card>
-                                )}
+                                {cardPlaceholder}
+                                {cardPlaceholder}
+                                {cardPlaceholder}
                             </Masonry>
-                        ) : (
-                            <Header as='h3' className='my-0'>
-                                <Header.Content>
-                                    <Header.Subheader as='a'>Nenhum projeto para exibir por aqui. <Link to="/new">Criar novo?</Link></Header.Subheader>
-                                </Header.Content>
-                            </Header>
                         )
                     ) : (
-                        <Masonry
-                            breakpointCols={breakpointColumnsObj}
-                            className="my-masonry-grid"
-                            columnClassName="my-masonry-grid_column"
-                        >
-                            {cardPlaceholder}
-                            {cardPlaceholder}
-                            {cardPlaceholder}
-                        </Masonry>
+                        null
                     )}
+
+                    {homeFeedSelectedOption === "Feed" ? (
+                        <MyFeed feedData={feed} masonryBreakPoints={breakpointColumnsObj} />
+                    ) : (
+                        null
+                    )}
+
                 </Grid.Column>
             </Grid.Row>
         </Grid>

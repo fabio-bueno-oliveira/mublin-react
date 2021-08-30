@@ -249,6 +249,16 @@ div.homepage {
         }
       }
 
+      .visible.menu.transition {
+
+        :nth-child(2).item {
+          padding-left: 32px!important;
+        }
+        :nth-child(3).item {
+          padding-left: 32px!important;
+        }
+      }
+
       .active.selected.item {
         font-weight: 500 !important;
       }

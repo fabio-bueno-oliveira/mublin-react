@@ -129,7 +129,7 @@ function HomePage () {
         setHomeFeedSelectedOption(option)
         switch(option) {
             case "Meus Projetos":   return dispatch(userProjectsInfos.getUserProjects(user.id,'all'));
-            case "Projetos Principais":      return dispatch(userProjectsInfos.getUserProjects(user.id,'main'));
+            case "Principais":      return dispatch(userProjectsInfos.getUserProjects(user.id,'main'));
             case "Portfolio":       return dispatch(userProjectsInfos.getUserProjects(user.id,'portfolio'));
             default:                return dispatch(userProjectsInfos.getUserProjects(user.id,'all'));
         }
@@ -138,23 +138,29 @@ function HomePage () {
     const homeFeedOptions = [
         {
             key: 'Meus Projetos',
-            text: <>Meus Projetos <Label size='mini' circular>{totalProjects}</Label></>,
+            // text: <>Meus Projetos <Label size='mini' circular>{totalProjects}</Label></>,
+            text: 'Meus Projetos',
             value: 'Meus Projetos',
-            icon: 'folder open outline'
+            icon: 'folder open outline',
+            description: totalProjects
         },
         {
             key: 'Principais',
-            text: <>Meus Projetos › Principais <Label size='mini' circular>{totalMainProjects}</Label></>,
+            // text: <>Meus Projetos › Principais <Label size='mini' circular>{totalMainProjects}</Label></>,
+            text: 'Principais',
             value: 'Principais',
             icon: 'folder open outline',
-            disabled: totalMainProjects === 0 ? true : false
+            disabled: totalMainProjects === 0 ? true : false,
+            description: totalMainProjects
         },
         {
             key: 'Portfolio',
-            text: <>Meus Projetos › Portfolio <Label size='mini' circular>{totalPortfolioProjects}</Label></>,
+            // text: <>Meus Projetos › Portfolio <Label size='mini' circular>{totalPortfolioProjects}</Label></>,
+            text: 'Portfolio',
             value: 'Portfolio',
             icon: 'folder open outline',
-            disabled: totalPortfolioProjects === 0 ? true : false
+            disabled: totalPortfolioProjects === 0 ? true : false,
+            description: totalPortfolioProjects
         },
         {
             key: 'Projetos que sigo',
@@ -386,9 +392,9 @@ function HomePage () {
                                                 <div>
                                                     <Dropdown icon='ellipsis horizontal' direction='left'>
                                                         <Dropdown.Menu>
-                                                            <Dropdown.Item icon='setting' text='Acessar Painel' />
-                                                            <Dropdown.Item icon='eye' text='Acessar Perfil' />
-                                                            <Dropdown.Item icon='user outline' text='Gerenciar participação' />
+                                                            <Dropdown.Item text='Acessar Painel' />
+                                                            <Dropdown.Item text='Ver Perfil' />
+                                                            <Dropdown.Item text='Gerenciar participação' />
                                                         </Dropdown.Menu>
                                                     </Dropdown>
                                                 </div>

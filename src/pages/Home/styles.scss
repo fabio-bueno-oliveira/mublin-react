@@ -257,7 +257,7 @@ div.homepage {
         align-items: center;
         justify-content: center;
         flex-direction: column;
-        padding: 4px 0 40px 0;
+        padding: 4px 0 0 0;
         width: 100%;
 
         .slideContent {
@@ -266,6 +266,7 @@ div.homepage {
           align-items: center;
           justify-content: center;
           height: 118px;
+          margin-top: 40px;
 
           .ui.label {
             font-weight: 500;

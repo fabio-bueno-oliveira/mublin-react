@@ -250,32 +250,38 @@ function HomePage () {
                                         reloadOnUpdate
                                     >
                                         <div className='sliderItem'>
-                                            <Icon name='ticket' size='large' disabled />
-                                            <h4>Próximo evento</h4>
                                             {events.length ? (
+                                                <>
+                                                <Icon name='ticket' size='large' disabled />
+                                                <h4>Próximo evento</h4>
                                                 <h6>{events.length} agendados</h6>
-                                            ) : (
-                                                <h6>Nenhum evento público próximo</h6>
-                                            )}
-                                            <div className='slideContent'>
-                                                {eventsIsRequesting ? (
-                                                    <p>Carregando...</p>
-                                                ) : (
-                                                    <div className='extraInfo'>
-                                                        <p className='title'>{events[0].title}</p>
-                                                        {/* <p>{events[0].description}</p> */}
+                                                <div className='slideContent'>
+                                                    {eventsIsRequesting ? (
+                                                        <p>Carregando...</p>
+                                                    ) : (
+                                                        <div className='extraInfo'>
+                                                            <p className='title'>{events[0].title}</p>
+                                                            {/* <p>{events[0].description}</p> */}
+                                                        </div>
+                                                    )}
+                                                    <div className='extraInfo secondary'>
+                                                        <p>{events[0].eventDateStart+' às '+events[0].eventHourStart} {events[0].city && ' em '+events[0].city+'/'+events[0].region}</p>
                                                     </div>
-                                                )}
-                                                <div className='extraInfo secondary'>
-                                                    <p>{events[0].eventDateStart+' às '+events[0].eventHourStart} {events[0].city && ' em '+events[0].city+'/'+events[0].region}</p>
+                                                    <div className='extraInfo secondary'>
+                                                        {events[0].eventType} com {events[0].projectName+' ('+events[0].projectType+')'}
+                                                    </div>
+                                                    {events[0].response === 1 ? <Label size='mini p-1' color='green'>Presença confirmada</Label> : null}
+                                                    {events[0].response === 2 ? <Label size='mini p-1' color='purple'>Aguardando sua confirmação</Label> : null}
+                                                    {events[0].response === 0 ? <Label size='mini p-1' color='red'>Convite recusado</Label> : null}
                                                 </div>
-                                                <div className='extraInfo secondary'>
-                                                    {events[0].eventType} com {events[0].projectName+' ('+events[0].projectType+')'}
-                                                </div>
-                                                {events[0].response === 1 ? <Label size='mini p-1' color='green'>Presença confirmada</Label> : null}
-                                                {events[0].response === 2 ? <Label size='mini p-1' color='purple'>Aguardando sua confirmação</Label> : null}
-                                                {events[0].response === 0 ? <Label size='mini p-1' color='red'>Convite recusado</Label> : null}
-                                            </div>
+                                                </>
+                                            ) : (
+                                                <>
+                                                    <Icon name='ticket' size='large' disabled />
+                                                    <h4>Próximo evento</h4>
+                                                    <h6>Nenhum evento público próximo</h6>
+                                                </>
+                                            )}
                                         </div>
                                         <div className='sliderItem'>
                                             <Icon name='ticket' size='large' disabled />

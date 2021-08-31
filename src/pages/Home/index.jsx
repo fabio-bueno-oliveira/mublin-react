@@ -9,6 +9,7 @@ import MyFeed from '../../components/myFeed';
 import { userInfos } from '../../store/actions/user';
 import { userProjectsInfos } from '../../store/actions/userProjects';
 import { searchInfos } from '../../store/actions/search';
+import { eventsInfos } from '../../store/actions/events';
 import { Header, Grid, Image, Icon, Label, List, Button, Input, Card, Loader, Placeholder, Dropdown } from 'semantic-ui-react';
 import Flickity from 'react-flickity-component';
 import Masonry from 'react-masonry-css';
@@ -33,21 +34,25 @@ function HomePage () {
         dispatch(userInfos.getUserRolesInfoById(user.id));
         dispatch(userInfos.getUserLastConnectedFriends());
         dispatch(searchInfos.getSuggestedUsersResults());
+        dispatch(eventsInfos.getUserEvents(user.id));
     }, [user.id, dispatch]);
 
-    const userInfo = useSelector(state => state.user)
+    const userInfo = useSelector(state => state.user);
 
     const feed = useSelector(state => state.feed);
 
-    const projects = useSelector(state => state.userProjects)
+    const eventsIsRequesting = useSelector(state => state.events.requesting);
+    const events = useSelector(state => state.events.list);
 
-    const totalProjects = useSelector(state => state.userProjects.summary).length
-    const totalMainProjects = useSelector(state => state.userProjects.summary).filter((project) => { return project.portfolio === 0 }).length
-    const totalPortfolioProjects = useSelector(state => state.userProjects.summary).filter((project) => { return project.portfolio === 1 }).length
+    const projects = useSelector(state => state.userProjects);
 
-    const [filteredByName, setFilteredByName] = useState('')
+    const totalProjects = useSelector(state => state.userProjects.summary).length;
+    const totalMainProjects = useSelector(state => state.userProjects.summary).filter((project) => { return project.portfolio === 0 }).length;
+    const totalPortfolioProjects = useSelector(state => state.userProjects.summary).filter((project) => { return project.portfolio === 1 }).length;
 
-    const filteredProjects = filteredByName ? projects.list.filter((project) => { return project.name.toLowerCase().includes(filteredByName.toLowerCase()) || project.username.toLowerCase().includes(filteredByName.toLowerCase()) }) : projects.list
+    const [filteredByName, setFilteredByName] = useState('');
+
+    const filteredProjects = filteredByName ? projects.list.filter((project) => { return project.name.toLowerCase().includes(filteredByName.toLowerCase()) || project.username.toLowerCase().includes(filteredByName.toLowerCase()) }) : projects.list;
 
     const sliderOptions = {
         autoPlay: false,
@@ -59,6 +64,19 @@ function HomePage () {
         draggable: '>1',
         resize: true,
         contain: true
+    }
+
+    const sliderOptionsHomeScreen = {
+        autoPlay: false,
+        cellAlign: 'center',
+        freeScroll: false,
+        prevNextButtons: false,
+        pageDots: true,
+        wrapAround: false,
+        draggable: '>1',
+        resize: true,
+        contain: true,
+        groupCells: 1
     }
 
     // START Event RSVP
@@ -216,8 +234,68 @@ function HomePage () {
         <HeaderMobile />
         <Grid centered className='px-3 homepage'>
             <Grid.Row columns={1} only='mobile'>
-                <Grid.Column mobile={16} tablet={16} computer={16} className='pr-0'>
-                    <div className='mt-4 mt-md-2 pt-5 mt-md-0'>
+                <Grid.Column mobile={16} tablet={16} computer={16} className='pl-0 pr-0'>
+                    <div className='mt-4 mt-md-2 pt-3 mt-md-0'>
+                        <div className='homeScreen'>
+                            <div>
+                                <Image src={'https://ik.imagekit.io/mublin/tr:h-200,w-200,c-maintain_ratio/users/avatars/'+userInfo.id+'/'+userInfo.picture} alt='Foto de perfil' avatar />
+                                <span>Olá, {userInfo.name}</span>
+                                <div>
+                                    <Flickity
+                                        className={'carousel'}
+                                        style={{height: '200px'}}
+                                        elementType={'div'}
+                                        options={sliderOptionsHomeScreen}
+                                        disableImagesLoaded={false}
+                                        reloadOnUpdate
+                                    >
+                                        <div className='sliderItem'>
+                                            <Icon name='ticket' size='large' disabled />
+                                            <h4>Próximo evento</h4>
+                                            {events.length ? (
+                                                <h6>{events.length} agendados</h6>
+                                            ) : (
+                                                <h6>Nenhum evento público próximo</h6>
+                                            )}
+                                            <div className='slideContent'>
+                                                {eventsIsRequesting ? (
+                                                    <p>Carregando...</p>
+                                                ) : (
+                                                    <div className='extraInfo'>
+                                                        <p className='title'>{events[0].title}</p>
+                                                        {/* <p>{events[0].description}</p> */}
+                                                    </div>
+                                                )}
+                                                <div className='extraInfo secondary'>
+                                                    <p>{events[0].eventDateStart+' às '+events[0].eventHourStart} {events[0].city && ' em '+events[0].city+'/'+events[0].region}</p>
+                                                </div>
+                                                <div className='extraInfo secondary'>
+                                                    {events[0].eventType} com {events[0].projectName+' ('+events[0].projectType+')'}
+                                                </div>
+                                                {events[0].response === 1 ? <Label size='mini p-1' color='green'>Presença confirmada</Label> : null}
+                                                {events[0].response === 2 ? <Label size='mini p-1' color='purple'>Aguardando sua confirmação</Label> : null}
+                                                {events[0].response === 0 ? <Label size='mini p-1' color='red'>Convite recusado</Label> : null}
+                                            </div>
+                                        </div>
+                                        <div className='sliderItem'>
+                                            <Icon name='ticket' size='large' disabled />
+                                            <h4>Próxima Meta:</h4>
+                                            <p>asd asdasdasdas </p>
+                                        </div>
+                                        <div className='sliderItem'>
+                                            <Icon name='ticket' size='large' disabled />
+                                            <h4>Próximo Show:</h4>
+                                            <p>asd asdasdasdas </p>
+                                        </div>
+                                        <div className='sliderItem'>
+                                            <Icon name='ticket' size='large' disabled />
+                                            <h4>Próximo Show:</h4>
+                                            <p>asd asdasdasdas </p>
+                                        </div>
+                                    </Flickity>
+                                </div>
+                            </div>
+                        </div>
                         {userInfo.requesting ? (
                             <div style={{textAlign: 'center', width: '100%', height: '100px'}} className='py-3'>
                                 <Loader active inline='centered' />
@@ -226,7 +304,7 @@ function HomePage () {
                             <>
                             {userInfo.lastConnectedFriends[0].username &&
                                 <>
-                                    <Header as='h4' className='mt-2'>Contatos conectados recentemente</Header>
+                                    <Header as='h4' className='mt-2 mx-3'>Contatos conectados recentemente</Header>
                                     <Flickity
                                         className={'carousel'}
                                         style={{height: '200px'}}
@@ -393,11 +471,12 @@ function HomePage () {
                             <Input 
                                 icon='search'
                                 iconPosition='left'
-                                placeholder='Filtrar por nome...'
+                                placeholder='Filtrar por nome do projeto...'
                                 transparent
                                 value={filteredByName}
                                 onChange={e => setFilteredByName(e.target.value)}
                                 size='big'
+                                style={{width:'100%'}}
                             />
                         </div>
                     </div>

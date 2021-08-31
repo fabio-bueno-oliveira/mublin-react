@@ -229,6 +229,69 @@ div.homepage {
   height: 100vh;
   padding-top: 0!important;
 
+  .homeScreen {
+    background-color: #FFF;
+    margin: 0 0 20px 0;
+    padding: 30px 10px 10px 10px;
+    width: 100%;
+
+    .carousel {
+      height: 230px;
+      padding: 14px 14px 24px 14px;
+
+      h4 {
+        font-size: 18px;
+        font-weight: 600;
+        margin-bottom: 0;
+        opacity: 0.8;
+      }
+
+      h6 {
+        font-size: 12px;
+        font-weight: 400;
+        opacity: 0.6;
+      }
+
+      .sliderItem {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        padding: 4px 0 40px 0;
+        width: 100%;
+
+        .slideContent {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          height: 118px;
+
+          .ui.label {
+            font-weight: 500;
+            margin-top: 3px;
+          }
+
+          .extraInfo {
+            font-size: 11.5px;
+            margin: 0 0 0 0;
+            text-align: center;
+
+            .title {
+              font-size: 15px;
+              font-weight: 600;
+            }
+          }
+        }
+      }
+
+      .flickity-page-dots {
+        bottom: 4px;
+        left: -2px;
+      }
+    }
+  }
+
   main {
     padding-left: 0!important;
     padding-right: 0!important;

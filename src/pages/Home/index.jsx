@@ -42,12 +42,15 @@ function HomePage () {
     const feed = useSelector(state => state.feed);
 
     const eventsIsRequesting = useSelector(state => state.events.requesting);
+
     const events = useSelector(state => state.events.list);
 
     const projects = useSelector(state => state.userProjects);
 
     const totalProjects = useSelector(state => state.userProjects.summary).length;
+
     const totalMainProjects = useSelector(state => state.userProjects.summary).filter((project) => { return project.portfolio === 0 }).length;
+
     const totalPortfolioProjects = useSelector(state => state.userProjects.summary).filter((project) => { return project.portfolio === 1 }).length;
 
     const [filteredByName, setFilteredByName] = useState('');
@@ -117,9 +120,17 @@ function HomePage () {
 
     var today = new Date();
 
-    const breakpointColumnsObj = {
+    const breakpointColumnsProjects = {
         default: 3,
         1300: 3,
+        900: 2,
+        700: 1,
+        500: 1
+    };
+
+    const breakpointColumnsFeed = {
+        default: 2,
+        1300: 2,
         900: 2,
         700: 1,
         500: 1
@@ -200,26 +211,24 @@ function HomePage () {
         },
         {
             key: 'Principais',
-            text: 'Principais',
+            text: 'Apenas projetos principais',
             value: 'Principais',
-            icon: 'folder open outline',
             disabled: totalMainProjects === 0 ? true : false,
             description: totalMainProjects
         },
         {
             key: 'Portfolio',
-            text: 'Portfolio',
+            text: 'Apenas projetos do portfolio',
             value: 'Portfolio',
-            icon: 'folder open outline',
             disabled: totalPortfolioProjects === 0 ? true : false,
             description: totalPortfolioProjects
         },
-        {
-            key: 'Projetos que sigo',
-            text: 'Projetos que sigo',
-            value: 'Projetos que sigo',
-            icon: 'folder open outline'
-        },
+        // {
+        //     key: 'Projetos que sigo',
+        //     text: 'Projetos que sigo',
+        //     value: 'Projetos que sigo',
+        //     icon: 'folder open outline'
+        // },
         {
             key: 'Feed',
             text: 'Feed',
@@ -473,25 +482,27 @@ function HomePage () {
                             defaultValue={homeFeedOptions[0].value}
                             onChange={(e, { value }) => handleChangeFeedFilter(value)}
                         />
-                        <div className='pb-4'>
-                            <Input 
-                                icon='search'
-                                iconPosition='left'
-                                placeholder='Filtrar por nome do projeto...'
-                                transparent
-                                value={filteredByName}
-                                onChange={e => setFilteredByName(e.target.value)}
-                                size='big'
-                                style={{width:'100%'}}
-                            />
-                        </div>
+                        {homeFeedSelectedOption !== "Feed" &&
+                            <div className='pb-4'>
+                                <Input 
+                                    icon='search'
+                                    iconPosition='left'
+                                    placeholder='Filtrar por nome do projeto...'
+                                    transparent
+                                    value={filteredByName}
+                                    onChange={e => setFilteredByName(e.target.value)}
+                                    size='big'
+                                    style={{width:'100%'}}
+                                />
+                            </div>
+                        }
                     </div>
 
                     {(homeFeedSelectedOption === "Meus Projetos" || homeFeedSelectedOption === "Principais" || homeFeedSelectedOption === "Portfolio") ? (
                         !projects.requesting ? (
                             filteredProjects.length ? (
                                 <Masonry
-                                    breakpointCols={breakpointColumnsObj}
+                                    breakpointCols={breakpointColumnsProjects}
                                     className="my-masonry-grid"
                                     columnClassName="my-masonry-grid_column"
                                 >
@@ -635,7 +646,7 @@ function HomePage () {
                             )
                         ) : (
                             <Masonry
-                                breakpointCols={breakpointColumnsObj}
+                                breakpointCols={breakpointColumnsProjects}
                                 className="my-masonry-grid"
                                 columnClassName="my-masonry-grid_column"
                             >
@@ -649,7 +660,7 @@ function HomePage () {
                     )}
 
                     {homeFeedSelectedOption === "Feed" ? (
-                        <MyFeed feedData={feed} masonryBreakPoints={breakpointColumnsObj} />
+                        <MyFeed feedData={feed} masonryBreakPoints={breakpointColumnsFeed} />
                     ) : (
                         null
                     )}

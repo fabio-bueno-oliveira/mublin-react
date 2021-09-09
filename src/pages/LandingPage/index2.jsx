@@ -134,7 +134,7 @@ function LandingPage () {
                     <Icon name='instagram' size='big' />
                 </a>
                 <span>
-                    © 2020 Mublin Brasil
+                    © 2021 Mublin Brasil
                 </span>
             </div>
         </div>

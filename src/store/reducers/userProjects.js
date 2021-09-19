@@ -63,7 +63,9 @@ const initialState = {
       labelText: '',
       cityName: '',
       regionName: '',
-      regionUf: ''
+      regionUf: '',
+      leaderLastNote: '',
+      leaderLastNoteDate: ''
     }
   ],
   summary: [
@@ -102,6 +104,7 @@ export function userProjects(state = initialState, action) {
         ...state,
         requesting: false,
         success: false,
+        error: 'Erro na solicitação',
         list: [
           {
             id: '',
@@ -146,7 +149,9 @@ export function userProjects(state = initialState, action) {
             labelText: '',
             cityName: '',
             regionName: '',
-            regionUf: ''
+            regionUf: '',
+            leaderLastNote: '',
+            leaderLastNoteDate: ''
           }
         ],
         summary: [

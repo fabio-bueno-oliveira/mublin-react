@@ -10,7 +10,7 @@ import { userInfos } from '../../store/actions/user';
 import { userProjectsInfos } from '../../store/actions/userProjects';
 import { searchInfos } from '../../store/actions/search';
 import { eventsInfos } from '../../store/actions/events';
-import { Header, Grid, Image, Icon, Label, List, Button, Input, Card, Loader, Placeholder, Dropdown } from 'semantic-ui-react';
+import { Header, Grid, Image, Icon, Label, Message, List, Button, Input, Card, Loader, Placeholder, Dropdown } from 'semantic-ui-react';
 import Flickity from 'react-flickity-component';
 import Masonry from 'react-masonry-css';
 import { formatDistance } from 'date-fns';
@@ -25,12 +25,12 @@ function HomePage () {
 
     const user = JSON.parse(localStorage.getItem('user'));
 
-    let currentDate = new Date(new Date().toString().split('GMT')[0]+' UTC').toISOString().split('.')[0].replace('T',' ')
+    let currentDate = new Date(new Date().toString().split('GMT')[0]+' UTC').toISOString().split('.')[0].replace('T',' ');
 
-    const currentYear = new Date().getFullYear()
+    const currentYear = new Date().getFullYear();
 
     useEffect(() => {
-        dispatch(userProjectsInfos.getUserProjects(user.id));
+        dispatch(userProjectsInfos.getUserProjects(user.id,'all'));
         dispatch(userInfos.getUserRolesInfoById(user.id));
         dispatch(userInfos.getUserLastConnectedFriends());
         dispatch(searchInfos.getSuggestedUsersResults());
@@ -67,7 +67,7 @@ function HomePage () {
         draggable: '>1',
         resize: true,
         contain: true
-    }
+    };
 
     const sliderOptionsHomeScreen = {
         autoPlay: false,
@@ -80,13 +80,13 @@ function HomePage () {
         resize: true,
         contain: true,
         groupCells: 1
-    }
+    };
 
     // START Event RSVP
-    const [modalDeclineEvent, setModalDeclineEvent] = useState(false)
-    const [modalAcceptEvent, setModalAcceptEvent] = useState(false)
-    const [declineComment, setDeclineComment] = useState('Minha agenda estará comprometida nesta data')
-    const [isEventLoading, setEventIsLoading] = useState({key: null, response: null})
+    const [modalDeclineEvent, setModalDeclineEvent] = useState(false);
+    const [modalAcceptEvent, setModalAcceptEvent] = useState(false);
+    const [declineComment, setDeclineComment] = useState('Minha agenda estará comprometida nesta data');
+    const [isEventLoading, setEventIsLoading] = useState({key: null, response: null});
     const submitInvitationResponse = (key,invitationId,response,response_modified,response_comments) => {
         setEventIsLoading({key: key, response: response})
         setTimeout(() => {
@@ -109,9 +109,9 @@ function HomePage () {
                 alert("Ocorreu um erro ao atualizar convite. Tente novamente em instantes")
             })
         }, 400);
-    }
-    const [confirmPresence, setConfirmPresence] = useState(false)
-    const [refuseInvitation, setRefuseInvitation] = useState(false)
+    };
+    const [confirmPresence, setConfirmPresence] = useState(false);
+    const [refuseInvitation, setRefuseInvitation] = useState(false);
     // END Event RSVP
 
     const undefinedAvatar = 'https://ik.imagekit.io/mublin/tr:h-70,w-70,c-maintain_ratio/sample-folder/avatar-undefined_Kblh5CBKPp.jpg';
@@ -539,7 +539,7 @@ function HomePage () {
                                             <Card.Content>
                                                 <div className='d-flex' style={{alignItems:'center', fontSize:'11.5px'}}>
                                                     <Image src={'https://ik.imagekit.io/mublin/tr:h-36,w-36,r-max,c-maintain_ratio/users/avatars/'+userInfo.id+'/'+userInfo.picture} rounded className='mr-1' width='18' height='18' />
-                                                    {project.role1}{project.role2 && ', '+project.role2}{project.role3 && ', '+project.role3} {(project.id && !project.yearLeftTheProject && !project.yearEnd) ? '· desde ' + project.joined_in : null} {(project.id && project.yearLeftTheProject) ? '· até ' + project.yearLeftTheProject : null}
+                                                    Sou {project.role1}{project.role2 && ', '+project.role2}{project.role3 && ', '+project.role3} {(project.id && !project.yearLeftTheProject && !project.yearEnd) ? '· desde ' + project.joined_in : null} {(project.id && project.yearLeftTheProject) ? '· até ' + project.yearLeftTheProject : null}
                                                 </div>
                                                 {!!project.id && 
                                                     <div className='mt-1 badges'>
@@ -549,18 +549,17 @@ function HomePage () {
                                             </Card.Content>
                                             <Card.Content>
                                                 <Card.Description>
+                                                    {project.leaderLastNote && 
+                                                        <Message
+                                                            size='tiny'
+                                                            color='blue'
+                                                            header='Recado do Líder'
+                                                            content={project.leaderLastNote ? project.leaderLastNote : 'Nenhum recado no momento'}
+                                                        />
+                                                    }
                                                     <List divided relaxed='very'>
                                                         {!project.yearEnd ? ( 
                                                             <>
-                                                                <List.Item>
-                                                                    <List.Icon name='bullhorn' size='large' verticalAlign='middle' className='pr-1' />
-                                                                    <List.Content style={{paddingLeft:'5px'}}>
-                                                                        <List.Header className='itemTitle'>Recado do Líder</List.Header>
-                                                                        <List.Description>
-                                                                            Nenhum recado disponível
-                                                                        </List.Description>
-                                                                    </List.Content>
-                                                                </List.Item>
                                                                 <List.Item>
                                                                     <List.Icon name='calendar alternate outline' size='large' verticalAlign='middle' />
                                                                     <List.Content>

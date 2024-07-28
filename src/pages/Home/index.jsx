@@ -248,7 +248,7 @@ function HomePage () {
                         <div className='homeScreen'>
                             <div>
                                 <Image src={'https://ik.imagekit.io/mublin/tr:h-200,w-200,c-maintain_ratio/users/avatars/'+userInfo.id+'/'+userInfo.picture} alt='Foto de perfil' avatar />
-                                <span>Olá, {userInfo.name}</span>
+                                <span>Hello, {userInfo.name}</span>
                                 <div>
                                     <Flickity
                                         className={'carousel'}
